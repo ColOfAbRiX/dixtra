@@ -1,0 +1,13 @@
+object Totals {
+  def total(orders: List[Order]) =
+    orders.filter(_.paid).map(_.amount)
+
+  def short(xs: List[Int]) =
+    xs.sum
+
+  def grouped(orders: List[Order]) =
+    orders.groupBy(_.customer).map { (customer, list) =>
+      val sum = list.map(_.amount).sum
+      customer -> sum
+    }
+}

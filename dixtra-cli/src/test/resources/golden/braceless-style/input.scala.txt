@@ -1,0 +1,21 @@
+object Shapes {
+  val small = 1
+  val medium = 10
+  def area(x: Int) = x * x
+  def perimeter(x: Int) = 4 * x
+
+  class Square(side: Int) {
+    def describe = side match {
+      case 1 => "unit"
+      case 100 => "large"
+      case _ => "other"
+    }
+
+    def safe =
+      try {
+        compute(side)
+      } catch {
+        case e: ArithmeticException => 0
+      }
+  }
+}

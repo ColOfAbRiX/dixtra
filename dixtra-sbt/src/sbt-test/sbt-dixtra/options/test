@@ -1,0 +1,8 @@
+# Only the files given, with the configuration file (max-column = 40)
+> dixtraFormatOnly src/main/scala/A.scala
+$ must-mirror src/main/scala/A.scala expected/A.scala
+$ must-mirror src/main/scala/B.scala expected/B.scala
+
+# Formatting before compiling
+> compile
+$ must-mirror src/main/scala/B.scala expected/A-like/B.scala

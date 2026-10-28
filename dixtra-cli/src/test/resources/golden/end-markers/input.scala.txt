@@ -1,0 +1,18 @@
+object Parser {
+  def parse(input: String): Result = {
+    val trimmed = input.trim
+    trimmed match {
+      case "" => Empty
+      case s => Text(s)
+    }
+  }
+
+  def check(x: Int) = {
+    println(x)
+    if (x > 0) {
+      positive(x)
+    } else {
+      negative(x)
+    }
+  }
+}

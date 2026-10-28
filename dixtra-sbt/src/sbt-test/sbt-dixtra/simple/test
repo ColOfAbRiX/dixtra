@@ -1,0 +1,23 @@
+# Nothing is formatted yet
+-> dixtraCheck
+-> dixtraCheckAll
+-> dixtraCheckSbt
+
+# The main sources only: the tests are left as they are
+> dixtraFormat
+$ must-mirror src/main/scala/A.scala expected/A.scala
+$ must-mirror src/main/scala/Old.scala expected/Old.scala
+> dixtraCheck
+-> Test/dixtraCheck
+
+# The test sources
+> Test/dixtraFormat
+$ must-mirror src/test/scala/ASpec.scala expected/ASpec.scala
+> Test/dixtraCheck
+
+# The build definition, which dixtraCheckAll checks as well
+-> dixtraCheckAll
+> dixtraFormatSbt
+$ must-mirror build.sbt expected/build.sbt
+> dixtraCheckSbt
+> dixtraCheckAll

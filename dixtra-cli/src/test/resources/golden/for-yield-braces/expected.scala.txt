@@ -1,0 +1,16 @@
+object Queries {
+  def pairs(xs: List[Int], ys: List[Int]) =
+    for {
+      x <- xs
+      if x > 0
+      longer <- ys
+    } yield {
+      x * longer
+    }
+
+  def single(xs: List[Int]) =
+    for {
+      x <- xs
+      y <- other(x)
+    } yield y
+}

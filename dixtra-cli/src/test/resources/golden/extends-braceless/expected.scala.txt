@@ -1,0 +1,8 @@
+class Short(a: Int) extends Base with Mixin:
+  val x = a
+
+class VeryLongServiceName(
+  firstDependency: Dependency,
+  secondDependency: Dependency,
+) extends ServiceBase with Logging:
+  def run() = firstDependency.call()
