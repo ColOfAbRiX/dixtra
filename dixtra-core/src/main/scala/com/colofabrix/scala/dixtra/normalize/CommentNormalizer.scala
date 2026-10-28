@@ -17,8 +17,8 @@ import scala.util.control.NonFatal
  *     opening delimiter. A multi-line block comment is reflowed with its own gutter.
  *   - A scaladoc gets its opening and closing delimiters on lines of their own and a ` * ` gutter, without blank lines
  *     at its edges, with one blank line before its first tag, reflowed with tags continuing under their description
- *       (aligned on one column for the whole tag list with `alignTags`). A one-line scaladoc that fits stays as it is.
- *       Blank lines between a scaladoc and its definition are removed.
+ *     (aligned on one column for the whole tag list with `alignTags`). A one-line scaladoc that fits stays as it is.
+ *     Blank lines between a scaladoc and its definition are removed.
  *
  * Blank lines, tags, list items, headings and tables start their own paragraph;
  * code (fences, indented lines and lines that look like code) and words longer than the line are never changed. A line
@@ -37,7 +37,7 @@ object CommentNormalizer {
       SourceEdits
         .tokens(source)
         .fold(source) { tokens =>
-          val text      = new CommentSource(source)
+          val text     = new CommentSource(source)
           val comments = tokens.collect { case c: Token.Comment => c }
           val edits =
             lineComments(text, comments, maxColumn) ++
@@ -109,7 +109,7 @@ object CommentNormalizer {
       .foldLeft(List.empty[Vector[Token.Comment]]) { (acc, c) =>
         acc match {
           case current :: rest if current.lastOption.exists(adjacent(text, _, c)) => (current :+ c) :: rest
-          case _                                                   => Vector(c) :: acc
+          case _                                                                  => Vector(c) :: acc
         }
       }
       .reverse
@@ -126,7 +126,7 @@ object CommentNormalizer {
       contents = group.map(c => spaced(c.text).drop(2).stripTrailing)
       lines    = render(parse(contents, withTags = false), maxColumn - col - 2, alignTags = false)
       out      = lines.map("//" + _).mkString("\n" + " " * col)
-                if out != text.source.slice(first.start, last.end)
+                 if out != text.source.slice(first.start, last.end)
     yield
       Edit(first.start, last.end, out)
 
@@ -364,8 +364,8 @@ object CommentNormalizer {
   // A banner, a table row, a heading, or a line aligned with spaces inside it (columns, decorations): reflowing would
   // lose its layout.
   private def isVerbatimLine(t: String): Boolean =
-     isBanner(t) || t.startsWith("|") || t.startsWith("#") || (t.length > 1 && t.startsWith("=") && t.endsWith("=")) ||
-     t.contains("  ")
+    isBanner(t) || t.startsWith("|") || t.startsWith("#") || (t.length > 1 && t.startsWith("=") && t.endsWith("=")) ||
+    t.contains("  ")
 
   // A line ending or starting like code, or with an assignment (`dt = 1s`).
   private def codeLike(t: String): Boolean =
@@ -389,10 +389,10 @@ object CommentNormalizer {
       paras :+ Verbatim(line)
     else
       itemMark match {
-        case Some(m)                        => paras :+ Item(SourceEdits.indent(line), m, words.drop(1))
-        case None if codeLike(trimmed)      => paras :+ Verbatim(line)
+        case Some(m)                            => paras :+ Item(SourceEdits.indent(line), m, words.drop(1))
+        case None if codeLike(trimmed)          => paras :+ Verbatim(line)
         case None if noteStart.matches(trimmed) => paras :+ Prose(SourceEdits.indent(line), words)
-        case None                           => continueText(paras, line, words, baseLead)
+        case None                               => continueText(paras, line, words, baseLead)
       }
 
   // A line of text: it continues the paragraph or the list item above it, or else it is code when indented past the
@@ -402,9 +402,9 @@ object CommentNormalizer {
     paras.lastOption match {
       case Some(Prose(pl, ws)) if l == pl  => paras.dropRight(1) :+ Prose(pl, ws ++ words)
       case Some(Item(il, m, ws)) if l > il => paras.dropRight(1) :+ Item(il, m, ws ++ words)
-    case _ if l > baseLead              => paras :+ Verbatim(line)
-    case _                              => paras :+ Prose(l, words)
-  }
+      case _ if l > baseLead               => paras :+ Verbatim(line)
+      case _                               => paras :+ Prose(l, words)
+    }
 
   // The tags that take an argument.
   private val withArgument = Set("@param", "@tparam", "@throws", "@define")
@@ -414,8 +414,8 @@ object CommentNormalizer {
   private def tag(words: Vector[String]): Para =
     words match {
       case name +: argument +: rest if withArgument.contains(name) => Tag(name + " " + argument, rest)
-      case name +: rest                                 => Tag(name, rest)
-      case _                                            => Tag("@", Vector.empty)
+      case name +: rest                                            => Tag(name, rest)
+      case _                                                       => Tag("@", Vector.empty)
     }
 
   private def render(paras: Vector[Para], width: Int, alignTags: Boolean): Vector[String] =
@@ -440,17 +440,17 @@ object CommentNormalizer {
         Vector(h)
       case Tag(h, ws) =>
         val column = math.max(tagWidth, h.length)
-          wrap(ws, h.padTo(column, ' ') + " ", " " * (column + 1), width)
+        wrap(ws, h.padTo(column, ' ') + " ", " " * (column + 1), width)
     }
- 
+
   // The words filling lines of `width`, the first after `first` and the others after `cont`.
   private def wrap(words: Vector[String], first: String, cont: String, width: Int): Vector[String] =
     val lines =
       unbreakableUnits(words).foldLeft(Vector.empty[String]) { (acc, unit) =>
         acc.lastOption match {
-          case None                                        => Vector(first + unit)
+          case None                                                 => Vector(first + unit)
           case Some(last) if last.length + 1 + unit.length <= width => acc.dropRight(1) :+ (last + " " + unit)
-          case Some(_)                                     => acc :+ (cont + unit)
+          case Some(_)                                              => acc :+ (cont + unit)
         }
       }
     if lines.isEmpty then Vector(first.stripTrailing) else lines
@@ -461,7 +461,7 @@ object CommentNormalizer {
     words.foldLeft(Vector.empty[String]) { (acc, w) =>
       acc.lastOption match {
         case Some(prev) if badStart(w) || codeEnds.exists(prev.endsWith) => acc.dropRight(1) :+ (prev + " " + w)
-        case _                                            => acc :+ w
+        case _                                                           => acc :+ w
       }
     }
 

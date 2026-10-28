@@ -18,7 +18,7 @@ class LambdaSpec extends AnyWordSpec with Matchers with FormatMatchers {
     // string literal's continuation lines (shifting `|string` to match the deeper nesting). That is a distinct
     // verbatim-reindent concern tracked separately.
     "keep the param on its own line and re-indent the body" ignore {
-      val q3    = "\"\"\""
+      val q3 = "\"\"\""
       val input =
         List(
           "val tmp: String => String =",

@@ -35,10 +35,10 @@ object CliParser {
   private val changedSince: Opts[Option[String]] =
     Opts
       .option[String](
-          "changed-since",
-          "Only the files changed since a git ref: committed since, uncommitted or untracked " +
-          "(HEAD: only the uncommitted ones).",
-          metavar = "ref",
+        "changed-since",
+        "Only the files changed since a git ref: committed since, uncommitted or untracked " +
+        "(HEAD: only the uncommitted ones).",
+        metavar = "ref",
       )
       .orNone
 

@@ -30,7 +30,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "a single blank line between statements" should {
@@ -57,6 +57,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(input)
     }
+
   }
 
   "multiple blank lines inside a container body" should {
@@ -78,6 +79,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |}""".stripMargin
       input should formatTo(expected)
     }
+
   }
 
   "blank lines in a def body" should {
@@ -129,6 +131,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  a""".stripMargin
       input should formatTo(expected)
     }
+
   }
 
   "blank lines in nested constructs" should {
@@ -197,6 +200,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(input)
     }
+
   }
 
   "blank lines around a comment in a block" should {
@@ -215,6 +219,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(input)
     }
+
   }
 
   "a line or block comment" should {
@@ -230,6 +235,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(input)
     }
+
   }
 
   "a scaladoc comment" should {
@@ -276,10 +282,12 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
     "get a blank line before it and after it on a one-line definition" in {
       val table =
         List(
-          "val a = 1\n/** doc */\ndef f = 2\nval bbb = 3\n"         -> "val a = 1\n\n/** doc */\ndef f = 2\n\nval bbb = 3\n",
-          "def f =\n  val a = 1\n  /** Doc. */\n  val b = 2\n  b\n" -> "def f =\n  val a = 1\n\n  /** Doc. */\n  val b = 2\n\n  b\n",
+          "val a = 1\n/** doc */\ndef f = 2\nval bbb = 3\n" -> "val a = 1\n\n/** doc */\ndef f = 2\n\nval bbb = 3\n",
+          "def f =\n  val a = 1\n  /** Doc. */\n  val b = 2\n  b\n" ->
+          "def f =\n  val a = 1\n\n  /** Doc. */\n  val b = 2\n\n  b\n",
           // The definitions after it align as a group of their own
-          "class Temp {\n  val a = 1\n  /** Doc. */\n  val bb = 2\n  val ccc = 3\n  val d = 4\n}\n" -> "class Temp {\n  val a = 1\n\n  /** Doc. */\n  val bb = 2\n\n  val ccc = 3\n  val d   = 4\n}\n",
+          "class Temp {\n  val a = 1\n  /** Doc. */\n  val bb = 2\n  val ccc = 3\n  val d = 4\n}\n" ->
+          "class Temp {\n  val a = 1\n\n  /** Doc. */\n  val bb = 2\n\n  val ccc = 3\n  val d   = 4\n}\n",
         )
 
       table.foreach((input, expected) => input should formatStablyTo(expected))
@@ -312,6 +320,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(input)
     }
+
   }
 
   "blank lines between the cases of a match" should {
@@ -412,6 +421,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+
   }
 
   "blank lines between imports" should {
@@ -444,6 +454,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
       val input = "import b.C\n\n/* one\n\n    two */\nimport d.E\n"
       input should formatTo(input)
     }
+
   }
 
 }

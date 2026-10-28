@@ -21,7 +21,7 @@ import scala.meta.*
  * @param ctx The shared render context.
  * @param terms The term renderer, for the statements.
  * @param definitions Renders the local definitions among statements at an indent: None for a statement that is not a
- *                   definition or must be kept as written.
+ *                    definition or must be kept as written.
  */
 private[term] final class BlockRenderer(
   ctx: RenderContext,
@@ -35,11 +35,11 @@ private[term] final class BlockRenderer(
   def render(block: Term.Block, indent: Int, forceExplode: Boolean): Doc =
     val comments = StatementComments.of(ctx, block)
     block.stats match {
-      case Nil                                  => ctx.ownSourceDoc(block)
+      case Nil                                     => ctx.ownSourceDoc(block)
       case (stat: Term) :: Nil if comments.isEmpty => terms.render(stat, indent, forceExplode)
-      case (_: Term) :: Nil                  => statements(block, indent, BlankLinePolicy.Never)
-      case _ :: Nil                             => Doc.Standalone(statements(block, indent, BlankLinePolicy.Never))
-      case _                                    => statements(block, indent, BlankLinePolicy.Never)
+      case (_: Term) :: Nil                        => statements(block, indent, BlankLinePolicy.Never)
+      case _ :: Nil                                => Doc.Standalone(statements(block, indent, BlankLinePolicy.Never))
+      case _                                       => statements(block, indent, BlankLinePolicy.Never)
     }
 
   /**

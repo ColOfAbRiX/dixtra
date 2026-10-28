@@ -32,6 +32,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "a trailing multi-statement brace block" should {
+
     val expected =
       """val x =
         |  process {
@@ -56,7 +57,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "a block used as an argument" should {
 
     "keep its braces when the argument list explodes" in {
-      val input    = "val x = foo(someArgument, { val a = 1; a }, anotherArgumentThatIsLong, yetAnotherOne, more)\n"
+      val input = "val x = foo(someArgument, { val a = 1; a }, anotherArgumentThatIsLong, yetAnotherOne, more)\n"
 
       val expected =
         """val x =
@@ -92,7 +93,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    b,
           |  )
           |""".stripMargin
-          
+
       input should formatStablyTo(expected)
     }
 
@@ -112,7 +113,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    b, // last
           |  )
           |""".stripMargin
-          
+
       input should formatTo(expected)
     }
 
@@ -135,22 +136,22 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    temp => IO.blocking(temp).void,
           |  )
           |""".stripMargin
-          
+
       input should formatStablyTo(expected, 80)
     }
 
     "open the next group with ) ( with call-site.groups-separator = next-group" in {
       val config    = Config.withMaxColumn(80)
       val nextGroup = withCallSite(_.copy(groupsSeparator = GroupsSeparator.NextGroup), config)
-      
-      val expected  =
+
+      val expected =
         """val r =
           |  Resource.make(
           |    IO.blocking(Files.createTempFile(target.getParent, "tmp", ".part")),
           |  )(temp => IO.blocking(temp).void,
           |  )
           |""".stripMargin
-          
+
       input should formatStablyTo(expected, nextGroup)
     }
 
@@ -171,14 +172,14 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       val config = Config.withMaxColumn(80)
       val all    = withCallSite(_.copy(groupsBreak = GroupsBreak.BreakAll), config)
-      
+
       chained should formatStablyTo(expected, all)
     }
 
     "leave a trailing brace block to its own rules" in {
       val braced =
         "val r = foldAll(initialValueWithALongName, anotherArgumentWithALongName)(using ordering) { (acc, x) => acc + x }\n"
-      
+
       val expected =
         """val r =
           |  foldAll(initialValueWithALongName, anotherArgumentWithALongName)(using
@@ -201,13 +202,13 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    Edit(brace.end, keyword.start, text.indentOf(brace.start)),
           |  )
           |""".stripMargin
-          
+
       input should formatStablyTo(expected, 80)
     }
 
     "break every group, with break-all" in {
-      val config   = Config.withMaxColumn(80)
-      val all      = withCallSite(_.copy(groupsBreak = GroupsBreak.BreakAll), config)
+      val config = Config.withMaxColumn(80)
+      val all    = withCallSite(_.copy(groupsBreak = GroupsBreak.BreakAll), config)
 
       val expected =
         """val e =
@@ -224,7 +225,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
       val config = Config.withMaxColumn(80)
       val keep   = withCallSite(_.copy(groupsBreak = GroupsBreak.Independent), config)
 
-      val mixed  =
+      val mixed =
         """val r =
           |  Resource.make(
           |    IO.blocking(Files.createTempFile(directory, prefix, ".tmp")),
@@ -243,7 +244,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "break one element per line when it does not fit" in {
-      val input    = "val tuple = (firstElement, secondElement, thirdElement)\n"
+      val input = "val tuple = (firstElement, secondElement, thirdElement)\n"
       val expected =
         """val tuple =
           |  (
@@ -252,7 +253,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    thirdElement,
           |  )
           |""".stripMargin
-          
+
       input should formatTo(expected, 30)
     }
 

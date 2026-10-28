@@ -33,7 +33,7 @@ class SbtFileSpec extends AnyWordSpec with Matchers {
     }
 
     "align the operators of adjacent settings" in {
-      val input    = "name := \"demo\"\nscalaVersion := \"3.8.4\"\nlibraryDependencies += \"org\" %% \"lib\" % \"1.0\"\n"
+      val input = "name := \"demo\"\nscalaVersion := \"3.8.4\"\nlibraryDependencies += \"org\" %% \"lib\" % \"1.0\"\n"
       val expected =
         "name                := \"demo\"\nscalaVersion        := \"3.8.4\"\n" +
         "libraryDependencies += \"org\" %% \"lib\" % \"1.0\"\n"
@@ -61,9 +61,9 @@ class SbtFileSpec extends AnyWordSpec with Matchers {
     // From `dixtra-cli`, where the tests of the command line run
     List(List("..", "build.sbt"), List("..", "project", "plugins.sbt")).foreach { path =>
       s"format ${path.drop(1).mkString("/")} and be stable" in {
-          val once = format(read(path*))
-          (once.isRight, once.flatMap(format)) shouldBe (true, once)
-        }
+        val once = format(read(path*))
+        (once.isRight, once.flatMap(format)) shouldBe (true, once)
+      }
     }
   }
 

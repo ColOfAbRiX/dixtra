@@ -28,18 +28,18 @@ object FormatterOff {
         Right(formatted)
       case written =>
         (written, regions(formatted, dialect)) match {
-         case (Some(before), Some(after)) if before.sizeCompare(after) == 0 =>
-           val (text, last) =
-             before
-               .zip(after)
-               .foldLeft((new StringBuilder, 0)) { case ((acc, from), ((start, end), (fStart, fEnd))) =>
-                 (acc ++= formatted.substring(from, fStart) ++= original.substring(start, end), fEnd)
-               }
-           Right((text ++= formatted.substring(last)).toString)
-         case _ =>
-           Left("the regions between `dixtra: off` and `dixtra: on` could not be kept as written")
-       }
-   }
+          case (Some(before), Some(after)) if before.sizeCompare(after) == 0 =>
+            val (text, last) =
+              before
+                .zip(after)
+                .foldLeft((new StringBuilder, 0)) { case ((acc, from), ((start, end), (fStart, fEnd))) =>
+                  (acc ++= formatted.substring(from, fStart) ++= original.substring(start, end), fEnd)
+                }
+            Right((text ++= formatted.substring(last)).toString)
+          case _ =>
+            Left("the regions between `dixtra: off` and `dixtra: on` could not be kept as written")
+        }
+    }
 
   // The regions of `source`: from the end of each `off` marker to the start of the `on` marker after it, or to the end
   // of the source. None when the source cannot be tokenised.
@@ -56,13 +56,13 @@ object FormatterOff {
           }
       val (closed, open) =
         markers.foldLeft((List.empty[(Int, Int)], Option.empty[Int])) {
-          case ((acc, None), (true, c))       => (acc, Some(c.end))
+          case ((acc, None), (true, c))         => (acc, Some(c.end))
           case ((acc, Some(start)), (false, c)) => (acc :+ (start -> c.start), None)
-          case (state, _)                     => state
+          case (state, _)                       => state
         }
       closed ++ open.map(_ -> source.length)
     }
- 
+
   private def tokens(source: String, dialect: Dialect): Option[Vector[Token]] =
     given Dialect = dialect
     try {

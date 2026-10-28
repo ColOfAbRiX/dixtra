@@ -48,7 +48,7 @@ class NonCorruptionSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "multiline string literals" should {
 
     "keep their content when moved below =" in {
-      val input = "val s = \"\"\"a\n  b\nc\"\"\"\n"
+      val input    = "val s = \"\"\"a\n  b\nc\"\"\"\n"
       val expected = "val s =\n  \"\"\"a\n  b\nc\"\"\"\n"
       input should formatTo(expected)
     }
@@ -97,7 +97,7 @@ class NonCorruptionSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  case 1 => 2
           |}
           |""".stripMargin
-          
+
       val expected =
         """val x =
           |  (if c then a else b) match {
@@ -117,6 +117,7 @@ class NonCorruptionSpec extends AnyWordSpec with Matchers with FormatMatchers {
       val input = "val z = xs.map(x => (x + 1) * 2)\n"
       input should formatTo(input)
     }
+
   }
 
 }

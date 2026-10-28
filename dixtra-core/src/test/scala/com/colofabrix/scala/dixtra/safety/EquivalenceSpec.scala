@@ -15,7 +15,7 @@ class EquivalenceSpec extends AnyWordSpec with Matchers {
     Equivalence.isEquivalentSource(parse(before), before, after)
 
   "output verification" should {
-    
+
     "accept a pure layout change" in {
       equivalent("val x = List(a,\n  b)\n", "val x =\n  List(\n    a,\n    b\n  )\n") shouldBe true
     }
@@ -39,6 +39,7 @@ class EquivalenceSpec extends AnyWordSpec with Matchers {
     "reject a changed string literal" in {
       equivalent("val s = \"\"\"a\nb\"\"\"\n", "val s = \"\"\"a\n  b\"\"\"\n") shouldBe false
     }
+
   }
 
 }

@@ -42,7 +42,7 @@ object Equivalence {
    */
   def isEquivalentSource(original: Source, originalText: String, formatted: String): Boolean =
     isEquivalentSource(original, originalText, formatted, SourceDialect.scala)
- 
+
   /**
    * True when the formatted text of a whole compilation unit, parsed with `dialect`, is equivalent to the parsed
    * original: same structure and same comments. An unchanged text is not parsed again.
@@ -53,17 +53,17 @@ object Equivalence {
       equivalent(original, after) &&
       comments(originalText) == comments(formatted)
     }
- 
+
   private def parse[T <: Tree](text: String)(using parser: scala.meta.parsers.Parse[T]): Option[T] =
     parse[T](text, SourceDialect.scala)
- 
+
   private def parse[T <: Tree](text: String, dialect: Dialect)(using parser: scala.meta.parsers.Parse[T]): Option[T] =
     try {
       parser(Input.String(text), dialect).toOption
     } catch {
       case NonFatal(_) => None
     }
- 
+
   // Two trees with the same structure once the intentional rewrites are normalised away: `end` markers are dropped (the
   // brace style adds and removes them), and a single-expression block `{ x }` is equivalent to `x`. Leaves compare
   // their Scalameta structure; inner nodes their kind and their children. The trees are walked together, stopping at

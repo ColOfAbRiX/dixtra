@@ -103,7 +103,7 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "a body that does not fit after =" should {
-    val input    = "val someRatherLongValueName = firstCollection.map(transform).filter(keepThem).sum\n"
+    val input = "val someRatherLongValueName = firstCollection.map(transform).filter(keepThem).sum\n"
     val expected =
       """val someRatherLongValueName =
         |  firstCollection

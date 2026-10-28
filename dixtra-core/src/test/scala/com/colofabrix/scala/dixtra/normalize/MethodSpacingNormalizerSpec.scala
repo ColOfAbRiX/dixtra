@@ -27,7 +27,7 @@ class MethodSpacingNormalizerSpec extends AnyWordSpec with Matchers {
       val input = s"val s = ${q}x\ndef y$q\n"
       normalize(input) shouldBe input
     }
-    
+
   }
 
   "an annotated def" should {
@@ -41,7 +41,7 @@ class MethodSpacingNormalizerSpec extends AnyWordSpec with Matchers {
       val input = "val x = 1\n@inline\ndef f = 1"
       normalize(input) shouldBe input
     }
-    
+
   }
 
   "a def with a single-line scaladoc" should {
@@ -55,7 +55,7 @@ class MethodSpacingNormalizerSpec extends AnyWordSpec with Matchers {
       val input = "val x = 1\n/** doc */\ndef f = 1"
       normalize(input) shouldBe "val x = 1\n\n/** doc */\ndef f = 1"
     }
-    
+
   }
 
   "a def with a multi-line scaladoc and annotation" should {
@@ -65,7 +65,7 @@ class MethodSpacingNormalizerSpec extends AnyWordSpec with Matchers {
       val expected = "val x = 1\n\n/**\n * doc\n */\n@inline\ndef f = 1"
       normalize(input) shouldBe expected
     }
-    
+
   }
 
   "a def preceded by a line comment" should {
@@ -74,7 +74,7 @@ class MethodSpacingNormalizerSpec extends AnyWordSpec with Matchers {
       val input = "def a = 1\n// about b\ndef b = 2"
       normalize(input) shouldBe input
     }
-    
+
   }
 
   "a def directly after a container opener" should {
@@ -113,7 +113,7 @@ class MethodSpacingNormalizerSpec extends AnyWordSpec with Matchers {
       val input = "val f = (x: Int) =>\n  def g = x\n  g"
       normalize(input) shouldBe input
     }
-    
+
   }
 
   "defs with qualified or extra modifiers" should {
@@ -123,7 +123,7 @@ class MethodSpacingNormalizerSpec extends AnyWordSpec with Matchers {
         normalize(s"val x = 1\n$modifiers f =\n  1") shouldBe s"val x = 1\n\n$modifiers f =\n  1"
       }
     }
-    
+
   }
 
   "one-line declarations and vars" should {
@@ -142,7 +142,7 @@ class MethodSpacingNormalizerSpec extends AnyWordSpec with Matchers {
       val input = "def f(x: Int): Int\ndef g(\n  x: Int\n): Int"
       normalize(input) shouldBe "def f(x: Int): Int\n\ndef g(\n  x: Int\n): Int"
     }
-    
+
   }
 
   "a def annotated on the same line" should {
@@ -151,7 +151,7 @@ class MethodSpacingNormalizerSpec extends AnyWordSpec with Matchers {
       val input = "@inline def f = 1\n@tailrec private def g = 2"
       normalize(input) shouldBe "@inline def f = 1\n\n@tailrec private def g = 2"
     }
-    
+
   }
 
   "untokenisable text" should {
@@ -160,7 +160,7 @@ class MethodSpacingNormalizerSpec extends AnyWordSpec with Matchers {
       val input = s"val s = ${q}unterminated\ndef f = 1"
       normalize(input) shouldBe input
     }
-    
+
   }
 
 }

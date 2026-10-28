@@ -1,4 +1,4 @@
-//addSbtPlugin("com.colofabrix.scala" % "sbt-dixtra"      % "1.0.0-RC1")
+addSbtPlugin("com.colofabrix.scala" % "sbt-dixtra"      % "1.0.0-RC1")
 addSbtPlugin("ch.epfl.scala"        % "sbt-scalafix"    % "0.14.9")
 addSbtPlugin("com.eed3si9n"         % "sbt-buildinfo"   % "0.13.2")
 addSbtPlugin("org.typelevel"        % "sbt-tpolecat"    % "0.5.4")

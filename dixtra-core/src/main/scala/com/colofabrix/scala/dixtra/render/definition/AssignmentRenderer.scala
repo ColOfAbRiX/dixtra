@@ -12,7 +12,7 @@ import scala.meta.*
  * Renders definitions with a header kept as written followed by `=` and a body: `val` / `lazy val`, `var`,
  * parameterless `def` and `given` aliases.
  *
- * The body follows the rules of [[BodyLayout]], placed by the `body` setting of its keyword (`body.val`,
+ * The body follows the rules of [[com.colofabrix.scala.dixtra.render.term.BodyLayout]], placed by the `body` setting of its keyword (`body.val`,
  * `body.lazy-val`, `body.var`, `body.def`, `body.given-alias`): it drops below the `=` when it does not fit or renders
  * multiline, and a newline after `=` is an author signal for it. Only a newline *after* the `=` counts: a break earlier
  * in the header (e.g. after an annotation) is not a signal. The header can be padded so that the `=` lines up with the
@@ -31,11 +31,11 @@ final class AssignmentRenderer(ctx: RenderContext, terms: TermRenderer) {
     ctx
       .equalsBefore(node.pos.start, ctx.span(body)._1)
       .map { eq =>
-        val name = ctx.trimmedSourceDoc(node.pos.start, eq.start)
-        val header = name ++ Alignment.padding(padTo, Render.flatWidth(name)) ++ Doc.text(" =")
+        val name      = ctx.trimmedSourceDoc(node.pos.start, eq.start)
+        val header    = name ++ Alignment.padding(padTo, Render.flatWidth(name)) ++ Doc.text(" =")
         val headerEnd = ctx.columnAfterSlice(header, node.pos.start, eq.end, baseIndent)
-        val rhs = BodyLayout.of(ctx, terms, eq.end, body, baseIndent + 2, Constructs.of(node))
-        
+        val rhs       = BodyLayout.of(ctx, terms, eq.end, body, baseIndent + 2, Constructs.of(node))
+
         if below then rhs.belowSeparator(header)
         else rhs.placed(header, ctx.fits(_, headerEnd + 1), policy(node))
       }
@@ -45,7 +45,8 @@ final class AssignmentRenderer(ctx: RenderContext, terms: TermRenderer) {
     node match {
       case v: Defn.Val if v.mods.exists(_.is[Mod.Lazy]) =>
         ctx
-          .config          .body
+          .config
+          .body
           .lazyVal
       case _: Defn.Var =>
         ctx

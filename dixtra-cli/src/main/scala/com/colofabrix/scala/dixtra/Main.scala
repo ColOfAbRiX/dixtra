@@ -20,7 +20,7 @@ object Main extends IODeclineApp[CliOptions] {
     "dixtra"
 
   override def header: String =
-    "Format Scala 3 sources with the All-or-Nothing style."
+    "Opinionated visual features formatter for Scala 3."
 
   override def version: String =
     BuildInfo.version

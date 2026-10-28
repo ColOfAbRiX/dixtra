@@ -21,7 +21,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
     ConfigCli.load(settings, Paths.get("").toAbsolutePath).map(_.warnings)
 
   "the defaults" should {
-    
+
     "be the hardcoded default configuration" in {
       ConfigCli.default shouldBe Config.default
     }
@@ -29,7 +29,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
   }
 
   "an override" should {
-    
+
     "change only the keys it sets" in {
       ConfigCli.fromString("max-column = 80") shouldBe Validated.valid(Config.withMaxColumn(80))
     }
@@ -123,10 +123,10 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
     }
 
     "set the excluded paths, keeping the included ones" in {
-      val output = 
+      val output =
         ConfigCli
           .fromString("""paths.excluded = ["**/gen/**"]""")
-          .map(p => (p.paths.excluded, p.paths.included)) 
+          .map(p => (p.paths.excluded, p.paths.included))
 
       output shouldBe Validated.valid((List("**/gen/**"), List("**")))
     }
@@ -207,11 +207,11 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
         ConfigCli.fromString(
           "housekeeping { trim-trailing-whitespace = false, enforce-eof = false, line-ending = crlf }",
         )
-      
-      val expected = 
+
+      val expected =
         Validated.valid(
-        HousekeepingConfig(trimTrailingWhitespace = false, enforceEof = false, lineEnding = LineEnding.Crlf),
-      )
+          HousekeepingConfig(trimTrailingWhitespace = false, enforceEof = false, lineEnding = LineEnding.Crlf),
+        )
 
       config.map(_.housekeeping) shouldBe expected
     }
@@ -235,7 +235,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
   }
 
   "an invalid override" should {
-    
+
     "be rejected with an error that names the problem" in {
       val table =
         List(
@@ -255,7 +255,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
           "housekeeping.line-ending = macos"                  -> "macos",
         )
 
-      table.foreach { (setting, problem) => 
+      table.foreach { (setting, problem) =>
         errors(ConfigCli.fromString(setting)) should include(problem)
       }
     }
@@ -271,7 +271,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
   }
 
   "an unknown key" should {
-    
+
     "be ignored with a warning naming it and its line, the other settings read" in {
       val table =
         List(
@@ -284,7 +284,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
           "if.brace = keep"                      -> "if.brace (line 1)",
           "\nfoo { bar = 1, baz = 2 }"           -> "foo (line 2)",
         )
-        
+
       table.foreach { (setting, key) =>
         (warnings(setting), ConfigCli.fromString(setting)) shouldBe
         (Validated.valid(List(s"unknown setting $key, ignored")), Validated.valid(ConfigCli.default))
@@ -306,7 +306,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
   }
 
   "the configuration of a path" should {
-    
+
     "be the defaults when no .dixtra.conf is above it" in {
       withTempDir { dir =>
         val source = write(dir.resolve("A.scala"), "object A\n")
@@ -324,6 +324,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
     }
 
     "report an invalid file with its path" in {
+
       withTempDir { dir =>
         val conf = write(dir.resolve(ConfigCli.fileName), "max-column = wide")
         errors(ConfigCli.discover(dir).map(_.base)) should include(conf.toString)

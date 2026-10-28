@@ -9,7 +9,7 @@ import scala.meta.*
 import scala.meta.tokens.Token
 
 /**
- * Renders terms (expressions) into a fully-decided [[Doc]]: the routing point that dispatches each term to the renderer
+ * Renders terms (expressions) into a fully-decided [[com.colofabrix.scala.dixtra.doc.Doc]]: the routing point that dispatches each term to the renderer
  * of its construct.
  *
  * Each supported term applies the All-or-Nothing decision: a construct stays inline unless a trigger fires
@@ -25,7 +25,7 @@ import scala.meta.tokens.Token
  *
  * @param ctx The shared render context.
  * @param definitions Renders the definitions among the statements of a block (local `val`s and `def`s) at an indent:
- *                  None for a statement that is not a definition or must be kept as written.
+ *                    None for a statement that is not a definition or must be kept as written.
  */
 final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => List[Option[Doc]]) {
 

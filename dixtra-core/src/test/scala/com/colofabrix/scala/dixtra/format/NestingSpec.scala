@@ -335,7 +335,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      .sum,
           |  )
           |""".stripMargin
-          
+
       input should formatTo(expected, 30)
     }
   }

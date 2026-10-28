@@ -34,13 +34,13 @@ object ConfigCli {
   /**
    * The version of the configuration schema this dixtra reads.
    */
-  val configVersion: String = 
+  val configVersion: String =
     "1.0.0"
 
-  private val versionKey = 
+  private val versionKey =
     "config-version"
 
-  private val overridesKey = 
+  private val overridesKey =
     "path-overrides"
 
   /**
@@ -68,7 +68,7 @@ object ConfigCli {
    * fails the paths that use it, as an invalid `.dixtra.conf` does, rather than the parsing of the command line.
    */
   lazy val declineOpts: Opts[Option[ValidatedNel[String, LoadedConfig]]] =
-     (configString orElse configPath).orNone
+    (configString orElse configPath).orNone
 
   private lazy val configPath: Opts[ValidatedNel[String, LoadedConfig]] =
     Opts
@@ -153,11 +153,11 @@ object ConfigCli {
           val loaded =
             for
               (written, entries) <- splitOverrides(parsed)
-              resolved          <- ConfigAliases.resolve(written, references)
+              resolved           <- ConfigAliases.resolve(written, references)
               (settings, unknown) = knownOnly(resolved, references, "")
-              merged            <- supported(settings.withFallback(references).resolve())
-              base              <- read(merged)
-              overrides         <- entries.traverse((glob, written) => pathOverride(glob, written, settings))
+              merged             <- supported(settings.withFallback(references).resolve())
+              base               <- read(merged)
+              overrides          <- entries.traverse((glob, written) => pathOverride(glob, written, settings))
             yield
               LoadedConfig(
                 base,
@@ -168,7 +168,7 @@ object ConfigCli {
               )
 
           Validated.fromEither(loaded).toValidatedNel
-        }
+        },
       )
 
    /**
@@ -208,7 +208,7 @@ object ConfigCli {
             .sortBy(_._1)
             .traverse {
               case (glob, settings: ConfigObject) => Right(glob -> settings.toConfig)
-              case (glob, _)                   => Left(s"$overridesKey.\"$glob\" must be a section of settings")
+              case (glob, _)                      => Left(s"$overridesKey.\"$glob\" must be a section of settings")
             }
             .map(parsed.withoutPath(overridesKey) -> _)
         case _ =>
@@ -243,11 +243,11 @@ object ConfigCli {
             .splitPath(alias.name)
             .asScala
             .toList
- 
+
         segments.indices.drop(1).map(i => ConfigUtil.joinPath(segments.take(i).asJava))
       }
       .toSet
- 
+
   // `settings` without the keys `known` doesn't have, and a warning for each of them, its name after `prefix`.
   private def knownOnly(settings: HoconConfig, known: HoconConfig, prefix: String): (HoconConfig, List[String]) =
     val unknown =
@@ -306,11 +306,11 @@ object ConfigCli {
       .unapplySeq(version)
       .flatMap {
         case List(major, minor, patch) =>
-          for 
+          for
             m <- major.toIntOption
             n <- minor.toIntOption
             p <- patch.toIntOption
-          yield 
+          yield
             (m, n, p)
         case _ =>
           None
@@ -426,10 +426,10 @@ object ConfigCli {
 
   given ConfigReader[BlankLinePolicy] =
     keyed(BlankLinePolicy.values.toList)(_.key)
- 
+
   given ConfigReader[BracesStyle] =
     keyed(BracesStyle.values.toList)(_.key)
- 
+
   given ConfigReader[BraceConfig] =
     ConfigReader.fromCursor { cursor =>
       for
@@ -439,7 +439,7 @@ object ConfigCli {
       yield
         BraceConfig(style, policies)
     }
- 
+
   given bracePolicies: ConfigReader[Map[Construct, BracePolicy]] =
     ConfigReader[Map[String, BracePolicy]].emap { settings =>
       settings
@@ -456,9 +456,9 @@ object ConfigCli {
                   Right(policies + (construct -> policy))
               }
             }
-      }
+        }
     }
- 
+
   given ProductHint[BlankLinesConfig] =
     ProductHint[BlankLinesConfig](allowUnknownKeys = false)
 

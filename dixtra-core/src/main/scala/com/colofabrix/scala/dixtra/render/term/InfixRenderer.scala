@@ -59,8 +59,8 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
   // An application with several arguments, keeping the author's line break around the operator like any operation, its
   // arguments breaking as those of a call.
   private def severalArguments(infix: Term.ApplyInfix, indent: Int): Doc =
-    val lhs     = applications.operand(infix.lhs, indent)
-    val op      = ctx.ownSourceDoc(infix.op)
+    val lhs    = applications.operand(infix.lhs, indent)
+    val op     = ctx.ownSourceDoc(infix.op)
     val before = ctx.slice(ctx.span(infix.lhs)._2, infix.op.pos.start).contains('\n')
     val after  = ctx.slice(infix.op.pos.end, infix.argClause.pos.start).contains('\n')
     if before then
@@ -71,7 +71,7 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
     else
       val lead = lhs ++ Doc.text(" ") ++ op ++ Doc.text(" ")
       lead ++ applications.arguments(infix.argClause, indent, ctx.endColumn(lead, indent))
- 
+
   // An operation without an operand over several lines before an operator.
   private def layout(infix: Term.ApplyInfix, arg: Term, indent: Int): Doc =
     val (breakBefore, breakAfter) = authorBreaks(infix, arg)
@@ -89,7 +89,7 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
       if !ctx.overflows(inline, indent) then inline
       else if isAssignment(infix.op.value) then assigned
       else Doc.intercalate(Doc.text(" ") ++ op ++ Doc.Line, run(infix, arg, indent))
- 
+
   // The operation broken after every operator, when an operand before an operator is over several lines; None
   // otherwise. A chain operand that does not fit with what follows it on its line (` >>`, ` >> { x =>`) breaks, and the
   // operands after a broken chain are indented under its selections.
@@ -176,7 +176,7 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
         }
       case _ =>
         (Operand(term, open, close), Nil)
-   }
+    }
 
   /**
    * The width of the left operand of `a op b` when it renders on one line.

@@ -102,7 +102,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "the parameters of a case class without a body" should {
     "explode when they over-flow" in {
-      val input    = "final case class Person(firstName: String, lastName: String, age: Int)\n"
+      val input = "final case class Person(firstName: String, lastName: String, age: Int)\n"
       val expected =
         """final case class Person(
           |  firstName: String,

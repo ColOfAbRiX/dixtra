@@ -45,10 +45,10 @@ private[render] object ClauseGroups {
         .foldLeft((lead, Option.empty[Boolean], 0)) { case ((acc, open, width), (group, next)) =>
           val closes = closesOnLast(group, next, separator)
           (group.elements, open) match {
-            case (Nil, None)       => (acc ++ Doc.text("()"), None, width + 2)
-            case (Nil, Some(_))    => (acc ++ Doc.Line ++ Doc.text(")()"), None, baseIndent + 3)
-            case (_, None)         => (acc ++ Doc.text("(") ++ openContent(group, closes), Some(closes), 0)
-            case (_, Some(true))   => (acc ++ Doc.text(")(") ++ openContent(group, closes), Some(closes), 0)
+            case (Nil, None)      => (acc ++ Doc.text("()"), None, width + 2)
+            case (Nil, Some(_))   => (acc ++ Doc.Line ++ Doc.text(")()"), None, baseIndent + 3)
+            case (_, None)        => (acc ++ Doc.text("(") ++ openContent(group, closes), Some(closes), 0)
+            case (_, Some(true))  => (acc ++ Doc.text(")(") ++ openContent(group, closes), Some(closes), 0)
             case (_, Some(false)) => (acc ++ Doc.Line ++ Doc.text(")(") ++ gluedContent(group, closes), Some(closes), 0)
           }
         }

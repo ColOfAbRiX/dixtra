@@ -139,7 +139,7 @@ object MethodSpacingNormalizer {
 
   // True when the definition starting on line `i` has a scaladoc among its decorations.
   private def documentedAt(layout: LineLayout, i: Int): Boolean =
-   i >= 0 && kindOf(layout, i).isDefined && documented(layout, groupStart(layout, i), i)
+    i >= 0 && kindOf(layout, i).isDefined && documented(layout, groupStart(layout, i), i)
 
   // True when a scaladoc starts among the decoration lines `[start, i)`, one that `wanted` accepts given its first
   // line.
@@ -197,11 +197,11 @@ object MethodSpacingNormalizer {
         .map { m =>
           m.group(2) match {
             case "val" if m.group(1).contains("lazy") => DefinitionKind.LazyVal
-            case "val"                        => DefinitionKind.Val
-            case "var"                        => DefinitionKind.Var
-            case "def"                        => DefinitionKind.Def
-            case "given"                      => DefinitionKind.GivenAlias
-            case _                            => DefinitionKind.Type
+            case "val"                                => DefinitionKind.Val
+            case "var"                                => DefinitionKind.Var
+            case "def"                                => DefinitionKind.Def
+            case "given"                              => DefinitionKind.GivenAlias
+            case _                                    => DefinitionKind.Type
           }
         }
 

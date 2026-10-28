@@ -317,12 +317,12 @@ enum InlineChainPolicy(val key: String) {
  * @param assignment The value after the `=` of an assignment (`x = 1`).
  * @param namedArgument The value after the `=` of a named argument.
  * @param lambdaArgument The body after the `=>` of a lambda passed in braces or after a colon (`f { x => ... }`, `f:
- *                x => ...`).
+ *                       x => ...`).
  * @param lambdaBody The body after the `=>` of any other lambda.
  * @param blockArgument The statements of a block given as an argument, after its `{` or its colon (`f { ... }`, `f:
- *               ...`).
+ *                      ...`).
  * @param testBlock The statements of a test block, after its `{` or its colon (`"a test" in { ... }`, `test("a test"):
- *            ...`).
+ *                  ...`).
  * @param ifBody The bodies after the `then` and `else` of an if/else, an `else if` chain being one group.
  * @param caseBody The bodies after the `=>` of the cases of a match, a `{ case ... }` or a `catch`, one group.
  * @param tryBody The bodies after the `try` and the `finally` of a try.
@@ -637,8 +637,8 @@ enum TrailingCommas(val key: String) {
 }
 
 /**
- * What happens to a line of code that goes past the maximum width only because of the comment at its end.
- * What happens to a line of code that goes past the maximum width only because of the comment at its end.
+ * What happens to a line of code that goes past the maximum width only because of the comment at its end. What happens
+ * to a line of code that goes past the maximum width only because of the comment at its end.
  */
 enum TrailingOverflow(val key: String) {
 
@@ -685,7 +685,7 @@ enum LineEnding(val key: String) {
  * The housekeeping of a whole file.
  *
  * @param trimTrailingWhitespace Whether the spaces and tabs at the end of each line are removed; those inside a string
- *                              literal always stay.
+ *                               literal always stay.
  * @param enforceEof Whether the file ends with exactly one line break.
  * @param lineEnding The line break written at the end of each line.
  */
@@ -695,16 +695,16 @@ final case class HousekeepingConfig(trimTrailingWhitespace: Boolean, enforceEof:
  * What aligns with what.
  *
  * @param assignmentGroups Adjacent one-line definitions align their `=` when their keywords are in the same group; a
- *               keyword in no group never aligns. A keyword is in at most one group.
+ *                         keyword in no group never aligns. A keyword is in at most one group.
  * @param operators The operators (`=`, `+=`, `:=`, `%`, ...) that adjacent one-line statements, and adjacent one-line
- *            elements of a list laid out one per line, align column by column.
+ *                  elements of a list laid out one per line, align column by column.
  * @param arrows Which arrows align.
  * @param extendsClauses Whether adjacent one-line definitions align their `extends` keyword.
  * @param namedArguments Whether the `=` of adjacent one-line named arguments of a call laid out one per line align.
  * @param trailingComments Whether the comments at the end of consecutive lines of code start on one column.
  * @param scaladoc What aligns in scaladoc comments.
  * @param acrossComments Whether a comment on its own line between two items (definitions, statements, cases, list
- *             elements, enumerators) keeps them in one alignment group.
+ *                       elements, enumerators) keeps them in one alignment group.
  */
 final case class AlignmentConfig(
   assignmentGroups: List[Set[DefinitionKind]],

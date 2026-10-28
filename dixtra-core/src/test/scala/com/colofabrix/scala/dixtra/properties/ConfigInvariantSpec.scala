@@ -94,10 +94,7 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
       ),
       Setting(
         "between-alignment-groups",
-        BlankLinePolicy
-          .values
-          .toVector
-          .map(p => (c: Config) => withBlankLines(_.copy(betweenAlignmentGroups = p), c)),
+        BlankLinePolicy.values.toVector.map(p => (c: Config) => withBlankLines(_.copy(betweenAlignmentGroups = p), c)),
       ),
       Setting("arrows.cases", Vector(true, false).map(b => (c: Config) => arrows(c)(_.copy(cases = b)))),
       Setting("arrows.pairs", Vector(true, false).map(b => (c: Config) => arrows(c)(_.copy(pairs = b)))),
@@ -127,7 +124,9 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
       ),
       Setting(
         "trim-trailing-whitespace",
-        Vector(true, false).map(b => (c: Config) => c.copy(housekeeping = c.housekeeping.copy(trimTrailingWhitespace = b))),
+        Vector(true, false).map(
+          b => (c: Config) => c.copy(housekeeping = c.housekeeping.copy(trimTrailingWhitespace = b)),
+        ),
       ),
       Setting(
         "enforce-eof",
@@ -200,9 +199,10 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
           BlankLinePolicy
             .values
             .toVector
-            .map(policy =>
-              (c: Config) =>
-                c.copy(blankLines = c.blankLines.copy(bodyEdges = c.blankLines.bodyEdges + (construct -> policy))),
+            .map(
+              policy =>
+                (c: Config) =>
+                  c.copy(blankLines = c.blankLines.copy(bodyEdges = c.blankLines.bodyEdges + (construct -> policy))),
             ),
         )
       }
@@ -243,19 +243,21 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
   private val rows: List[Vector[Int]] =
     val random = new Random(20261005L)
 
-    val pairs  =
+    val pairs =
       for
         i <- settings.indices
         j <- settings.indices if i < j
         a <- settings(i).values.indices
         b <- settings(j).values.indices
-      yield (i, a, j, b)
+      yield
+        (i, a, j, b)
 
     def covered(row: Vector[Int]): Set[(Int, Int, Int, Int)] =
       (for
         i <- settings.indices
         j <- settings.indices if i < j
-      yield (i, row(i), j, row(j))).toSet
+      yield
+        (i, row(i), j, row(j))).toSet
 
     @scala.annotation.tailrec
     def loop(uncovered: Set[(Int, Int, Int, Int)], acc: List[Vector[Int]]): List[Vector[Int]] =
@@ -264,7 +266,7 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
       else
         // Seed each candidate with one uncovered pair so every row makes progress
         val (i, a, j, b) = uncovered.head
-        val candidates   =
+        val candidates =
           List.fill(30)(settings.map(s => random.nextInt(s.values.length)).updated(i, a).updated(j, b))
         val best = candidates.maxBy(row => covered(row).count(uncovered.contains))
         loop(uncovered -- covered(best), best :: acc)
@@ -297,29 +299,30 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
       .foreach {
         case (row, n) =>
           s"preserve structure and be idempotent with configuration ${n.toString}" in {
-              val config   = configOf(row)
-              val failures =
-                corpus
-                  .zipWithIndex
-                  .flatMap { (src, i) =>
-                    Dixtra.format(src, config) match {
-                      case Left(error) =>
-                        List(s"snippet ${i.toString} fails: ${error.getMessage}")
-                      case Right(once) if !equivalent(src, once) =>
-                        List(s"snippet ${i.toString} changes structure:\n$once")
-                      case Right(once) if Dixtra.format(once, config) != Right(once) =>
-                        List(
-                          s"snippet ${i.toString} is not idempotent:\n$once\n---\n${Dixtra.format(once, config).toString}",
-                        )
-                      case Right(_) =>
-                        Nil
-                    }
+            val config = configOf(row)
+            val failures =
+              corpus
+                .zipWithIndex
+                .flatMap { (src, i) =>
+                  Dixtra.format(src, config) match {
+                    case Left(error) =>
+                      List(s"snippet ${i.toString} fails: ${error.getMessage}")
+                    case Right(once) if !equivalent(src, once) =>
+                      List(s"snippet ${i.toString} changes structure:\n$once")
+                    case Right(once) if Dixtra.format(once, config) != Right(once) =>
+                      List(
+                        s"snippet ${i.toString} is not idempotent:\n$once\n---\n${Dixtra.format(once, config).toString}",
+                      )
+                    case Right(_) =>
+                      Nil
                   }
-              withClue(s"${describe(row)}\n") {
-                failures shouldBe empty
-              }
+                }
+            withClue(s"${describe(row)}\n") {
+              failures shouldBe empty
             }
+          }
       }
+
   }
 
   // Formatting with `there`, then `back`, then `there` again gives the first result
@@ -328,7 +331,7 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
     first.flatMap(Dixtra.format(_, back)).flatMap(Dixtra.format(_, there)) == first
 
   "the brace styles" should {
-    
+
     "converge from braces to braceless and back" in {
       val braces    = allBraces(BracePolicy.ForceBraces)
       val braceless = allBraces(BracePolicy.ForceIndent)
@@ -342,6 +345,7 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
       val diverging = corpus.filterNot(converges(_, ended, braces))
       diverging shouldBe empty
     }
+
   }
 
 }

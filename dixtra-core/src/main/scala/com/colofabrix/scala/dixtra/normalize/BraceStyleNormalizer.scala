@@ -105,12 +105,12 @@ object BraceStyleNormalizer {
       // A construct without braces can still end with a `}`, as the enumerators of a braceless `for` ending with a
       // braced `match`: the keyword after it is not a continuation of a brace
       for
-        _      <- text.at(closed.pos.start).filter(_.is[Token.LeftBrace])
+        _     <- text.at(closed.pos.start).filter(_.is[Token.LeftBrace])
         brace <- text.at(close).filter(_.is[Token.RightBrace])
-        kw     <- text.next(brace.start).filter(isContinuation)
+        kw    <- text.next(brace.start).filter(isContinuation)
         edit  <- continuation(text, brace, kw, style, maxColumn)
       yield edit
-  }
+    }
 
   private def continuation(text: Text, brace: Token, kw: Token, style: BracesStyle, maxColumn: Int): Option[Edit] =
     val gap = text.source.slice(brace.end, kw.start)
@@ -153,9 +153,9 @@ object BraceStyleNormalizer {
   private def isBodyBrace(text: Text, body: Tree): Boolean =
     val braced =
       text.source.lift(body.pos.start).contains('{') && text.source.lift(body.pos.end - 1).contains('}')
-    val parent = 
+    val parent =
       body.parent
-    val inArgumentOrString = 
+    val inArgumentOrString =
       parent.exists(p => p.is[Term.ArgClause] || p.is[Term.Interpolate])
     val asStatement =
       parent.exists {
@@ -179,10 +179,10 @@ object BraceStyleNormalizer {
   // 1TBS and Stroustrup: a `{` starting its line joins the line before it.
   private def joinedOpening(text: Text, prev: Token, open: Token, maxColumn: Int): Option[Edit] =
     val width = (prev.end - text.lineStart(prev.end)) + 1 + (text.lineEnd(open.start) - open.start)
-       val gap    = text.source.slice(prev.end, open.start)
-     Option.when(text.startsLine(open.start) && gap.contains('\n') && gap.isBlank && width <= maxColumn)(
-       Edit(prev.end, open.start, " "),
-     )
+    val gap   = text.source.slice(prev.end, open.start)
+    Option.when(text.startsLine(open.start) && gap.contains('\n') && gap.isBlank && width <= maxColumn)(
+      Edit(prev.end, open.start, " "),
+    )
 
    // `tree` and all the trees below it.
    private def descendants(tree: Tree): List[Tree] =

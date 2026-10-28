@@ -7,6 +7,7 @@ import scala.meta.*
 import scala.meta.parsers.Parsed
 import scala.util.control.NonFatal
 
+// format: off
 //    :::-----------------------------------------------------:::::::::::::::::::::::::::::::.:.....................    
 //  /--------------------------------------------------------------:-::::::::::::::::::::::::::.......................  
 // -------------------------------------------------------..----------:-::::::::::::::::::::::::::.:................... 
@@ -83,6 +84,7 @@ import scala.util.control.NonFatal
 // %%#@@@@@@@@#%@@@=%#%%%%#@@#*+#+****#\`..       .::      ......::::.:.:::::::.............. .::--===++=++===**+**+##` 
 //  \=%@@@@@#@@@@@@@@@@@@%%%%@%####*++=*`...      .::.     ......::::::::..:::.............:.. ..-=-=+=++-=++++**+**+./ 
 //   %%%@@@@@@@@@@@@@@@+@%%###%%#*#+****-.       ...::      ......:::..:..:.::......   ......:-----=====+=-++**++++++   
+// format: on
 
 /**
  * Public entry point for the dixtra All-or-Nothing (AON) Scala 3 formatter.
@@ -97,7 +99,7 @@ import scala.util.control.NonFatal
  * are normalised to `\n` for processing, and on output they are those of `housekeeping.line-ending` (see
  * [[normalize.Housekeeping]]). The regions between a `// dixtra: off` and a `// dixtra: on` comment stay as written
  * (see [[normalize.FormatterOff]]).
- */  
+ */
 object Dixtra {
 
   /**
@@ -138,9 +140,9 @@ object Dixtra {
       cleanTree <- if cleaned == lf then Right(tree) else parse(cleaned, dialect)
       formatted <- render(cleaned, cleanTree, config, dialect)
       restored  <- FormatterOff
-                    .restore(lf, Housekeeping(formatted, config.housekeeping), dialect)
-                    .left
-                    .map(UnsafeOutputError(_))
+                     .restore(lf, Housekeeping(formatted, config.housekeeping), dialect)
+                     .left
+                     .map(UnsafeOutputError(_))
       verified  <- verify(lf, tree, restored, dialect)
     yield
       if eol == "\n" then verified else verified.replace("\n", eol)

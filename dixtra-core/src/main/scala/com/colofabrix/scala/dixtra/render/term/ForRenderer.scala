@@ -165,7 +165,7 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
   private def isGuard(e: Enumerator): Boolean =
     e match {
       case _: Enumerator.Guard => true
-      case _                 => false
+      case _                   => false
     }
 
   private def sameLine(prev: Enumerator, next: Enumerator): Boolean =
@@ -198,7 +198,7 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
       case _ =>
         ctx.sourceDoc(e)
     }
- 
+
   // The one-line pattern and the `<-` or `=` of a generator or value definition, when only whitespace separates them
   // from the expression.
   private def header(e: Enumerator): Option[EnumeratorHeader] =
@@ -212,13 +212,13 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
         .map(op => EnumeratorHeader(ctx.slice(e.pos.start, op.start).stripTrailing, op.text))
         .filterNot(_.pattern.contains('\n'))
     }
- 
+
   private def generated(e: Enumerator): Option[Term] =
     e match {
       case g: Enumerator.Generator     => Some(g.rhs)
       case g: Enumerator.CaseGenerator => Some(g.rhs)
-      case v: Enumerator.Val            => Some(v.rhs)
-      case _                          => None
+      case v: Enumerator.Val           => Some(v.rhs)
+      case _                           => None
     }
 
   private def expression(e: Enumerator): Option[Term] =

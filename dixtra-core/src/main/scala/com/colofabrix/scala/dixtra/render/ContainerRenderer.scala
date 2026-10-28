@@ -11,7 +11,7 @@ import scala.meta.tokens.Token
 /**
  * Renders containers (`object` / `class` / `trait`).
  *
- * The constructor parameters of a class or trait follow the signature rules of a `def` (see [[SignatureRenderer]]),
+ * The constructor parameters of a class or trait follow the signature rules of a `def` (see [[com.colofabrix.scala.dixtra.render.definition.SignatureRenderer]]),
  * with the rest of the header line (e.g. ` extends A {`) counting towards the width; the rest of the header, the braces
  * and the surrounding whitespace are preserved, and each member statement is formatted in place at its own source
  * column. A container whose new header does not verify keeps its original header.
@@ -22,7 +22,7 @@ import scala.meta.tokens.Token
  * @param ctx The shared render context.
  * @param signatures The signature renderer, for constructor parameters.
  * @param renderRegion Renders the members found in a region of the source (supplied by the router to break the
- *                   recursion cycle).
+ *                     recursion cycle).
  */
 final class ContainerRenderer(
   ctx: RenderContext,
@@ -34,21 +34,21 @@ final class ContainerRenderer(
    * Render a container: its header, its formatted members, and its padding.
    */
   def render(container: Tree, templ: Template): String =
-     val stats = templ.body.stats
-     val brace = bodyOpenBrace(container, templ)
-     val (rendered, header) =
-       constructorHeader(container, templ, brace) match {
-         case Some(header) if header.text != ctx.slice(container.pos.start, header.end) =>
-           val members  = renderRegion(header.end, container.pos.end, stats)
-           val rendered = withPadding(header.text + members, container, templ, brace, Some(header))
-           if Equivalence.isEquivalentStat(container, rendered) then (rendered, Some(header))
-           else (plain(container, templ, brace), None)
-         case _ =>
-           (plain(container, templ, brace), None)
-       }
-     restyled(container, templ, brace, rendered, header)
-       .filter(Equivalence.isEquivalentStat(container, _))
-       .getOrElse(rendered)
+    val stats = templ.body.stats
+    val brace = bodyOpenBrace(container, templ)
+    val (rendered, header) =
+      constructorHeader(container, templ, brace) match {
+        case Some(header) if header.text != ctx.slice(container.pos.start, header.end) =>
+          val members  = renderRegion(header.end, container.pos.end, stats)
+          val rendered = withPadding(header.text + members, container, templ, brace, Some(header))
+          if Equivalence.isEquivalentStat(container, rendered) then (rendered, Some(header))
+          else (plain(container, templ, brace), None)
+        case _ =>
+          (plain(container, templ, brace), None)
+      }
+    restyled(container, templ, brace, rendered, header)
+      .filter(Equivalence.isEquivalentStat(container, _))
+      .getOrElse(rendered)
 
   // The rendered container with the brace style of its construct applied: a braceless body (`object A:`, `given A: B
   // with`) gets braces, or a braced one loses them. Only a body with members, without a self type, whose opener ends
@@ -61,8 +61,9 @@ final class ContainerRenderer(
     header: Option[Header],
   ): Option[String] =
     // The offset in `rendered` of the original offset `at`, after the header.
-    val offset = (at: Int) => 
-      header.fold(at - container.pos.start)(h => h.text.length + (at - h.end))
+    val offset =
+      (at: Int) =>
+        header.fold(at - container.pos.start)(h => h.text.length + (at - h.end))
 
     val first =
       templ
@@ -80,7 +81,7 @@ final class ContainerRenderer(
       case (None, Some(stat))       => addBraces(container, stat, rendered, offset)
       case (Some(open), Some(stat)) => removeBraces(container, stat, open, rendered, offset)
       case _                        => None
-   }
+    }
 
   // A braceless body (`object A:`, `given A: B with`) put in braces.
   private def addBraces(container: Tree, first: Stat, rendered: String, offset: Int => Int): Option[String] =
@@ -92,15 +93,15 @@ final class ContainerRenderer(
         .lastOption
     opener.collect {
       case colon: Token.Colon if !isGiven && ctx.commentsBetween(colon.end, first.pos.start).isEmpty =>
-        val at    = offset(colon.start)
+        val at   = offset(colon.start)
         val head = rendered.take(at).stripTrailing + " {"
         edgeBlanks(container, head + rendered.drop(at + 1) + "\n" + closing(container), head.count(_ == '\n'))
       case kw: Token.KwWith if isGiven && ctx.commentsBetween(kw.end, first.pos.start).isEmpty =>
-        val at    = offset(kw.end)
+        val at   = offset(kw.end)
         val head = rendered.take(at) + " {"
         edgeBlanks(container, head + rendered.drop(at) + "\n" + closing(container), head.count(_ == '\n'))
     }
- 
+
   // A braced body made braceless, when `{` ends the header line and `}` stands on its own line.
   private def removeBraces(
     container: Tree,
@@ -109,13 +110,13 @@ final class ContainerRenderer(
     rendered: String,
     offset: Int => Int,
   ): Option[String] =
-    val at      = offset(open.start)
+    val at     = offset(open.start)
     val before = rendered.take(at).stripTrailing
     val lines =
       rendered
         .drop(at + 1)
         .split("\n", -1)
-         .toList
+        .toList
     val opensLine  = lines.headOption.exists(_.isBlank) && ctx.commentsBetween(open.end, first.pos.start).isEmpty
     val closesLine = lines.lastOption.exists(_.trim == "}")
     val keyword    = if container.is[Defn.Given] then Option.when(before.endsWith("with"))("") else Some(":")
@@ -156,9 +157,9 @@ final class ContainerRenderer(
           val headerEnd = headEnd(p)
           val rest =
             ctx
-            .slice(headerEnd, restEnd)
-            .takeWhile(_ != '\n')
-            .stripTrailing
+              .slice(headerEnd, restEnd)
+              .takeWhile(_ != '\n')
+              .stripTrailing
           signatures.render(p, indent, Doc.text(rest)).map(s => Header(Render.render(s.doc, indent), headerEnd))
         }
     }
@@ -181,7 +182,7 @@ final class ContainerRenderer(
         ctx
           .tokensBetween(container.pos.start, f)
           .collect {
-            case t: Token.KwExtends                => t.start
+            case t: Token.KwExtends                     => t.start
             case t: Token.Ident if t.value == "derives" => t.start
           }
           .lastOption
@@ -194,7 +195,7 @@ final class ContainerRenderer(
         .zip(templ.inits.drop(1))
         .exists { (a, b) =>
           ctx.tokensBetween(a.pos.end, b.pos.start).exists(_.is[Token.Comma])
-       }
+        }
 
     val inits =
       texts match {
@@ -202,7 +203,7 @@ final class ContainerRenderer(
         case all if comma => List("extends " + all.mkString(", "))
         case head :: rest => ("extends " + head) :: rest.map("with " + _)
       }
-  
+
     val derives =
       if templ.derives.isEmpty then Nil
       else List("derives " + templ.derives.map(d => ctx.slice(d.pos.start, d.pos.end)).mkString(", "))
@@ -210,9 +211,9 @@ final class ContainerRenderer(
     for
       start <- keyword
       stop  <- end
-                if templ.earlyClause.isEmpty
-                if ctx.commentsBetween(start, stop).isEmpty
-                if !(texts ++ derives).exists(_.contains('\n'))
+               if templ.earlyClause.isEmpty
+               if ctx.commentsBetween(start, stop).isEmpty
+               if !(texts ++ derives).exists(_.contains('\n'))
     yield
       ExtendsList(inits ++ derives, start, stop)
 

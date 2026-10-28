@@ -104,7 +104,7 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "break its arguments as a call does, after the operator" in {
-      val input    = "def t =\n  result shouldBe (firstValue, secondValue)\n"
+      val input = "def t =\n  result shouldBe (firstValue, secondValue)\n"
       val expected =
         """def t =
           |  result shouldBe (

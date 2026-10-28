@@ -54,7 +54,7 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "an if/else with a multiline branch" should {
     "explode instead of inlining the child's line breaks" in {
-      val input    = "val x = if c then { a; b } else d\n"
+      val input = "val x = if c then { a; b } else d\n"
       val expected =
         """val x =
           |  if c then

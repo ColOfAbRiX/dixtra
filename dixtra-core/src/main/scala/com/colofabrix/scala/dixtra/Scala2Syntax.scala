@@ -16,11 +16,11 @@ private[dixtra] object Scala2Syntax {
    */
   def dropped(tree: Tree, source: String): Option[String] =
     tree match {
-      case _: Term.Do                      => Some("a do-while loop")
-      case _: Type.Existential             => Some("an existential type")
-      case _: Defn.Macro                   => Some("a macro definition")
+      case _: Term.Do                            => Some("a do-while loop")
+      case _: Type.Existential                   => Some("an existential type")
+      case _: Defn.Macro                         => Some("a macro definition")
       case d: Defn.Def if isProcedure(d, source) => Some("procedure syntax")
-      case _                               => droppedInChildren(tree, source)
+      case _                                     => droppedInChildren(tree, source)
     }
 
   private def droppedInChildren(tree: Tree, source: String): Option[String] =

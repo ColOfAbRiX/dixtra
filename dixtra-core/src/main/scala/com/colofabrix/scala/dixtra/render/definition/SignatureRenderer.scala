@@ -77,18 +77,18 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
         case single :: Nil if breakTparams =>
           Some(tier2(prefix, tparams, tcomments, single, returnPart, baseIndent))
         case _ if tcomments.forcesBreak =>
-            None // type parameters that must break need Tier 2, which needs a single clause
-      case _ =>
-        Some(explodedClauses(prefix ++ tparamsInline, clauses, returnPart, baseIndent))
-    }
+          None // type parameters that must break need Tier 2, which needs a single clause
+        case _ =>
+          Some(explodedClauses(prefix ++ tparamsInline, clauses, returnPart, baseIndent))
+      }
 
  // The pieces of a signature as documents, before deciding its breaks.
   private final class Layout(signature: SignatureParts, baseIndent: Int) {
-    val prefix     = ctx.sourceDoc(signature.prefixStart, signature.nameEnd) // modifiers + keyword + name
-    val tclause    = signature.tparamClause
-    val tparams    = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
+    val prefix    = ctx.sourceDoc(signature.prefixStart, signature.nameEnd) // modifiers + keyword + name
+    val tclause   = signature.tparamClause
+    val tparams   = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
     val tcomments = CommentedList.of(ctx, tclause.pos.start, tclause.values, tclause.pos.end)
-    val clauses    = signature.paramClauses.map(toClause)
+    val clauses   = signature.paramClauses.map(toClause)
     val returnPart =
       signature
         .returnType
@@ -196,15 +196,15 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
  * @param paramClauses The value parameter clauses.
  * @param returnType The declared return type, if any.
  * @param keepBroken True when the parameters break even if they fit, because the author wrote them over several lines
- *                  (case classes).
+ *                   (case classes).
  */
 private[render] final case class SignatureParts(
-   prefixStart: Int,
-   nameEnd: Int,
-   tparamClause: Type.ParamClause,
-   paramClauses: List[Term.ParamClause],
-   returnType: Option[Type],
-   keepBroken: Boolean,
+  prefixStart: Int,
+  nameEnd: Int,
+  tparamClause: Type.ParamClause,
+  paramClauses: List[Term.ParamClause],
+  returnType: Option[Type],
+  keepBroken: Boolean,
 )
 
 /**

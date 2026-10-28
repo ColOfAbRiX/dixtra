@@ -86,8 +86,8 @@ private[term] final class ApplicationRenderer(
       Doc.concat(
         leading.map { (clause, args, comments) =>
           ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), args.map(a => ctx.sourceDoc(a)), comments).inline
-      },
-    )
+        },
+      )
     !leading.exists((clause, _, comments) => comments.forcesBreak || clause.pos.text.contains('\n')) &&
     ctx.fits(onLine ++ Doc.text("("), column)
 
@@ -104,7 +104,7 @@ private[term] final class ApplicationRenderer(
       Doc.concat(
         groups.map { (clause, args, comments) =>
           ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), args.map(a => ctx.sourceDoc(a)), comments).inline
-        }
+        },
       )
     val breaks =
       groups.exists((clause, _, comments) => comments.forcesBreak || clause.pos.text.contains('\n')) ||
@@ -200,7 +200,7 @@ private[term] final class ApplicationRenderer(
       inline
     else
       val explodedArgs = comments.exploded(aligned(args, indent + 2))
-        Doc.text(s"(${keyword.trim}") ++ Doc.Nest(2, Doc.Line ++ explodedArgs) ++ Doc.Line ++ Doc.text(")")
+      Doc.text(s"(${keyword.trim}") ++ Doc.Nest(2, Doc.Line ++ explodedArgs) ++ Doc.Line ++ Doc.text(")")
 
   // The exploded arguments, aligning the `->` of consecutive one-line pairs and, column by column, the operators of
   // consecutive one-line operations from `alignment.operators` (see [[Alignment]]); the comma after each argument
@@ -238,12 +238,12 @@ private[term] final class ApplicationRenderer(
         case ((pair: Term.ApplyInfix, doc), ((Some(target), _), _)) =>
           terms.paddedInfix(pair, indent, target).getOrElse(doc)
         case ((infix: Term.ApplyInfix, doc), ((_, Some(p)), _)) =>
-         terms.paddedInfixColumns(infix, indent, operators, p).getOrElse(doc)
-       case ((assign: Term.Assign, _), (_, Some(target))) =>
-         terms.namedArgument(assign, indent, Some(target))
-       case ((_, doc), _) =>
-         doc
-       }
+          terms.paddedInfixColumns(infix, indent, operators, p).getOrElse(doc)
+        case ((assign: Term.Assign, _), (_, Some(target))) =>
+          terms.namedArgument(assign, indent, Some(target))
+        case ((_, doc), _) =>
+          doc
+      }
 
   // An exploded argument: one that fits on its line only without its comma is laid out a column further, so that it
   // breaks as it does not fit with the comma. Every argument has one, but the last without `trailing-commas = always`.
@@ -258,7 +258,7 @@ private[term] final class ApplicationRenderer(
     def name(a: Term): Option[Int] =
       a match {
         case assign: Term.Assign if !ctx.isParenthesized(assign) => terms.namedArgumentWidth(assign)
-        case _                                    => None
+        case _                                                   => None
       }
     Alignment.targets(ctx, args, Alignment.Grouping.ListElements)(
       eligible = a => ctx.config.alignment.namedArguments && line(a).isDefined && name(a).isDefined,
@@ -267,7 +267,7 @@ private[term] final class ApplicationRenderer(
         (a, target) =>
           (line(a), name(a)) match {
             case (Some(1), Some(w)) => ctx.fitsWidth(indent, 1 + math.max(0, target - w) + 1)
-            case _           => false
+            case _                  => false
           },
     )
 
@@ -277,8 +277,8 @@ private[term] final class ApplicationRenderer(
     def left(a: Term): Option[Int] =
       a match {
         case pair: Term.ApplyInfix if pair.op.value == "->" => terms.infixLeftWidth(pair, indent)
-         case _                    => None
-       }
+        case _                                              => None
+      }
     Alignment.targets(ctx, args, Alignment.Grouping.ListElements)(
       eligible = a => ctx.config.alignment.arrows.pairs && line(a).isDefined,
       width = left,
@@ -286,7 +286,7 @@ private[term] final class ApplicationRenderer(
         (a, target) =>
           (line(a), left(a)) match {
             case (Some(l), Some(w)) => ctx.fitsWidth(indent, l + math.max(0, target - w) + 1)
-            case _         => false
+            case _                  => false
           },
     )
 
@@ -306,7 +306,7 @@ private[term] final class ApplicationRenderer(
       case _ =>
         None
     }
-  
+
     Alignment.columnTargets(ctx, args, Alignment.Grouping.ListElements)(
       eligible = a => line(a).isDefined,
       segments = segments,
@@ -355,7 +355,7 @@ private[term] final class ApplicationRenderer(
    // The blank lines at the edges of a lambda or a `{ case ... }` given as an argument.
   private def argumentEdges: BlankLinePolicy =
     ctx.config.blankLines(Construct.LambdaArgument)
- 
+
   // A block of statements given as an argument is a test block when the call it is given to is labelled by a string:
   // `"a test" in { ... }`, `it should "work" in { ... }`, `test("a test") { ... }`.
   private def blockConstruct(block: Term): Construct =
@@ -364,7 +364,7 @@ private[term] final class ApplicationRenderer(
         case _: Lit.String | _: Term.Interpolate => true
         case _                                   => false
       }
- 
+
     def labelled(lhs: Term): Boolean =
       lhs match {
         case infix: Term.ApplyInfix =>
@@ -393,7 +393,7 @@ private[term] final class ApplicationRenderer(
             false
         }
 
-    if test then Construct.TestBlock 
+    if test then Construct.TestBlock
     else Construct.BlockArgument
 
   // The policy of the statements of a block argument or a test block.

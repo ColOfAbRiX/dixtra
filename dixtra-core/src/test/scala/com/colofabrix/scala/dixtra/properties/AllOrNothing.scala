@@ -100,7 +100,7 @@ object AllOrNothing {
    * Idempotency — formatting an already-formatted output yields itself.
    */
   def isIdempotent(source: String, config: Config): Boolean =
-    val result = 
+    val result =
       for
         once  <- Dixtra.format(source, config)
         twice <- Dixtra.format(once, config)
@@ -122,7 +122,7 @@ object AllOrNothing {
       case Right(formatted) =>
         val before = source.parse[Source].toOption
         val after  = formatted.parse[Source].toOption
-        
+
         (before, after) match {
           case (Some(b), Some(a)) => b.structure == a.structure
           case _                  => false

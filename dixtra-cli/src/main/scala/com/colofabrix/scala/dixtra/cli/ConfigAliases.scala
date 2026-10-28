@@ -21,7 +21,7 @@ object ConfigAliases {
    * An alias: its path, and the paths of the settings it sets.
    */
   final case class Alias(name: String, targets: List[String])
- 
+
   /**
    * Every alias, read from `aliases.conf`.
    */

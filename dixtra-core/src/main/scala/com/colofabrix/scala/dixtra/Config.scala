@@ -18,7 +18,7 @@ package com.colofabrix.scala.dixtra
  * @param alignment What aligns with what.
  * @param blankLines The blank lines at the edges of bodies, between alignment groups and before scaladoc.
  * @param trailingCommentOverflow What happens to a line that goes past `maxColumn` only because of its trailing
- *                                  comment.
+ *                                comment.
  * @param housekeeping The housekeeping of a whole file.
  * @param paths The files and directories to format.
  */
@@ -68,16 +68,16 @@ object Config {
           assignment = SingleBodyPolicy.Keep,
           namedArgument = SingleBodyPolicy.Keep,
           lambdaArgument = SingleBodyPolicy.Keep,
-        lambdaBody = SingleBodyPolicy.Keep,
-        blockArgument = SingleBodyPolicy.Keep,
-        testBlock = SingleBodyPolicy.Keep,
-        ifBody = MultiBodyPolicy.BreakMixed,
-        caseBody = MultiBodyPolicy.BreakMixed,
-        tryBody = MultiBodyPolicy.BreakMixed,
-        forBody = SingleBodyPolicy.Keep,
-        forYield = YieldBodyPolicy.BreakComplex,
-        whileBody = SingleBodyPolicy.Keep,
-      ),
+          lambdaBody = SingleBodyPolicy.Keep,
+          blockArgument = SingleBodyPolicy.Keep,
+          testBlock = SingleBodyPolicy.Keep,
+          ifBody = MultiBodyPolicy.BreakMixed,
+          caseBody = MultiBodyPolicy.BreakMixed,
+          tryBody = MultiBodyPolicy.BreakMixed,
+          forBody = SingleBodyPolicy.Keep,
+          forYield = YieldBodyPolicy.BreakComplex,
+          whileBody = SingleBodyPolicy.Keep,
+        ),
       definitionSite = DefinitionSiteConfig(groupsSeparator = GroupsSeparator.NextGroup),
       callSite = CallSiteConfig(groupsSeparator = GroupsSeparator.PreviousGroup, groupsBreak = GroupsBreak.LastFirst),
       alignment =

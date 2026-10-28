@@ -17,7 +17,7 @@ class BracesStyleSettingSpec extends AnyWordSpec with Matchers with LayoutRows {
   private def styled(style: BracesStyle): Config =
     Config.default.copy(braces = BraceConfig(style, Map.empty))
 
-  private val ifBody           = "def f =\n  if (c) {\n    g()\n  } else if (d) {\n    h()\n  } else {\n    k()\n  }\n"
+  private val ifBody = "def f =\n  if (c) {\n    g()\n  } else if (d) {\n    h()\n  } else {\n    k()\n  }\n"
   private val ifElseStroustrup =
     "def f =\n  if (c) {\n    g()\n  }\n  else if (d) {\n    h()\n  }\n  else {\n    k()\n  }\n"
   private val ifElseAllman =
@@ -30,7 +30,7 @@ class BracesStyleSettingSpec extends AnyWordSpec with Matchers with LayoutRows {
   private val tryCatchAllman =
     "def f =\n  try\n  {\n    g()\n  }\n  catch\n  {\n    case e: Exception => h()\n  }\n  finally\n  {\n    k()\n  }\n"
 
-  private val forYield           = "def f =\n  for {\n    a <- xs\n    b <- ys\n  } yield {\n    g(a)\n    h(b)\n  }\n"
+  private val forYield = "def f =\n  for {\n    a <- xs\n    b <- ys\n  } yield {\n    g(a)\n    h(b)\n  }\n"
   private val forYieldStroustrup =
     "def f =\n  for {\n    a <- xs\n    b <- ys\n  }\n  yield {\n    g(a)\n    h(b)\n  }\n"
   private val forYieldAllman =

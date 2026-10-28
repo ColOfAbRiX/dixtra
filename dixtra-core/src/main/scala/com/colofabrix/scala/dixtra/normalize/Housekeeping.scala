@@ -62,10 +62,10 @@ object Housekeeping {
           val (lines, _) =
             source
               .split("\n", -1)
-            .foldLeft((Vector.empty[String], 0)) { case ((acc, start), line) =>
-              val end = start + line.length
-              (acc :+ (if protectedEnds(end) then line else line.replaceAll("[ \t]+$", "")), end + 1)
-            }
+              .foldLeft((Vector.empty[String], 0)) { case ((acc, start), line) =>
+                val end = start + line.length
+                (acc :+ (if protectedEnds(end) then line else line.replaceAll("[ \t]+$", "")), end + 1)
+              }
           lines.mkString("\n")
         }
     } catch {
@@ -83,7 +83,7 @@ object Housekeeping {
         .dropWhile(_.isBlank)
         .reverse
 
-    if lines.isEmpty then "" 
+    if lines.isEmpty then ""
     else lines.mkString("", "\n", "\n")
 
 }

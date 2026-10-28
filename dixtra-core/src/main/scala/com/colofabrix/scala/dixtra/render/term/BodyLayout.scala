@@ -23,11 +23,11 @@ import scala.meta.*
  * @param authorBreak True when the author broke the line after the separator.
  * @param trailing The comments after the separator on its line, each preceded by a space.
  * @param leading The comments on their own lines between the separator and the body, which stay on their own lines
- *         above the body.
+ *                above the body.
  * @param hasComments True when a comment follows the separator.
  * @param onLine The body as rendered on the separator line.
  * @param braced The body when it is a `{ case ... }`, whose `{` always stays on the separator line (never on a line of
- *         its own).
+ *               its own).
  * @param renderBelow Renders the body as laid out below the separator.
  * @param simple True when the body is a single name, path or literal.
  */
@@ -63,9 +63,9 @@ private[render] final class BodyLayout(
     authorBreak && braced.isEmpty
 
   /**
-    * The body as it goes on the separator line, if it can: a braced body always can; any other renders on one line and
-    * `fits` there, with no comment after the separator. A body the author wrote below takes the layout it has there.
-    */
+   * The body as it goes on the separator line, if it can: a braced body always can; any other renders on one line and
+   * `fits` there, with no comment after the separator. A body the author wrote below takes the layout it has there.
+   */
   def onSeparatorLine(fits: Doc => Boolean): Option[Doc] =
     braced.orElse {
       val doc = if authorBreak then below else onLine
@@ -73,9 +73,9 @@ private[render] final class BodyLayout(
     }
 
   /**
-    * The separator line `lead` (ending with the separator) followed by the body below it, indented; a braced body still
-    * opens on the separator line.
-    */
+   * The separator line `lead` (ending with the separator) followed by the body below it, indented; a braced body still
+   * opens on the separator line.
+   */
   def belowSeparator(lead: Doc): Doc =
     braced match {
       case Some(block) => lead ++ Doc.text(" ") ++ block
@@ -83,9 +83,9 @@ private[render] final class BodyLayout(
     }
 
   /**
-    * The separator line `lead` followed by the body, a group of its own, placed by `policy`. `fits` tells whether a body
-    * fits on the separator line.
-    */
+   * The separator line `lead` followed by the body, a group of its own, placed by `policy`. `fits` tells whether a body
+   * fits on the separator line.
+   */
   def placed(lead: Doc, fits: Doc => Boolean, policy: SingleBodyPolicy): Doc =
     onSeparatorLine(fits) match {
       case Some(doc) if !BodyLayout.singleBelow(policy, BodyLayout.Member(writtenBelow, true, simple)) =>
@@ -141,25 +141,25 @@ private[render] object BodyLayout {
       case MultiBodyPolicy.JoinMixed   => cannotJoin || (members.nonEmpty && members.forall(_.writtenBelow))
       case MultiBodyPolicy.BreakMixed  => cannotJoin || members.exists(_.writtenBelow)
     }
- 
+
   /**
    * Whether `body` holds an if, a match or a try, which keeps the body of a group from being joined on its separator
    * line.
    */
   def holdsControl(body: Term): Boolean =
     body.collect { case _: Term.If | _: Term.Match | _: Term.Try => () }.nonEmpty
- 
+
   /**
    * Whether `body` is simple: a name, a path of names (`ExitCode.Success`) or a literal, also as the only statement of
    * a block without comments.
    */
   def isSimple(ctx: RenderContext, body: Term): Boolean =
     unwrapped(ctx, body) match {
-      case _: Lit            => true
+      case _: Lit               => true
       case path if isPath(path) => true
-      case _                 => false
+      case _                    => false
     }
- 
+
   /**
    * The only statement of `body` when it is a block of one statement without comments, recursively; `body` itself
    * otherwise.
@@ -169,8 +169,8 @@ private[render] object BodyLayout {
       case Term.Block((stat: Term) :: Nil) if ctx.commentsBetween(body.pos.start, body.pos.end).isEmpty =>
         unwrapped(ctx, stat)
       case _ =>
-         body
-     }
+        body
+    }
 
   private def isPath(term: Term): Boolean =
     term match {
@@ -215,12 +215,12 @@ private[render] object BodyLayout {
      indent: Int,
      construct: Option[Construct],
    ): BodyLayout =
-     val bodyStart                = ctx.span(body)._1
-     val authorBreak              = ctx.slice(separatorEnd, bodyStart).contains('\n')
-     val found                    = ctx.commentsBetween(separatorEnd, bodyStart).toList
-     val comments                 = ctx.commentDocs(found)
+     val bodyStart                   = ctx.span(body)._1
+     val authorBreak                 = ctx.slice(separatorEnd, bodyStart).contains('\n')
+     val found                       = ctx.commentsBetween(separatorEnd, bodyStart).toList
+     val comments                    = ctx.commentDocs(found)
      val (onSeparatorLine, ownLines) = found.partition(c => !ctx.slice(separatorEnd, c.start).contains('\n'))
-     val onLine                   = terms.renderBody(body, indent, forceExplode = authorBreak)
+     val onLine                      = terms.renderBody(body, indent, forceExplode = authorBreak)
      // A `{ case ... }` opens on the separator line, its cases one level in.
      val braced =
        body match {
@@ -240,18 +240,18 @@ private[render] object BodyLayout {
        braced = braced,
        renderBelow = () => if authorBreak then onLine else terms.renderBody(body, indent, forceExplode = true),
        simple = isSimple(ctx, body),
-   )
+     )
 
    // A block of several statements (or of a single definition) written with braces keeps them, and one without gets
    // them, when the brace style uses braces.
    private def bracesBlock(ctx: RenderContext, construct: Construct, block: Term.Block): Boolean =
-    val statements =
-      block.stats.filterNot(_.is[Term.EndMarker]) match {
-        case (_: Term) :: Nil => false
-        case Nil              => false
-        case _                => true
-      }
-    statements && !ctx.isParenthesized(block) && ctx.usesBraces(construct, ctx.writtenWithBraces(block))
+     val statements =
+       block.stats.filterNot(_.is[Term.EndMarker]) match {
+         case (_: Term) :: Nil => false
+         case Nil              => false
+         case _                => true
+       }
+     statements && !ctx.isParenthesized(block) && ctx.usesBraces(construct, ctx.writtenWithBraces(block))
 
   /**
    * The end offset of a lambda's `=>`, or the start of its body if not found.

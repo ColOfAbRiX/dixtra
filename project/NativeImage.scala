@@ -45,7 +45,7 @@ object NativeImage {
             path(output),
             mainClass,
           )
-          
+
         IO.createDirectory(directory)
 
         val argumentFile = directory / "native-image.args"
@@ -54,16 +54,16 @@ object NativeImage {
         log.info(s"building ${path(output)}")
         run(log, List(path(tool(if windows then "native-image.cmd" else "native-image")), "@" + path(argumentFile)))
 
-        if windows then 
-          directory / (executable + ".exe") 
-        else 
+        if windows then
+          directory / (executable + ".exe")
+        else
           output
       },
       nativeImageMetadata := Def.uncached {
         val log       = streams.value.log
         val classpath = runtimeClasspath(fileConverter.value, (Compile / fullClasspath).value)
-        val scratch = target.value / "native-image-runs"
-        val metadata  =
+        val scratch   = target.value / "native-image-runs"
+        val metadata =
           (Compile / resourceDirectory).value / "META-INF" / "native-image" / organization.value / name.value
 
         IO.delete(scratch)
@@ -102,7 +102,7 @@ object NativeImage {
 
   private def run(log: Logger, command: Seq[String]): Unit =
     val exit = Process(command).!(ProcessLogger(log.info(_), log.warn(_)))
-    if exit != 0 then 
+    if exit != 0 then
       sys.error(s"${command.headOption.getOrElse("")} failed with exit code $exit")
 
   // Forward slashes: an argument file reads a backslash as an escape

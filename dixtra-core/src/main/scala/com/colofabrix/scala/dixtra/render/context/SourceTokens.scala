@@ -122,7 +122,7 @@ final class SourceTokens(original: String) {
   private def isTrivia(t: Token): Boolean =
     t match {
       case _: Token.Whitespace | _: Token.Comment => true
-      case _                          => false
+      case _                                      => false
     }
 
   // The closing parenthesis matching an opening one, found by depth counting.

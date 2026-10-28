@@ -18,7 +18,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "consecutive definitions" should {
-    
+
     "align their = signs, per group" in {
       val input =
         """class A {
@@ -310,6 +310,7 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatStablyTo(expected, 30)
     }
+
   }
 
   "a for-comprehension" should {
@@ -639,6 +640,7 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "the pairs of an exploded argument list" should {
+
     "align their arrows" in {
       val input =
         """val colorMap =
@@ -747,14 +749,16 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+
   }
 
   "an operator expression that does not fit" should {
+
     val assertion =
       """Render.render(Doc.intercalate(Doc.text(", "), List(Doc.text("a"), Doc.text("b"), Doc.text("c")))) shouldBe"""
 
     "break after its operator" in {
-      val input    = s"""def f =\n  $assertion "a, b, c, d, e"\n"""
+      val input = s"""def f =\n  $assertion "a, b, c, d, e"\n"""
 
       val expected =
         s"""def f =

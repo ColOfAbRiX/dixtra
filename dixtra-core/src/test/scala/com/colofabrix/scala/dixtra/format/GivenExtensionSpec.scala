@@ -40,7 +40,7 @@ class GivenExtensionSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "have a given alias body formatted like a val" in {
-      val input    = "given xs: List[Int] = List(a,\n  b)\n"
+      val input = "given xs: List[Int] = List(a,\n  b)\n"
       val expected =
         """given xs: List[Int] =
           |  List(
@@ -52,7 +52,7 @@ class GivenExtensionSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "have extension methods formatted like defs" in {
-      val input    = "extension (i: Int)\n  def xs = List(a,\n    b)\n"
+      val input = "extension (i: Int)\n  def xs = List(a,\n    b)\n"
       val expected =
         """extension (i: Int)
           |  def xs =

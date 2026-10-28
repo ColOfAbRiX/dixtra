@@ -29,7 +29,7 @@ class RenderSpec extends AnyWordSpec with Matchers {
       Render.render(Doc.intercalate(Doc.text(", "), List(Doc.text("a"), Doc.text("b"), Doc.text("c")))) shouldBe
       "a, b, c"
     }
-    
+
   }
 
   "a verbatim slice" should {
@@ -43,7 +43,7 @@ class RenderSpec extends AnyWordSpec with Matchers {
       val slice = Doc.Verbatim("s = \"\"\"a\n  b\"\"\"", sourceIndent = 0, frozenLines = Set(1))
       Render.render(Doc.Nest(4, slice)) shouldBe "s = \"\"\"a\n  b\"\"\""
     }
-    
+
   }
 
   "a standalone document" should {
@@ -55,7 +55,7 @@ class RenderSpec extends AnyWordSpec with Matchers {
     "never count as single-line" in {
       Render.flatWidth(Doc.Standalone(Doc.text("x"))) shouldBe None
     }
-    
+
   }
 
   "the flat width of a document" should {
@@ -71,7 +71,7 @@ class RenderSpec extends AnyWordSpec with Matchers {
     "be undefined for a multiline verbatim slice" in {
       Render.flatWidth(Doc.Verbatim("a\nb", sourceIndent = 0, frozenLines = Set.empty)) shouldBe None
     }
-    
+
   }
 
 }

@@ -13,7 +13,7 @@ import scala.meta.tokens.Token
 /**
  * The AON tree renderer: the single routing point over a parsed compilation unit.
  *
- * It owns the shared [[RenderContext]] and the per-construct renderers, dispatching each node to its rule. Any
+ * It owns the shared [[com.colofabrix.scala.dixtra.render.context.RenderContext]] and the per-construct renderers, dispatching each node to its rule. Any
  * construct without a rule falls back to the safety net (verbatim source), so the tool never corrupts unsupported code.
  * Text between handled nodes (whitespace, blank lines, comments) is preserved exactly by splicing formatted node slices
  * back into the original source.
@@ -52,7 +52,7 @@ final class TreeRenderer(original: String, config: Config) {
   def restylesPackage(source: Source): Boolean =
     source.stats match {
       case (p: Pkg) :: Nil => packageBraces(p).exists(braced => ctx.usesBraces(Construct.Package, braced) != braced)
-      case _             => false
+      case _               => false
     }
 
   // Whether the single package clause `p` is written with braces, when it can change style: it has members and no
@@ -95,11 +95,11 @@ final class TreeRenderer(original: String, config: Config) {
   // A statement of a region at `indent`, its `extends` padded to `extendsTarget` when aligned, followed by its `end`
   // marker when it has or gets one. A definition or an assignment comes already rendered as `definition`.
   private def renderStat(
-      stat: Stat,
-      marker: Option[Term.EndMarker],
-      indent: Int,
-      definition: Option[Doc],
-      extendsTarget: Option[Int],
+    stat: Stat,
+    marker: Option[Term.EndMarker],
+    indent: Int,
+    definition: Option[Doc],
+    extendsTarget: Option[Int],
   ): String =
     val node     = renderNode(stat, indent, definition)
     val rendered = extendsTarget.fold(node)(target => padExtends(node, target).getOrElse(node))
@@ -205,9 +205,9 @@ final class TreeRenderer(original: String, config: Config) {
   private def extensionMembers(e: Defn.ExtensionGroup): List[Stat] =
     e.body match {
       case block: Term.Block => block.stats
-      case single           => List(single)
+      case single            => List(single)
     }
- 
+
   // The single package clause of a file, without nested ones, with its members formatted in place, changing between
   // `package a { ... }` and `package a` (members one level out) by the brace style.
   private def singlePackage(p: Pkg): String =
@@ -249,18 +249,17 @@ final class TreeRenderer(original: String, config: Config) {
               .map(members => head + " {" + members + "\n}")
         case _ =>
           None
-    }
+      }
 
     val result = restyled.filter(Equivalence.isEquivalentPackage(p, _)).getOrElse(rendered)
 
     opener
-      .filter {
-        open =>
-          p
-            .body
-            .stats
-            .headOption
-            .exists(first => !first.is[Pkg] && ctx.slice(open.end, first.pos.start).contains('\n'))
+      .filter { open =>
+        p
+          .body
+          .stats
+          .headOption
+          .exists(first => !first.is[Pkg] && ctx.slice(open.end, first.pos.start).contains('\n'))
       }
       .map(open => EdgeBlankLines(result, ctx.slice(p.pos.start, open.start).count(_ == '\n'), Construct.Package, ctx))
       .getOrElse(result)
@@ -336,10 +335,10 @@ final class TreeRenderer(original: String, config: Config) {
 
     members
       .headOption
-      .flatMap { first => 
+      .flatMap { first =>
         ctx.previousSignificant(first.pos.start).filter(o => ctx.slice(o.end, first.pos.start).contains('\n'))
       }
-      .map { open => 
+      .map { open =>
         EdgeBlankLines(result, ctx.slice(e.pos.start, open.start).count(_ == '\n'), Construct.Extension, ctx)
       }
       .getOrElse(result)

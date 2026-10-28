@@ -20,10 +20,10 @@ trait LayoutRows extends FormatMatchers { this: AnyWordSpec & Matchers =>
       .foreach {
         case ((what, config, input, expected), i) =>
           s"lay out $what (row ${i.toString})" in {
-              input should formatTo(expected, config)
-            }
+            input should formatTo(expected, config)
+          }
       }
-      
+
     rows
       .zipWithIndex
       .filter { case ((_, _, input, expected), _) => input != expected }
@@ -31,8 +31,8 @@ trait LayoutRows extends FormatMatchers { this: AnyWordSpec & Matchers =>
       .foreach {
         case ((what, config, _, expected), i) =>
           s"be idempotent for $what (row ${i.toString})" in {
-              expected should formatTo(expected, config)
-            }
+            expected should formatTo(expected, config)
+          }
       }
 
 }

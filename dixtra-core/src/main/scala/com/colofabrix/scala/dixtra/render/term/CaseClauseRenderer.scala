@@ -94,7 +94,7 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
   // keyword.
   private def tryMember(below: Boolean, fits: Boolean, body: Term): BodyLayout.Member =
     BodyLayout.Member(below, fits && !BodyLayout.holdsControl(body), BodyLayout.isSimple(ctx, body))
- 
+
   // A braceless try: its body and its `finally` body on the lines of their keywords or below them, by `policy`; its
   // cases below `catch`.
   private def bracelessTry(t: Term.Try, indent: Int, policy: MultiBodyPolicy, catches: Option[Doc]): Doc =
@@ -113,13 +113,13 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
       t.finallyp.zip(finallyEnd).map((f, end) => ("finally", end, f)).toList)
         .map { (keyword, keywordEnd, term) =>
           val doc   = terms.renderBody(term, indent + 2, forceExplode = false)
-          val fits   = ctx.fits(doc, indent + keyword.length + 1)
+          val fits  = ctx.fits(doc, indent + keyword.length + 1)
           val below = BodyLayout.writtenBelow(ctx, keywordEnd, term)
           (keyword, doc, tryMember(below, fits, term))
         }
 
     val allBelow = BodyLayout.groupBelow(policy, bodies.map(_._3))
- 
+
     def part(keyword: String, doc: Doc): Doc =
       if allBelow then Doc.text(keyword) ++ Doc.Nest(2, Doc.Line ++ doc) else Doc.text(keyword + " ") ++ doc
 
@@ -129,7 +129,7 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
       bodies.drop(1).map((k, d, _) => part(k, d))
 
     Doc.intercalate(Doc.Line, parts)
- 
+
   /**
    * The clauses found in `[start, end)` one per line at `indent`, keeping the blank lines and the comments between
    * them. The bodies are one group (`body.case-body`, see [[BodyLayout.groupBelow]]): all on the lines of their `=>`,
@@ -163,7 +163,7 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
         .zip(targets)
         .map {
           case (c, Some(Alignment.Placement.Padded(target))) => caseClause(c, indent, Some(target), false)
-          case (c, _)                             => unpadded.getOrElse(c.pos.start, ctx.sourceDoc(c))
+          case (c, _)                                        => unpadded.getOrElse(c.pos.start, ctx.sourceDoc(c))
         }
     }
 

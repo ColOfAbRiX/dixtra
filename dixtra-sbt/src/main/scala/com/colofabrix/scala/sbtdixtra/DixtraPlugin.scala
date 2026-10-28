@@ -33,38 +33,41 @@ object DixtraPlugin extends AutoPlugin {
       settingKey[Option[File]]("A configuration file, instead of the nearest .dixtra.conf of each file")
     val dixtraChangedSince =
       settingKey[Option[String]]("A git ref: only the files changed since it, instead of all")
-    val dixtraOnCompile     =
+    val dixtraOnCompile =
       settingKey[Boolean]("Format the sources of a configuration before compiling them")
-    val dixtraClasspath     =
+    val dixtraClasspath =
       taskKey[Seq[File]]("The jars of dixtra and its dependencies")
-    val dixtraFormat        =
+    val dixtraFormat =
       taskKey[Unit]("Format the Scala sources of a configuration")
-    val dixtraCheck         =
+    val dixtraCheck =
       taskKey[Unit]("Fail when a Scala source of a configuration is not formatted")
-    val dixtraFormatAll     =
+    val dixtraFormatAll =
       taskKey[Unit]("Format the Scala sources of every configuration, and the build files")
     val dixtraCheckAll =
       taskKey[Unit]("Fail when a Scala source of any configuration, or a build file, is not formatted")
-    val dixtraFormatSbt  =
+    val dixtraFormatSbt =
       taskKey[Unit]("Format the build definition: the .sbt files, and the sources in project/")
-    val dixtraCheckSbt   =
+    val dixtraCheckSbt =
       taskKey[Unit]("Fail when a file of the build definition is not formatted")
     val dixtraFormatOnly =
       inputKey[Unit]("Format the given files")
   }
- 
+
   import autoImport.*
- 
+
   // The configurations whose sources the *All tasks cover.
-  private val allConfigurations = ScopeFilter(configurations = inConfigurations(Compile, Test))
- 
+  private val allConfigurations = 
+    ScopeFilter(configurations = inConfigurations(Compile, Test))
+
   // The class loaders of dixtra, one for each classpath, kept across runs.
-  private val loaders = TrieMap.empty[Seq[File], ClassLoader]
- 
+  private val loaders = 
+    TrieMap.empty[Seq[File], ClassLoader]
+
   // Formats the sources before they are compiled, when `dixtraOnCompile` is on;
   // a file that fails (e.g. one that does not parse) is left to the compiler.
-  private val dixtraOnCompileFormat = taskKey[Unit]("Format the sources before compiling, if dixtraOnCompile")
- 
+  private val dixtraOnCompileFormat = 
+    taskKey[Unit]("Format the sources before compiling, if dixtraOnCompile")
+
   // What a run does with the files: rewrite them, or report the ones that are not formatted.
   private enum Mode {
     case Format, Check
@@ -80,7 +83,7 @@ object DixtraPlugin extends AutoPlugin {
     Def.setting(existing(unmanagedSourceDirectories.value))
   private val allSourceDirectories =
     Def.setting(existing(unmanagedSourceDirectories.all(allConfigurations).value.flatten))
-  private val buildDefinition    =
+  private val buildDefinition =
     Def.setting(buildFiles(baseDirectory.value))
   private val allSourcesAndBuild =
     Def.setting(allSourceDirectories.value ++ buildDefinition.value)
@@ -113,7 +116,7 @@ object DixtraPlugin extends AutoPlugin {
       dixtraCheckAll     := Def.uncached(dixtraTask(Mode.Check, allSourcesAndBuild, OnFailure.Fail).value),
       dixtraFormatSbt    := Def.uncached(dixtraTask(Mode.Format, buildDefinition, OnFailure.Fail).value),
       dixtraCheckSbt     := Def.uncached(dixtraTask(Mode.Check, buildDefinition, OnFailure.Fail).value),
-      dixtraClasspath    := Def.uncached {
+      dixtraClasspath := Def.uncached {
         val module = BuildInfo.organization % s"${BuildInfo.dixtraModule}_3" % dixtraVersion.value
         dependencyResolution
           .value
@@ -199,17 +202,23 @@ object DixtraPlugin extends AutoPlugin {
         classpath,
         new URLClassLoader(classpath.map(_.toURI.toURL).toArray, ClassLoader.getPlatformClassLoader),
       )
+
     val entry =
       loader
         .loadClass("com.colofabrix.scala.dixtra.Embedded")
         .getMethod("run", classOf[Array[String]], classOf[Consumer[String]], classOf[Consumer[String]])
+
     // The level of each line by its prefix, as `CliReport` of dixtra writes it.
-    val out: Consumer[String] = line => if line.startsWith("unchanged:") then log.debug(line) else log.info(line)
+    val out: Consumer[String] = 
+      line => if line.startsWith("unchanged:") then log.debug(line) else log.info(line)
+
     val err: Consumer[String] =
       line => if line.startsWith("skipped") || line.startsWith("warning") then log.warn(line) else log.error(line)
-    val thread    = Thread.currentThread
+
+    val thread   = Thread.currentThread
     val previous = thread.getContextClassLoader
     thread.setContextClassLoader(loader)
+    
     try {
       entry.invoke(null, args.toArray, out, err) match {
         case code: Integer => code.intValue

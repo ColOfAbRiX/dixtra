@@ -37,7 +37,7 @@ class BlankLineNormalizerSpec extends AnyWordSpec with Matchers {
       val input = s"val s = ${q}a\n\nb$q\n\n\n\nval t = 1\n"
       BlankLineNormalizer.collapseBlankRuns(input) shouldBe s"val s = ${q}a\n\nb$q\n\nval t = 1\n"
     }
-    
+
   }
 
 }

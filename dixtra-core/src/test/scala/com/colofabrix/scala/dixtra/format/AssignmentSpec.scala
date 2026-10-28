@@ -11,7 +11,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class AssignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "val and lazy val with a multiline collection RHS" should {
-    
+
     "push the RHS onto the next line after =" in {
       List("val", "lazy val").foreach { keyword =>
         val input =
@@ -43,7 +43,7 @@ class AssignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
       val input = "val x = None\n"
       input should formatTo(input)
     }
-    
+
   }
 
 }

@@ -19,7 +19,7 @@ import scala.meta.tokens.Token
 object ArrowSpacingNormalizer {
 
   /**
-    * Insert a single space around each `=>` where one is missing.
+   * Insert a single space around each `=>` where one is missing.
    */
   def normalize(formatted: String): String =
     SourceEdits.tokens(formatted).fold(formatted)(space)
@@ -55,7 +55,7 @@ object ArrowSpacingNormalizer {
     next.exists {
       case _: Token.HSpace => false
       case _: Token.AtEOL  => false
-      case _             => true
+      case _               => true
     }
 
 }

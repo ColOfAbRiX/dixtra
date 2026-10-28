@@ -105,7 +105,7 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
         val files = expected.map {
           case FileResult.Unchanged(path) => path
           case FileResult.Formatted(path) => path
-          case other                      => fail(other.toString)
+          case other => fail(other.toString)
         }
         runner(check = false).run(files).unsafeRunSync() shouldBe expected
       }
@@ -187,8 +187,8 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
 
     "report a failure for unparseable input without writing" in {
       withTempDir { dir =>
-        val file     = write(dir.resolve("Broken.scala"), "val x = (")
-        val results  = runner(check = false).run(List(file)).unsafeRunSync()
+        val file    = write(dir.resolve("Broken.scala"), "val x = (")
+        val results = runner(check = false).run(List(file)).unsafeRunSync()
         val outcomes =
           results.map {
             case _: FileResult.Failed => "failed"
@@ -202,9 +202,9 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
   "the runner isolating per-file failures" should {
     "keep processing other files when the formatter throws" in {
       withTempDir { dir =>
-        val bad     = write(dir.resolve("A.scala"), "val boom = 1\n")
-        val good    = write(dir.resolve("B.scala"), "val y =       1\n")
-        val format  = explodingFormat(new RuntimeException("kaboom"))
+        val bad    = write(dir.resolve("A.scala"), "val boom = 1\n")
+        val good   = write(dir.resolve("B.scala"), "val y =       1\n")
+        val format = explodingFormat(new RuntimeException("kaboom"))
         val results =
           FormatRunner
             .withFormat(false, format)
@@ -220,9 +220,9 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
 
     "report a stack overflow in the formatter as a failure" in {
       withTempDir { dir =>
-        val bad     = write(dir.resolve("A.scala"), "val boom = 1\n")
-        val good    = write(dir.resolve("B.scala"), "val x = 1\n")
-        val format  = explodingFormat(new StackOverflowError())
+        val bad    = write(dir.resolve("A.scala"), "val boom = 1\n")
+        val good   = write(dir.resolve("B.scala"), "val x = 1\n")
+        val format = explodingFormat(new StackOverflowError())
         val results =
           FormatRunner
             .withFormat(false, format)
@@ -277,12 +277,12 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
 
     List(false, true).foreach { check =>
       s"skip it without modifying it (check = ${check.toString})" in {
-          withTempDir { dir =>
-            val file    = write(dir.resolve("A.scala"), scala2)
-            val results = runner(check).run(List(file)).unsafeRunSync()
-            (results, read(file)) shouldBe (List(FileResult.Skipped(file, "scala 2")), scala2)
-          }
+        withTempDir { dir =>
+          val file    = write(dir.resolve("A.scala"), scala2)
+          val results = runner(check).run(List(file)).unsafeRunSync()
+          (results, read(file)) shouldBe (List(FileResult.Skipped(file, "scala 2")), scala2)
         }
+      }
     }
 
     "skip an sbt 1 build definition" in {

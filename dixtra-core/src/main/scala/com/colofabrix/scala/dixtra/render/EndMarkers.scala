@@ -35,9 +35,9 @@ private[render] object EndMarkers {
     for
       construct <- Constructs.of(stat)
       name      <- Constructs.endName(stat)
-            if construct.allowsEnd
-          if rendered.trim.contains('\n') && !rendered.stripTrailing.endsWith("}")
-          if ctx.braceStyle(construct, braced = false, ended = existing.isDefined) == BracePolicy.ForceEnd
+                   if construct.allowsEnd
+                   if rendered.trim.contains('\n') && !rendered.stripTrailing.endsWith("}")
+                   if ctx.braceStyle(construct, braced = false, ended = existing.isDefined) == BracePolicy.ForceEnd
     yield
       "end " + name
 

@@ -14,23 +14,28 @@ import scala.jdk.CollectionConverters.*
  */
 class EmbeddedSpec extends AnyWordSpec with Matchers {
 
-  private val unformatted = "val x =\n  list.filter(_ > 0).map(_ * 2).headOption\n"
+  private val unformatted = 
+    "val x =\n  list.filter(_ > 0).map(_ * 2).headOption\n"
 
   // The exit code and the lines given to `out` and `err`.
   private def run(args: String*): (Int, List[String], List[String]) =
-    val out  = ListBuffer.empty[String]
-    val err  = ListBuffer.empty[String]
+    val out = ListBuffer.empty[String]
+    val err = ListBuffer.empty[String]
+
     val code =
       Embedded.run(args.toArray, (line => out += line): Consumer[String], (line => err += line): Consumer[String])
+
     (code, out.toList, err.toList)
 
   private def git(dir: Path, args: String*): Unit =
     val command = List("git", "-c", "user.name=test", "-c", "user.email=test@example.com") ++ args
+
     val process =
       new ProcessBuilder(command.asJava)
         .directory(dir.toFile)
         .redirectErrorStream(true)
         .start()
+    
     val _ = process.getInputStream.readAllBytes()
     val _ = process.waitFor() shouldBe 0
 
@@ -69,7 +74,7 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
     "format the files its path-overrides match with their settings" in {
       withTempDir { dir =>
         val call = "def f =\n  compute(\n    firstArgument,\n    secondArgument,\n  )\n"
-        val _    =
+        val _ =
           write(dir.resolve(ConfigCli.fileName), """path-overrides { "legacy/**" { trailing-commas = never } }""")
         val old = write(dir.resolve("legacy").resolve("A.scala"), call)
         val src = write(dir.resolve("src").resolve("A.scala"), call)

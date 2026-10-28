@@ -28,8 +28,8 @@ object Render {
     sb.toString
 
   /**
-    * True when the document renders on a single line: it holds no hard line break.
-    */
+   * True when the document renders on a single line: it holds no hard line break.
+   */
   def isFlat(doc: Doc): Boolean =
     flatWidth(doc).isDefined
 
@@ -104,13 +104,13 @@ object Render {
           sb.append(line)
         else
           sb.append('\n')
-            if frozenLines.contains(i) || line.trim.isEmpty then
-              sb.append(line)
-            else
-              val leading  = line.takeWhile(_ == ' ').length
-              val relative = math.max(0, leading - sourceIndent)
-              sb.append(" " * (indent + relative))
-              sb.append(line.drop(leading))
+          if frozenLines.contains(i) || line.trim.isEmpty then
+            sb.append(line)
+          else
+            val leading  = line.takeWhile(_ == ' ').length
+            val relative = math.max(0, leading - sourceIndent)
+            sb.append(" " * (indent + relative))
+            sb.append(line.drop(leading))
         ()
       }
 

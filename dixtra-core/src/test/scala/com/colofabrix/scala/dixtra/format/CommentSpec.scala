@@ -11,7 +11,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "an overflowing argument list with a block comment" should {
-    val input    = "val xs = List(firstElement, /* note */ secondElement, thirdElement, fourthElement, fifthElement)\n"
+    val input = "val xs = List(firstElement, /* note */ secondElement, thirdElement, fourthElement, fifthElement)\n"
     val expected =
       """val xs =
         |  List(
@@ -37,7 +37,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "an argument list with a line comment" should {
     "explode even when it would fit" in {
-      val input    = "val xs = List(a, // n\n  b)\n"
+      val input = "val xs = List(a, // n\n  b)\n"
       val expected =
         """val xs =
           |  List(
@@ -89,7 +89,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "an overflowing signature with a comment between parameters" should {
     "explode its parameters, keeping the comment on its parameter" in {
-      val input    = "def f(a: Int, /* legacy */ b: Int, c: Int, d: Int, e: Int, f: Int, g: Int): Int = 1\n"
+      val input = "def f(a: Int, /* legacy */ b: Int, c: Int, d: Int, e: Int, f: Int, g: Int): Int = 1\n"
       val expected =
         """def f(
           |  a: Int,
@@ -107,7 +107,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a signature with a line comment on a parameter" should {
     "explode and keep the comment after the comma" in {
-      val input    = "def f(a: Int, // first\n  b: Int): Int = 1\n"
+      val input = "def f(a: Int, // first\n  b: Int): Int = 1\n"
       val expected =
         """def f(
           |  a: Int, // first
@@ -120,7 +120,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a chain with a comment before a dot" should {
     "explode, keeping the comment after the previous selection" in {
-      val input    = "val x = xs.map(f) /* c */ .filter(g).map(h).filter(anotherVeryLongPredicateName).toList\n"
+      val input = "val x = xs.map(f) /* c */ .filter(g).map(h).filter(anotherVeryLongPredicateName).toList\n"
       val expected =
         """val x =
           |  xs
@@ -150,7 +150,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "an if/else with a comment" should {
-    val input    = "val x = if cond then a // why\n  else b\n"
+    val input = "val x = if cond then a // why\n  else b\n"
     val expected =
       """val x =
         |  if cond then a // why

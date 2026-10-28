@@ -86,8 +86,8 @@ class ScalaReleasesSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "the syntax of a Scala 3 release" should {
     releases.foreach { (release, source) =>
       s"be formatted and stable for Scala $release" in {
-          source should formatTo(source)
-        }
+        source should formatTo(source)
+      }
     }
 
     // A known limitation: Scalameta (4.17.4) does not parse `into` on a type yet, so such a file fails and is left as

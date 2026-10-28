@@ -21,8 +21,8 @@ import scala.meta.*
 private[term] final class AssignRenderer(ctx: RenderContext, terms: TermRenderer, applications: ApplicationRenderer) {
 
   /**
-  * Render `lhs = rhs` at the given indent.
-  */
+   * Render `lhs = rhs` at the given indent.
+   */
   def render(assign: Term.Assign, indent: Int): Doc =
     render(assign, indent, None)
 

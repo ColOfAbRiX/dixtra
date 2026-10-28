@@ -10,7 +10,7 @@ import scala.meta.*
 
 /**
  * Renders method definitions (`def`): a signature (see [[SignatureRenderer]]) followed by `=` and a body (see
- * [[BodyLayout]]).
+ * [[com.colofabrix.scala.dixtra.render.term.BodyLayout]]).
  *
  * Of the Tier 1 break-points, the newline after `=` is taken first when that is stable: a body that does not fit after
  * `=` drops onto the next line with the signature kept on one line, as long as the body renders the same once below `=`
@@ -110,7 +110,7 @@ final class DefRenderer(
           if !down && Render.isFlat(body.onLine) && !body.hasComments && !body.stableBelow then
             pad ++ Doc.text(" = ") ++ body.onLine
           else
-             pad ++ Doc.text(" =")
+            pad ++ Doc.text(" =")
 
         signatures
           .render(signature, baseIndent, lineRest)

@@ -30,7 +30,7 @@ object AtomicFiles {
       .flatMap { target =>
         tempFileBeside(target).use { temp =>
           IO.blocking {
-          val _ = Files.write(temp, content.getBytes(StandardCharsets.UTF_8))
+            val _ = Files.write(temp, content.getBytes(StandardCharsets.UTF_8))
             copyPermissions(target, temp)
           } >>
           replaceRetrying(temp, target, MoveAttempts)

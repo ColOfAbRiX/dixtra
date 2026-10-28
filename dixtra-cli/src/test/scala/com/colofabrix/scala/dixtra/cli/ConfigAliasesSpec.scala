@@ -12,7 +12,7 @@ import scala.jdk.CollectionConverters.*
  */
 class ConfigAliasesSpec extends AnyWordSpec with Matchers {
 
-  private val references            = ConfigFactory.parseResources(getClass.getClassLoader, "reference.conf").resolve()
+  private val references = ConfigFactory.parseResources(getClass.getClassLoader, "reference.conf").resolve()
   private val settings: Set[String] =
     references
       .entrySet()
@@ -29,7 +29,7 @@ class ConfigAliasesSpec extends AnyWordSpec with Matchers {
     TrailingOverflow.values.map(_.key) ++ TrailingCommas.values.map(_.key))
       .toList
       .distinct ++
-      List("true", "false", "1", "3")
+    List("true", "false", "1", "3")
 
   "the table of aliases" should {
     "point every alias to settings of reference.conf" in {
@@ -73,7 +73,7 @@ class ConfigAliasesSpec extends AnyWordSpec with Matchers {
       ConfigCli
         .fromString("scaladoc.align-tags = true")
         .map(c => (c.alignment.scaladoc.tags, c.blankLines.beforeScaladoc)) shouldBe
-      Validated.valid((true, ScaladocSpacing.Always))
+        Validated.valid((true, ScaladocSpacing.Always))
     }
 
     "accept a setting given again with the same value" in {
@@ -95,7 +95,7 @@ class ConfigAliasesSpec extends AnyWordSpec with Matchers {
       ConfigCli
         .fromString("comments { align-trailing = true, trailing-overflow = keep }")
         .map(c => (c.alignment.trailingComments, c.trailingCommentOverflow)) shouldBe
-      Validated.valid((true, TrailingOverflow.Keep))
+        Validated.valid((true, TrailingOverflow.Keep))
     }
 
     "reject two construct aliases that give a shared setting different values" in {

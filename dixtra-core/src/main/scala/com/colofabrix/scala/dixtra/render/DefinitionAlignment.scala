@@ -94,9 +94,9 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
       case (d: Defn.Def, _)        => defs.render(d, indent, padTo, below)
       case (g: Defn.GivenAlias, _) => defs.renderGiven(g, indent, below)
       case (d: Decl.Def, _)        => defs.renderDecl(d, indent)
-     case (t: Defn.Type, _)        => typeAlias(t, padTo, below)
-     case _                        => None
-   }
+      case (t: Defn.Type, _)       => typeAlias(t, padTo, below)
+      case _                       => None
+    }
 
   // The width of a definition's text before its `=` on one line.
   private def headerWidth(stat: Stat): Option[Int] =
@@ -123,10 +123,10 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
   // parameters.
   private def assignmentBody(stat: Stat): Option[Term] =
     stat match {
-      case v: Defn.Val                          => Some(v.rhs)
-      case v: Defn.Var                          => Some(v.body)
+      case v: Defn.Val                                       => Some(v.rhs)
+      case v: Defn.Var                                       => Some(v.body)
       case g: Defn.GivenAlias if g.paramClauseGroups.isEmpty => Some(g.body)
-      case _                                    => None
+      case _                                                 => None
     }
 
   // A one-line type alias, its `=` padded to `padTo` when aligned and its body

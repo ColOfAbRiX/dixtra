@@ -50,7 +50,7 @@ class CliReportSpec extends AnyWordSpec with Matchers {
     // The lines `results` print on the standard output, without the summary.
     def printed(results: List[FileResult]): List[String] =
       val lines = ListBuffer.empty[String]
-      val _     =
+      val _ =
         CliReport
           .emit(results, check = false, quiet = false, CliReport.Printer(line => IO(lines += line), _ => IO.unit))
           .unsafeRunSync()

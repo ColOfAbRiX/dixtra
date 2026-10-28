@@ -58,7 +58,7 @@ object Doc {
    * Concatenate a sequence of documents.
    */
   def concat(docs: Iterable[Doc]): Doc =
-   docs.foldLeft(Doc.Empty: Doc)(_ ++ _)
+    docs.foldLeft(Doc.Empty: Doc)(_ ++ _)
 
   /**
    * Join documents with a separator document between each pair.
@@ -70,16 +70,15 @@ object Doc {
       .foldLeft(Doc.Empty: Doc) { case (acc, (d, i)) =>
         if i == 0 then acc ++ d else acc ++ separator ++ d
       }
-  
+
   /**
    * `content` in braces: `{`, the content one level in on the lines below, and `}` on a line of its own.
    */
   def braced(content: Doc): Doc =
     Doc.text("{") ++ Doc.Nest(2, Doc.Line ++ content) ++ Doc.Line ++ Doc.text("}")
-  
-  
+
   extension (self: Doc) {
-  
+
     /**
      * Sequentially compose this document with another.
      */
@@ -89,9 +88,9 @@ object Doc {
         case (l, Doc.Empty) => l
         case (l, r)         => Doc.Concat(l, r)
       }
-  
+
   }
-  
+
   /**
    * Lift a string into a text document.
    */

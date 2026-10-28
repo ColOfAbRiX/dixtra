@@ -43,7 +43,7 @@ class BraceSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a block holding a single definition" should {
     "become an indented block below =" in {
-      val input    = "def f(): Unit = { val x = 1 }\n"
+      val input = "def f(): Unit = { val x = 1 }\n"
       val expected =
         """def f(): Unit =
           |  val x = 1

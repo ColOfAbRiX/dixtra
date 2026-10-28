@@ -128,7 +128,7 @@ private[render] object Alignment {
     segments: T => Option[List[Int]],
     fitsAt: (T, List[Int]) => Boolean,
   ): List[Option[List[Int]]] =
-    val indexed      = items.toVector
+    val indexed    = items.toVector
     val candidates = indexed.map(item => eligible(item) && segments(item).exists(_.nonEmpty))
     val settled =
       runs(indexed, candidates, adjacency[T](ctx, grouping))
@@ -137,13 +137,13 @@ private[render] object Alignment {
         }
         .toMap
     indexed.indices.toList.map(settled.get)
- 
+
   private def adjacency[T <: Tree](ctx: RenderContext, grouping: Grouping): (T, T) => Boolean =
     grouping match {
       case Grouping.Lines        => (prev, next) => adjacent(ctx, prev, next)
       case Grouping.ListElements => (prev, next) => listAdjacent(ctx, prev, next)
     }
- 
+
   private def aligned[T <: Tree](
     items: List[T],
     adjacent: (T, T) => Boolean,
@@ -151,9 +151,9 @@ private[render] object Alignment {
     width: T => Option[Int],
     fitsAt: (T, Int) => Boolean,
   ): List[Option[Int]] =
-    val indexed      = items.toVector
+    val indexed    = items.toVector
     val candidates = indexed.map(item => eligible(item) && width(item).isDefined)
-    val groups      = runs(indexed, candidates, adjacent)
+    val groups     = runs(indexed, candidates, adjacent)
     val settled =
       groups
         .flatMap { group =>
@@ -161,7 +161,7 @@ private[render] object Alignment {
         }
         .toMap
     indexed.indices.toList.map(settled.get)
- 
+
   // Index runs of consecutive eligible items.
   private def runs[T <: Tree](
     items: Vector[T],
@@ -198,7 +198,7 @@ private[render] object Alignment {
       val comments = ctx.commentsBetween(prevEnd, nextStart)
       val lines    = comments.foldRight(gap)((c, g) => g.patch(c.start - prevEnd, "c", c.end - c.start)).split("\n", -1)
       lines.length >= 2 && lines.drop(1).dropRight(1).forall(_.trim.nonEmpty)
-    else 
+    else
       gap.count(_ == '\n') == 1 && ctx.commentsBetween(prevEnd + newline, nextStart).isEmpty
 
   // True when no comment line separates two list elements (a comment trailing `prev` on its line is allowed; blank
@@ -258,8 +258,8 @@ private[render] object Alignment {
         val between =
           group.foldRight(List(List.empty[Int])) {
             case (i, runs) if broken.contains(i) => Nil :: runs
-            case (i, current :: rest)          => (i :: current) :: rest
-            case (i, Nil)                      => List(List(i))
+            case (i, current :: rest)            => (i :: current) :: rest
+            case (i, Nil)                        => List(List(i))
           }
         broken.map(i => (i, Placement.Broken)) ++ between.flatMap(split(_, width, fitsAt))
 

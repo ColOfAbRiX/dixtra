@@ -60,7 +60,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "a given alias with parameters" should {
 
     "break its using clause like a def" in {
-      val input    = "given showList[A](using showElement: Show[A], ordering: Ordering[A]): Show[List[A]] = ShowList()\n"
+      val input = "given showList[A](using showElement: Show[A], ordering: Ordering[A]): Show[List[A]] = ShowList()\n"
 
       val expected =
         """given showList[A](using
@@ -128,6 +128,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "definition-site.groups-separator = previous-group" should {
+
     val lastParameter =
       Config.withMaxColumn(80).copy(definitionSite = DefinitionSiteConfig(GroupsSeparator.PreviousGroup))
 
@@ -208,7 +209,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "an implicit clause" should {
 
     "keep the implicit keyword on the opening line when exploded" in {
-      val input    = "def someName(parameterOne: Int)(implicit ctx: Context): Int = 1\n"
+      val input = "def someName(parameterOne: Int)(implicit ctx: Context): Int = 1\n"
 
       val expected =
         """def someName(
@@ -246,7 +247,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "an empty parameter clause" should {
 
     "never explode into a whitespace-only line" in {
-      val input    = "def someVeryLongFunctionNameThatIsReallyLongIndeed(): SomeReallyLongReturnType = 1\n"
+      val input = "def someVeryLongFunctionNameThatIsReallyLongIndeed(): SomeReallyLongReturnType = 1\n"
 
       val expected =
         """def someVeryLongFunctionNameThatIsReallyLongIndeed(): SomeReallyLongReturnType =
@@ -257,7 +258,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "stay glued when a later clause explodes" in {
-      val input    = "def f()(alpha: Int, beta: Int): Int = 1\n"
+      val input = "def f()(alpha: Int, beta: Int): Int = 1\n"
 
       val expected =
         """def f()(
@@ -306,7 +307,8 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "a body that would change below =" should {
-    val input    = "def someFunctionName(parameterOne: String, parameterTwo: Int): Int = xs.map(f).filter(p).sum\n"
+
+    val input = "def someFunctionName(parameterOne: String, parameterTwo: Int): Int = xs.map(f).filter(p).sum\n"
     val expected =
       """def someFunctionName(
         |  parameterOne: String,
@@ -350,7 +352,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |](something: Int,
           |): Int = 1
           |""".stripMargin
-          
+
       input should formatTo(expected, 40)
     }
 
@@ -359,7 +361,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "higher-kinded type parameters" should {
 
     "stay on one line when they fit" in {
-      val input    = "def something[F[_, _]: Async, G[_]](something: Int): Int = 1\n"
+      val input = "def something[F[_, _]: Async, G[_]](something: Int): Int = 1\n"
 
       val expected =
         """def something[F[_, _]: Async, G[_]](
@@ -387,7 +389,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, 40)
     }
-    
+
   }
 
 }

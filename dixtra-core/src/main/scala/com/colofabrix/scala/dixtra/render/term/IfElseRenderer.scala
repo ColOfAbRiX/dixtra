@@ -37,7 +37,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
   // The if/else, its branches below their `then` / `else` when `explode`, else by the `body.if` policy.
   private def layout(ifTerm: Term.If, indent: Int, explode: Boolean): Doc =
     val (braces, ifThen) = header(ifTerm)
-    val branches       = new Branches(ifTerm, indent, ifThen)
+    val branches         = new Branches(ifTerm, indent, ifThen)
     val policy =
       ctx
         .config
@@ -56,7 +56,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
         .getOrElse {
           if braces then withBraces(ifTerm, branches, indent) else plain(ifTerm, branches, indent)
         }
- 
+
   // Whether the if/else uses braces, and its `if (cond)` / `if cond then` part.
   private def header(ifTerm: Term.If): (Boolean, Doc) =
     val condEnd = ctx.span(ifTerm.cond)._2
@@ -66,7 +66,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
       if braces then Doc.text("if (") ++ ctx.ownSourceDoc(ifTerm.cond) ++ Doc.text(")")
       else Doc.text("if ") ++ ctx.ownSourceDoc(ifTerm.cond) ++ Doc.text(" then")
     (braces, ifThen)
- 
+
   // The `if`s of an if/else and of its `else if` chain.
   private def chain(ifTerm: Term.If): List[Term.If] =
     ifTerm :: elseIf(ifTerm).toList.flatMap(chain)
@@ -150,33 +150,33 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
   // line.
   private def withBraces(ifTerm: Term.If, branches: Branches, indent: Int): Doc =
     def braced(branch: Term): Doc = Doc.braced(terms.bracedBody(branch, indent + 2, Construct.If))
-    val thenPart           = branches.ifThen ++ Doc.text(" ") ++ braced(ifTerm.thenp)
+    val thenPart                  = branches.ifThen ++ Doc.text(" ") ++ braced(ifTerm.thenp)
     if branches.elseKeyword.isEmpty then
       thenPart
     else
       elseIf(ifTerm) match {
         case Some(nested) => thenPart ++ Doc.text(" else ") ++ layout(nested, indent, explode = true)
-        case None          => thenPart ++ Doc.text(" else ") ++ braced(ifTerm.elsep)
+        case None         => thenPart ++ Doc.text(" else ") ++ braced(ifTerm.elsep)
       }
- 
+
   private def elseKeyword(ifTerm: Term.If): Option[Token] =
     ctx.tokensBetween(ctx.span(ifTerm.thenp)._2, ifTerm.pos.end).collectFirst { case t: Token.KwElse => t }
- 
+
   // The `if` of an `else if` continuation.
   private def elseIf(ifTerm: Term.If): Option[Term.If] =
     ifTerm.elsep match {
       case nested: Term.If if !ctx.isParenthesized(nested) => Some(nested)
-      case _                                             => None
+      case _                                               => None
     }
- 
+
   // An if/else with comments between its parts keeps the author's choice of line breaks at each break-point (after
   // `then`, before and after `else`), with the comments in place and canonical indentation: branch bodies one level in,
   // `else` aligned with `if`. A comment before the condition keeps the whole term verbatim.
   private def commented(ifTerm: Term.If, branches: Branches, indent: Int): Doc =
     val (thenStart, thenEnd) = ctx.span(ifTerm.thenp)
-    val condComments       = ctx.commentsBetween(ifTerm.pos.start, ifTerm.cond.pos.start)
-    val thenGap            = CommentGaps.separator(ctx, ifTerm.cond.pos.end, thenStart)
-    val thenPart           = branches.ifThen ++ Doc.Nest(2, thenGap ++ branches.thenDoc)
+    val condComments         = ctx.commentsBetween(ifTerm.pos.start, ifTerm.cond.pos.start)
+    val thenGap              = CommentGaps.separator(ctx, ifTerm.cond.pos.end, thenStart)
+    val thenPart             = branches.ifThen ++ Doc.Nest(2, thenGap ++ branches.thenDoc)
     branches.elseKeyword match {
       case _ if condComments.nonEmpty =>
         ctx.ownSourceDoc(ifTerm)
@@ -193,6 +193,6 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
               Doc.Nest(2, elseGap ++ branches.elseDoc)
           }
         thenPart ++ CommentGaps.separator(ctx, thenEnd, kwElse.start) ++ Doc.text("else") ++ elseBranch
-      }
+    }
 
 }

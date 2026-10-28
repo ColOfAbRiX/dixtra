@@ -168,15 +168,16 @@ trait FormatMatchers {
     val actualLines   = actual.split("\n", -1).toVector
     val maxLines      = math.max(expectedLines.length, actualLines.length)
 
-    val diffLines     = (0 until maxLines)
-      .map { i =>
-        val e      = expectedLines.lift(i).getOrElse("<missing>")
-        val a      = actualLines.lift(i).getOrElse("<missing>")
-        val marker = if e == a then "   " else " ! "
-        s"$marker line ${i + 1}:\n$marker   expected: ${quote(e)}\n$marker   actual:   ${quote(a)}"
-      }
-      .mkString("\n")
-      
+    val diffLines =
+      (0 until maxLines)
+        .map { i =>
+          val e      = expectedLines.lift(i).getOrElse("<missing>")
+          val a      = actualLines.lift(i).getOrElse("<missing>")
+          val marker = if e == a then "   " else " ! "
+          s"$marker line ${i + 1}:\n$marker   expected: ${quote(e)}\n$marker   actual:   ${quote(a)}"
+        }
+        .mkString("\n")
+
     s"Formatted output did not match expected.\n$diffLines"
 
   private def quote(line: String): String =

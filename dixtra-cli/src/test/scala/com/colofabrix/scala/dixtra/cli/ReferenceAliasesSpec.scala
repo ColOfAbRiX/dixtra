@@ -16,7 +16,7 @@ class ReferenceAliasesSpec extends AnyWordSpec with Matchers {
   private val text =
     Using.resource(Source.fromResource("references.aliases.conf", getClass.getClassLoader))(_.mkString)
 
-  private val file       = ConfigFactory.parseString(text)
+  private val file = ConfigFactory.parseString(text)
   private val references =
     ConfigFactory
       .parseResources(getClass.getClassLoader, "reference.conf")

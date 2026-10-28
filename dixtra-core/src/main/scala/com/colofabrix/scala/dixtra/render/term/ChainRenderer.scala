@@ -192,7 +192,7 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
   private def joinsHead(policy: ChainHeadPolicy, member: Term): Boolean =
     parts(member).exists { s =>
       val qualEnd = ctx.span(s.qual)._2
-      val clean    = ctx.commentsBetween(qualEnd, s.name.pos.start).isEmpty
+      val clean   = ctx.commentsBetween(qualEnd, s.name.pos.start).isEmpty
       policy match {
         case ChainHeadPolicy.AlwaysJoin  => clean
         case ChainHeadPolicy.Keep        => clean && !gapBeforeDot(member).contains('\n')
@@ -320,8 +320,8 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
     def loop(t: Term, acc: List[Term]): (Term, List[Term]) =
       parts(t) match {
         case Some(s) if ctx.isParenthesized(s.qual) => (s.qual, t :: acc)
-        case Some(s)                             => loop(s.qual, t :: acc)
-        case None                                => (t, acc)
+        case Some(s)                                => loop(s.qual, t :: acc)
+        case None                                   => (t, acc)
       }
     loop(term, Nil)
 

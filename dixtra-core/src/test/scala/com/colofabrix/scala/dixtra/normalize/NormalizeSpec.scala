@@ -26,7 +26,7 @@ class NormalizeSpec extends AnyWordSpec with Matchers {
   }
 
   "Normalize" should {
-    
+
     "be idempotent" in {
       val input =
         s"""object A {
@@ -47,7 +47,7 @@ class NormalizeSpec extends AnyWordSpec with Matchers {
            |""".stripMargin
 
       val once = normalize(input)
-      
+
       normalize(once) shouldBe once
     }
 

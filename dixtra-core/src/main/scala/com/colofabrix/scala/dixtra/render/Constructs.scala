@@ -13,7 +13,7 @@ private[render] object Constructs {
    */
   def of(tree: Tree): Option[Construct] =
     tree match {
-      case c: Defn.Class if c.mods.exists(_.is[Mod.Case])       => Some(Construct.CaseClass)
+      case c: Defn.Class if c.mods.exists(_.is[Mod.Case])     => Some(Construct.CaseClass)
       case c: Defn.Class if c.mods.exists(_.is[Mod.Abstract]) => Some(Construct.AbstractClass)
       case _: Defn.Class                                      => Some(Construct.Class)
       case _: Defn.Object                                     => Some(Construct.Object)
@@ -43,31 +43,31 @@ private[render] object Constructs {
    */
   def endName(tree: Tree): Option[String] =
     tree match {
-      case d: Defn.Class           => Some(d.name.value)
-      case d: Defn.Object          => Some(d.name.value)
-      case d: Pkg.Object           => Some(d.name.value)
-      case d: Defn.Trait           => Some(d.name.value)
-      case d: Defn.Enum            => Some(d.name.value)
-      case _: Defn.ExtensionGroup  => Some("extension")
-      case d: Defn.Given           => Some(d.name.value).filter(_.nonEmpty).orElse(Some("given"))
-      case d: Defn.GivenAlias            => Some(d.name.value).filter(_.nonEmpty).orElse(Some("given"))
-      case d: Defn.Def                   => Some(d.name.value)
-      case d: Defn.Val                   => singleName(d.pats)
-      case d: Defn.Var                   => singleName(d.pats)
-      case p: Pkg                        => lastName(p.ref)
-      case _: Term.NewAnonymous          => Some("new")
-      case _: Term.Try                   => Some("try")
-      case _: Term.Match                 => Some("match")
-      case _: Term.While                 => Some("while")
-      case _: Term.If                    => Some("if")
+      case d: Defn.Class                  => Some(d.name.value)
+      case d: Defn.Object                 => Some(d.name.value)
+      case d: Pkg.Object                  => Some(d.name.value)
+      case d: Defn.Trait                  => Some(d.name.value)
+      case d: Defn.Enum                   => Some(d.name.value)
+      case _: Defn.ExtensionGroup         => Some("extension")
+      case d: Defn.Given                  => Some(d.name.value).filter(_.nonEmpty).orElse(Some("given"))
+      case d: Defn.GivenAlias             => Some(d.name.value).filter(_.nonEmpty).orElse(Some("given"))
+      case d: Defn.Def                    => Some(d.name.value)
+      case d: Defn.Val                    => singleName(d.pats)
+      case d: Defn.Var                    => singleName(d.pats)
+      case p: Pkg                         => lastName(p.ref)
+      case _: Term.NewAnonymous           => Some("new")
+      case _: Term.Try                    => Some("try")
+      case _: Term.Match                  => Some("match")
+      case _: Term.While                  => Some("while")
+      case _: Term.If                     => Some("if")
       case _: Term.For | _: Term.ForYield => Some("for")
-      case _                             => None
+      case _                              => None
     }
 
   private def singleName(pats: List[Pat]): Option[String] =
     pats match {
       case (v: Pat.Var) :: Nil => Some(v.name.value)
-      case _               => None
+      case _                   => None
     }
 
   private def lastName(ref: Term.Ref): Option[String] =
