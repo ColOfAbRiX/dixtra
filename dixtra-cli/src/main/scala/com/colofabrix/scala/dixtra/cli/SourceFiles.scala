@@ -74,10 +74,12 @@ object SourceFiles {
         .asScala
         .map(_.toString)
         .toList
-    val prefixes = segments.indices.map(i => segments.take(i + 1).mkString("/"))
-    val relative = segments.mkString("/")
-    selection.include.exists(_.matches(relative)) &&
-    !selection.exclude.exists(pattern => prefixes.exists(pattern.matches))
+    val prefixes       = segments.indices.map(i => segments.take(i + 1).mkString("/"))
+    val relative       = segments.mkString("/")
+    val matchesInclude = selection.include.exists(_.matches(relative))
+    val excluded       = selection.exclude.exists(pattern => prefixes.exists(pattern.matches))
+
+    matchesInclude && !excluded
 
   // A glob as a regular expression: `**/` matches any number of directories, `**` anything, `*` anything within a
   // segment, `?` one character within one.

@@ -20,10 +20,10 @@ import scala.util.control.NonFatal
  *     (aligned on one column for the whole tag list with `alignTags`). A one-line scaladoc that fits stays as it is.
  *     Blank lines between a scaladoc and its definition are removed.
  *
- * Blank lines, tags, list items, headings and tables start their own paragraph;
- * code (fences, indented lines and lines that look like code) and words longer than the line are never changed. A line
- * never ends with a word that would make it look like code, nor starts with one that would make it a list item or a
- * tag, so the result is stable on a second run.
+ * Blank lines, tags, list items, headings and tables start their own paragraph; code (fences, indented lines and lines
+ * that look like code) and words longer than the line are never changed. A line never ends with a word that would make
+ * it look like code, nor starts with one that would make it a list item or a tag, so the result is stable on a second
+ * run.
  *
  * The pass is token-aware; if the text cannot be tokenised, the input is returned unchanged (safety net).
  */
@@ -39,10 +39,12 @@ object CommentNormalizer {
         .fold(source) { tokens =>
           val text     = new CommentSource(source)
           val comments = tokens.collect { case c: Token.Comment => c }
+
           val edits =
             lineComments(text, comments, maxColumn) ++
             blockComments(text, comments, maxColumn, alignTags) ++
             docGaps(text, comments)
+
           SourceEdits.applyEdits(source, edits)
         }
     } catch {
@@ -62,13 +64,17 @@ object CommentNormalizer {
   // The source, with the line queries on it the rules need.
   private final class CommentSource(val source: String) {
 
-    def lineStart(offset: Int): Int = SourceEdits.lineStart(source, offset)
+    def lineStart(offset: Int): Int =
+      SourceEdits.lineStart(source, offset)
 
-    def lineEnd(offset: Int): Int = SourceEdits.lineEnd(source, offset)
+    def lineEnd(offset: Int): Int =
+      SourceEdits.lineEnd(source, offset)
 
-    def column(offset: Int): Int = offset - lineStart(offset)
+    def column(offset: Int): Int =
+      offset - lineStart(offset)
 
-    def lineWidth(offset: Int): Int = lineEnd(offset) - lineStart(offset)
+    def lineWidth(offset: Int): Int =
+      lineEnd(offset) - lineStart(offset)
 
     // Only whitespace before the comment on its first line and after it on its last.
     def ownLine(c: Token): Boolean =
@@ -86,6 +92,7 @@ object CommentNormalizer {
   private def lineComments(text: CommentSource, comments: Vector[Token.Comment], maxColumn: Int): List[Edit] =
     val singles         = comments.filter(c => c.text.startsWith("//") && !isDirective(c))
     val (own, trailing) = singles.partition(text.ownLine)
+
     val spacing =
       trailing
         .toList
@@ -93,7 +100,10 @@ object CommentNormalizer {
           val withSpace = spaced(c.text)
           Option.when(withSpace != c.text)(Edit(c.start, c.end, withSpace))
         }
-    spacing ++ lineCommentRuns(text, own).flatMap(reflowLines(text, _, maxColumn))
+
+    val reflowed = lineCommentRuns(text, own).flatMap(reflowLines(text, _, maxColumn))
+
+    spacing ++ reflowed
 
   private def isDirective(c: Token.Comment): Boolean =
     val content = c.text.drop(2)
@@ -101,7 +111,8 @@ object CommentNormalizer {
 
   private def spaced(comment: String): String =
     val content = comment.drop(2)
-    if content.isEmpty || content.headOption.exists(_.isWhitespace) then comment else "// " + content
+    if content.isEmpty || content.headOption.exists(_.isWhitespace) then comment
+    else "// " + content
 
   // Runs of own-line `//` comments on consecutive lines at the same column.
   private def lineCommentRuns(text: CommentSource, comments: Vector[Token.Comment]): List[Vector[Token.Comment]] =
@@ -153,8 +164,12 @@ object CommentNormalizer {
     val oneLine   = !c.text.contains('\n')
     val contents  = docContents(c.text, col)
     val untouched = (oneLine && text.lineWidth(c.start) <= maxColumn) || contents.exists(isBanner)
+
+    val paras = docParas(parse(contents, withTags = true))
+    val width = maxColumn - col - 3
+
     Option
-      .unless(untouched)(render(docParas(parse(contents, withTags = true)), maxColumn - col - 3, alignTags))
+      .when(!untouched)(render(paras, width, alignTags))
       .filter(_.nonEmpty)
       .map { lines =>
         val indent = " " * col
@@ -173,13 +188,24 @@ object CommentNormalizer {
         .stripSuffix("*/")
         .split("\n", -1)
         .toVector
-    lines.headOption.map(_.trim).toVector ++ lines.drop(1).map(withoutGutter(_, col))
+
+    val first =
+      lines
+        .headOption
+        .map(_.trim)
+        .toVector
+    val rest = lines.drop(1).map(withoutGutter(_, col))
+
+    first ++ rest
 
   private def withoutGutter(line: String, col: Int): String =
     val trimmed = line.dropWhile(_ == ' ')
     if trimmed.startsWith("*") then
       val content = trimmed.drop(1)
-      (if content.startsWith(" ") then content.drop(1) else content).stripTrailing
+      (if content.startsWith(" ") then
+        content.drop(1)
+      else
+        content).stripTrailing
     else
       line.drop(math.min(SourceEdits.indent(line), col + 3)).stripTrailing
 
@@ -191,9 +217,12 @@ object CommentNormalizer {
         .reverse
         .dropWhile(_ == Blank)
         .reverse
+
     val firstTag = trimmed.indexWhere { case _: Tag => true; case _ => false }
-    if firstTag <= 0 then trimmed
-    else trimmed.take(firstTag).reverse.dropWhile(_ == Blank).reverse ++ Vector(Blank) ++ trimmed.drop(firstTag)
+    if firstTag <= 0 then
+      trimmed
+    else
+      trimmed.take(firstTag).reverse.dropWhile(_ == Blank).reverse ++ Vector(Blank) ++ trimmed.drop(firstTag)
 
   private def plainBlock(text: CommentSource, c: Token.Comment, maxColumn: Int): Option[Edit] =
     val col = text.column(c.start)
@@ -207,12 +236,13 @@ object CommentNormalizer {
 
   // A multi-line `/* ... */` reflowed with its own gutter (` * ` lines) or, without one, with the indent of its lines.
   // The opening line keeps its text unless the text lines continue under it; a `*/` on its own line stays there.
-  private def multiLineBlock(c: Token.Comment, col: Int, maxColumn: Int): Option[Edit] =
+  private def multiLineBlock(comment: Token.Comment, col: Int, maxColumn: Int): Option[Edit] =
     val lines =
-      c
+      comment
         .text
         .split("\n", -1)
         .toVector
+
     val opener =
       lines
         .headOption
@@ -239,19 +269,27 @@ object CommentNormalizer {
       else if closeInline then body.dropRight(1) ++ body.lastOption.map(_ + " */")
       else body :+ closing
 
-    val out = (head ++ closed).mkString("\n")
-    Option.when(rendered.nonEmpty && !contents.exists(isBanner) && out != c.text)(Edit(c.start, c.end, out))
+    val out      = (head ++ closed).mkString("\n")
+    val reflowed = rendered.nonEmpty && !contents.exists(isBanner) && out != comment.text
+
+    Option.when(reflowed) {
+      Edit(comment.start, comment.end, out)
+    }
 
   // How the text lines of a multi-line block comment are laid out: after a gutter (`prefix`, ending with `*`) or at a
   // margin (`prefix`, only spaces), the first one on the opening line when `joinsOpener`.
   private final case class BlockShape(gutter: Boolean, prefix: String, margin: Int, joinsOpener: Boolean) {
 
     // The column where the text starts.
-    def textColumn: Int = prefix.length + (if gutter then 1 else 0)
+    def textColumn: Int =
+      prefix.length + (if gutter then 1 else 0)
 
     // The text of a source line, without the gutter or the margin.
     def content(line: String, col: Int): String =
-      if gutter then withoutGutter(line, col) else line.drop(math.min(SourceEdits.indent(line), margin)).stripTrailing
+      if gutter then
+        withoutGutter(line, col)
+      else
+        line.drop(math.min(SourceEdits.indent(line), margin)).stripTrailing
 
     // The output line of the `index`-th rendered text line.
     def line(text: String, index: Int): String =
@@ -271,11 +309,13 @@ object CommentNormalizer {
     // The shape of a comment at `col`, by its non-blank text lines `filled`.
     def of(opener: String, filled: Vector[String], col: Int): BlockShape =
       val gutter = filled.nonEmpty && filled.forall(_.trim.startsWith("*"))
+
       val margin =
         filled
           .map(SourceEdits.indent)
           .minOption
           .getOrElse(col + 3)
+
       val prefix =
         if gutter then
           filled
@@ -284,6 +324,7 @@ object CommentNormalizer {
             .getOrElse(" " * col + " *")
         else
           " " * margin
+
       BlockShape(gutter, prefix, margin, opener.trim.nonEmpty && !gutter && margin == col + 3)
 
   }
@@ -314,7 +355,7 @@ object CommentNormalizer {
           .flatMap { m =>
             val next     = rest.drop(m.end).dropWhile(_.isWhitespace)
             val separate = List("//", "/*", "package", "import", "}").exists(next.startsWith) || next.isEmpty
-            Option.unless(separate)(Edit(eol + 1, eol + m.end, ""))
+            Option.when(!separate)(Edit(eol + 1, eol + m.end, ""))
           }
       }
 
@@ -325,7 +366,7 @@ object CommentNormalizer {
   private val itemMarker = ("^" + marker + "$").r
   private val noteStart  = """^[A-Z]{2,}(\([^)]*\))?:.*""".r
   private val banner     = """^[-=*#_~+/\\]{3,}$""".r
-  private val codeEnds   = List("{", "}", ";", "=", "=>", "(")
+  private val codeEnds   = List("{", "}", "=", "=>", "(")
 
   private def split(text: String): Vector[String] =
     text
@@ -334,7 +375,8 @@ object CommentNormalizer {
       .toVector
       .filter(_.nonEmpty)
 
-  private def isBanner(line: String): Boolean = banner.matches(line.trim)
+  private def isBanner(line: String): Boolean =
+    banner.matches(line.trim)
 
   private def parse(contents: Vector[String], withTags: Boolean): Vector[Para] =
     val baseLead =
@@ -343,33 +385,47 @@ object CommentNormalizer {
         .map(SourceEdits.indent)
         .minOption
         .getOrElse(0)
+
     contents
       .foldLeft((Vector.empty[Para], false)) { case ((paras, fenced), line) =>
         val trimmed = line.trim
-        if fenced then (paras :+ Verbatim(line), !closesFence(trimmed))
-        else if trimmed.isEmpty then (paras :+ Blank, false)
-        else if opensFence(trimmed) then (paras :+ Verbatim(line), !closesOnSameLine(trimmed))
-        else (classify(paras, line, trimmed, baseLead, withTags), false)
+        if fenced then
+          (paras :+ Verbatim(line), !closesFence(trimmed))
+        else if trimmed.isEmpty then
+          (paras :+ Blank, false)
+        else if opensFence(trimmed) then
+          (paras :+ Verbatim(line), !closesOnSameLine(trimmed))
+        else
+          (classify(paras, line, trimmed, baseLead, withTags), false)
       }
       ._1
 
-  private def opensFence(t: String): Boolean = t.startsWith("```") || t.startsWith("{{{") || t.startsWith("<pre")
+  private def opensFence(t: String): Boolean =
+    t.startsWith("```") || t.startsWith("{{{") || t.startsWith("<pre")
 
-  private def closesFence(t: String): Boolean = t.startsWith("```") || t.contains("}}}") || t.contains("</pre")
+  private def closesFence(t: String): Boolean =
+    t.startsWith("```") || t.contains("}}}") || t.contains("</pre")
 
   private def closesOnSameLine(t: String): Boolean =
-    (t.startsWith("{{{") && t.contains("}}}")) || (t.startsWith("<pre") && t.contains("</pre")) ||
-    (t.startsWith("```") && t.drop(3).contains("```"))
+    val closesBraces   = t.startsWith("{{{") && t.contains("}}}")
+    val closesHtml     = t.startsWith("<pre") && t.contains("</pre")
+    val closesBacktick = t.startsWith("```") && t.drop(3).contains("```")
+
+    closesBraces || closesHtml || closesBacktick
 
   // A banner, a table row, a heading, or a line aligned with spaces inside it (columns, decorations): reflowing would
   // lose its layout.
   private def isVerbatimLine(t: String): Boolean =
-    isBanner(t) || t.startsWith("|") || t.startsWith("#") || (t.length > 1 && t.startsWith("=") && t.endsWith("=")) ||
-    t.contains("  ")
+    val tableOrHeading = t.startsWith("|") || t.startsWith("#")
+    val equalsHeading  = t.length > 1 && t.startsWith("=") && t.endsWith("=")
+
+    isBanner(t) || tableOrHeading || equalsHeading || t.contains("  ")
 
   // A line ending or starting like code, or with an assignment (`dt = 1s`).
   private def codeLike(t: String): Boolean =
-    codeEnds.exists(t.endsWith) || t.startsWith("}") || t.startsWith(")") || t.contains(" = ")
+    val endsLikeCode = codeEnds.exists(t.endsWith) || t.startsWith("}") || t.startsWith(")")
+
+    endsLikeCode || t.contains(" = ")
 
   private def classify(
     paras: Vector[Para],
@@ -381,6 +437,7 @@ object CommentNormalizer {
     val words    = split(trimmed)
     val inTag    = paras.lastOption.exists { case _: Tag => true; case _ => false }
     val itemMark = listMarker.findPrefixMatchOf(trimmed).map(_.group(1))
+
     if withTags && trimmed.startsWith("@") then
       paras :+ tag(words)
     else if inTag && !isBanner(trimmed) && itemMark.isEmpty then
@@ -407,7 +464,8 @@ object CommentNormalizer {
     }
 
   // The tags that take an argument.
-  private val withArgument = Set("@param", "@tparam", "@throws", "@define")
+  private val withArgument =
+    Set("@param", "@tparam", "@throws", "@define")
 
   // A tag with its head: `@param name`, `@tparam name` and `@throws Type` take their argument, the other tags only
   // their name.
@@ -427,6 +485,7 @@ object CommentNormalizer {
           .getOrElse(0)
       else
         0
+
     paras.flatMap {
       case Blank =>
         Vector("")
@@ -453,7 +512,9 @@ object CommentNormalizer {
           case Some(_)                                              => acc :+ (cont + unit)
         }
       }
-    if lines.isEmpty then Vector(first.stripTrailing) else lines
+
+    if lines.isEmpty then Vector(first.stripTrailing)
+    else lines
 
   // The words grouped so that no line starts with a word that would make it a list item, a tag or code, nor ends with
   // one that would make it look like code.
@@ -466,7 +527,9 @@ object CommentNormalizer {
     }
 
   private def badStart(w: String): Boolean =
-    itemMarker.matches(w) || List("@", "|", "#", "=", "}", ")", "```", "{{{", "<pre").exists(w.startsWith) ||
-    noteStart.matches(w) || isBanner(w)
+    val looksStructured = itemMarker.matches(w) || noteStart.matches(w)
+    val looksReserved   = List("@", "|", "#", "=", "}", ")", "```", "{{{", "<pre").exists(w.startsWith)
+
+    looksStructured || looksReserved || isBanner(w)
 
 }

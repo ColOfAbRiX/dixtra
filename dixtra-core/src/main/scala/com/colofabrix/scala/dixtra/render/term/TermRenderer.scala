@@ -18,8 +18,8 @@ import scala.meta.tokens.Token
  * a verbatim slice of their original source.
  *
  * Two safety rules apply to every construct that is rebuilt from its children:
- *   - grouping parentheses that Scalameta leaves out of a term's position are
- *     re-emitted around the rendered term (here), so precedence never changes;
+ *   - grouping parentheses that Scalameta leaves out of a term's position are re-emitted around the rendered term
+ *     (here), so precedence never changes;
  *   - if a comment sits in a gap the rebuild would drop, the term is kept verbatim (statement blocks and lists instead
  *     re-attach their comments).
  *
@@ -230,15 +230,21 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
   // an operation from `operators`.
   private def callOperation(call: Term.Apply, operators: Set[String]): Option[(String, Term.ApplyInfix)] =
     (call.fun, call.argClause.values) match {
-      case (fun: Term.Name, (infix: Term.ApplyInfix) :: Nil)
-          if call.argClause.mod.isEmpty && operators(infix.op.value) && !ctx.isParenthesized(call) &&
-            !ctx.hasGapComments(call) && !ctx.hasGapComments(call.argClause) =>
+      case (fun: Term.Name, (infix: Term.ApplyInfix) :: Nil) if writtenOperation(call, infix, operators) =>
         val (start, end) = ctx.span(infix)
         val written      = ctx.slice(fun.pos.end, start).trim == "(" && ctx.slice(end, call.pos.end).trim == ")"
         Option.when(written)((fun.value, infix))
       case _ =>
         None
     }
+
+  // The call is plainly written: no modifiers on its clause, no parentheses around it, no comments in its gaps, and an
+  // operation among `operators`.
+  private def writtenOperation(call: Term.Apply, infix: Term.ApplyInfix, operators: Set[String]): Boolean =
+    val plain      = call.argClause.mod.isEmpty && !ctx.isParenthesized(call)
+    val noComments = !ctx.hasGapComments(call) && !ctx.hasGapComments(call.argClause)
+
+    plain && noComments && operators(infix.op.value)
 
   /**
    * Render a term at the given indentation. `forceExplode` carries an author signal from the enclosing construct (a

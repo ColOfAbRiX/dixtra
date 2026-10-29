@@ -26,13 +26,16 @@ trait LayoutRows extends FormatMatchers { this: AnyWordSpec & Matchers =>
 
     rows
       .zipWithIndex
-      .filter { case ((_, _, input, expected), _) => input != expected }
-      .distinctBy { case ((_, config, _, expected), _) => (config, expected) }
-      .foreach {
-        case ((what, config, _, expected), index) =>
-          s"be idempotent for $what (row ${index.toString})" in {
-            expected should formatTo(expected, config)
-          }
+      .filter { case ((_, _, input, expected), _) =>
+        input != expected
+      }
+      .distinctBy { case ((_, config, _, expected), _) =>
+        (config, expected)
+      }
+      .foreach { case ((what, config, _, expected), index) =>
+        s"be idempotent for $what (row ${index.toString})" in {
+          expected should formatTo(expected, config)
+        }
       }
 
 }

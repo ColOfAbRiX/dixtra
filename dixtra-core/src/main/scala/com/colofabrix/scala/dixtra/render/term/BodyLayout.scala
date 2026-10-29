@@ -68,8 +68,9 @@ private[render] final class BodyLayout(
    */
   def onSeparatorLine(fits: Doc => Boolean): Option[Doc] =
     braced.orElse {
-      val doc = if authorBreak then below else onLine
-      Option.when(!hasComments && Render.isFlat(doc) && fits(doc))(doc)
+      val doc       = if authorBreak then below else onLine
+      val onOneLine = !hasComments && Render.isFlat(doc) && fits(doc)
+      Option.when(onOneLine)(doc)
     }
 
   /**

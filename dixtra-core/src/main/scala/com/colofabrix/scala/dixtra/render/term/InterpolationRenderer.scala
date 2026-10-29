@@ -44,10 +44,11 @@ private[term] final class InterpolationRenderer(ctx: RenderContext, terms: TermR
 
   // The inline `${expr}` form of a braced single-expression splice, if it fits on one line and carries no comments.
   private def spliceText(arg: Term): Option[String] =
+    def inlineSplice(block: Term.Block): Boolean =
+      ctx.writtenWithBraces(block) && ctx.commentsBetween(block.pos.start, block.pos.end).isEmpty
+
     arg match {
-      case block @ Term.Block((single: Term) :: Nil)
-          if ctx.writtenWithBraces(block) &&
-            ctx.commentsBetween(block.pos.start, block.pos.end).isEmpty =>
+      case block @ Term.Block((single: Term) :: Nil) if inlineSplice(block) =>
         val inner = terms.render(single, 0, forceExplode = false)
         Render.flatWidth(inner).map(_ => "${" + Render.render(inner) + "}")
       case _ =>

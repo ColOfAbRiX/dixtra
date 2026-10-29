@@ -38,11 +38,14 @@ private[render] final case class StatementComments(
    * braces are removed.
    */
   def withoutEdgeBlanks: StatementComments =
-    StatementComments(
-      leading.headOption.map(_.dropWhile(_ == Doc.Empty)).toList ++ leading.drop(1),
-      trailing,
-      closing.reverse.dropWhile(_ == Doc.Empty).reverse,
-    )
+    val first =
+      leading
+        .headOption
+        .map(_.dropWhile(_ == Doc.Empty))
+        .toList
+    val rest = leading.drop(1)
+
+    StatementComments(first ++ rest, trailing, closing.reverse.dropWhile(_ == Doc.Empty).reverse)
 
   /**
    * The same comments with the blank lines before the first statement and after the last one decided by `policy`

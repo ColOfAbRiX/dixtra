@@ -15,12 +15,12 @@ import scala.meta.*
  *
  * A signature stays inline unless its line overflows, together with whatever the caller keeps on that line after it.
  * When it breaks, value parameters explode one per line (Tier 1); if even the type-parameter header overflows, type
- * parameters also break and the closing `](` glues to the first value
- * parameter (Tier 2). A type parameter's bounds and context bounds never break;
- * a higher-kinded one whose line does not fit breaks its own type parameters, recursively. One written over several
- * lines is joined. Across multiple clauses the `)(` join stays glued so no lonely delimiter line appears, at the start
- * of the next clause or after the last parameter of the clause before (`definition-site.groups-separator`). A `using` /
- * `implicit` clause keeps its keyword on the clause's opening line. Empty parameter clauses `()` never explode.
+ * parameters also break and the closing `](` glues to the first value parameter (Tier 2). A type parameter's bounds and
+ * context bounds never break; a higher-kinded one whose line does not fit breaks its own type parameters, recursively.
+ * One written over several lines is joined. Across multiple clauses the `)(` join stays glued so no lonely delimiter
+ * line appears, at the start of the next clause or after the last parameter of the clause before
+ * (`definition-site.groups-separator`). A `using` / `implicit` clause keeps its keyword on the clause's opening line.
+ * Empty parameter clauses `()` never explode.
  *
  * Comments between parameters (or type parameters) stay attached to their parameter, and a line comment or an own-line
  * comment forces the signature to explode.
@@ -66,7 +66,8 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
     // A line comment or an own-line comment between parameters forces the break.
     val commentBreak = tcomments.forcesBreak || clauses.exists(_.comments.forcesBreak)
     val canExplode   = tparams.nonEmpty || clauses.exists(_.elements.nonEmpty)
-    val overflow     = canExplode && (commentBreak || parts.keepBroken || !ctx.fits(restInline ++ lineRest, prefixEnd))
+    val restFits     = ctx.fits(restInline ++ lineRest, prefixEnd)
+    val overflow     = canExplode && (commentBreak || parts.keepBroken || !restFits)
     val breakTparams =
       tparams.nonEmpty && (tcomments.forcesBreak || !ctx.fits(tparamsInline ++ Doc.text("("), prefixEnd))
 

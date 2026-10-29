@@ -8,12 +8,12 @@ import org.scalatest.wordspec.AnyWordSpec
 /**
  * Alignment, decided after whitespace clean-up and before line breaking, so the padding counts towards the max column.
  *
- * Consecutive one-line `val` / `lazy val` / `def` definitions align their `=`;
- * anything else between them (a blank line, a comment line, a multi-line definition, an expression) starts a new group,
- * and a definition that would not fit once aligned leaves the group. A one-line `def` in such a block is not separated
- * by a blank line, so it aligns like a `val`. The enumerators of a for-comprehension align the start of their
- * right-hand side, across multi-line right-hand sides. Consecutive one-line `case` clauses align their arrows. The
- * lines of a multi-line operator expression all start at the column of its first operand.
+ * Consecutive one-line `val` / `lazy val` / `def` definitions align their `=`; anything else between them (a blank
+ * line, a comment line, a multi-line definition, an expression) starts a new group, and a definition that would not fit
+ * once aligned leaves the group. A one-line `def` in such a block is not separated by a blank line, so it aligns like a
+ * `val`. The enumerators of a for-comprehension align the start of their right-hand side, across multi-line right-hand
+ * sides. Consecutive one-line `case` clauses align their arrows. The lines of a multi-line operator expression all
+ * start at the column of its first operand.
  */
 class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 

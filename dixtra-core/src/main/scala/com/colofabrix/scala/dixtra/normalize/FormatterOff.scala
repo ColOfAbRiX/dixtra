@@ -16,7 +16,8 @@ import scala.util.control.NonFatal
  */
 object FormatterOff {
 
-  private val Marker = """(?i)(?://|/\*)\s*dixtra\s*:\s*(off|on)\s*(?:\*/)?""".r
+  private val Marker =
+    """(?i)(?://|/\*)\s*dixtra\s*:\s*(off|on)\s*(?:\*/)?""".r
 
   /**
    * `formatted`, the formatted text of `original`, with the regions of `original` between its markers put back as
@@ -54,12 +55,14 @@ object FormatterOff {
               case _             => None
             }
           }
+
       val (closed, open) =
         markers.foldLeft((List.empty[(Int, Int)], Option.empty[Int])) {
           case ((acc, None), (true, c))         => (acc, Some(c.end))
           case ((acc, Some(start)), (false, c)) => (acc :+ (start -> c.start), None)
           case (state, _)                       => state
         }
+
       closed ++ open.map(_ -> source.length)
     }
 

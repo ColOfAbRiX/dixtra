@@ -11,12 +11,11 @@ import scala.meta.*
  *
  * Both sides are rendered as operands, so a `{ ... }` right-hand side keeps its braces and its content follows the
  * block rules. The author's line break around the operator is kept (before it for a leading operator, after it for a
- * trailing one), and every line starts at the column of the first operand. An
- * expression written on one line that does not fit breaks after its operator;
- * a run of the same operator (`a ++ b ++ c`) breaks after every operator. The value of an assignment operator
- * (`xs ++= ...`, `name := ...`) breaking after the operator is indented one level instead, like a body after `=`. The
- * arguments of an application with several of them (`x shouldBe (1, 2)`) stay on the line of the operator and break as
- * the arguments of a call. An application with type arguments is kept as written.
+ * trailing one), and every line starts at the column of the first operand. An expression written on one line that does
+ * not fit breaks after its operator; a run of the same operator (`a ++ b ++ c`) breaks after every operator. The value
+ * of an assignment operator (`xs ++= ...`, `name := ...`) breaking after the operator is indented one level instead,
+ * like a body after `=`. The arguments of an application with several of them (`x shouldBe (1, 2)`) stay on the line of
+ * the operator and break as the arguments of a call. An application with type arguments is kept as written.
  *
  * When an operand before an operator is over several lines (`IO.blocking { ... }
  * >> next`), the operation breaks after every operator, whatever the operators: each operator stays at the end of its
@@ -36,11 +35,7 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
 
     // A `{ ... }` operand, which opens on the line of its operator.
     def braced: Boolean =
-      open.isEmpty && !ctx.isParenthesized(term) &&
-      (term match {
-        case _: Term.Block | _: Term.PartialFunction => true
-        case _                                       => false
-      })
+      open.isEmpty && !ctx.isParenthesized(term) && (term.is[Term.Block] || term.is[Term.PartialFunction])
   }
 
   /**
@@ -64,13 +59,19 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
     val before = ctx.slice(ctx.span(infix.lhs)._2, infix.op.pos.start).contains('\n')
     val after  = ctx.slice(infix.op.pos.end, infix.argClause.pos.start).contains('\n')
     if before then
-      val lead = op ++ Doc.text(" ")
-      lhs ++ Doc.Line ++ lead ++ applications.arguments(infix.argClause, indent, ctx.endColumn(lead, indent))
+      val lead      = op ++ Doc.text(" ")
+      val arguments = applications.arguments(infix.argClause, indent, ctx.endColumn(lead, indent))
+
+      lhs ++ Doc.Line ++ lead ++ arguments
     else if after then
-      lhs ++ Doc.text(" ") ++ op ++ Doc.Line ++ applications.arguments(infix.argClause, indent, indent)
+      val arguments = applications.arguments(infix.argClause, indent, indent)
+
+      lhs ++ Doc.text(" ") ++ op ++ Doc.Line ++ arguments
     else
-      val lead = lhs ++ Doc.text(" ") ++ op ++ Doc.text(" ")
-      lead ++ applications.arguments(infix.argClause, indent, ctx.endColumn(lead, indent))
+      val lead      = lhs ++ Doc.text(" ") ++ op ++ Doc.text(" ")
+      val arguments = applications.arguments(infix.argClause, indent, ctx.endColumn(lead, indent))
+
+      lead ++ arguments
 
   // An operation without an operand over several lines before an operator.
   private def layout(infix: Term.ApplyInfix, arg: Term, indent: Int): Doc =
@@ -156,8 +157,10 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
   // between its parts, not an assignment and not broken before its operator.
   private def flattenable(infix: Term.ApplyInfix): Option[Term] =
     operation(infix).filter { arg =>
-      !ctx.isParenthesized(infix) && !ctx.hasGapComments(infix) && !isAssignment(infix.op.value) &&
-      !authorBreaks(infix, arg)._1
+      val plain    = !ctx.isParenthesized(infix) && !ctx.hasGapComments(infix)
+      val unbroken = !authorBreaks(infix, arg)._1
+
+      plain && !isAssignment(infix.op.value) && unbroken
     }
 
   // The first operand and the (operator, operand) pairs after it of `term`, flattening the operations nested in its
@@ -279,8 +282,10 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
     left :+ rhs(infix, arg, indent)
 
   private def sameRun(outer: Term.ApplyInfix, inner: Term.ApplyInfix): Boolean =
-    inner.op.value == outer.op.value && !ctx.isParenthesized(inner) &&
-    operation(inner).exists(arg => authorBreaks(inner, arg) == (false, false))
+    val sameOperator = inner.op.value == outer.op.value && !ctx.isParenthesized(inner)
+    val unbroken     = operation(inner).exists(arg => authorBreaks(inner, arg) == (false, false))
+
+    sameOperator && unbroken
 
   // The parentheses of the argument clause around `arg` (as in `a + (b * c)`), which belong to the clause rather than
   // to the argument; None when the clause holds anything else around the argument.

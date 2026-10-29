@@ -69,8 +69,7 @@ private[term] final class AssignRenderer(ctx: RenderContext, terms: TermRenderer
    */
   def renderArgument(assign: Term.Assign, indent: Int, padTo: Option[Int]): Doc =
     ctx.equalsBefore(ctx.span(assign.lhs)._2, ctx.span(assign.rhs)._1) match {
-      case Some(eq) if hangs(assign.rhs) && ctx.commentsBetween(eq.start, ctx.span(assign.rhs)._1).isEmpty &&
-          hangsBy(ctx.config.body.namedArgument, ctx.slice(eq.end, ctx.span(assign.rhs)._1).contains('\n')) =>
+      case Some(eq) if hangsFromEq(assign, eq) =>
         val lhs    = ctx.sourceDoc(assign.lhs)
         val lead   = lhs ++ Alignment.padding(padTo, Render.flatWidth(lhs)) ++ Doc.text(" =")
         val column = ctx.columnAfter(lead, indent) + 1
@@ -87,7 +86,10 @@ private[term] final class AssignRenderer(ctx: RenderContext, terms: TermRenderer
         val firstFit = lines.headOption.exists(first => ctx.fitsWidth(column, first.trim.length))
         val closes   = lines.lastOption.exists(last => last.trim.headOption.exists(")]}".contains(_)))
         val chain    = lines.lift(1).exists(_.trim.startsWith("."))
-        if bracedValue(assign, indent, column).isEmpty && lines.sizeIs > 1 && firstFit && (closes || chain) then
+        // The value stays hanging from the `=`: not braced, more than one line, the first line fits and the rest closes
+        // there or continues as a chain.
+        val hanging = bracedValue(assign, indent, column).isEmpty && lines.sizeIs > 1 && firstFit && (closes || chain)
+        if hanging then
           lead ++ Doc.text(" ") ++ value
         else
           layout(assign, indent, padTo, 1, ctx.config.body.namedArgument)
@@ -108,6 +110,15 @@ private[term] final class AssignRenderer(ctx: RenderContext, terms: TermRenderer
       case SingleBodyPolicy.Keep        => !broken
       case SingleBodyPolicy.AlwaysBreak => false
     }
+
+  // The value can hang from the `=`: by its shape, with no comments between `=` and it, and the policy allows hanging
+  // given whether the author wrote it below.
+  private def hangsFromEq(assign: Term.Assign, eq: Token): Boolean =
+    val rhsStart  = ctx.span(assign.rhs)._1
+    val noComment = ctx.commentsBetween(eq.start, rhsStart).isEmpty
+    val byPolicy  = hangsBy(ctx.config.body.namedArgument, ctx.slice(eq.end, rhsStart).contains('\n'))
+
+    hangs(assign.rhs) && noComment && byPolicy
 
   // A value that can hang from the `=` line of a named argument.
   private def hangs(value: Term): Boolean =

@@ -133,7 +133,11 @@ lazy val sbtDixtra =
       Compile / doc / scalacOptions := Seq("-project", name.value, "-project-version", version.value),
       buildInfoKeys := Seq[BuildInfoKey](organization, version, "dixtraModule" -> (dixtraCli / moduleName).value),
       buildInfoPackage              := "com.colofabrix.scala.sbtdixtra",
-      scriptedLaunchOpts            ++= Seq("-Xmx1024M", s"-Dplugin.version=${version.value}"),
-      scriptedBufferLog             := false,
+      scriptedLaunchOpts ++= Seq("-Xmx1024M", s"-Dplugin.version=${version.value}") ++
+        // The scripted builds do not inherit the options of the sbt launcher (`/etc/sbt/sbtopts`): they are given the
+        // redirected homes of the caches again, when the launcher runs with them.
+        Seq("sbt.ivy.home", "sbt.boot.directory", "sbt.coursier.home", "sbt.global.base")
+          .flatMap(key => Option(System.getProperty(key)).map(value => s"-D$key=$value")),
+      scriptedBufferLog    := false,
       scriptedDependencies := scriptedDependencies.dependsOn(dixtraCore / publishLocal, dixtraCli / publishLocal).value,
     )

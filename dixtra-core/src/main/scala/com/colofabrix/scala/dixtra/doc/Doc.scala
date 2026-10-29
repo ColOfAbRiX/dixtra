@@ -42,11 +42,10 @@ enum Doc {
   case Standalone(doc: Doc)
 
   /**
-   * A raw source slice emitted verbatim by the safety net. May contain newlines;
-   * the renderer shifts continuation lines so that their indentation relative to `sourceIndent` (the indentation of the
-   * source line where the slice starts) is kept relative to the current indent. Lines listed in `frozenLines` (0-based,
-   * relative to the slice) begin inside a multiline string literal and are emitted untouched, because their leading
-   * whitespace is string content.
+   * A raw source slice emitted verbatim by the safety net. May contain newlines; the renderer shifts continuation lines
+   * so that their indentation relative to `sourceIndent` (the indentation of the source line where the slice starts) is
+   * kept relative to the current indent. Lines listed in `frozenLines` (0-based, relative to the slice) begin inside a
+   * multiline string literal and are emitted untouched, because their leading whitespace is string content.
    */
   case Verbatim(value: String, sourceIndent: Int, frozenLines: Set[Int])
 

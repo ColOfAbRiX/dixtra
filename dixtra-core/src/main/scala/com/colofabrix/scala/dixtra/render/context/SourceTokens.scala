@@ -78,7 +78,10 @@ final class SourceTokens(original: String) {
         case (Some(open: Token.LeftParen), Some(close: Token.RightParen)) =>
           val within =
             parentSpan.forall { case (ps, pe) =>
-              open.start >= ps && close.end <= pe && !(open.start == ps && close.end == pe)
+              val insideParent = open.start >= ps && close.end <= pe
+              val ownParens    = open.start == ps && close.end == pe
+
+              insideParent && !ownParens
             }
           if within && matchingParen(open).contains(close) then loop(open.start, close.end)
           else (start, end)

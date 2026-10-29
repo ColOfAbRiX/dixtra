@@ -60,8 +60,10 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
    * expression instead of cases is kept as written.
    */
   def renderTry(tryTerm: Term.Try, indent: Int): Doc =
+    val keepWritten = ctx.hasGapComments(tryTerm) || (tryTerm.catchClause.isEmpty && tryTerm.finallyp.isEmpty)
+
     tryTerm.catchClause match {
-      case catchClause if ctx.hasGapComments(tryTerm) || (catchClause.isEmpty && tryTerm.finallyp.isEmpty) =>
+      case _ if keepWritten =>
         ctx.ownSourceDoc(tryTerm)
       case catchClause =>
         val inline = ctx.ownSourceDoc(tryTerm)
@@ -75,11 +77,13 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
         if oneLine && !BodyLayout.groupBelow(policy, members) then
           inline
         else
-          val written =
-            ctx.tokensBetween(tryTerm.pos.start, ctx.span(tryTerm.expr)._1).exists(_.is[Token.LeftBrace]) ||
-            tryTerm.expr.is[Term.Block] && ctx.writtenWithBraces(tryTerm.expr)
-          val braces = ctx.usesBraces(Construct.Try, written)
-          val edges  = if braces then ctx.config.blankLines(Construct.Try) else BlankLinePolicy.Never
+          val bracedTry =
+            ctx.tokensBetween(tryTerm.pos.start, ctx.span(tryTerm.expr)._1).exists(_.is[Token.LeftBrace])
+          val bracedBody = tryTerm.expr.is[Term.Block] && ctx.writtenWithBraces(tryTerm.expr)
+
+          val written = bracedTry || bracedBody
+          val braces  = ctx.usesBraces(Construct.Try, written)
+          val edges   = if braces then ctx.config.blankLines(Construct.Try) else BlankLinePolicy.Never
           val catches =
             catchClause.map(c => (c.pos.start, cases(c.pos.start, c.cases, c.pos.end, indent + 2, edges)))
           if braces then

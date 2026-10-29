@@ -19,13 +19,9 @@ class NormalizeSpec extends AnyWordSpec with Matchers {
   "a block comment containing blank lines and a def line" should {
 
     "be left untouched" in {
-      val input = "val a = 1\n/* note\n\n\nx;\ndef y = {\n*/\nval b = 2\n"
-
-      val expected = input
-
+      val input  = "val a = 1\n/* note\n\n\nx;\ndef y = {\n*/\nval b = 2\n"
       val actual = normalize(input)
-
-      actual shouldBe expected
+      actual shouldBe input
     }
 
   }
@@ -51,8 +47,7 @@ class NormalizeSpec extends AnyWordSpec with Matchers {
            |}
            |""".stripMargin
 
-      val once = normalize(input)
-
+      val once     = normalize(input)
       val expected = once
 
       val actual = normalize(once)
@@ -61,8 +56,7 @@ class NormalizeSpec extends AnyWordSpec with Matchers {
     }
 
     "separate a method with a scaladoc from its neighbours" in {
-      val input = "object A {\n  val x = 1\n  /** doc */\n  def f = 1\n  def g = 2\n}\n"
-
+      val input    = "object A {\n  val x = 1\n  /** doc */\n  def f = 1\n  def g = 2\n}\n"
       val expected = "object A {\n  val x = 1\n\n  /** doc */\n  def f = 1\n\n  def g = 2\n}\n"
 
       val actual = normalize(input)

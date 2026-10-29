@@ -313,9 +313,13 @@ final class TreeRenderer(original: String, config: Config) {
                 .split("\n", -1)
                 .toList
 
-            Option.when(
-              rendered.lift(at).contains('{') && lines.headOption.exists(_.isBlank) &&
-              lines.lastOption.exists(_.trim == "}") && ctx.commentsBetween(block.pos.start, first.pos.start).isEmpty)(
+            val bracedBlock = rendered.lift(at).contains('{') && lines.lastOption.exists(_.trim == "}")
+            val blankFirst  = lines.headOption.exists(_.isBlank)
+            val noComments  = ctx.commentsBetween(block.pos.start, first.pos.start).isEmpty
+
+            val unwrappable = bracedBlock && blankFirst && noComments
+
+            Option.when(unwrappable)(
               rendered.take(at).stripTrailing + lines.dropRight(1).mkString("\n").stripTrailing,
             )
           else

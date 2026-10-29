@@ -74,8 +74,16 @@ final class ContainerRenderer(
 
     val wanted = Constructs.of(container).map(ctx.usesBraces(_, brace.isDefined))
 
-    val eligible =
-      first.isDefined && templ.body.selfOpt.isEmpty && templ.earlyClause.isEmpty && wanted.exists(_ != brace.isDefined)
+    val hasBody = first.isDefined
+    val noSelf =
+      templ
+        .body
+        .selfOpt
+        .isEmpty
+    val noEarly     = templ.earlyClause.isEmpty
+    val wantsChange = wanted.exists(_ != brace.isDefined)
+
+    val eligible = hasBody && noSelf && noEarly && wantsChange
 
     (brace, first) match {
       case _ if !eligible           => None
@@ -218,10 +226,10 @@ final class ContainerRenderer(
     yield
       ExtendsList(inits ++ derives, start, stop)
 
-  // The header with its extends list, trying in order: everything on one line;
-  // the parameters on one line and each extends part on its own line at +2; the parameters exploded and the extends
-  // list on the `)` line; both broken, with the first extends part on the `)` line and the others below it at +2. A
-  // break written inside the extends list skips the one-line layout.
+  // The header with its extends list, trying in order: everything on one line; the parameters on one line and each
+  // extends part on its own line at +2; the parameters exploded and the extends list on the `)` line; both broken, with
+  // the first extends part on the `)` line and the others below it at +2. A break written inside the extends list skips
+  // the one-line layout.
   private def withExtends(
     container: Tree,
     signature: Option[SignatureParts],

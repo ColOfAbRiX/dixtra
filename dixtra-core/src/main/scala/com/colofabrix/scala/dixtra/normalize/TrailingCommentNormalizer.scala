@@ -85,13 +85,20 @@ object TrailingCommentNormalizer {
   // ends on its line.
   private def trailings(source: String, tokens: Vector[Token]): List[Trailing] =
     val solid = tokens.filterNot(t => t.is[Token.Whitespace] || t.is[Token.BOF] || t.is[Token.EOF])
+
+    // After code on its line, on one line, with only whitespace after it.
+    def isTrailing(code: Token, comment: Token.Comment): Boolean =
+      val realCode   = !code.is[Token.Comment]
+      val oneLine    = !comment.text.contains('\n')
+      val afterCode  = code.end > SourceEdits.lineStart(source, comment.start)
+      val blankAfter = source.slice(comment.end, SourceEdits.lineEnd(source, comment.end)).isBlank
+
+      realCode && oneLine && afterCode && blankAfter
+
     solid
       .zip(solid.drop(1))
       .collect {
-        case (code, comment: Token.Comment)
-            if !code.is[Token.Comment] && !comment.text.contains('\n') &&
-              code.end > SourceEdits.lineStart(source, comment.start) &&
-              source.slice(comment.end, SourceEdits.lineEnd(source, comment.end)).isBlank =>
+        case (code, comment: Token.Comment) if isTrailing(code, comment) =>
           val lineStart = SourceEdits.lineStart(source, comment.start)
           Trailing(
             lineStart = lineStart,

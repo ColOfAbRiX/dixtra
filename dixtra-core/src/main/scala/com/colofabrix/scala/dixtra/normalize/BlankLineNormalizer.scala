@@ -26,9 +26,12 @@ object BlankLineNormalizer {
         .foldLeft((Vector.empty[String], false)) {
           case ((acc, prevBlank), (line, inside)) =>
             val blank = line.trim.isEmpty && !inside
-            if blank && prevBlank then (acc, true)
-            else (acc :+ line, blank)
+            if blank && prevBlank then
+              (acc, true)
+            else
+              (acc :+ line, blank)
         }
+
     kept.mkString("\n")
 
 }

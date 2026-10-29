@@ -40,7 +40,6 @@ class InvariantSpec extends AnyWordSpec with Matchers {
       "val x = None\n",
       "def myfunc(parameter_1: String, parameter_2: String): Int = 1\n",
       "val f: Int=>String = _.toString\n",
-      // Inputs that used to be corrupted or unstable.
       "package a\n\nobject A {\n  val xs = List(a,\n    b)\n}\n",
       "val x = // important\n  42\n",
       "def f =\n  val a = 1\n  // keep me\n  a\n",
@@ -62,9 +61,7 @@ class InvariantSpec extends AnyWordSpec with Matchers {
         Dixtra.format(src, config) match {
           case Right(out) =>
             val expected = true
-
-            val actual = LayoutProperties.lonelyDelimiterViolations(out).isEmpty
-
+            val actual   = LayoutProperties.lonelyDelimiterViolations(out).isEmpty
             actual shouldBe expected
           case Left(err) =>
             fail(s"parse/format failed for:\n$src\nerror: ${err.getMessage}")
@@ -77,9 +74,7 @@ class InvariantSpec extends AnyWordSpec with Matchers {
         Dixtra.format(src, config) match {
           case Right(out) =>
             val expected = true
-
-            val actual = LayoutProperties.partialBreakViolations(out).isEmpty
-
+            val actual   = LayoutProperties.partialBreakViolations(out).isEmpty
             actual shouldBe expected
           case Left(err) =>
             fail(s"parse/format failed for:\n$src\nerror: ${err.getMessage}")
@@ -92,9 +87,7 @@ class InvariantSpec extends AnyWordSpec with Matchers {
         Dixtra.format(src, config) match {
           case Right(out) =>
             val expected = true
-
-            val actual = LayoutProperties.newlineAfterEqViolations(out).isEmpty
-
+            val actual   = LayoutProperties.newlineAfterEqViolations(out).isEmpty
             actual shouldBe expected
           case Left(err) =>
             fail(s"parse/format failed for:\n$src\nerror: ${err.getMessage}")
@@ -105,9 +98,7 @@ class InvariantSpec extends AnyWordSpec with Matchers {
     "be idempotent" in {
       corpus.foreach { src =>
         val expected = true
-
-        val actual = LayoutProperties.isIdempotent(src, config)
-
+        val actual   = LayoutProperties.isIdempotent(src, config)
         withClue(s"not idempotent for:\n$src\n") {
           actual shouldBe expected
         }
@@ -117,8 +108,7 @@ class InvariantSpec extends AnyWordSpec with Matchers {
     "preserve program structure (round-trip)" in {
       corpus.foreach { src =>
         val expected = true
-
-        val actual = LayoutProperties.isStructurePreserving(src, config)
+        val actual   = LayoutProperties.isStructurePreserving(src, config)
 
         withClue(s"structure changed for:\n$src\n") {
           actual shouldBe expected

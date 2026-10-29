@@ -25,21 +25,22 @@ object ArrowSpacingNormalizer {
     SourceEdits.tokens(formatted).fold(formatted)(space)
 
   private def space(tokens: Vector[Token]): String =
-    val sb =
-      tokens
-        .zipWithIndex
-        .foldLeft(new StringBuilder) { case (acc, (token, i)) =>
-          token match {
-            case _: Token.RightArrow =>
-              if endsWithGluedChar(acc) then acc.append(' ')
-              acc.append("=>")
-              if needsSpaceAfter(tokens.lift(i + 1)) then acc.append(' ')
-              acc
-            case _ =>
-              acc.append(token.text)
-          }
+    tokens
+      .zipWithIndex
+      .foldLeft(new StringBuilder) { case (acc, (token, i)) =>
+        token match {
+          case _: Token.RightArrow =>
+            if endsWithGluedChar(acc) then
+              acc.append(' ')
+            acc.append("=>")
+            if needsSpaceAfter(tokens.lift(i + 1)) then
+              acc.append(' ')
+            acc
+          case _ =>
+            acc.append(token.text)
         }
-    sb.toString
+      }
+      .toString
 
   // True when the builder ends with a real character (not a space or newline), so the arrow would glue to it without an
   // inserted space.

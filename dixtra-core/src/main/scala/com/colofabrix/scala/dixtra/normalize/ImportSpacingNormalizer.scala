@@ -21,7 +21,11 @@ object ImportSpacingNormalizer {
    */
   def normalize(source: String): String =
     try {
-      SourceEdits.tokens(source).fold(source)(tokens => SourceEdits.applyEdits(source, edits(source, tokens)))
+      SourceEdits
+        .tokens(source)
+        .fold(source) { tokens =>
+          SourceEdits.applyEdits(source, edits(source, tokens))
+        }
     } catch {
       case NonFatal(_) => source
     }
@@ -39,19 +43,26 @@ object ImportSpacingNormalizer {
             val from    = SourceEdits.lineEnd(source, tokens(end).start) + 1
             val to      = SourceEdits.lineStart(source, tokens(next).start)
             val between = source.slice(from, to)
-            val kept =
+
+            val text =
               between
                 .split("\n", -1)
                 .toList
                 .dropRight(1)
                 .filterNot(_.isBlank)
-            val text = kept.map(_ + "\n").mkString
+                .map(_ + "\n")
+                .mkString
+
             Option.when(from <= to && text != between)(Edit(from, to, text))
           }
       }
 
   // The index of the last token of the import starting at token `start`.
   private def statementEnd(tokens: Vector[Token], start: Int): Int =
+    // A whitespace with a newline, outside any braces and not right after a comma: the statement ended before it.
+    def endsStatement(t: Token, depth: Int, last: Int): Boolean =
+      isSpace(t) && t.text.contains('\n') && depth == 0 && !tokens(last).is[Token.Comma]
+
     @annotation.tailrec
     def loop(i: Int, depth: Int, last: Int): Int =
       if i >= tokens.length then
@@ -62,7 +73,7 @@ object ImportSpacingNormalizer {
             loop(i + 1, depth + 1, i)
           case _: Token.RightBrace | _: Token.RightParen =>
             if depth == 0 then last else loop(i + 1, depth - 1, i)
-          case t if isSpace(t) && t.text.contains('\n') && depth == 0 && !tokens(last).is[Token.Comma] =>
+          case t if endsStatement(t, depth, last) =>
             last
           case t if isSpace(t) || t.is[Token.EOF] =>
             loop(i + 1, depth, last)
@@ -71,16 +82,18 @@ object ImportSpacingNormalizer {
           case _ =>
             loop(i + 1, depth, i)
         }
+
     loop(start + 1, 0, start)
 
   // The index of the import that follows the token `end` with only whitespace and comments in between.
   private def nextImport(tokens: Vector[Token], end: Int): Option[Int] =
     (end + 1 until tokens.length)
-      .find(i => !isSpace(tokens(i)) && !tokens(i).is[Token.Comment])
-      .filter(
-        i =>
-          tokens(i).is[Token.KwImport],
-      )
+      .find { i =>
+        !isSpace(tokens(i)) && !tokens(i).is[Token.Comment]
+      }
+      .filter { i =>
+        tokens(i).is[Token.KwImport]
+      }
 
   // Whether a comment over several lines is between the tokens `from` and `to`.
   private def multiline(tokens: Vector[Token], from: Int, to: Int): Boolean =

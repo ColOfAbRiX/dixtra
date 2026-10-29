@@ -96,8 +96,14 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
         "between-alignment-groups",
         BlankLinePolicy.values.toVector.map(p => (c: Config) => withBlankLines(_.copy(betweenAlignmentGroups = p), c)),
       ),
-      Setting("arrows.cases", Vector(true, false).map(b => (c: Config) => arrows(c)(_.copy(cases = b)))),
-      Setting("arrows.pairs", Vector(true, false).map(b => (c: Config) => arrows(c)(_.copy(pairs = b)))),
+      Setting(
+        "arrows.cases",
+        Vector(true, false).map(b => (c: Config) => arrows(c)(_.copy(cases = b))),
+      ),
+      Setting(
+        "arrows.pairs",
+        Vector(true, false).map(b => (c: Config) => arrows(c)(_.copy(pairs = b))),
+      ),
       Setting(
         "arrows.for-enumerators",
         Vector(true, false).map(b => (c: Config) => arrows(c)(_.copy(forEnumerators = b))),
@@ -111,13 +117,22 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
         "scaladoc.tags",
         Vector(true, false).map(b => (c: Config) => alignment(c)(_.copy(scaladoc = ScaladocAlignmentConfig(b)))),
       ),
-      Setting("extends-clauses", Vector(true, false).map(b => (c: Config) => alignment(c)(_.copy(extendsClauses = b)))),
-      Setting("named-arguments", Vector(true, false).map(b => (c: Config) => alignment(c)(_.copy(namedArguments = b)))),
+      Setting(
+        "extends-clauses",
+        Vector(true, false).map(b => (c: Config) => alignment(c)(_.copy(extendsClauses = b))),
+      ),
+      Setting(
+        "named-arguments",
+        Vector(true, false).map(b => (c: Config) => alignment(c)(_.copy(namedArguments = b))),
+      ),
       Setting(
         "trailing-comments",
         Vector(true, false).map(b => (c: Config) => alignment(c)(_.copy(trailingComments = b))),
       ),
-      Setting("trailing-commas", TrailingCommas.values.toVector.map(p => (c: Config) => c.copy(trailingCommas = p))),
+      Setting(
+        "trailing-commas",
+        TrailingCommas.values.toVector.map(p => (c: Config) => c.copy(trailingCommas = p)),
+      ),
       Setting(
         "trailing-comment-overflow",
         TrailingOverflow.values.toVector.map(p => (c: Config) => c.copy(trailingCommentOverflow = p)),
@@ -132,7 +147,10 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
         "enforce-eof",
         Vector(true, false).map(b => (c: Config) => c.copy(housekeeping = c.housekeeping.copy(enforceEof = b))),
       ),
-      Setting("across-comments", Vector(true, false).map(b => (c: Config) => alignment(c)(_.copy(acrossComments = b)))),
+      Setting(
+        "across-comments",
+        Vector(true, false).map(b => (c: Config) => alignment(c)(_.copy(acrossComments = b))),
+      ),
       Setting(
         "receiver-min-length",
         Vector(1, 3).map(n => (c: Config) => withSelectorChain(_.copy(receiverMinLength = n), c)),
@@ -207,7 +225,8 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
         )
       }
 
-  private val settings: Vector[Setting] = (braceSettings ++ otherSettings ++ edgeSettings).toVector
+  private val settings: Vector[Setting] =
+    (braceSettings ++ otherSettings ++ edgeSettings).toVector
 
   private def body(name: String, change: (BodyConfig, SingleBodyPolicy) => BodyConfig): Setting =
     Setting(name, SingleBodyPolicy.values.toVector.map(p => (c: Config) => c.copy(body = change(c.body, p))))
@@ -266,6 +285,7 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
       else
         // Seed each candidate with one uncovered pair so every row makes progress
         val (leftSetting, leftValue, rightSetting, rightValue) = uncovered.head
+
         val candidates =
           List.fill(30)(
             settings
@@ -273,7 +293,9 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
               .updated(leftSetting, leftValue)
               .updated(rightSetting, rightValue),
           )
+
         val best = candidates.maxBy(row => covered(row).count(uncovered.contains))
+
         loop(uncovered -- covered(best), best :: acc)
 
     loop(pairs.toSet, Nil)
@@ -297,9 +319,7 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
 
     "cover every pair of setting values in a few dozen configurations" in {
       val expected = true
-
-      val actual = rows.length < 80
-
+      val actual   = rows.length < 80
       actual shouldBe expected
     }
 
@@ -348,8 +368,7 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
     "converge from braces to braceless and back" in {
       val braces    = allBraces(BracePolicy.ForceBraces)
       val braceless = allBraces(BracePolicy.ForceIndent)
-
-      val expected = true
+      val expected  = true
 
       val actual = corpus.filterNot(converges(_, braces, braceless)).isEmpty
 
@@ -357,9 +376,8 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
     }
 
     "converge from end markers to braces and back" in {
-      val braces = allBraces(BracePolicy.ForceBraces)
-      val ended  = allBraces(BracePolicy.ForceEnd)
-
+      val braces   = allBraces(BracePolicy.ForceBraces)
+      val ended    = allBraces(BracePolicy.ForceEnd)
       val expected = true
 
       val actual = corpus.filterNot(converges(_, ended, braces)).isEmpty

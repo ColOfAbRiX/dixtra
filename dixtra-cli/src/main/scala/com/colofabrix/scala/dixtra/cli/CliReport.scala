@@ -64,8 +64,8 @@ object CliReport {
       case _: FileResult.Failed      => "failed"
     }
 
-  // The sbt plugin logs a line by its prefix (`unchanged:` at debug, `skipped` as a warning, see
-  // `DixtraPlugin.invoke`): they must stay in step.
+  // The sbt plugin logs a line by its prefix (`unchanged:` at debug, `skipped` as a warning, and the summary prefixed
+  // with the project it runs for, see `DixtraPlugin.invoke`): they must stay in step.
   private def printResult(printer: Printer, result: FileResult): IO[Unit] =
     result match {
       case FileResult.Formatted(path) =>

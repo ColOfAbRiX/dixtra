@@ -80,11 +80,12 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
   // that separates a method over several lines from the statements before it would end its group, so it stays on one
   // line after that blank line instead of breaking.
   private def separatesWhenBroken(stat: Stat): Boolean =
-    kindOf(stat).exists(
-      k =>
-        (k == DefinitionKind.Def || k == DefinitionKind.GivenAlias) &&
-        ctx.config.body.afterEquals(k) == SingleBodyPolicy.AlwaysJoin,
-    )
+    kindOf(stat).exists { k =>
+      val methodLike = k == DefinitionKind.Def || k == DefinitionKind.GivenAlias
+      val alwaysJoin = ctx.config.body.afterEquals(k) == SingleBodyPolicy.AlwaysJoin
+
+      methodLike && alwaysJoin
+    }
 
   // A definition at the given indent, its `=` padded to `padTo` when aligned and its body below the `=` when `below`,
   // or None when it has no rule.

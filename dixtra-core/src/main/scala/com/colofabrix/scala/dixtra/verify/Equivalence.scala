@@ -22,8 +22,10 @@ object Equivalence {
    */
   def isEquivalentStat(original: Tree, rendered: String): Boolean =
     parse[Stat](rendered).exists { after =>
-      equivalent(original, after) &&
-      comments(original.pos.text) == comments(rendered)
+      val sameStructure = equivalent(original, after)
+      val sameComments  = comments(original.pos.text) == comments(rendered)
+
+      sameStructure && sameComments
     }
 
   /**
@@ -32,8 +34,8 @@ object Equivalence {
    */
   def isEquivalentPackage(original: Pkg, rendered: String): Boolean =
     parse[Source](rendered).exists { after =>
-      after.stats.sizeIs == 1 && after.stats.forall(equivalent(original, _)) &&
-      comments(original.pos.text) == comments(rendered)
+      val singleEquivalentStat = after.stats.sizeIs == 1 && after.stats.forall(equivalent(original, _))
+      singleEquivalentStat && comments(original.pos.text) == comments(rendered)
     }
 
   /**
@@ -48,11 +50,16 @@ object Equivalence {
    * original: same structure and same comments. An unchanged text is not parsed again.
    */
   def isEquivalentSource(original: Source, originalText: String, formatted: String, dialect: Dialect): Boolean =
-    formatted == originalText ||
-    parse[Source](formatted, dialect).exists { after =>
-      equivalent(original, after) &&
-      comments(originalText) == comments(formatted)
-    }
+    val unchanged = formatted == originalText
+    val reparses =
+      parse[Source](formatted, dialect).exists { after =>
+        val sameStructure = equivalent(original, after)
+        val sameComments  = comments(originalText) == comments(formatted)
+
+        sameStructure && sameComments
+      }
+
+    unchanged || reparses
 
   private def parse[T <: Tree](text: String)(using parser: scala.meta.parsers.Parse[T]): Option[T] =
     parse[T](text, SourceDialect.scala)
@@ -73,9 +80,11 @@ object Equivalence {
       case (x, y) if x.children.isEmpty && y.children.isEmpty =>
         sameLeaf(x, y)
       case (x, y) if x.children.nonEmpty && y.children.nonEmpty =>
-        val xs = x.children.filterNot(_.is[Term.EndMarker])
-        val ys = y.children.filterNot(_.is[Term.EndMarker])
-        x.productPrefix == y.productPrefix && xs.sizeCompare(ys) == 0 && xs.lazyZip(ys).forall(equivalent)
+        val xs       = x.children.filterNot(_.is[Term.EndMarker])
+        val ys       = y.children.filterNot(_.is[Term.EndMarker])
+        val sameKind = x.productPrefix == y.productPrefix
+        val sameSize = xs.sizeCompare(ys) == 0
+        sameKind && sameSize && xs.lazyZip(ys).forall(equivalent)
       case (x, y) =>
         canonical(x) == canonical(y)
     }
@@ -83,8 +92,10 @@ object Equivalence {
   // Two leaves with the same structure. A leaf holds only values (a name, a literal), so equal values mean an equal
   // structure, which is printed only for leaves that differ.
   private def sameLeaf(x: Tree, y: Tree): Boolean =
-    (x.productPrefix == y.productPrefix && x.productIterator.sameElements[Any](y.productIterator)) ||
-    x.structure == y.structure
+    val sameValues    = x.productPrefix == y.productPrefix && x.productIterator.sameElements[Any](y.productIterator)
+    val sameStructure = x.structure == y.structure
+
+    sameValues || sameStructure
 
   // A tree without the rewrites of `equivalent` at its root.
   @tailrec

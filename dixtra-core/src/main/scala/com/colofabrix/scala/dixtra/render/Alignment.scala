@@ -172,7 +172,9 @@ private[render] object Alignment {
       items
         .indices
         .map { i =>
-          i > 0 && candidates(i - 1) && candidates(i) && adjacent(items(i - 1), items(i))
+          val consecutive = i > 0 && candidates(i - 1) && candidates(i)
+
+          consecutive && adjacent(items(i - 1), items(i))
         }
 
     val (done, current) =

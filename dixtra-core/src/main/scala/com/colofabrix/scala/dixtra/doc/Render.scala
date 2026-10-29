@@ -18,9 +18,9 @@ object Render {
   /**
    * Render a document whose continuation lines start at the given base indent.
    *
-   * The first line is not prefixed (its column is set by surrounding context);
-   * every hard line break emits `baseIndent` plus any accumulated nesting. This lets nested members (e.g. inside
-   * `object A { ... }`) keep their absolute source indentation while their internal breaks stay correctly aligned.
+   * The first line is not prefixed (its column is set by surrounding context); every hard line break emits `baseIndent`
+   * plus any accumulated nesting. This lets nested members (e.g. inside `object A { ... }`) keep their absolute source
+   * indentation while their internal breaks stay correctly aligned.
    */
   def render(doc: Doc, baseIndent: Int): String =
     val sb = new StringBuilder
@@ -84,11 +84,12 @@ object Render {
 
   // A line never ends with spaces: two consecutive breaks leave an empty line, not one holding the indentation.
   private def trimTrailingSpaces(sb: StringBuilder): Unit =
-    while (sb.lastOption.contains(' ')) sb.setLength(sb.length - 1)
+    while (sb.lastOption.contains(' ')) {
+      sb.setLength(sb.length - 1)
+    }
 
-  // Emit a raw slice. Each continuation line keeps its indentation relative to
-  // the source line the slice started on, re-based onto the current indent;
-  // frozen lines (string literal content) and blank lines are emitted as-is.
+  // Emit a raw slice. Each continuation line keeps its indentation relative to the source line the slice started on,
+  // re-based onto the current indent; frozen lines (string literal content) and blank lines are emitted as-is.
   private def appendVerbatim(
     value: String,
     sourceIndent: Int,

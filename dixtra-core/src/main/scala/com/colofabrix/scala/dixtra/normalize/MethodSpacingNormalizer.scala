@@ -58,7 +58,9 @@ object MethodSpacingNormalizer {
     betweenGroups: BlankLinePolicy,
     beforeScaladoc: ScaladocSpacing,
   ): String =
-    LineLayout.of(source).fold(source)(separate(_, alignment, betweenGroups, beforeScaladoc))
+    LineLayout
+      .of(source)
+      .fold(source)(separate(_, alignment, betweenGroups, beforeScaladoc))
 
   private def separate(
     layout: LineLayout,
@@ -68,6 +70,7 @@ object MethodSpacingNormalizer {
   ): String =
     val insertBefore = blankBefore(layout, alignment, betweenGroups, beforeScaladoc) ++ blankAfterDocumented(layout)
     val removed      = blanksToRemove(layout, alignment, betweenGroups)
+
     val out =
       layout
         .lines
@@ -77,6 +80,7 @@ object MethodSpacingNormalizer {
           else if insertBefore.contains(i) then Vector("", line)
           else Vector(line)
         }
+
     out.mkString("\n")
 
   // The lines that get a blank line before them: the first line of a method with its decorations after other content,
@@ -90,16 +94,27 @@ object MethodSpacingNormalizer {
     layout
       .lines
       .indices
-      .filter(i => startsMethod(layout, i) || kindOf(layout, i).isDefined)
+      .filter { i =>
+        startsMethod(layout, i) || kindOf(layout, i).isDefined
+      }
       .flatMap { i =>
         val start = groupStart(layout, i)
+
         val previous =
           oneLinerPair(layout, start - 1, i)
             .filter((a, b) => alignment.groupOf(a).isDefined && alignment.groupOf(b).isDefined)
             .map((a, b) => alignment.sameGroup(a, b))
-        val separated =
-          !layout.insideToken(start) &&
-          layout.lines.lift(start - 1).exists(p => p.trim.nonEmpty && !LineLayout.isOpener(p))
+
+        val notInsideToken = !layout.insideToken(start)
+
+        val afterContent =
+          layout
+            .lines
+            .lift(start - 1)
+            .exists(p => p.trim.nonEmpty && !LineLayout.isOpener(p))
+
+        val separated = notInsideToken && afterContent
+
         val needsBlank =
           previous match {
             case _ if documented(layout, start, i) =>
@@ -113,6 +128,7 @@ object MethodSpacingNormalizer {
             case None =>
               startsMethod(layout, i) && separated
           }
+
         if needsBlank then Some(start) else None
       }
       .toSet
@@ -123,16 +139,21 @@ object MethodSpacingNormalizer {
       .lines
       .indices
       .filter { i =>
-        kindOf(layout, i).isDefined && oneLiner(layout, i) && documentedAt(layout, i) &&
-        layout
-          .lines
-          .lift(i + 1)
-          .exists { next =>
-            !layout.insideToken(i + 1) &&
-            next.trim.nonEmpty &&
-            SourceEdits.indent(next) == SourceEdits.indent(layout.lines(i)) &&
-            !next.trim.startsWith("}") && !next.trim.startsWith(")") && !next.trim.startsWith("end ")
-          }
+        val documented = kindOf(layout, i).isDefined && oneLiner(layout, i) && documentedAt(layout, i)
+
+        val followedByStatement =
+          layout
+            .lines
+            .lift(i + 1)
+            .exists { next =>
+              val atIndent = SourceEdits.indent(next) == SourceEdits.indent(layout.lines(i))
+              val notCloser =
+                !next.trim.startsWith("}") && !next.trim.startsWith(")") && !next.trim.startsWith("end ")
+
+              !layout.insideToken(i + 1) && next.trim.nonEmpty && atIndent && notCloser
+            }
+
+        documented && followedByStatement
       }
       .map(_ + 1)
       .toSet
@@ -145,8 +166,10 @@ object MethodSpacingNormalizer {
   // line.
   private def documented(layout: LineLayout, start: Int, i: Int, wanted: String => Boolean): Boolean =
     (start until i).exists { j =>
-      val line = layout.lines(j).trim
-      layout.commentOnly(j) && !layout.insideToken(j) && SourceEdits.isScaladoc(line) && wanted(line)
+      val line       = layout.lines(j).trim
+      val isScaladoc = layout.commentOnly(j) && !layout.insideToken(j) && SourceEdits.isScaladoc(line)
+
+      isScaladoc && wanted(line)
     }
 
   // True when a scaladoc starts among the decoration lines `[start, i)`.
@@ -162,11 +185,14 @@ object MethodSpacingNormalizer {
         .lines
         .indices
         .filter { i =>
-          layout.lines(i).trim.isEmpty && !layout.insideToken(i) &&
-          oneLinerPair(layout, i - 1, i + 1).exists(
-            (a, b) =>
-              alignment.groupOf(a).isDefined && alignment.groupOf(b).isDefined && !alignment.sameGroup(a, b),
-          )
+          val blank = layout.lines(i).trim.isEmpty && !layout.insideToken(i)
+
+          val separatesGroups =
+            oneLinerPair(layout, i - 1, i + 1).exists { (a, b) =>
+              alignment.groupOf(a).isDefined && alignment.groupOf(b).isDefined && !alignment.sameGroup(a, b)
+            }
+
+          blank && separatesGroups
         }
         .toSet
 
@@ -178,7 +204,9 @@ object MethodSpacingNormalizer {
   // indent.
   private def oneLinerPair(layout: LineLayout, a: Int, b: Int): Option[(DefinitionKind, DefinitionKind)] =
     def indentOf(line: Int) = SourceEdits.indent(layout.lines(line))
-    if a < 0 || b >= layout.lines.length || indentOf(a) != indentOf(b) then
+    val outOfRange          = a < 0 || b >= layout.lines.length
+
+    if outOfRange || indentOf(a) != indentOf(b) then
       None
     else
       for
@@ -208,15 +236,20 @@ object MethodSpacingNormalizer {
   // A definition line with a `=` body that ends on the same line, or a declaration without a body: it does not open a
   // body, and the next line is not a continuation indented under it.
   private def oneLiner(layout: LineLayout, i: Int): Boolean =
-    val line = layout.lines(i)
-    !LineLayout.isOpener(line) &&
-    layout
-      .lines
-      .lift(i + 1)
-      .forall(
-        next =>
-          !layout.insideToken(i + 1) && (next.trim.isEmpty || SourceEdits.indent(next) <= SourceEdits.indent(line)),
-      )
+    val line        = layout.lines(i)
+    val notAnOpener = !LineLayout.isOpener(line)
+
+    val noContinuation =
+      layout
+        .lines
+        .lift(i + 1)
+        .forall { next =>
+          val notIndentedUnder = next.trim.isEmpty || SourceEdits.indent(next) <= SourceEdits.indent(line)
+
+          !layout.insideToken(i + 1) && notIndentedUnder
+        }
+
+    notAnOpener && noContinuation
 
   // First line of the decoration group (annotations and comments) directly above the method starting on line `i`, or
   // `i` itself when undecorated.
@@ -226,6 +259,8 @@ object MethodSpacingNormalizer {
     else i
 
   private def isDecoration(layout: LineLayout, i: Int): Boolean =
-    layout.commentOnly(i) || (!layout.insideToken(i) && annotationOnly.matches(layout.lines(i)))
+    val annotation = !layout.insideToken(i) && annotationOnly.matches(layout.lines(i))
+
+    layout.commentOnly(i) || annotation
 
 }

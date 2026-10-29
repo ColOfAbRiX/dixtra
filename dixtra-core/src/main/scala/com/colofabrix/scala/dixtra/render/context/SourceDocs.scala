@@ -8,10 +8,9 @@ import scala.meta.tokens.Token
 /**
  * Turns slices of the original source into documents.
  *
- * Single-line text is emitted already normalised (collapsed whitespace,
- * canonical `=>` spacing) so that width measurements match the final output;
- * multiline text becomes a verbatim block that keeps its relative indentation and never touches the interior of
- * multiline string literals.
+ * Single-line text is emitted already normalised (collapsed whitespace, canonical `=>` spacing) so that width
+ * measurements match the final output; multiline text becomes a verbatim block that keeps its relative indentation and
+ * never touches the interior of multiline string literals.
  *
  * @param original The full source text being formatted.
  * @param tokens The token index of the same source.

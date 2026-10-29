@@ -25,9 +25,11 @@ private[normalize] final case class LineLayout(
 
 private[normalize] object LineLayout {
 
-  private val extensionHeader = """^\s*extension\b""".r
+  private val extensionHeader =
+    """^\s*extension\b""".r
 
-  private val trailingWith = """(?:^|\s)with$""".r
+  private val trailingWith =
+    """(?:^|\s)with$""".r
 
   /**
    * True for a line that opens a container or a braceless body: ending with `{`, `:`, `=`, `=>` or `with`, or an
@@ -35,8 +37,12 @@ private[normalize] object LineLayout {
    */
   def isOpener(line: String): Boolean =
     val trimmed = line.trim
-    List("{", ":", "=", "=>").exists(trimmed.endsWith) || trailingWith.findFirstIn(trimmed).isDefined ||
-    extensionHeader.findFirstIn(line).isDefined
+
+    val endsLikeContainer =
+      List("{", ":", "=", "=>").exists(trimmed.endsWith) || trailingWith.findFirstIn(trimmed).isDefined
+    val isExtensionHeader = extensionHeader.findFirstIn(line).isDefined
+
+    endsLikeContainer || isExtensionHeader
 
   /**
    * Compute the layout of `source`, or `None` if it cannot be tokenised.
@@ -60,9 +66,15 @@ private[normalize] object LineLayout {
       tokens
         .filter(t => t.text.nonEmpty && !t.is[Token.Whitespace])
         .map(t => (t.is[Token.Comment], lineOf(t.start), lineOf(math.max(t.start, t.end - 1))))
+
     val inside    = BitSet.fromSpecific(spans.iterator.flatMap((_, first, last) => first + 1 to last))
     val commented = BitSet.fromSpecific(spans.iterator.flatMap((c, first, last) => if c then first to last else Nil))
     val coded     = BitSet.fromSpecific(spans.iterator.flatMap((c, first, last) => if c then Nil else first to last))
-    LineLayout(lines, lines.indices.map(inside).toVector, lines.indices.map(i => commented(i) && !coded(i)).toVector)
+
+    LineLayout(
+      lines,
+      lines.indices.map(inside).toVector,
+      lines.indices.map(i => commented(i) && !coded(i)).toVector,
+    )
 
 }

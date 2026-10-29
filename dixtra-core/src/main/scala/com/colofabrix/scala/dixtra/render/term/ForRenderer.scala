@@ -187,8 +187,8 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
 
     !ctx.slice(prevEnd, nextStart).contains('\n') && ctx.commentsBetween(prevEnd, nextStart).isEmpty
 
-  // An enumerator with its trailing guards, which stay on its line while it fits;
-  // a guard that does not fit goes on its own line, aligned like one.
+  // An enumerator with its trailing guards, which stay on its line while it fits; a guard that does not fit goes on its
+  // own line, aligned like one.
   private def enumeratorLine(lead: Enumerator, guards: List[Enumerator.Guard], indent: Int, column: Option[Int]): Doc =
     guards.foldLeft(enumerator(lead, indent, column)) { (acc, guard) =>
       val onLine = acc ++ Doc.text(" ") ++ enumerator(guard, indent, None)

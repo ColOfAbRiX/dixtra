@@ -15,33 +15,21 @@ class BlankLineNormalizerSpec extends AnyWordSpec with Matchers {
   "blank lines inside a multi-line string" should {
 
     "be preserved by blank-line collapsing" in {
-      val input = s"val s = ${tripleQuote}a\n\n\n\nb$tripleQuote\n"
-
-      val expected = input
-
+      val input  = s"val s = ${tripleQuote}a\n\n\n\nb$tripleQuote\n"
       val actual = BlankLineNormalizer.collapseBlankRuns(input)
-
-      actual shouldBe expected
+      actual shouldBe input
     }
 
     "be preserved by the full pipeline" in {
-      val input = s"val s = ${tripleQuote}a\n\n\n\nb$tripleQuote\n"
-
-      val expected = input
-
+      val input  = s"val s = ${tripleQuote}a\n\n\n\nb$tripleQuote\n"
       val actual = Normalize(input, Config.default, SourceDialect.scala)
-
-      actual shouldBe expected
+      actual shouldBe input
     }
 
     "be preserved inside an interpolated string" in {
-      val input = s"val s = s${tripleQuote}a\n\n\n$${x}\n\n\nb$tripleQuote\n"
-
-      val expected = input
-
+      val input  = s"val s = s${tripleQuote}a\n\n\n$${x}\n\n\nb$tripleQuote\n"
       val actual = Normalize(input, Config.default, SourceDialect.scala)
-
-      actual shouldBe expected
+      actual shouldBe input
     }
 
   }
@@ -49,8 +37,7 @@ class BlankLineNormalizerSpec extends AnyWordSpec with Matchers {
   "blank-line runs outside strings" should {
 
     "still collapse to one" in {
-      val input = s"val s = ${tripleQuote}a\n\nb$tripleQuote\n\n\n\nval t = 1\n"
-
+      val input    = s"val s = ${tripleQuote}a\n\nb$tripleQuote\n\n\n\nval t = 1\n"
       val expected = s"val s = ${tripleQuote}a\n\nb$tripleQuote\n\nval t = 1\n"
 
       val actual = BlankLineNormalizer.collapseBlankRuns(input)

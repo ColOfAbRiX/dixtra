@@ -111,12 +111,13 @@ trait FormatMatchers {
    */
   def formatTo(expected: String, config: Config): Matcher[String] =
     Matcher { (input: String) =>
-      val result = Dixtra.format(input, config)
       val wanted =
         if config.housekeeping.enforceEof && expected.nonEmpty && !expected.endsWith("\n") then
           expected + "\n"
         else
           expected
+
+      val result = Dixtra.format(input, config)
       result match {
         case Left(error) =>
           MatchResult(

@@ -13,10 +13,10 @@ import scala.meta.tokens.Token
  * them.
  *
  * Each comment in a gap is classified as:
- *   - a prefix of the next element: a block comment with nothing but spaces
- *     between it and that element (`/* note */ b`);
- *   - trailing the previous element: on the same line as the end of that element,
- *     emitted after its comma (`a, // first`);
+ *   - a prefix of the next element: a block comment with nothing but spaces between it and that element (`/* note */
+ *     b`);
+ *   - trailing the previous element: on the same line as the end of that element, emitted after its comma (`a, //
+ *     first`);
  *   - an own-line comment: anything else, placed on its own line before the next element (or before the closing
  *     delimiter, after the last element).
  *
@@ -42,8 +42,10 @@ private[render] final case class CommentedList(
    * True when the list carries no comment at all.
    */
   def isEmpty: Boolean =
-    closing.isEmpty && ownLines.forall(_.isEmpty) &&
-    (prefixes ++ trailings).forall(_ == Doc.Empty)
+    val noInlineComments      = closing.isEmpty && ownLines.forall(_.isEmpty)
+    val noSurroundingComments = (prefixes ++ trailings).forall(_ == Doc.Empty)
+
+    noInlineComments && noSurroundingComments
 
   /**
    * The elements on one line, comma-separated, with their comments (the enclosing delimiters are emitted by the

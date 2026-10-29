@@ -1,5 +1,7 @@
 package com.colofabrix.scala.dixtra
 
+// FIXME: Split this file into multiple smaller files, inside their own `model` package
+
 /**
  * How a construct writes its body.
  */
@@ -421,12 +423,11 @@ enum YieldBodyPolicy(val key: String) {
 
 /**
  * Where the bodies of a construct with several of them go relative to their separators. A group is never mixed: when
- * the bodies are all on the lines of
- * their separators, or all below them, the policy decides whether they stay;
- * when they are mixed, it decides which way they all go. A group that should be on the lines of its separators goes
- * below them when one body cannot be joined: it does not fit there on one line (once the arrows of the cases are
- * aligned), a comment follows its separator, or it holds an if, a match or a try. A group of one body is never mixed,
- * so both `-mixed` policies leave it as written.
+ * the bodies are all on the lines of their separators, or all below them, the policy decides whether they stay; when
+ * they are mixed, it decides which way they all go. A group that should be on the lines of its separators goes below
+ * them when one body cannot be joined: it does not fit there on one line (once the arrows of the cases are aligned), a
+ * comment follows its separator, or it holds an if, a match or a try. A group of one body is never mixed, so both
+ * `-mixed` policies leave it as written.
  */
 enum MultiBodyPolicy(val key: String) {
 

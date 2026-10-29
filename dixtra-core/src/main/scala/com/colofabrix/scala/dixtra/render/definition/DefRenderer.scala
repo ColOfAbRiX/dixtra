@@ -106,11 +106,11 @@ final class DefRenderer(
 
         // What stays on the signature line decides the Tier 1 trigger: only a body that would change by moving below
         // `=` must fit there.
+        val canJoin = !down && Render.isFlat(body.onLine) && !body.hasComments && !body.stableBelow
+
         val lineRest =
-          if !down && Render.isFlat(body.onLine) && !body.hasComments && !body.stableBelow then
-            pad ++ Doc.text(" = ") ++ body.onLine
-          else
-            pad ++ Doc.text(" =")
+          if canJoin then pad ++ Doc.text(" = ") ++ body.onLine
+          else pad ++ Doc.text(" =")
 
         signatures
           .render(signature, baseIndent, lineRest)

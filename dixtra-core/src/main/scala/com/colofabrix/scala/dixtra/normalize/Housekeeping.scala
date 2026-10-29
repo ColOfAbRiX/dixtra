@@ -18,8 +18,16 @@ object Housekeeping {
    * `source`, with `\n` line breaks, tidied up by `config`.
    */
   def apply(source: String, config: HousekeepingConfig): String =
-    val stripped = if config.trimTrailingWhitespace then withoutEolBlanks(source) else source
-    if config.enforceEof then withFinalNewline(stripped) else stripped
+    val stripped =
+      if config.trimTrailingWhitespace then
+        withoutEolBlanks(source)
+      else
+        source
+
+    if config.enforceEof then
+      withFinalNewline(stripped)
+    else
+      stripped
 
   /**
    * The line break of the output by `policy`, given the `original` text of the file: with `keep`, a file with a `\r\n`
@@ -46,9 +54,12 @@ object Housekeeping {
 
   // The line break of `source`: `\r\n` if it has one, `\r` if it has only `\r` and no `\n`, otherwise `\n`.
   private def written(source: String): String =
-    if source.contains("\r\n") then "\r\n"
-    else if source.contains('\r') && !source.contains('\n') then "\r"
-    else "\n"
+    if source.contains("\r\n") then
+      "\r\n"
+    else if source.contains('\r') && !source.contains('\n') then
+      "\r"
+    else
+      "\n"
 
   // `source` without spaces and tabs at the end of its lines, except the lines that end inside a string literal.
   private def withoutEolBlanks(source: String): String =
@@ -58,7 +69,12 @@ object Housekeeping {
         .fold(source) { tokens =>
           val literals =
             tokens.filter(t => !t.is[Token.Whitespace] && !t.is[Token.Comment] && t.text.contains('\n'))
-          val protectedEnds = literals.flatMap(t => (t.start until t.end).filter(source.charAt(_) == '\n')).toSet
+
+          val protectedEnds =
+            literals
+              .flatMap(t => (t.start until t.end).filter(source.charAt(_) == '\n'))
+              .toSet
+
           val (lines, _) =
             source
               .split("\n", -1)
@@ -66,14 +82,14 @@ object Housekeeping {
                 val end = start + line.length
                 (acc :+ (if protectedEnds(end) then line else line.replaceAll("[ \t]+$", "")), end + 1)
               }
+
           lines.mkString("\n")
         }
     } catch {
       case NonFatal(_) => source
     }
 
-  // `source` ending with exactly one line break, without blank lines before it;
-  // an empty source stays empty.
+  // `source` ending with exactly one line break, without blank lines before it; an empty source stays empty.
   private def withFinalNewline(source: String): String =
     val lines =
       source
@@ -83,7 +99,9 @@ object Housekeeping {
         .dropWhile(_.isBlank)
         .reverse
 
-    if lines.isEmpty then ""
-    else lines.mkString("", "\n", "\n")
+    if lines.isEmpty then
+      ""
+    else
+      lines.mkString("", "\n", "\n")
 
 }

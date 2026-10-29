@@ -61,9 +61,11 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
     if (member.toList ++ selections).exists(hasUnattachableComments) then
       ctx.ownSourceDoc(term)
     else
-      val headDoc  = if head.path > 0 || member.isDefined then pathDoc(pathEnd) else applications.operand(start, indent)
-      val baseDoc  = headDoc ++ member.fold(Doc.Empty)(segment(_, indent, headDoc))
-      val comments = selections.map(commentsBeforeDot)
+      val headDoc =
+        if head.path > 0 || member.isDefined then pathDoc(pathEnd) else applications.operand(start, indent)
+      val memberDoc = member.fold(Doc.Empty)(segment(_, indent, headDoc))
+      val baseDoc   = headDoc ++ memberDoc
+      val comments  = selections.map(commentsBeforeDot)
       lazy val inline =
         selections
           .zip(comments)
@@ -72,12 +74,11 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
 
             onLine ++ segment(selection, indent, onLine)
           }
-      val chain = ctx.config.selectorChain
-      val call  = inCall(term)
-      val joins =
-        !comments.exists(_.forcesBreak) &&
-        (chain.inFor == NestedChainPolicy.NeverBreak && inEnumerator(term) ||
-        chain.inCall == NestedChainPolicy.NeverBreak && call)
+      val chain            = ctx.config.selectorChain
+      val call             = inCall(term)
+      val neverBreakInFor  = chain.inFor == NestedChainPolicy.NeverBreak && inEnumerator(term)
+      val neverBreakInCall = chain.inCall == NestedChainPolicy.NeverBreak && call
+      val joins            = !comments.exists(_.forcesBreak) && (neverBreakInFor || neverBreakInCall)
       if joins && ctx.fits(inline, indent) then
         inline
       else if !explodes(term, base, selections, head.counted, comments, indent, forceExplode, asBody && !call) then
@@ -156,10 +157,12 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
   // holds a comment, or when the author broke a line inside it and the policy is `keep` (then the whole chain breaks as
   // usual).
   private def namespacePath(start: Term, selections: List[Term], policy: ChainHeadPolicy): Int =
+    // A plain lowercase root, kept where it is written.
+    def plainRoot(root: Term.Name): Boolean =
+      policy != ChainHeadPolicy.AlwaysBreak && root.value.headOption.exists(_.isLower) && !ctx.isParenthesized(root)
+
     start match {
-      case root: Term.Name
-          if policy != ChainHeadPolicy.AlwaysBreak && root.value.headOption.exists(_.isLower) &&
-          !ctx.isParenthesized(root) =>
+      case root: Term.Name if plainRoot(root) =>
         val names =
           selections
             .map {
@@ -203,11 +206,10 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
   private def pathDoc(path: Term): Doc =
     Doc.text(ctx.slice(path.pos.start, path.pos.end).filterNot(_.isWhitespace))
 
-  // The explode triggers (D2): a break before a dot or a comment that forces it;
-  // with two or more selections also an overflow or any newline after the receiver (a newline inside the receiver
-  // itself, e.g. a multiline string literal, does not count); for a chain that is a body (`asBody`), with
-  // `selector-chain.break-at-count` or more selections (`counted` more from the receiver) also an author signal from
-  // the parent (a newline after `=` or
+  // The explode triggers (D2): a break before a dot or a comment that forces it; with two or more selections also an
+  // overflow or any newline after the receiver (a newline inside the receiver itself, e.g. a multiline string literal,
+  // does not count); for a chain that is a body (`asBody`), with `selector-chain.break-at-count` or more selections
+  // (`counted` more from the receiver) also an author signal from the parent (a newline after `=` or
   // `=>`), or nothing with `selector-chain.inline-chains = break-at-count`. A
   // chain inside an operation, an argument or a condition does not count.
   private def explodes(
@@ -224,10 +226,12 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
     val commentBreak    = comments.exists(_.forcesBreak)
     val internalNewline = ctx.slice(ctx.span(base)._2, term.pos.end).contains('\n')
     val overflow        = ctx.overflows(ctx.ownSourceDoc(term), indent)
-    breakBeforeDot || commentBreak ||
-    (selections.sizeIs >= 2 && (overflow || internalNewline)) ||
-    (asBody && selections.size + counted >= ctx.config.selectorChain.breakAtCount &&
-    (forceExplode || ctx.config.selectorChain.inlineChains == InlineChainPolicy.BreakAtCount))
+    val authorBreak     = breakBeforeDot || commentBreak
+    val tooLong         = selections.sizeIs >= 2 && (overflow || internalNewline)
+    val overBudget      = selections.size + counted >= ctx.config.selectorChain.breakAtCount
+    val alwaysBreak     = forceExplode || ctx.config.selectorChain.inlineChains == InlineChainPolicy.BreakAtCount
+
+    authorBreak || tooLong || (asBody && overBudget && alwaysBreak)
 
   // The comments between a selection's qualifier and its dot: those on the qualifier's line trail the previous segment,
   // the others get their own lines.
@@ -279,8 +283,10 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
   private def segment(selection: Term, indent: Int, before: Doc): Doc =
     parts(selection) match {
       case Some(Selection(qual, name, memberEnd, clauses)) =>
-        val member = memberDoc(qual, name, memberEnd)
-        member ++ applications.argumentClauses(clauses, indent, ctx.endColumn(before ++ member, indent))
+        val member     = memberDoc(qual, name, memberEnd)
+        val clausesDoc = applications.argumentClauses(clauses, indent, ctx.endColumn(before ++ member, indent))
+
+        member ++ clausesDoc
       case None =>
         terms.render(selection, indent, forceExplode = false)
     }

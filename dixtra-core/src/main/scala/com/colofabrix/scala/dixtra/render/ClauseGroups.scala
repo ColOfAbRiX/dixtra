@@ -72,9 +72,15 @@ private[render] object ClauseGroups {
 
   // Whether the `)(` before `next` follows the last element of `group`.
   private def closesOnLast(group: Group, next: Option[Group], separator: GroupsSeparator): Boolean =
-    separator == GroupsSeparator.PreviousGroup &&
-    next.exists(_.elements.nonEmpty) &&
-    group.comments.explodedClosedOnLast(group.elements).isDefined
+    val afterPreviousGroup = separator == GroupsSeparator.PreviousGroup
+    val hasNextGroup       = next.exists(_.elements.nonEmpty)
+    val closedOnLast =
+      group
+        .comments
+        .explodedClosedOnLast(group.elements)
+        .isDefined
+
+    afterPreviousGroup && hasNextGroup && closedOnLast
 
   // A group opened via `)(` at the start of a line: a keyword group keeps the keyword on that line and nests its
   // elements; a plain group glues its first element onto the `)(` line.

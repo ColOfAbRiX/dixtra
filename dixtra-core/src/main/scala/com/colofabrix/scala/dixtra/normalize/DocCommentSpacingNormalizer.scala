@@ -35,22 +35,28 @@ object DocCommentSpacingNormalizer {
    * before rendering, so the layout (the alignment groups a blank line ends) sees them removed.
    */
   def glued(source: String, policy: ScaladocSpacing): String =
-    if policy == ScaladocSpacing.Never then LineLayout.of(source).fold(source)(glue) else source
+    if policy == ScaladocSpacing.Never then
+      LineLayout.of(source).fold(source)(glue)
+    else
+      source
 
   private def separate(layout: LineLayout, policy: ScaladocSpacing): String =
     val lines = layout.lines
+
     val out =
       lines
         .indices
         .flatMap { i =>
           if needsBlankBefore(layout, i, policy) then Vector("", lines(i)) else Vector(lines(i))
         }
+
     out.mkString("\n")
 
   // The source without the blank lines between a line of code and the scaladoc after it, unless that line opens a block
   // or is a package clause.
   private def glue(layout: LineLayout): String =
     val lines = layout.lines
+
     val removed =
       lines
         .indices
@@ -62,14 +68,17 @@ object DocCommentSpacingNormalizer {
           if glued then blanks else Nil
         }
         .toSet
+
     lines.indices.filterNot(removed).map(lines).mkString("\n")
 
   private def isDoc(layout: LineLayout, i: Int): Boolean =
     !layout.insideToken(i) && SourceEdits.isScaladoc(layout.lines(i).trim)
 
   private def needsBlankBefore(layout: LineLayout, i: Int, policy: ScaladocSpacing): Boolean =
-    val line = layout.lines(i).trim
-    if !isDoc(layout, i) || i == 0 || !policy.wantsBlank(line) then
+    val line    = layout.lines(i).trim
+    val noBlank = !isDoc(layout, i) || i == 0 || !policy.wantsBlank(line)
+
+    if noBlank then
       false
     else
       val previous = layout.lines(i - 1)

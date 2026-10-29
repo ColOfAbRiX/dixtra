@@ -54,8 +54,8 @@ private[term] final class ApplicationRenderer(
    * breaks with each argument on its own line, glued by `call-site.groups-separator` (see [[ClauseGroups]]), and the
    * closing `)` goes on
    * a line of its own at `indent`. With `call-site.groups-break = last-first` only the
-   * last group breaks while the groups before it stay on the line of the call;
-   * with `keep` each group decides by itself. A trailing brace block keeps its own rules.
+   * last group breaks while the groups before it stay on the line of the call; with `keep` each group decides by
+   * itself. A trailing brace block keeps its own rules.
    */
   def argumentClauses(clauses: List[Term.ArgClause], indent: Int, column: Int): Doc =
     val (groups, rest) = clauses.span(isGroup)
@@ -88,8 +88,10 @@ private[term] final class ApplicationRenderer(
           ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), args.map(a => ctx.sourceDoc(a)), comments).inline
         },
       )
-    !leading.exists((clause, _, comments) => comments.forcesBreak || clause.pos.text.contains('\n')) &&
-    ctx.fits(onLine ++ Doc.text("("), column)
+    val writtenPlain  = !leading.exists((clause, _, comments) => comments.forcesBreak || clause.pos.text.contains('\n'))
+    val fitsWithParen = ctx.fits(onLine ++ Doc.text("("), column)
+
+    writtenPlain && fitsWithParen
 
   // The argument groups on one line, or broken together; None when each group decides its own layout: a group must be
   // kept as written (an empty group holding a comment), or `call-site.groups-break` lets each group decide or only the
@@ -106,9 +108,9 @@ private[term] final class ApplicationRenderer(
           ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), args.map(a => ctx.sourceDoc(a)), comments).inline
         },
       )
-    val breaks =
-      groups.exists((clause, _, comments) => comments.forcesBreak || clause.pos.text.contains('\n')) ||
-      !ctx.fits(inline, column)
+    val forcedBreak = groups.exists((clause, _, comments) => comments.forcesBreak || clause.pos.text.contains('\n'))
+    val doesNotFit  = !ctx.fits(inline, column)
+    val breaks      = forcedBreak || doesNotFit
     if groups.exists((_, args, comments) => args.isEmpty && !comments.isEmpty) then
       None
     else if !breaks || groups.forall(_._2.isEmpty) then
@@ -137,8 +139,8 @@ private[term] final class ApplicationRenderer(
     }
 
   /**
-   * A `{ ... }` block or `{ case ... }` that keeps its braces, starting at `column` on a line indented at
-   * `indent`; None for any other term.
+   * A `{ ... }` block or `{ case ... }` that keeps its braces, starting at `column` on a line indented at `indent`;
+   * None for any other term.
    */
   def braced(term: Term, indent: Int, column: Int): Option[Doc] =
     term match {

@@ -39,7 +39,9 @@ private[render] object EdgeBlankLines {
     val closeIdx = lines.length - 1
     val body     = lines.slice(openIdx + 1, closeIdx)
     val content  = trimBlanks(body)
-    if closeIdx <= openIdx || lines(closeIdx).trim != "}" || content.isEmpty then
+    val noBody   = closeIdx <= openIdx || lines(closeIdx).trim != "}" || content.isEmpty
+
+    if noBody then
       rendered
     else
       val written =
