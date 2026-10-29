@@ -243,7 +243,6 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
   private def writtenOperation(call: Term.Apply, infix: Term.ApplyInfix, operators: Set[String]): Boolean =
     val plain      = call.argClause.mod.isEmpty && !ctx.isParenthesized(call)
     val noComments = !ctx.hasGapComments(call) && !ctx.hasGapComments(call.argClause)
-
     plain && noComments && operators(infix.op.value)
 
   /**
@@ -267,6 +266,7 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
     else
       val open  = ctx.slice(start, term.pos.start)
       val close = ctx.slice(term.pos.end, end)
+
       if (open + close).forall(c => c == '(' || c == ')' || c.isWhitespace) then
         Doc.text(open.filterNot(_.isWhitespace)) ++
         renderUnwrapped(term, indent, forceExplode, asBody) ++

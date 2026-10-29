@@ -43,6 +43,7 @@ private[render] final case class StatementComments(
         .headOption
         .map(_.dropWhile(_ == Doc.Empty))
         .toList
+
     val rest = leading.drop(1)
 
     StatementComments(first ++ rest, trailing, closing.reverse.dropWhile(_ == Doc.Empty).reverse)
@@ -58,6 +59,7 @@ private[render] final case class StatementComments(
   def withEdgeBlanks(policy: BlankLinePolicy): StatementComments =
     val trimmed = withoutEdgeBlanks
     val written = leading.headOption.exists(_.headOption.contains(Doc.Empty)) || closing.lastOption.contains(Doc.Empty)
+
     if !EdgeBlankLines.wanted(policy, written) || leading.isEmpty then
       trimmed
     else
@@ -72,7 +74,10 @@ private[render] final case class StatementComments(
    */
   def lines(statements: List[Doc]): Doc =
     val statLines =
-      statements.zipWithIndex.flatMap { case (stat, i) => leading(i) :+ (stat ++ trailing(i)) }
+      statements
+        .zipWithIndex
+        .flatMap { case (stat, i) => leading(i) :+ (stat ++ trailing(i)) }
+
     Doc.intercalate(Doc.Line, statLines ++ closing)
 
 }
@@ -128,6 +133,7 @@ private[render] object StatementComments {
       comments.foldLeft((List.empty[Doc], start)) { case ((acc, from), c) =>
         (acc ++ blank(ctx, from, c.start) ++ ctx.commentDocs(List(c)), c.end)
       }
+      
     lines ++ blank(ctx, lastEnd, end)
 
   private def blank(ctx: RenderContext, start: Int, end: Int): List[Doc] =

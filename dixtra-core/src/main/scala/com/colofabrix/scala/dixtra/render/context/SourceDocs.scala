@@ -40,8 +40,10 @@ final class SourceDocs(original: String, tokens: SourceTokens) {
    */
   def sourceDoc(start: Int, end: Int): Doc =
     val text = slice(start, end)
-    if !text.contains('\n') then Doc.Text(normalizeInline(text))
-    else Doc.Verbatim(text, lineIndentOf(start), frozenLines(start, end))
+    if !text.contains('\n') then 
+      Doc.Text(normalizeInline(text))
+    else 
+      Doc.Verbatim(text, lineIndentOf(start), frozenLines(start, end))
 
   /**
    * The source text of a tree (with its grouping parentheses) as a document.
@@ -82,7 +84,10 @@ final class SourceDocs(original: String, tokens: SourceTokens) {
   // a trailing space (the fragment's end is not content), so trailing whitespace is only kept if the source had it.
   private def normalizeInline(text: String): String =
     val normalized = ArrowSpacingNormalizer.normalize(WhitespaceNormalizer.normalize(text))
-    if text.lastOption.exists(_.isWhitespace) then normalized else normalized.stripTrailing
+    if text.lastOption.exists(_.isWhitespace) then 
+      normalized
+    else 
+      normalized.stripTrailing
 
   // Indices (relative to the slice) of the lines that begin inside a multiline string literal: their content is
   // significant and must never be reindented.
@@ -94,9 +99,10 @@ final class SourceDocs(original: String, tokens: SourceTokens) {
           case t: Token.Constant.String if t.text.contains('\n')    => (t.start, t.end)
           case t: Token.Interpolation.Part if t.text.contains('\n') => (t.start, t.end)
         }
-    val lineStarts =
-      slice(start, end).zipWithIndex.collect { case ('\n', i) => start + i + 1 }
-    lineStarts
+
+    slice(start, end)
+      .zipWithIndex
+      .collect { case ('\n', i) => start + i + 1 }
       .zipWithIndex
       .collect {
         case (offset, i) if stringRanges.exists { case (s, e) => offset > s && offset < e } => i + 1

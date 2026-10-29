@@ -73,22 +73,28 @@ private[term] final class AssignRenderer(ctx: RenderContext, terms: TermRenderer
         val lhs    = ctx.sourceDoc(assign.lhs)
         val lead   = lhs ++ Alignment.padding(padTo, Render.flatWidth(lhs)) ++ Doc.text(" =")
         val column = ctx.columnAfter(lead, indent) + 1
+
         // A newline after `=` is an author signal for the value, as below a definition's `=`
         val broken = ctx.slice(eq.end, ctx.span(assign.rhs)._1).contains('\n')
+
         // Laid out where its lines go, below the `=` or hanging from it, so a value that fits only at the argument's
         // own indent breaks the same either way
         val value = terms.render(assign.rhs, indent + 2, forceExplode = broken)
+
         val lines =
           Render
             .render(value, indent)
             .split("\n")
             .toList
+
         val firstFit = lines.headOption.exists(first => ctx.fitsWidth(column, first.trim.length))
         val closes   = lines.lastOption.exists(last => last.trim.headOption.exists(")]}".contains(_)))
         val chain    = lines.lift(1).exists(_.trim.startsWith("."))
+
         // The value stays hanging from the `=`: not braced, more than one line, the first line fits and the rest closes
         // there or continues as a chain.
         val hanging = bracedValue(assign, indent, column).isEmpty && lines.sizeIs > 1 && firstFit && (closes || chain)
+        
         if hanging then
           lead ++ Doc.text(" ") ++ value
         else

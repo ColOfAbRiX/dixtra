@@ -36,8 +36,10 @@ final class AssignmentRenderer(ctx: RenderContext, terms: TermRenderer) {
         val headerEnd = ctx.columnAfterSlice(header, node.pos.start, eq.end, baseIndent)
         val rhs       = BodyLayout.of(ctx, terms, eq.end, body, baseIndent + 2, Constructs.of(node))
 
-        if below then rhs.belowSeparator(header)
-        else rhs.placed(header, ctx.fits(_, headerEnd + 1), policy(node))
+        if below then 
+          rhs.belowSeparator(header)
+        else 
+          rhs.placed(header, ctx.fits(_, headerEnd + 1), policy(node))
       }
 
   // The policy of the body of a definition, by its keyword.

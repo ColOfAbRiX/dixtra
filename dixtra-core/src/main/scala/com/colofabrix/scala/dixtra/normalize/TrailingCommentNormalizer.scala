@@ -36,7 +36,10 @@ object TrailingCommentNormalizer {
             .filter(t => t.width > maxColumn && t.movable)
             .flatMap { t =>
               val above =
-                source.slice(SourceEdits.lineStart(source, t.lineStart - 1), (t.lineStart - 1).max(0)).trim
+                source
+                  .slice(SourceEdits.lineStart(source, t.lineStart - 1), (t.lineStart - 1).max(0))
+                  .trim
+
               val separator = if t.lineStart > 0 && above.startsWith("//") then t.indent + "//\n" else ""
               List(
                 Edit(t.lineStart, t.lineStart, separator + t.indent + t.text + "\n"),
@@ -50,8 +53,12 @@ object TrailingCommentNormalizer {
    * Align on one column the trailing comments of consecutive lines, when `enabled`, never past `maxColumn`.
    */
   def align(source: String, maxColumn: Int, enabled: Boolean): String =
-    if !enabled then source
-    else edited(source)(trailings => runs(trailings).flatMap(aligned(_, maxColumn)))
+    if !enabled then 
+      source
+    else 
+      edited(source) { trailings => 
+        runs(trailings).flatMap(aligned(_, maxColumn))
+      }
 
   // A trailing comment and its line.
   private final case class Trailing(
@@ -65,9 +72,11 @@ object TrailingCommentNormalizer {
     movable: Boolean,
   ) {
 
-    def width: Int = end - lineStart
+    def width: Int = 
+      end - lineStart
 
-    def codeWidth: Int = codeEnd - lineStart
+    def codeWidth: Int = 
+      codeEnd - lineStart
 
   }
 
@@ -76,7 +85,9 @@ object TrailingCommentNormalizer {
     try {
       SourceEdits
         .tokens(source)
-        .fold(source)(tokens => SourceEdits.applyEdits(source, change(trailings(source, tokens))))
+        .fold(source) { tokens => 
+          SourceEdits.applyEdits(source, change(trailings(source, tokens)))
+        }
     } catch {
       case NonFatal(_) => source
     }

@@ -37,6 +37,7 @@ private[render] object ClauseGroups {
    */
   def broken(lead: Doc, groups: List[Group], separator: GroupsSeparator, baseIndent: Int): Layout =
     val following = groups.drop(1).map(Option(_)) :+ None
+
     // State: the document so far; when a group is still open (its `)` not yet written), whether `)(` follows its last
     // element; and the width of the current last line when no group is open.
     val (doc, open, lastWidth) =
@@ -52,6 +53,7 @@ private[render] object ClauseGroups {
             case (_, Some(false)) => (acc ++ Doc.Line ++ Doc.text(")(") ++ gluedContent(group, closes), Some(closes), 0)
           }
         }
+
     Layout(doc, open.isDefined, lastWidth)
 
   /**
@@ -66,14 +68,18 @@ private[render] object ClauseGroups {
    * when the first element is preceded by a comment on its own line.
    */
   def gluedElements(group: Group, closes: Boolean): Doc =
-    if group.elements.isEmpty then Doc.Empty
-    else if group.comments.firstCanGlue then Doc.Nest(2, lines(group, closes))
-    else Doc.Nest(2, Doc.Line ++ lines(group, closes))
+    if group.elements.isEmpty then 
+      Doc.Empty
+    else if group.comments.firstCanGlue then 
+      Doc.Nest(2, lines(group, closes))
+    else 
+      Doc.Nest(2, Doc.Line ++ lines(group, closes))
 
   // Whether the `)(` before `next` follows the last element of `group`.
   private def closesOnLast(group: Group, next: Option[Group], separator: GroupsSeparator): Boolean =
     val afterPreviousGroup = separator == GroupsSeparator.PreviousGroup
     val hasNextGroup       = next.exists(_.elements.nonEmpty)
+
     val closedOnLast =
       group
         .comments
@@ -85,11 +91,18 @@ private[render] object ClauseGroups {
   // A group opened via `)(` at the start of a line: a keyword group keeps the keyword on that line and nests its
   // elements; a plain group glues its first element onto the `)(` line.
   private def gluedContent(group: Group, closes: Boolean): Doc =
-    if group.keyword.nonEmpty then openContent(group, closes) else gluedElements(group, closes)
+    if group.keyword.nonEmpty then 
+      openContent(group, closes)
+    else
+      gluedElements(group, closes)
 
   // The elements of a group one per line, without the comma after the last one when `closes`.
   private def lines(group: Group, closes: Boolean): Doc =
-    val exploded = group.comments.exploded(group.elements)
+    val exploded = 
+      group
+        .comments
+        .exploded(group.elements)
+
     if closes then
       group
         .comments

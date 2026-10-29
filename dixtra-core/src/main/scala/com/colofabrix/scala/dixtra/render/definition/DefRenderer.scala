@@ -73,8 +73,10 @@ final class DefRenderer(
     d.paramClauseGroups match {
       case group :: Nil =>
         val signature = parts(d.pos.start, d.name, group, Some(d.decltpe))
-        if signatures.hasUnattachableComments(signature, d.pos.end) then None
-        else signatures.render(signature, baseIndent, Doc.Empty).map(_.doc)
+        if signatures.hasUnattachableComments(signature, d.pos.end) then 
+          None
+        else 
+          signatures.render(signature, baseIndent, Doc.Empty).map(_.doc)
       case _ =>
         None
     }
@@ -125,7 +127,10 @@ final class DefRenderer(
               else
                 policy
 
-            if down then body.belowSeparator(lead) else body.placed(lead, ctx.fits(_, column), placement)
+            if down then 
+              body.belowSeparator(lead) 
+            else 
+              body.placed(lead, ctx.fits(_, column), placement)
           }
 
       case _ =>

@@ -126,16 +126,19 @@ private[render] object CommentedList {
         .indices
         .toList
         .map(i => Doc.concat(docs(classified(i), Kind.Prefix).map(_ ++ Doc.text(" "))))
+
     val ownLines =
       elements
         .indices
         .toList
         .map(i => docs(classified(i), Kind.OwnLine))
+    
     val trailings =
       elements
         .indices
         .toList
         .map(i => spaced(docs(classified(i + 1), Kind.Trailing)))
+    
     val closing =
       classified
         .lastOption
@@ -160,12 +163,15 @@ private[render] object CommentedList {
   }
 
   private def classify(ctx: RenderContext, c: Token.Comment, prevEnd: Option[Int], nextStart: Option[Int]): Kind =
-    val gluedToNext =
-      !isLineComment(c) && nextStart.exists(n => !ctx.slice(c.end, n).contains('\n'))
+    val gluedToNext    = !isLineComment(c) && nextStart.exists(n => !ctx.slice(c.end, n).contains('\n'))
     val sameLineAsPrev = prevEnd.exists(p => !ctx.slice(p, c.start).contains('\n'))
-    if gluedToNext then Kind.Prefix
-    else if sameLineAsPrev then Kind.Trailing
-    else Kind.OwnLine
+
+    if gluedToNext then 
+      Kind.Prefix
+    else if sameLineAsPrev then 
+      Kind.Trailing
+    else 
+      Kind.OwnLine
 
   private def isLineComment(c: Token.Comment): Boolean =
     c.text.startsWith("//")

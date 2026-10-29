@@ -40,13 +40,17 @@ object MethodSpacingNormalizer {
       "final|override|inline|transparent|open|lazy|implicit|abstract|sealed|infix|opaque",
     ).mkString("(?:", "|", ")")
 
-  private val annotation = """@[\w.]+(?:\[[^\]]*\])?(?:\(.*\))?"""
+  private val annotation = 
+    """@[\w.]+(?:\[[^\]]*\])?(?:\(.*\))?"""
 
-  private val defStart = s"""^\\s*(?:$annotation\\s+)*(?:$modifier\\s+)*(?:def|given|extension)\\b""".r
+  private val defStart = 
+    s"""^\\s*(?:$annotation\\s+)*(?:$modifier\\s+)*(?:def|given|extension)\\b""".r
 
-  private val definitionStart = s"""^\\s*((?:$modifier\\s+)*)(val|var|def|given|type)\\b""".r
+  private val definitionStart = 
+    s"""^\\s*((?:$modifier\\s+)*)(val|var|def|given|type)\\b""".r
 
-  private val annotationOnly = s"""^\\s*(?:$annotation\\s*)+$$""".r
+  private val annotationOnly = 
+    s"""^\\s*(?:$annotation\\s*)+$$""".r
 
   /**
    * Insert a blank line before each method (and its decorations) that follows adjacent content, with the given
@@ -76,9 +80,12 @@ object MethodSpacingNormalizer {
         .lines
         .zipWithIndex
         .flatMap { case (line, i) =>
-          if removed.contains(i) then Vector.empty
-          else if insertBefore.contains(i) then Vector("", line)
-          else Vector(line)
+          if removed.contains(i) then 
+            Vector.empty
+          else if insertBefore.contains(i) then 
+            Vector("", line)
+          else 
+            Vector(line)
         }
 
     out.mkString("\n")
@@ -102,8 +109,12 @@ object MethodSpacingNormalizer {
 
         val previous =
           oneLinerPair(layout, start - 1, i)
-            .filter((a, b) => alignment.groupOf(a).isDefined && alignment.groupOf(b).isDefined)
-            .map((a, b) => alignment.sameGroup(a, b))
+            .filter { (a, b) => 
+              alignment.groupOf(a).isDefined && alignment.groupOf(b).isDefined
+            }
+            .map { (a, b) => 
+              alignment.sameGroup(a, b)
+            }
 
         val notInsideToken = !layout.insideToken(start)
 
@@ -129,7 +140,10 @@ object MethodSpacingNormalizer {
               startsMethod(layout, i) && separated
           }
 
-        if needsBlank then Some(start) else None
+        if needsBlank then 
+          Some(start) 
+        else 
+          None
       }
       .toSet
 
@@ -147,8 +161,7 @@ object MethodSpacingNormalizer {
             .lift(i + 1)
             .exists { next =>
               val atIndent = SourceEdits.indent(next) == SourceEdits.indent(layout.lines(i))
-              val notCloser =
-                !next.trim.startsWith("}") && !next.trim.startsWith(")") && !next.trim.startsWith("end ")
+              val notCloser = !next.trim.startsWith("}") && !next.trim.startsWith(")") && !next.trim.startsWith("end ")
 
               !layout.insideToken(i + 1) && next.trim.nonEmpty && atIndent && notCloser
             }
@@ -203,8 +216,10 @@ object MethodSpacingNormalizer {
   // The kinds of the one-line definitions on lines `a` and `b`, when both are undecorated one-liners at the same
   // indent.
   private def oneLinerPair(layout: LineLayout, a: Int, b: Int): Option[(DefinitionKind, DefinitionKind)] =
-    def indentOf(line: Int) = SourceEdits.indent(layout.lines(line))
-    val outOfRange          = a < 0 || b >= layout.lines.length
+    def indentOf(line: Int) = 
+      SourceEdits.indent(layout.lines(line))
+
+    val outOfRange = a < 0 || b >= layout.lines.length
 
     if outOfRange || indentOf(a) != indentOf(b) then
       None
@@ -255,12 +270,13 @@ object MethodSpacingNormalizer {
   // `i` itself when undecorated.
   @tailrec
   private def groupStart(layout: LineLayout, i: Int): Int =
-    if i > 0 && isDecoration(layout, i - 1) then groupStart(layout, i - 1)
-    else i
+    if i > 0 && isDecoration(layout, i - 1) then 
+      groupStart(layout, i - 1)
+    else 
+      i
 
   private def isDecoration(layout: LineLayout, i: Int): Boolean =
     val annotation = !layout.insideToken(i) && annotationOnly.matches(layout.lines(i))
-
     layout.commentOnly(i) || annotation
 
 }

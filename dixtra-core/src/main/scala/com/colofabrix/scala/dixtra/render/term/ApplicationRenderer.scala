@@ -69,7 +69,9 @@ private[term] final class ApplicationRenderer(
 
   // `clauses` after `before`, each deciding its layout from the column where it starts.
   private def following(clauses: List[Term.ArgClause], before: Doc, indent: Int, column: Int): Doc =
-    clauses.foldLeft(before)((acc, clause) => acc ++ arguments(clause, indent, ctx.endColumn(acc, indent, column)))
+    clauses.foldLeft(before) { (acc, clause) => 
+      acc ++ arguments(clause, indent, ctx.endColumn(acc, indent, column))
+    }
 
   // A parenthesised argument clause, as opposed to a trailing brace block.
   private def isGroup(clause: Term.ArgClause): Boolean =
@@ -88,6 +90,7 @@ private[term] final class ApplicationRenderer(
           ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), args.map(a => ctx.sourceDoc(a)), comments).inline
         },
       )
+
     val writtenPlain  = !leading.exists((clause, _, comments) => comments.forcesBreak || clause.pos.text.contains('\n'))
     val fitsWithParen = ctx.fits(onLine ++ Doc.text("("), column)
 
@@ -102,15 +105,18 @@ private[term] final class ApplicationRenderer(
         val args = clause.values
         (clause, args, CommentedList.of(ctx, clause.pos.start, args, clause.pos.end))
       }
+
     val inline =
       Doc.concat(
         groups.map { (clause, args, comments) =>
           ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), args.map(a => ctx.sourceDoc(a)), comments).inline
         },
       )
+
     val forcedBreak = groups.exists((clause, _, comments) => comments.forcesBreak || clause.pos.text.contains('\n'))
     val doesNotFit  = !ctx.fits(inline, column)
     val breaks      = forcedBreak || doesNotFit
+
     if groups.exists((_, args, comments) => args.isEmpty && !comments.isEmpty) then
       None
     else if !breaks || groups.forall(_._2.isEmpty) then
@@ -218,11 +224,13 @@ private[term] final class ApplicationRenderer(
           case (a, i) =>
             withComma(i < last, indent, operand(a, _))
         }
+
     val lines =
       args
         .zip(docs)
         .map { case (a, d) => a.pos.start -> Render.flatWidth(d) }
         .toMap
+
     val line = (a: Term) => lines.get(a.pos.start).flatten
     val operators =
       ctx
@@ -230,9 +238,11 @@ private[term] final class ApplicationRenderer(
         .alignment
         .operators
         .toSet
+
     val targets = arrowTargets(args, indent, line)
     val pads    = operatorPads(args, indent, operators, line)
     val names   = nameTargets(args, indent, line)
+
     args
       .zip(docs)
       .zip(targets.zip(pads).zip(names))
@@ -252,7 +262,10 @@ private[term] final class ApplicationRenderer(
   private def withComma(followed: Boolean, indent: Int, render: Int => Doc): Doc =
     val doc   = render(indent)
     val comma = followed || ctx.config.trailingCommas == TrailingCommas.Always
-    if comma && Render.flatWidth(doc).exists(w => indent + w == ctx.config.maxColumn) then render(indent + 1) else doc
+    if comma && Render.flatWidth(doc).exists(w => indent + w == ctx.config.maxColumn) then 
+      render(indent + 1)
+    else
+      doc
 
   // The width to pad the name of each named argument to (see `aligned`), given the width of each argument on one line,
   // with `alignment.named-arguments`.
@@ -262,7 +275,8 @@ private[term] final class ApplicationRenderer(
         case assign: Term.Assign if !ctx.isParenthesized(assign) => terms.namedArgumentWidth(assign)
         case _                                                   => None
       }
-    Alignment.targets(ctx, args, Alignment.Grouping.ListElements)(
+
+    Alignment.targets(ctx, args, Alignment.Grouping.ListElements) {
       eligible = a => ctx.config.alignment.namedArguments && line(a).isDefined && name(a).isDefined,
       width = name,
       fitsAt =
@@ -271,7 +285,7 @@ private[term] final class ApplicationRenderer(
             case (Some(1), Some(w)) => ctx.fitsWidth(indent, 1 + math.max(0, target - w) + 1)
             case _                  => false
           },
-    )
+    }
 
   // The width to pad the left side of each `a -> b` pair to (see `aligned`), given the width of each argument on one
   // line.
@@ -281,7 +295,8 @@ private[term] final class ApplicationRenderer(
         case pair: Term.ApplyInfix if pair.op.value == "->" => terms.infixLeftWidth(pair, indent)
         case _                                              => None
       }
-    Alignment.targets(ctx, args, Alignment.Grouping.ListElements)(
+
+    Alignment.targets(ctx, args, Alignment.Grouping.ListElements) {
       eligible = a => ctx.config.alignment.arrows.pairs && line(a).isDefined,
       width = left,
       fitsAt =
@@ -290,7 +305,7 @@ private[term] final class ApplicationRenderer(
             case (Some(l), Some(w)) => ctx.fitsWidth(indent, l + math.max(0, target - w) + 1)
             case _                  => false
           },
-    )
+    }
 
   // The padding before each operator of each operation from `operators` (see `aligned`), given the width of each
   // argument on one line. Pairs are left to `arrowTargets` while their arrows align.
@@ -395,8 +410,10 @@ private[term] final class ApplicationRenderer(
             false
         }
 
-    if test then Construct.TestBlock
-    else Construct.BlockArgument
+    if test then 
+      Construct.TestBlock
+    else 
+      Construct.BlockArgument
 
   // The policy of the statements of a block argument or a test block.
   private def blockBody(construct: Construct): SingleBodyPolicy =
@@ -458,8 +475,11 @@ private[term] final class ApplicationRenderer(
         val hasComments = ctx.commentsBetween(block.pos.start, block.pos.end).nonEmpty
         val inline      = Doc.text("{ ") ++ Doc.intercalate(Doc.text("; "), stats.map(ctx.sourceDoc)) ++ Doc.text(" }")
         val member      = BodyLayout.Member(authorSignal, !hasComments && ctx.fits(inline, column), stats.sizeIs == 1)
-        if !BodyLayout.singleBelow(blockBody(construct), member) then inline
-        else Doc.braced(blocks.statements(block, indent + 2, ctx.config.blankLines(construct)))
+
+        if !BodyLayout.singleBelow(blockBody(construct), member) then 
+          inline
+        else 
+          Doc.braced(blocks.statements(block, indent + 2, ctx.config.blankLines(construct)))
 
       case pf: Term.PartialFunction =>
         val hasComments = ctx.commentsBetween(pf.pos.start, pf.pos.end).nonEmpty

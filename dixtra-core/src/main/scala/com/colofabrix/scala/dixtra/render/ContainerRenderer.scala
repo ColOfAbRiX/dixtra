@@ -37,16 +37,21 @@ final class ContainerRenderer(
   def render(container: Tree, templ: Template): String =
     val stats = templ.body.stats
     val brace = bodyOpenBrace(container, templ)
+
     val (rendered, header) =
       constructorHeader(container, templ, brace) match {
         case Some(header) if header.text != ctx.slice(container.pos.start, header.end) =>
           val members  = renderRegion(header.end, container.pos.end, stats)
           val rendered = withPadding(header.text + members, container, templ, brace, Some(header))
-          if Equivalence.isEquivalentStat(container, rendered) then (rendered, Some(header))
-          else (plain(container, templ, brace), None)
+          
+          if Equivalence.isEquivalentStat(container, rendered) then 
+            (rendered, Some(header))
+          else 
+            (plain(container, templ, brace), None)
         case _ =>
           (plain(container, templ, brace), None)
       }
+
     restyled(container, templ, brace, rendered, header)
       .filter(Equivalence.isEquivalentStat(container, _))
       .getOrElse(rendered)
@@ -80,6 +85,7 @@ final class ContainerRenderer(
         .body
         .selfOpt
         .isEmpty
+
     val noEarly     = templ.earlyClause.isEmpty
     val wantsChange = wanted.exists(_ != brace.isDefined)
 
@@ -100,6 +106,7 @@ final class ContainerRenderer(
         .tokensBetween(container.pos.start, first.pos.start)
         .filterNot(_.is[Token.Whitespace])
         .lastOption
+
     opener.collect {
       case colon: Token.Colon if !isGiven && ctx.commentsBetween(colon.end, first.pos.start).isEmpty =>
         val at   = offset(colon.start)
@@ -128,7 +135,13 @@ final class ContainerRenderer(
         .toList
     val opensLine  = lines.headOption.exists(_.isBlank) && ctx.commentsBetween(open.end, first.pos.start).isEmpty
     val closesLine = lines.lastOption.exists(_.trim == "}")
-    val keyword    = if container.is[Defn.Given] then Option.when(before.endsWith("with"))("") else Some(":")
+    
+    val keyword    = 
+      if container.is[Defn.Given] then 
+        Option.when(before.endsWith("with"))("") 
+      else 
+        Some(":")
+
     keyword
       .filter(_ => opensLine && closesLine)
       .map(colon => before + colon + lines.dropRight(1).mkString("\n").stripTrailing)
@@ -164,11 +177,13 @@ final class ContainerRenderer(
       case None =>
         signature.flatMap { p =>
           val headerEnd = headEnd(p)
+
           val rest =
             ctx
               .slice(headerEnd, restEnd)
               .takeWhile(_ != '\n')
               .stripTrailing
+
           signatures.render(p, indent, Doc.text(rest)).map(s => Header(Render.render(s.doc, indent), headerEnd))
         }
     }
@@ -186,6 +201,7 @@ final class ContainerRenderer(
   private def extendsList(container: Tree, templ: Template): Option[ExtendsList] =
     val parents = templ.inits ++ templ.derives
     val first   = parents.headOption.map(_.pos.start)
+
     val keyword =
       first.flatMap { f =>
         ctx
@@ -196,8 +212,10 @@ final class ContainerRenderer(
           }
           .lastOption
       }
+
     val end   = parents.map(_.pos.end).maxOption
     val texts = templ.inits.map(i => ctx.slice(i.pos.start, i.pos.end))
+
     val comma =
       templ
         .inits
@@ -214,8 +232,10 @@ final class ContainerRenderer(
       }
 
     val derives =
-      if templ.derives.isEmpty then Nil
-      else List("derives " + templ.derives.map(d => ctx.slice(d.pos.start, d.pos.end)).mkString(", "))
+      if templ.derives.isEmpty then 
+        Nil
+      else 
+        List("derives " + templ.derives.map(d => ctx.slice(d.pos.start, d.pos.end)).mkString(", "))
 
     for
       start <- keyword
@@ -279,7 +299,8 @@ final class ContainerRenderer(
           fits(indent + 2 + item.length + (if i == ext.items.length - 1 then tail.length else 0))
         }
 
-    val singleLine = (doc: Doc) => !Render.render(doc, indent).contains('\n')
+    val singleLine = 
+      (doc: Doc) => !Render.render(doc, indent).contains('\n')
 
     def allOnOneLine =
       withRest.filter(s => !broken && singleLine(s.doc)).map(_.doc ++ Doc.text(oneLine))
@@ -360,6 +381,7 @@ final class ContainerRenderer(
         case Some(h) if h.end <= offset => (h.text + ctx.slice(h.end, offset)).count(_ == '\n')
         case _                          => ctx.slice(container.pos.start, offset).count(_ == '\n')
       }
+
     val selfArrow =
       templ
         .body
@@ -367,6 +389,7 @@ final class ContainerRenderer(
         .flatMap(
           self => ctx.tokensBetween(self.pos.start, container.pos.end).collectFirst { case t: Token.RightArrow => t },
         )
+        
     brace match {
       case Some(open) =>
         edgeBlanks(container, rendered, linesBefore(selfArrow.getOrElse(open).start))
@@ -392,16 +415,20 @@ final class ContainerRenderer(
         .headOption
         .map(_.pos.start)
         .getOrElse(container.pos.end)
+
     val headerEnd =
       (templ.inits.map(_.pos.end) ++ List(templ.pos.start)).maxOption.getOrElse(templ.pos.start)
-    val opening =
-      ctx.tokensBetween(headerEnd, bodyEnd).collectFirst { case t: Token.LeftBrace => t }
+
     val closesContainer =
       ctx
         .slice(container.pos.start, container.pos.end)
         .stripTrailing
         .endsWith("}")
-    opening.filter(_ => closesContainer)
+
+    ctx
+      .tokensBetween(headerEnd, bodyEnd)
+      .collectFirst { case t: Token.LeftBrace => t }
+      .filter(_ => closesContainer)
 
   // The blank lines at the edges of a braced container body, whose `{` ends line `openIdx` of `rendered`, by the policy
   // of the container's construct.

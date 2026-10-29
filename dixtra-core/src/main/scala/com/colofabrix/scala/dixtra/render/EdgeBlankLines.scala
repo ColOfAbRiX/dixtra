@@ -46,7 +46,13 @@ private[render] object EdgeBlankLines {
     else
       val written =
         body.headOption.exists(_.isBlank) || body.lastOption.exists(_.isBlank) || opensWithDoc(content, beforeScaladoc)
-      val edge = if wanted(policy, written) then Vector("") else Vector.empty
+      
+      val edge = 
+        if wanted(policy, written) then 
+          Vector("") 
+        else 
+          Vector.empty
+
       (lines.take(openIdx + 1) ++ edge ++ content ++ edge :+ lines(closeIdx)).mkString("\n")
 
   /**
@@ -56,6 +62,7 @@ private[render] object EdgeBlankLines {
     val lines = rendered.split("\n", -1).toVector
     val body  = lines.drop(openIdx + 1)
     val rest  = body.dropWhile(_.isBlank)
+
     if rest.isEmpty then
       rendered
     else
@@ -85,6 +92,8 @@ private[render] object EdgeBlankLines {
     lines
       .headOption
       .map(_.trim)
-      .exists(first => SourceEdits.isScaladoc(first) && beforeScaladoc.wantsBlank(first))
+      .exists { first => 
+        SourceEdits.isScaladoc(first) && beforeScaladoc.wantsBlank(first)
+      }
 
 }

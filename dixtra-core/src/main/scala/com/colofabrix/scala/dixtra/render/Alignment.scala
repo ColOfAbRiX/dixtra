@@ -105,7 +105,10 @@ private[render] object Alignment {
         }
         .toMap
 
-    indexed.indices.toList.map(settled.get)
+    indexed
+      .indices
+      .toList
+      .map(settled.get)
 
   /**
    * Column by column alignment of items with several separators, like the operators of `"org" %% "lib" % "1.0"`: the
@@ -130,13 +133,18 @@ private[render] object Alignment {
   ): List[Option[List[Int]]] =
     val indexed    = items.toVector
     val candidates = indexed.map(item => eligible(item) && segments(item).exists(_.nonEmpty))
+
     val settled =
       runs(indexed, candidates, adjacency[T](ctx, grouping))
         .flatMap { group =>
           settleColumns(group, i => segments(indexed(i)).getOrElse(Nil), (i, p) => fitsAt(indexed(i), p))
         }
         .toMap
-    indexed.indices.toList.map(settled.get)
+
+    indexed
+      .indices
+      .toList
+      .map(settled.get)
 
   private def adjacency[T <: Tree](ctx: RenderContext, grouping: Grouping): (T, T) => Boolean =
     grouping match {
@@ -154,13 +162,18 @@ private[render] object Alignment {
     val indexed    = items.toVector
     val candidates = indexed.map(item => eligible(item) && width(item).isDefined)
     val groups     = runs(indexed, candidates, adjacent)
+
     val settled =
       groups
         .flatMap { group =>
           settle(group, i => width(indexed(i)).getOrElse(0), (i, w) => fitsAt(indexed(i), w))
         }
         .toMap
-    indexed.indices.toList.map(settled.get)
+
+    indexed
+      .indices
+      .toList
+      .map(settled.get)
 
   // Index runs of consecutive eligible items.
   private def runs[T <: Tree](
@@ -195,6 +208,7 @@ private[render] object Alignment {
     val nextStart = ctx.span(next)._1
     val gap       = ctx.slice(prevEnd, nextStart)
     val newline   = gap.indexOf('\n')
+
     if ctx.config.alignment.acrossComments then
       // Each comment becomes one character, so only the blank lines stay blank
       val comments = ctx.commentsBetween(prevEnd, nextStart)
@@ -209,9 +223,13 @@ private[render] object Alignment {
     val prevEnd   = ctx.span(prev)._2
     val nextStart = ctx.span(next)._1
     val newline   = ctx.slice(prevEnd, nextStart).indexOf('\n')
-    if ctx.config.alignment.acrossComments then true
-    else if newline < 0 then ctx.commentsBetween(prevEnd, nextStart).isEmpty
-    else ctx.commentsBetween(prevEnd + newline, nextStart).isEmpty
+
+    if ctx.config.alignment.acrossComments then 
+      true
+    else if newline < 0 then 
+      ctx.commentsBetween(prevEnd, nextStart).isEmpty
+    else 
+      ctx.commentsBetween(prevEnd + newline, nextStart).isEmpty
 
   // Like [[settle]], with a padding for each separator of each member.
   @tailrec
@@ -225,16 +243,20 @@ private[render] object Alignment {
     else
       val padded = group.zip(paddings(group.map(segments)))
       val kept   = padded.filter(fitsAt.tupled).map(_._1)
-      if kept.length == group.length then padded
-      else settleColumns(kept, segments, fitsAt)
+
+      if kept.length == group.length then 
+        padded
+      else 
+        settleColumns(kept, segments, fitsAt)
 
   // The padding before each separator of each row, so that the k-th separators of the rows that have one start in the
   // same column.
   private def paddings(rows: List[List[Int]]): List[List[Int]] =
     val columns = rows.map(_.length).foldLeft(0)(math.max)
     val start   = rows.map(_ => (0, List.empty[Int]))
-    val result =
-      (0 until columns).foldLeft(start) { (acc, k) =>
+
+    (0 until columns)
+      .foldLeft(start) { (acc, k) =>
         val ends   = rows.zip(acc).map { case (row, (from, _)) => row.lift(k).map(from + _) }
         val column = ends.flatten.foldLeft(0)(math.max)
         acc
@@ -244,7 +266,7 @@ private[render] object Alignment {
             case (state, None)          => state
           }
       }
-    result.map(_._2)
+      .map(_._2)
 
   // Pad a group to its widest member. The members that do not fit are broken, and the members between them are settled
   // again as groups of their own.
@@ -254,6 +276,7 @@ private[render] object Alignment {
     else
       val target = group.map(width).foldLeft(0)(math.max)
       val broken = group.filterNot(fitsAt(_, target))
+      
       if broken.isEmpty then
         group.map(i => (i, Placement.Padded(target)))
       else
@@ -263,6 +286,7 @@ private[render] object Alignment {
             case (i, current :: rest)            => (i :: current) :: rest
             case (i, Nil)                        => List(List(i))
           }
+    
         broken.map(i => (i, Placement.Broken)) ++ between.flatMap(split(_, width, fitsAt))
 
   // Pad a group to its widest member, dropping members that no longer fit, until every remaining member fits. Groups of
@@ -274,7 +298,9 @@ private[render] object Alignment {
     else
       val target = group.map(width).foldLeft(0)(math.max)
       val kept   = group.filter(fitsAt(_, target))
-      if kept.length == group.length then group.map(i => (i, target))
-      else settle(kept, width, fitsAt)
+      if kept.length == group.length then 
+        group.map(i => (i, target))
+      else 
+        settle(kept, width, fitsAt)
 
 }

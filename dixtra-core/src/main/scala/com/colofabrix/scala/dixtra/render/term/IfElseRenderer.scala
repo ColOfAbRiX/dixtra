@@ -38,11 +38,13 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
   private def layout(ifTerm: Term.If, indent: Int, explode: Boolean): Doc =
     val (braces, ifThen) = header(ifTerm)
     val branches         = new Branches(ifTerm, indent, ifThen)
+    
     val policy =
       ctx
         .config
         .body
         .ifBody
+
     if ctx.hasGapComments(ifTerm) then
       if braces then ctx.ownSourceDoc(ifTerm) else commented(ifTerm, branches, indent)
     else if explode then
@@ -62,9 +64,13 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
     val condEnd = ctx.span(ifTerm.cond)._2
     val hasThen = ctx.tokensBetween(condEnd, ctx.span(ifTerm.thenp)._1).exists(_.is[Token.KwThen])
     val braces  = ctx.usesBraces(Construct.If, !hasThen)
+    
     val ifThen =
-      if braces then Doc.text("if (") ++ ctx.ownSourceDoc(ifTerm.cond) ++ Doc.text(")")
-      else Doc.text("if ") ++ ctx.ownSourceDoc(ifTerm.cond) ++ Doc.text(" then")
+      if braces then 
+        Doc.text("if (") ++ ctx.ownSourceDoc(ifTerm.cond) ++ Doc.text(")")
+      else 
+        Doc.text("if ") ++ ctx.ownSourceDoc(ifTerm.cond) ++ Doc.text(" then")
+
     (braces, ifThen)
 
   // The `if`s of an if/else and of its `else if` chain.
@@ -82,6 +88,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
   private def simpleMembers(ifTerm: Term.If, fits: Boolean): List[BodyLayout.Member] =
     def member(below: Boolean, branch: Term): BodyLayout.Member =
       BodyLayout.Member(below, fits && !BodyLayout.holdsControl(branch), BodyLayout.isSimple(ctx, branch))
+
     chain(ifTerm).flatMap { link =>
       val elseMember =
         elseKeyword(link)
@@ -95,6 +102,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
   private def branchesOnLines(ifTerm: Term.If, indent: Int, sameLine: Boolean): Option[Doc] =
     val branches = new Branches(ifTerm, indent, header(ifTerm)._2)
     val before   = if sameLine then Doc.text(" else ") else Doc.Line ++ Doc.text("else ")
+
     val rest =
       (branches.elseKeyword, elseIf(ifTerm)) match {
         case (None, _) =>
@@ -106,6 +114,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
         case (Some(_), None) =>
           oneLine(branches.elseDoc).map(before ++ _)
       }
+
     for
       thenDoc <- oneLine(branches.thenDoc)
       elses   <- rest
@@ -151,6 +160,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
   private def withBraces(ifTerm: Term.If, branches: Branches, indent: Int): Doc =
     def braced(branch: Term): Doc = Doc.braced(terms.bracedBody(branch, indent + 2, Construct.If))
     val thenPart                  = branches.ifThen ++ Doc.text(" ") ++ braced(ifTerm.thenp)
+
     if branches.elseKeyword.isEmpty then
       thenPart
     else
@@ -160,7 +170,9 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
       }
 
   private def elseKeyword(ifTerm: Term.If): Option[Token] =
-    ctx.tokensBetween(ctx.span(ifTerm.thenp)._2, ifTerm.pos.end).collectFirst { case t: Token.KwElse => t }
+    ctx
+      .tokensBetween(ctx.span(ifTerm.thenp)._2, ifTerm.pos.end)
+      .collectFirst { case t: Token.KwElse => t }
 
   // The `if` of an `else if` continuation.
   private def elseIf(ifTerm: Term.If): Option[Term.If] =
@@ -177,6 +189,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
     val condComments         = ctx.commentsBetween(ifTerm.pos.start, ifTerm.cond.pos.start)
     val thenGap              = CommentGaps.separator(ctx, ifTerm.cond.pos.end, thenStart)
     val thenPart             = branches.ifThen ++ Doc.Nest(2, thenGap ++ branches.thenDoc)
+
     branches.elseKeyword match {
       case _ if condComments.nonEmpty =>
         ctx.ownSourceDoc(ifTerm)
@@ -185,6 +198,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
       case Some(kwElse) =>
         val elseStart = ctx.span(ifTerm.elsep)._1
         val elseGap   = CommentGaps.separator(ctx, kwElse.end, elseStart)
+        
         val elseBranch =
           elseIf(ifTerm) match {
             case Some(nested) if !ctx.slice(kwElse.end, elseStart).contains('\n') =>
@@ -192,6 +206,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
             case _ =>
               Doc.Nest(2, elseGap ++ branches.elseDoc)
           }
+
         thenPart ++ CommentGaps.separator(ctx, thenEnd, kwElse.start) ++ Doc.text("else") ++ elseBranch
     }
 

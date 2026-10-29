@@ -72,28 +72,40 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
             .config
             .body
             .tryBody
+
         val oneLine = !tryTerm.pos.text.contains('\n') && ctx.fits(inline, indent)
         val members = (tryTerm.expr :: tryTerm.finallyp.toList).map(body => tryMember(false, oneLine, body))
+
         if oneLine && !BodyLayout.groupBelow(policy, members) then
           inline
         else
           val bracedTry =
             ctx.tokensBetween(tryTerm.pos.start, ctx.span(tryTerm.expr)._1).exists(_.is[Token.LeftBrace])
+
           val bracedBody = tryTerm.expr.is[Term.Block] && ctx.writtenWithBraces(tryTerm.expr)
 
           val written = bracedTry || bracedBody
           val braces  = ctx.usesBraces(Construct.Try, written)
           val edges   = if braces then ctx.config.blankLines(Construct.Try) else BlankLinePolicy.Never
+
           val catches =
             catchClause.map(c => (c.pos.start, cases(c.pos.start, c.cases, c.pos.end, indent + 2, edges)))
-          if braces then
 
-            def braced(term: Term): Doc = Doc.braced(terms.bracedBody(term, indent + 2, Construct.Try))
+          if braces then
+            def braced(term: Term): Doc = 
+              Doc.braced(terms.bracedBody(term, indent + 2, Construct.Try))
+
             val tryBody                 = Doc.text("try ") ++ braced(tryTerm.expr)
+
             val catchDoc =
-              catches.fold(Doc.Empty)((_, caught) => Doc.text(" catch ") ++ Doc.braced(caught))
+              catches.fold(Doc.Empty) { (_, caught) => 
+                Doc.text(" catch ") ++ Doc.braced(caught)
+              }
+
             val finallyDoc =
-              tryTerm.finallyp.fold(Doc.Empty)(finallyTerm => Doc.text(" finally ") ++ braced(finallyTerm))
+              tryTerm.finallyp.fold(Doc.Empty) { finallyTerm => 
+                Doc.text(" finally ") ++ braced(finallyTerm)
+              }
 
             tryBody ++ catchDoc ++ finallyDoc
           else
@@ -138,6 +150,7 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
         .headOption
         .map((keyword, doc, _) => part(keyword, doc))
         .toList
+
     val catchParts   = catches.map(caught => Doc.text("catch") ++ Doc.Nest(2, Doc.Line ++ caught)).toList
     val finallyParts = bodies.drop(1).map((keyword, doc, _) => part(keyword, doc))
 
@@ -163,7 +176,13 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
   // The clauses with their bodies on the lines of their `=>`, the arrows of consecutive clauses aligned; None when a
   // clause would not fit once aligned.
   private def aligned(clauses: List[Case], indent: Int): Option[List[Doc]] =
-    val unpadded = clauses.map(oneCase => oneCase.pos.start -> caseClause(oneCase, indent, None, false)).toMap
+    val unpadded = 
+      clauses
+      .map { oneCase => 
+        oneCase.pos.start -> caseClause(oneCase, indent, None, false)
+      }
+      .toMap
+
     val targets =
       Alignment.groupedTargets(ctx, clauses, (_, _) => true)(
         eligible =
@@ -172,6 +191,7 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
         width = headerWidth,
         fitsAt = (oneCase, target) => paddedWidth(unpadded, oneCase, target).exists(ctx.fitsWidth(indent, _)),
       )
+
     Option.when(!targets.contains(Some(Alignment.Placement.Broken))) {
       clauses
         .zip(targets)
@@ -236,7 +256,10 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
         val lead   = pattern ++ pad ++ Doc.text(" =>")
         val body   = BodyLayout.of(ctx, terms, arrowEnd, oneCase.body, indent + 2, Some(Construct.CaseBody))
         val column = ctx.columnAfter(lead, indent) + 1
-        if below then body.belowSeparator(lead) else body.placed(lead, ctx.fits(_, column), SingleBodyPolicy.AlwaysJoin)
+        if below then 
+          body.belowSeparator(lead) 
+        else 
+          body.placed(lead, ctx.fits(_, column), SingleBodyPolicy.AlwaysJoin)
       case _ =>
         ctx.sourceDoc(oneCase)
     }

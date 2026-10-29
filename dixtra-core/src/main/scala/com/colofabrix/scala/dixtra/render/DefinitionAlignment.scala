@@ -42,14 +42,19 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
         case (Some(line), Some(width)) => ctx.fitsWidth(indentOf(stat), line + math.max(0, target - width))
         case _                         => false
       }
-    val sameGroup = (a: Stat, b: Stat) => kindOf(a).zip(kindOf(b)).exists(alignment.sameGroup)
+
+    val sameGroup = 
+      (a: Stat, b: Stat) => kindOf(a).zip(kindOf(b)).exists(alignment.sameGroup)
+    
     val targets =
       Alignment.groupedTargets(ctx, stats, sameGroup)(
         eligible = s => kindOf(s).exists(alignment.groupOf(_).isDefined) && lineWidth(s).isDefined && !documented(s),
         width = headerWidth,
         fitsAt = fitsAt,
       )
+
     val previous = None :: stats.zip(targets).map(Some(_))
+
     stats
       .zip(targets)
       .zip(previous)
@@ -74,7 +79,10 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
   // aligns with its neighbours.
   private def documented(stat: Stat): Boolean =
     val after = ctx.previousSignificant(stat.pos.start).fold(0)(_.end)
-    ctx.commentsBetween(after, stat.pos.start).lastOption.exists(c => SourceEdits.isScaladoc(c.text))
+    ctx
+      .commentsBetween(after, stat.pos.start)
+      .lastOption
+      .exists(c => SourceEdits.isScaladoc(c.text))
 
   // A method that does not fit once aligned, with `body.def` / `body.given-alias` set to `always-join`: the blank line
   // that separates a method over several lines from the statements before it would end its group, so it stays on one
@@ -83,7 +91,6 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
     kindOf(stat).exists { k =>
       val methodLike = k == DefinitionKind.Def || k == DefinitionKind.GivenAlias
       val alwaysJoin = ctx.config.body.afterEquals(k) == SingleBodyPolicy.AlwaysJoin
-
       methodLike && alwaysJoin
     }
 
@@ -145,6 +152,8 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
 
   // The text of a type alias before its `=`.
   private def typeAliasName(t: Defn.Type): Option[Doc] =
-    ctx.equalsBefore(t.pos.start, t.body.pos.start).map(eq => ctx.trimmedSourceDoc(t.pos.start, eq.start))
+    ctx
+      .equalsBefore(t.pos.start, t.body.pos.start)
+      .map(eq => ctx.trimmedSourceDoc(t.pos.start, eq.start))
 
 }

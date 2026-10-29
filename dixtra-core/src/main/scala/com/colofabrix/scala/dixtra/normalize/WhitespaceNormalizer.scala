@@ -21,7 +21,9 @@ object WhitespaceNormalizer {
    * Collapse redundant intra-line whitespace runs to a single space.
    */
   def normalize(formatted: String): String =
-    SourceEdits.tokens(formatted).fold(formatted)(collapse)
+    SourceEdits
+      .tokens(formatted)
+      .fold(formatted)(collapse)
 
   // Scalameta emits each horizontal-space character as its own HSpace token, so a
   // run like `   ` is several consecutive HSpace tokens. We collapse *inter-token*
@@ -44,6 +46,7 @@ object WhitespaceNormalizer {
               (acc.append(token.text), false, false)
           }
       }
+      
     sb.toString
 
 }

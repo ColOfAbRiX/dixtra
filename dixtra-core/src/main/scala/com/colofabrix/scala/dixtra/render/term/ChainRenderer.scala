@@ -62,10 +62,15 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
       ctx.ownSourceDoc(term)
     else
       val headDoc =
-        if head.path > 0 || member.isDefined then pathDoc(pathEnd) else applications.operand(start, indent)
+        if head.path > 0 || member.isDefined then 
+          pathDoc(pathEnd) 
+        else 
+          applications.operand(start, indent)
+
       val memberDoc = member.fold(Doc.Empty)(segment(_, indent, headDoc))
       val baseDoc   = headDoc ++ memberDoc
       val comments  = selections.map(commentsBeforeDot)
+
       lazy val inline =
         selections
           .zip(comments)
@@ -74,11 +79,13 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
 
             onLine ++ segment(selection, indent, onLine)
           }
+
       val chain            = ctx.config.selectorChain
       val call             = inCall(term)
       val neverBreakInFor  = chain.inFor == NestedChainPolicy.NeverBreak && inEnumerator(term)
       val neverBreakInCall = chain.inCall == NestedChainPolicy.NeverBreak && call
       val joins            = !comments.exists(_.forcesBreak) && (neverBreakInFor || neverBreakInCall)
+
       if joins && ctx.fits(inline, indent) then
         inline
       else if !explodes(term, base, selections, head.counted, comments, indent, forceExplode, asBody && !call) then
@@ -141,6 +148,7 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
   private def chainHead(start: Term, selections: List[Term]): ChainHead =
     val chain = ctx.config.selectorChain
     val path  = namespacePath(start, selections, chain.namespacePath)
+
     val (capitalRoot, shortRoot) =
       start match {
         case root: Term.Name if !ctx.isParenthesized(root) =>
@@ -148,8 +156,10 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
         case _ =>
           (false, false)
       }
+
     val objectMember = (path > 0 || capitalRoot) && selections.lift(path).exists(joinsHead(chain.objectMember, _))
     val shortMember  = path == 0 && shortRoot && selections.headOption.exists(joinsHead(ChainHeadPolicy.Keep, _))
+
     ChainHead(path, objectMember || shortMember, if shortMember && !objectMember then 1 else 0)
 
   // How many selections belong to a path that starts the chain: plain lowercase names up to and including the first
@@ -183,8 +193,10 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
 
         val broken = ctx.slice(root.pos.start, end).contains('\n') && policy == ChainHeadPolicy.Keep
 
-        if capital >= 0 && !broken && ctx.commentsBetween(root.pos.start, end).isEmpty then capital + 1
-        else 0
+        if capital >= 0 && !broken && ctx.commentsBetween(root.pos.start, end).isEmpty then 
+          capital + 1
+        else 
+          0
       case _ =>
         0
     }
@@ -243,15 +255,18 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
         DotComments(Doc.Empty, Nil, forcesBreak = false)
       case Some(Selection(qual, name, _, _)) =>
         val qualEnd = ctx.span(qual)._2
+
         val dotStart =
           ctx
             .dotBefore(qualEnd, name.pos.start)
             .map(_.start)
             .getOrElse(name.pos.start)
+
         val comments    = ctx.commentsBetween(qualEnd, dotStart).toList
         val (same, own) = comments.partition(c => !ctx.slice(qualEnd, c.start).contains('\n'))
         val trailing    = Doc.concat(ctx.commentDocs(same).map(Doc.text(" ") ++ _))
         val lineComment = same.exists(_.text.startsWith("//"))
+
         DotComments(trailing, ctx.commentDocs(own), lineComment || own.nonEmpty)
     }
 
@@ -260,12 +275,15 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
   private def hasUnattachableComments(selection: Term): Boolean =
     def afterDot(qual: Term, name: Term.Name): Boolean =
       val qualEnd = ctx.span(qual)._2
+
       val dotEnd =
         ctx
           .dotBefore(qualEnd, name.pos.start)
           .map(_.end)
           .getOrElse(qualEnd)
+
       ctx.commentsBetween(dotEnd, name.pos.start).nonEmpty
+
     selection match {
       case app @ Term.Apply.After_4_6_0(fun, _)     => ctx.hasGapComments(app) || hasUnattachableComments(fun)
       case app @ Term.ApplyType.After_4_6_0(fun, _) => ctx.hasGapComments(app) || hasUnattachableComments(fun)
@@ -285,7 +303,6 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
       case Some(Selection(qual, name, memberEnd, clauses)) =>
         val member     = memberDoc(qual, name, memberEnd)
         val clausesDoc = applications.argumentClauses(clauses, indent, ctx.endColumn(before ++ member, indent))
-
         member ++ clausesDoc
       case None =>
         terms.render(selection, indent, forceExplode = false)

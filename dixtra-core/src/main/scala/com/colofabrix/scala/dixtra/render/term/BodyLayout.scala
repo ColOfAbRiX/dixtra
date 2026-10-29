@@ -195,6 +195,7 @@ private[render] object BodyLayout {
         case _ =>
           ctx.span(body)._1
       }
+
     ctx.slice(separatorEnd, start).contains('\n')
 
   /**
@@ -222,6 +223,7 @@ private[render] object BodyLayout {
      val comments                    = ctx.commentDocs(found)
      val (onSeparatorLine, ownLines) = found.partition(c => !ctx.slice(separatorEnd, c.start).contains('\n'))
      val onLine                      = terms.renderBody(body, indent, forceExplode = authorBreak)
+
      // A `{ case ... }` opens on the separator line, its cases one level in.
      val braced =
        body match {
@@ -232,6 +234,7 @@ private[render] object BodyLayout {
          case _ =>
            None
        }
+
      new BodyLayout(
        authorBreak,
        trailing = Doc.concat(ctx.commentDocs(onSeparatorLine).map(Doc.text(" ") ++ _)),
@@ -252,6 +255,7 @@ private[render] object BodyLayout {
          case Nil              => false
          case _                => true
        }
+       
      statements && !ctx.isParenthesized(block) && ctx.usesBraces(construct, ctx.writtenWithBraces(block))
 
   /**

@@ -65,21 +65,26 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
     val inline = ctx.ownSourceDoc(forLoop)
     val braced = enumsOpener(forLoop).isDefined
     val braces = ctx.usesBraces(Construct.For, braced)
+
     val policy =
       ctx
         .config
         .body
         .forBody
+
     if braces == braced && oneLine(forLoop, inline, indent, policy == SingleBodyPolicy.AlwaysBreak) then
       inline
     else if braces then
       val body = terms.renderBody(BodyLayout.unwrapped(ctx, forLoop.body), indent + 2, forceExplode = false)
+
       val onLine =
         enumeratorsOnLine(forLoop.enumsBlock, indent)
           .map(enumerators => Doc.text("for (") ++ enumerators ++ Doc.text(") ") ++ body)
           .filter(ctx.fits(_, indent))
+
       val below  = BodyLayout.writtenBelow(ctx, forLoop.enumsBlock.pos.end, forLoop.body)
       val member = BodyLayout.Member(below, onLine.isDefined, BodyLayout.isSimple(ctx, forLoop.body))
+
       onLine
         .filterNot(_ => BodyLayout.singleBelow(policy, member))
         .getOrElse {
@@ -91,6 +96,7 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
         }
     else
       val body = terms.renderBody(forLoop.body, indent + 2, forceExplode = false)
+
       val single =
         forLoop.enumsBlock.enums match {
           case only :: Nil if ctx.commentsBetween(forLoop.enumsBlock.pos.start, forLoop.enumsBlock.pos.end).isEmpty =>
@@ -100,7 +106,9 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
           case _ =>
             None
         }
+
       val bodyStart = ctx.span(forLoop.body)._1
+
       val doEnd =
         ctx
           .tokensBetween(forLoop.enumsBlock.pos.end, bodyStart)
@@ -111,6 +119,7 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
         val member = BodyLayout.Member(below, ctx.fits(body, lineWidth + 1), BodyLayout.isSimple(ctx, forLoop.body))
         if BodyLayout.singleBelow(policy, member) then Doc.Nest(2, Doc.Line ++ body)
         else Doc.text(" ") ++ body
+
       single match {
         case Some(enumerators) =>
           val head = Doc.text("for ") ++ enumerators ++ Doc.text(" do")
@@ -143,8 +152,14 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
     val enums    = block.enums
     val lines    = withTrailingGuards(enums)
     val comments = StatementComments.of(ctx, block.pos.start, lines.map(_._1), block.pos.end)
+
     val column =
-      Option.when(ctx.config.alignment.arrows.forEnumerators)(enums.flatMap(header).map(_.width).maxOption).flatten
+      Option
+        .when(ctx.config.alignment.arrows.forEnumerators) {
+          enums.flatMap(header).map(_.width).maxOption
+        }
+        .flatten
+      
     val docs = lines.map { case (lead, guards) => enumeratorLine(lead, guards, indent + 2, column) }
 
     Doc.Nest(2, Doc.Line ++ comments.lines(docs))
@@ -156,6 +171,7 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
         case loop: Term.For        => loop.enumsBlock
         case yields: Term.ForYield => yields.enumsBlock
       }
+
     block
       .enums
       .headOption
@@ -184,7 +200,6 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
 
   private def sameLine(prev: Enumerator, next: Enumerator): Boolean =
     val (prevEnd, nextStart) = (ctx.span(prev)._2, ctx.span(next)._1)
-
     !ctx.slice(prevEnd, nextStart).contains('\n') && ctx.commentsBetween(prevEnd, nextStart).isEmpty
 
   // An enumerator with its trailing guards, which stay on its line while it fits; a guard that does not fit goes on its
@@ -192,7 +207,6 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
   private def enumeratorLine(lead: Enumerator, guards: List[Enumerator.Guard], indent: Int, column: Option[Int]): Doc =
     guards.foldLeft(enumerator(lead, indent, column)) { (acc, guard) =>
       val onLine = acc ++ Doc.text(" ") ++ enumerator(guard, indent, None)
-
       if ctx.fits(onLine, indent) then onLine else acc ++ Doc.Line ++ enumerator(guard, indent, column)
     }
 
@@ -204,17 +218,14 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
         val pad       = Doc.text(" " * (col - head.width + 1))
         val headerDoc = Doc.text(head.pattern) ++ pad ++ Doc.text(head.operator + " ")
         val rendered  = Doc.Nest(col, terms.render(term, indent + col, forceExplode = false))
-
         headerDoc ++ rendered
       case (None, Some(col), Some(term)) if isGuard(enumeratorTree) =>
         val start    = ctx.span(term)._1
         val leading  = Doc.text(" " * col) ++ ctx.trimmedSourceDoc(enumeratorTree.pos.start, start) ++ Doc.text(" ")
         val rendered = Doc.Nest(col, terms.render(term, indent + col, forceExplode = false))
-
         leading ++ rendered
       case (_, _, Some(term)) =>
         val start = ctx.span(term)._1
-
         ctx.trimmedSourceDoc(enumeratorTree.pos.start, start) ++
         Doc.text(" ") ++
         terms.render(term, indent, forceExplode = false)
@@ -257,8 +268,12 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
     val value   = BodyLayout.unwrapped(ctx, body)
     val doc     = terms.renderBody(value, indent + 2, forceExplode = false)
     val keyword = if braces then "} yield " else "yield "
+    
     val yieldEnd =
-      ctx.tokensBetween(forYield.enumsBlock.pos.end, ctx.span(body)._1).collect { case t: Token.KwYield => t.end }
+      ctx
+        .tokensBetween(forYield.enumsBlock.pos.end, ctx.span(body)._1)
+        .collect { case t: Token.KwYield => t.end }
+
     val below   = yieldEnd.lastOption.exists(BodyLayout.writtenBelow(ctx, _, body))
     val member  = BodyLayout.Member(below, ctx.fits(doc, indent + keyword.length), BodyLayout.isSimple(ctx, body))
     val written = body.is[Term.Block] && ctx.writtenWithBraces(body)

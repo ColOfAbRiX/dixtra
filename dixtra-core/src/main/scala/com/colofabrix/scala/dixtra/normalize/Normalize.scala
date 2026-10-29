@@ -22,8 +22,8 @@ object Normalize {
    */
   def apply(rendered: String, config: Config, dialect: Dialect): String =
     val braced = BraceStyleNormalizer.normalize(rendered, config.braces.style, config.maxColumn, dialect)
-    // Moved above their lines before the reflow, so that a long comment is wrapped like any other
     val moved = TrailingCommentNormalizer.moveAbove(braced, config.maxColumn, config.trailingCommentOverflow)
+    
     val spaced =
       BlankLineNormalizer.collapseBlankRuns(
         DocCommentSpacingNormalizer.normalize(
@@ -38,6 +38,7 @@ object Normalize {
           config.blankLines.beforeScaladoc,
         ),
       )
+
     // Aligned last, once the blank lines that end the runs of consecutive lines are in place
     TrailingCommentNormalizer.align(spaced, config.maxColumn, config.alignment.trailingComments)
 
