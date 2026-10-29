@@ -67,8 +67,10 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
       lazy val inline =
         selections
           .zip(comments)
-          .foldLeft(baseDoc) { case (before, (sel, c)) =>
-            before ++ c.trailing ++ segment(sel, indent, before ++ c.trailing)
+          .foldLeft(baseDoc) { case (before, (selection, comment)) =>
+            val onLine = before ++ comment.trailing
+
+            onLine ++ segment(selection, indent, onLine)
           }
       val chain = ctx.config.selectorChain
       val call  = inCall(term)
@@ -81,20 +83,17 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
       else if !explodes(term, base, selections, head.counted, comments, indent, forceExplode, asBody && !call) then
         inline
       else
-        baseDoc ++
-        Doc.Nest(
-          2,
-          Doc.concat(
-            selections
-              .zip(comments)
-              .map { case (sel, c) =>
-                c.trailing ++
-                Doc.concat(c.ownLines.map(Doc.Line ++ _)) ++
-                Doc.Line ++
-                segment(sel, indent + 2, Doc.Empty)
-              },
-          ),
-        )
+        val selectionDocs =
+          selections
+            .zip(comments)
+            .map { (selection, comment) =>
+              val leading  = comment.trailing ++ Doc.concat(comment.ownLines.map(Doc.Line ++ _))
+              val selected = Doc.Line ++ segment(selection, indent + 2, Doc.Empty)
+
+              leading ++ selected
+            }
+
+        baseDoc ++ Doc.Nest(2, Doc.concat(selectionDocs))
 
   // Whether the term is in the enumerators of a `for`: a generator, a guard or a value definition, at any depth.
   private def inEnumerator(tree: Tree): Boolean =

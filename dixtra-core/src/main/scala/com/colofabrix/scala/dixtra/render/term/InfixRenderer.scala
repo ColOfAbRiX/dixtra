@@ -189,9 +189,11 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
    */
   def padded(infix: Term.ApplyInfix, indent: Int, padTo: Int): Option[Doc] =
     operation(infix).map { arg =>
-      val lhs = applications.operand(infix.lhs, indent)
-      lhs ++ Alignment.padding(Some(padTo), Render.flatWidth(lhs)) ++ Doc.text(" ") ++ ctx.ownSourceDoc(infix.op) ++
-      Doc.text(" ") ++ rhs(infix, arg, indent)
+      val left        = applications.operand(infix.lhs, indent)
+      val leftPadded  = left ++ Alignment.padding(Some(padTo), Render.flatWidth(left))
+      val theOperator = Doc.text(" ") ++ ctx.ownSourceDoc(infix.op) ++ Doc.text(" ")
+
+      leftPadded ++ theOperator ++ rhs(infix, arg, indent)
     }
 
   /**

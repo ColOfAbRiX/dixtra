@@ -17,7 +17,10 @@ class BraceSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "def definitions (never braces)" should {
     "keep a braceless single-expression body unchanged" in {
       val input = "def f = 1\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "remove braces from a single-expression braced body" in {
@@ -26,7 +29,9 @@ class BraceSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  1
           |}
           |""".stripMargin
+
       val expected = "def f = 1\n"
+
       input should formatTo(expected)
     }
   }
@@ -37,13 +42,17 @@ class BraceSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """given intOrd: Ord[Int] {
           |  def compare(a: Int, b: Int) = a - b
           |}""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 
   "a block holding a single definition" should {
     "become an indented block below =" in {
       val input = "def f(): Unit = { val x = 1 }\n"
+
       val expected =
         """def f(): Unit =
           |  val x = 1
@@ -58,6 +67,7 @@ class BraceSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    val _ = g()
           |  }
           |""".stripMargin
+
       val expected =
         """def f(): Unit =
           |  if c then

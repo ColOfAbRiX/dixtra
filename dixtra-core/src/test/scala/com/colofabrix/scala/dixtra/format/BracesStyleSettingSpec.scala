@@ -73,7 +73,12 @@ class BracesStyleSettingSpec extends AnyWordSpec with Matchers with LayoutRows {
   "a block standing as a statement" should {
     "not join the line before it in 1tbs" in {
       val input = "def f = {\n  val a = 1\n\n  {\n    g(a)\n  }\n}\n"
-      BraceStyleNormalizer.normalize(input, OneTrueBrace, 120) shouldBe input
+
+      val expected = input
+
+      val actual = BraceStyleNormalizer.normalize(input, OneTrueBrace, 120)
+
+      actual shouldBe expected
     }
   }
 
@@ -89,7 +94,12 @@ class BracesStyleSettingSpec extends AnyWordSpec with Matchers with LayoutRows {
           |         }
           |  yield b
           |""".stripMargin
-      BraceStyleNormalizer.normalize(input, OneTrueBrace, 120) shouldBe input
+
+      val expected = input
+
+      val actual = BraceStyleNormalizer.normalize(input, OneTrueBrace, 120)
+
+      actual shouldBe expected
     }
   }
 

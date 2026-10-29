@@ -52,7 +52,10 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "join params written over several lines when they fit" in {
       val input = "trait A {\n  def f(\n    a: Int,\n    b: Int,\n  ): Int\n}\n"
-      input should formatTo("trait A {\n  def f(a: Int, b: Int): Int\n}\n")
+
+      val expected = "trait A {\n  def f(a: Int, b: Int): Int\n}\n"
+
+      input should formatTo(expected)
     }
 
   }
@@ -102,7 +105,11 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
         "def myfunc(parameter_1: String, parameter_2: String): Int = 1\n",
         "def myfunc[A](parameter_1: String)(using Numeric[A]): Int = 1\n",
         "def f(x: Int)(implicit ctx: Context): Int = 1\n",
-      ).foreach(input => input should formatTo(input))
+      ).foreach { input =>
+        val expected = input
+
+        input should formatTo(expected)
+      }
     }
 
   }
@@ -166,6 +173,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
     "join every junction of three clauses" in {
       val input =
         "def someLongFunctionName(parameterOne: Int)(parameterTwo: String)(using contextOne: Ctx): Int = 1\n"
+      val config = Config.withMaxColumn(40).copy(definitionSite = lastParameter.definitionSite)
 
       val expected =
         """def someLongFunctionName(
@@ -175,13 +183,15 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |): Int = 1
           |""".stripMargin
 
-      input should
-      formatStablyTo(expected, Config.withMaxColumn(40).copy(definitionSite = lastParameter.definitionSite))
+      input should formatStablyTo(expected, config)
     }
 
     "keep a signature that fits on one line" in {
       val input = "def f(x: Int)(y: Int): Int = 1\n"
-      input should formatTo(input, lastParameter)
+
+      val expected = input
+
+      input should formatTo(expected, lastParameter)
     }
 
   }
@@ -276,7 +286,10 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "measure its signature from the def line, not the annotation" in {
       val input = "@deprecated(\"x\", \"1\")\ndef f(a: Int): Int = 1\n"
-      input should formatTo(input, 30)
+
+      val expected = input
+
+      input should formatTo(expected, 30)
     }
 
   }
@@ -301,22 +314,25 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  !layout.insideToken(i) && defStart.findFirstIn(layout.lines(i)).isDefined && ok
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
   }
 
   "a body that would change below =" should {
 
-    val input = "def someFunctionName(parameterOne: String, parameterTwo: Int): Int = xs.map(f).filter(p).sum\n"
-    val expected =
-      """def someFunctionName(
-        |  parameterOne: String,
-        |  parameterTwo: Int,
-        |): Int = xs.map(f).filter(p).sum
-        |""".stripMargin
-
     "stay on the ): Type = line of an exploded signature with inline-chains = keep" in {
+      val input = "def someFunctionName(parameterOne: String, parameterTwo: Int): Int = xs.map(f).filter(p).sum\n"
+
+      val expected =
+        """def someFunctionName(
+          |  parameterOne: String,
+          |  parameterTwo: Int,
+          |): Int = xs.map(f).filter(p).sum
+          |""".stripMargin
+
       input should formatStablyTo(expected, keepInlineChains(Config.withMaxColumn(80)))
     }
 

@@ -5,7 +5,7 @@ import scala.meta.*
 /**
  * The safety-net fallback: for any AST node the engine does not yet know how to format, or cannot format without losing
  * information, the exact original text is reproduced from its source position rather than guessed. Coverage then grows
- * incrementally: fallback fires -> add that node's AON rule.
+ * incrementally: fallback fires -> add that node's layout rule.
  *
  * Renderings that are produced are checked by [[com.colofabrix.scala.dixtra.verify.Equivalence]].
  */

@@ -48,7 +48,10 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """val ctx   = 1
           |val terms = 2
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "align lazy vals with vals" in {
@@ -116,7 +119,9 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |}
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "align a def with the vals that follow it" in {
@@ -240,7 +245,9 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |val ccc = 3
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "not align across an expression" in {
@@ -252,7 +259,9 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  bbb
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "align inside a block" in {
@@ -349,6 +358,11 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    result <- process(data)
           |  } yield data
           |""".stripMargin
+      val keepChains =
+        Config
+          .default
+          .selectorChain
+          .copy(inFor = NestedChainPolicy.Keep, inCall = NestedChainPolicy.Keep)
 
       val expected =
         """def f =
@@ -362,12 +376,6 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    result    <- process(data)
           |  } yield data
           |""".stripMargin
-
-      val keepChains =
-        Config
-          .default
-          .selectorChain
-          .copy(inFor = NestedChainPolicy.Keep, inCall = NestedChainPolicy.Keep)
 
       input should
       formatTo(expected, withBraces(Construct.ForYield -> BracePolicy.Keep).copy(selectorChain = keepChains))
@@ -542,7 +550,9 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |}
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "move the braces of a val partial function written below = up to the = line" in {
@@ -611,7 +621,9 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  }
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "not align across a multi-line case" in {
@@ -634,8 +646,7 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  }
           |""".stripMargin
 
-      input should
-      formatTo(expected, withBody(_.copy(caseBody = MultiBodyPolicy.AlwaysJoin)))
+      input should formatTo(expected, withBody(_.copy(caseBody = MultiBodyPolicy.AlwaysJoin)))
     }
   }
 
@@ -771,7 +782,10 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "keep the break on a second run" in {
       val input = s"""def f =\n  $assertion\n  "a, b, c, d, e"\n"""
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "break after every operator of a run of the same operator" in {

@@ -32,17 +32,28 @@ class CliReportSpec extends AnyWordSpec with Matchers {
 
   "the report" should {
     "start the lines with the prefixes the sbt plugin logs them by, and end with a summary" in {
-      report(List(unchanged, skipped), quiet = false) shouldBe
-      List("out unchanged: A.scala", "err skipped (scala 2): A.scala", "out 2 files: 1 unchanged, 1 skipped")
+      val expected =
+        List("out unchanged: A.scala", "err skipped (scala 2): A.scala", "out 2 files: 1 unchanged, 1 skipped")
+
+      val actual = report(List(unchanged, skipped), quiet = false)
+
+      actual shouldBe expected
     }
 
     "leave the unchanged files out when quiet, but count them" in {
-      report(List(unchanged, formatted), quiet = true) shouldBe
-      List("out formatted: A.scala", "out 2 files: 1 formatted, 1 unchanged")
+      val expected = List("out formatted: A.scala", "out 2 files: 1 formatted, 1 unchanged")
+
+      val actual = report(List(unchanged, formatted), quiet = true)
+
+      actual shouldBe expected
     }
 
     "sum up a run without files" in {
-      CliReport.summary(Nil) shouldBe "0 files"
+      val expected = "0 files"
+
+      val actual = CliReport.summary(Nil)
+
+      actual shouldBe expected
     }
   }
 
@@ -58,11 +69,20 @@ class CliReportSpec extends AnyWordSpec with Matchers {
 
     "be relative to the working directory when the file is under it" in {
       val absolute = Paths.get("src", "A.scala").toAbsolutePath
-      printed(List(FileResult.Formatted(absolute))) shouldBe List(s"formatted: ${Paths.get("src", "A.scala").toString}")
+
+      val expected = List(s"formatted: ${Paths.get("src", "A.scala").toString}")
+
+      val actual = printed(List(FileResult.Formatted(absolute)))
+
+      actual shouldBe expected
     }
 
     "lose a leading ./" in {
-      printed(List(FileResult.Formatted(Paths.get(".", "A.scala")))) shouldBe List("formatted: A.scala")
+      val expected = List("formatted: A.scala")
+
+      val actual = printed(List(FileResult.Formatted(Paths.get(".", "A.scala"))))
+
+      actual shouldBe expected
     }
 
     "stay absolute when the file is outside the working directory" in {
@@ -73,31 +93,56 @@ class CliReportSpec extends AnyWordSpec with Matchers {
           .getRoot
           .resolve("elsewhere")
           .resolve("A.scala")
-      printed(List(FileResult.Formatted(outside))) shouldBe List(s"formatted: ${outside.toString}")
+
+      val expected = List(s"formatted: ${outside.toString}")
+
+      val actual = printed(List(FileResult.Formatted(outside)))
+
+      actual shouldBe expected
     }
   }
 
   "a run in format mode" should {
     "succeed when files are unchanged, formatted or skipped" in {
-      exitCode(List(unchanged, formatted, skipped), check = false) shouldBe ExitCode.Success
+      val expected = ExitCode.Success
+
+      val actual = exitCode(List(unchanged, formatted, skipped), check = false)
+
+      actual shouldBe expected
     }
 
     "fail when a file failed" in {
-      exitCode(List(formatted, failed), check = false) shouldBe ExitCode.Error
+      val expected = ExitCode.Error
+
+      val actual = exitCode(List(formatted, failed), check = false)
+
+      actual shouldBe expected
     }
   }
 
   "a run in check mode" should {
     "succeed when files are unchanged or skipped" in {
-      exitCode(List(unchanged, skipped), check = true) shouldBe ExitCode.Success
+      val expected = ExitCode.Success
+
+      val actual = exitCode(List(unchanged, skipped), check = true)
+
+      actual shouldBe expected
     }
 
     "fail when a file would change" in {
-      exitCode(List(unchanged, wouldFormat), check = true) shouldBe ExitCode.Error
+      val expected = ExitCode.Error
+
+      val actual = exitCode(List(unchanged, wouldFormat), check = true)
+
+      actual shouldBe expected
     }
 
     "fail when a file failed" in {
-      exitCode(List(unchanged, failed), check = true) shouldBe ExitCode.Error
+      val expected = ExitCode.Error
+
+      val actual = exitCode(List(unchanged, failed), check = true)
+
+      actual shouldBe expected
     }
   }
 

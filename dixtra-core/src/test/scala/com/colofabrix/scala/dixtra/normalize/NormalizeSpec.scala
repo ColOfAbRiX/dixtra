@@ -14,13 +14,18 @@ class NormalizeSpec extends AnyWordSpec with Matchers {
   private def normalize(rendered: String): String =
     Normalize(rendered, Config.default, SourceDialect.scala)
 
-  private val q = "\"\"\""
+  private val tripleQuote = "\"\"\""
 
   "a block comment containing blank lines and a def line" should {
 
     "be left untouched" in {
       val input = "val a = 1\n/* note\n\n\nx;\ndef y = {\n*/\nval b = 2\n"
-      normalize(input) shouldBe input
+
+      val expected = input
+
+      val actual = normalize(input)
+
+      actual shouldBe expected
     }
 
   }
@@ -36,10 +41,10 @@ class NormalizeSpec extends AnyWordSpec with Matchers {
            |  */
            |@inline
            |private[pkg] def f = 1
-           |val s = ${q}a
+           |val s = ${tripleQuote}a
            |
            |
-           |def y$q
+           |def y$tripleQuote
            |
            |
            |  def g = 2
@@ -48,13 +53,21 @@ class NormalizeSpec extends AnyWordSpec with Matchers {
 
       val once = normalize(input)
 
-      normalize(once) shouldBe once
+      val expected = once
+
+      val actual = normalize(once)
+
+      actual shouldBe expected
     }
 
     "separate a method with a scaladoc from its neighbours" in {
-      val input    = "object A {\n  val x = 1\n  /** doc */\n  def f = 1\n  def g = 2\n}\n"
+      val input = "object A {\n  val x = 1\n  /** doc */\n  def f = 1\n  def g = 2\n}\n"
+
       val expected = "object A {\n  val x = 1\n\n  /** doc */\n  def f = 1\n\n  def g = 2\n}\n"
-      normalize(input) shouldBe expected
+
+      val actual = normalize(input)
+
+      actual shouldBe expected
     }
 
   }

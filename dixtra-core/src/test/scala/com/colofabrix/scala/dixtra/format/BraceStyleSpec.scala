@@ -270,25 +270,34 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
 
   "the end markers of statements in a block" should {
     "be written for a braceless construct set to force-end" in {
-      val input    = "def f(x: Int) =\n  println(x)\n  x match {\n    case 1 => a\n    case _ => b\n  }\n"
+      val input = "def f(x: Int) =\n  println(x)\n  x match {\n    case 1 => a\n    case _ => b\n  }\n"
+
       val expected = "def f(x: Int) =\n  println(x)\n  x match\n    case 1 => a\n    case _ => b\n  end match\n"
+
       input should formatTo(expected, withBraces(Construct.Match -> ForceEnd))
     }
 
     "be removed for a construct set to force-indent" in {
-      val input    = "def f(x: Int) =\n  println(x)\n  x match\n    case 1 => a\n    case _ => b\n  end match\n"
+      val input = "def f(x: Int) =\n  println(x)\n  x match\n    case 1 => a\n    case _ => b\n  end match\n"
+
       val expected = "def f(x: Int) =\n  println(x)\n  x match\n    case 1 => a\n    case _ => b\n"
+
       input should formatTo(expected, withBraces(Construct.Match -> ForceIndent))
     }
 
     "not count as a member of a single-member extension group" in {
       val input = "extension (x: Int) {\n  def a =\n    val y = x\n    y\n  end a\n}\n"
-      input should formatTo(input, withBraces(Construct.Extension -> ForceIndent, Construct.Def -> ForceEnd))
+
+      val expected = input
+
+      input should formatTo(expected, withBraces(Construct.Extension -> ForceIndent, Construct.Def -> ForceEnd))
     }
 
     "be removed when the construct gets braces" in {
-      val input    = "def f(x: Int) =\n  println(x)\n  x match\n    case 1 => a\n    case _ => b\n  end match\n"
+      val input = "def f(x: Int) =\n  println(x)\n  x match\n    case 1 => a\n    case _ => b\n  end match\n"
+
       val expected = "def f(x: Int) =\n  println(x)\n  x match {\n    case 1 => a\n    case _ => b\n  }\n"
+
       input should formatTo(expected, withBraces(Construct.Match -> ForceBraces))
     }
   }

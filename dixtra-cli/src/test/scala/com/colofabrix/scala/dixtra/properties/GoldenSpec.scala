@@ -26,7 +26,11 @@ class GoldenSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "the golden fixtures" should {
     "exist" in {
-      cases should not be empty
+      val expected = true
+
+      val actual = cases.nonEmpty
+
+      actual shouldBe expected
     }
 
     cases.foreach { dir =>
@@ -34,12 +38,17 @@ class GoldenSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       s"format $name as expected" in {
         val config = ConfigCli.fromFile(dir.resolve(ConfigCli.fileName)).getOrElse(fail(s"invalid $name config"))
-        read(dir.resolve("input.scala.txt")) should formatTo(read(dir.resolve("expected.scala.txt")), config)
+
+        val expected = read(dir.resolve("expected.scala.txt"))
+
+        read(dir.resolve("input.scala.txt")) should formatTo(expected, config)
       }
 
       s"be idempotent for $name" in {
-        val config   = ConfigCli.fromFile(dir.resolve(ConfigCli.fileName)).getOrElse(fail(s"invalid $name config"))
+        val config = ConfigCli.fromFile(dir.resolve(ConfigCli.fileName)).getOrElse(fail(s"invalid $name config"))
+
         val expected = read(dir.resolve("expected.scala.txt"))
+
         expected should formatTo(expected, config)
       }
     }

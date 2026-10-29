@@ -17,7 +17,10 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "keep the using keyword" in {
       val input = "val u = f(using a)\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
   }
@@ -26,7 +29,10 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "keep its braces rather than become parentheses" in {
       val input = "val p = f { case a => a }\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
   }
@@ -125,7 +131,10 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "stay on one line when they fit" in {
       val oneLine = "val r = Resource.make(IO.blocking(create()))(temp => IO.blocking(temp).void)\n"
-      oneLine should formatTo(oneLine)
+
+      val expected = oneLine
+
+      oneLine should formatTo(expected)
     }
 
     "all break, with ) ( after the last argument of the group before by default" in {
@@ -158,6 +167,8 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
     "close with ) aligned with the selection in a broken chain, with call-site.groups-break = all" in {
       val chained =
         "val r = xs.filter(_.isValid).map(_.name).make(IO.blocking(Files.createTempFile(parent, \"tmp\", \".part\")))(temp => IO.blocking(temp).void)\n"
+      val config = Config.withMaxColumn(80)
+      val all    = withCallSite(_.copy(groupsBreak = GroupsBreak.BreakAll), config)
 
       val expected =
         """val r =
@@ -169,9 +180,6 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      temp => IO.blocking(temp).void,
           |    )
           |""".stripMargin
-
-      val config = Config.withMaxColumn(80)
-      val all    = withCallSite(_.copy(groupsBreak = GroupsBreak.BreakAll), config)
 
       chained should formatStablyTo(expected, all)
     }
@@ -222,17 +230,18 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "let each group decide by itself, with keep" in {
-      val config = Config.withMaxColumn(80)
-      val keep   = withCallSite(_.copy(groupsBreak = GroupsBreak.Independent), config)
-
       val mixed =
         """val r =
           |  Resource.make(
           |    IO.blocking(Files.createTempFile(directory, prefix, ".tmp")),
           |  )(temp => IO.blocking(temp).void)
           |""".stripMargin
+      val config = Config.withMaxColumn(80)
+      val keep   = withCallSite(_.copy(groupsBreak = GroupsBreak.Independent), config)
 
-      mixed should formatTo(mixed, keep)
+      val expected = mixed
+
+      mixed should formatTo(expected, keep)
     }
   }
 
@@ -240,11 +249,15 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "stay on one line when it fits" in {
       val input = "val pair = (first, second)\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "break one element per line when it does not fit" in {
       val input = "val tuple = (firstElement, secondElement, thirdElement)\n"
+
       val expected =
         """val tuple =
           |  (
@@ -258,8 +271,10 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "break as an argument that fits only without its comma" in {
-      val input    = "val xs =\n  List(\n    (alpha, beta),\n    (gamma, delta),\n  )\n"
+      val input = "val xs =\n  List(\n    (alpha, beta),\n    (gamma, delta),\n  )\n"
+
       val expected = "val xs =\n  List(\n    (alpha, beta),\n    (\n      gamma,\n      delta,\n    ),\n  )\n"
+
       input should formatTo(expected, 18)
     }
 

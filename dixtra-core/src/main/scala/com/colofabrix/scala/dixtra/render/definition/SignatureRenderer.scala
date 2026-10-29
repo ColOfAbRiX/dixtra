@@ -119,12 +119,15 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
         inner
           .values
           .zipWithIndex
-          .map { (p, i) =>
-            typeParam(p, indent + 2) ++ (if i < last || comma then Doc.text(",") else Doc.Empty)
+          .map { (param, index) =>
+            typeParam(param, indent + 2) ++ (if index < last || comma then Doc.text(",") else Doc.Empty)
           }
 
-      oneLine(start, inner.pos.start) ++ Doc.text("[") ++ Doc.Nest(2, Doc.Line ++ Doc.intercalate(Doc.Line, params)) ++
-      Doc.Line ++ Doc.text("]") ++ oneLine(inner.pos.end, end)
+      val opening  = oneLine(start, inner.pos.start) ++ Doc.text("[")
+      val indented = Doc.Nest(2, Doc.Line ++ Doc.intercalate(Doc.Line, params))
+      val closing  = Doc.Line ++ Doc.text("]") ++ oneLine(inner.pos.end, end)
+
+      opening ++ indented ++ closing
 
   private def oneLine(tparam: Type.Param): Doc =
     val (start, end) = ctx.span(tparam)

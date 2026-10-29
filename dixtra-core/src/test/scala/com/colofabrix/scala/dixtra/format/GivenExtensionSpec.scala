@@ -22,6 +22,7 @@ class GivenExtensionSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    def triple = i * 3
           |}
           |""".stripMargin
+
       val expected =
         """object A {
           |  val x = 1
@@ -36,11 +37,13 @@ class GivenExtensionSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  }
           |}
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
     "have a given alias body formatted like a val" in {
       val input = "given xs: List[Int] = List(a,\n  b)\n"
+
       val expected =
         """given xs: List[Int] =
           |  List(
@@ -48,11 +51,13 @@ class GivenExtensionSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    b,
           |  )
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
     "have extension methods formatted like defs" in {
       val input = "extension (i: Int)\n  def xs = List(a,\n    b)\n"
+
       val expected =
         """extension (i: Int)
           |  def xs =
@@ -61,6 +66,7 @@ class GivenExtensionSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      b,
           |    )
           |""".stripMargin
+
       input should formatTo(expected)
     }
   }

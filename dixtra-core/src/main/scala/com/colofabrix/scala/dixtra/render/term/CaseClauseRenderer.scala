@@ -28,9 +28,9 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
    * its grouping parentheses. Comments after the `match` keyword stay with the cases; a comment before it keeps the
    * whole `match` as written.
    */
-  def renderMatch(m: Term.Match, indent: Int): Doc =
-    val block     = m.casesBlock
-    val exprEnd   = ctx.span(m.expr)._2
+  def renderMatch(matchTerm: Term.Match, indent: Int): Doc =
+    val block     = matchTerm.casesBlock
+    val exprEnd   = ctx.span(matchTerm.expr)._2
     val kwMatch   = ctx.tokensBetween(exprEnd, block.pos.start).collectFirst { case t: Token.KwMatch => t }
     val commented = kwMatch.forall(kw => ctx.commentsBetween(exprEnd, kw.start).nonEmpty)
 
@@ -43,11 +43,13 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
             .find(!_.is[Token.Whitespace])
             .exists(_.is[Token.LeftBrace])
         if ctx.usesBraces(Construct.Match, written) then
-          ctx.sourceDoc(m.expr) ++ Doc.text(" match ") ++ Doc.braced(clauses(ctx.config.blankLines(Construct.Match)))
+          ctx.sourceDoc(matchTerm.expr) ++
+          Doc.text(" match ") ++
+          Doc.braced(clauses(ctx.config.blankLines(Construct.Match)))
         else
-          ctx.sourceDoc(m.expr) ++ Doc.text(" match") ++ Doc.Nest(2, Doc.Line ++ clauses(BlankLinePolicy.Never))
+          ctx.sourceDoc(matchTerm.expr) ++ Doc.text(" match") ++ Doc.Nest(2, Doc.Line ++ clauses(BlankLinePolicy.Never))
       case _ =>
-        ctx.ownSourceDoc(m)
+        ctx.ownSourceDoc(matchTerm)
     }
 
   /**
@@ -57,25 +59,25 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
    * group (`body.try`): both on the lines of their keywords or both below them. A `catch` with a single handler
    * expression instead of cases is kept as written.
    */
-  def renderTry(t: Term.Try, indent: Int): Doc =
-    t.catchClause match {
-      case catchClause if ctx.hasGapComments(t) || (catchClause.isEmpty && t.finallyp.isEmpty) =>
-        ctx.ownSourceDoc(t)
+  def renderTry(tryTerm: Term.Try, indent: Int): Doc =
+    tryTerm.catchClause match {
+      case catchClause if ctx.hasGapComments(tryTerm) || (catchClause.isEmpty && tryTerm.finallyp.isEmpty) =>
+        ctx.ownSourceDoc(tryTerm)
       case catchClause =>
-        val inline = ctx.ownSourceDoc(t)
+        val inline = ctx.ownSourceDoc(tryTerm)
         val policy =
           ctx
             .config
             .body
             .tryBody
-        val oneLine = !t.pos.text.contains('\n') && ctx.fits(inline, indent)
-        val members = (t.expr :: t.finallyp.toList).map(b => tryMember(false, oneLine, b))
+        val oneLine = !tryTerm.pos.text.contains('\n') && ctx.fits(inline, indent)
+        val members = (tryTerm.expr :: tryTerm.finallyp.toList).map(body => tryMember(false, oneLine, body))
         if oneLine && !BodyLayout.groupBelow(policy, members) then
           inline
         else
           val written =
-            ctx.tokensBetween(t.pos.start, ctx.span(t.expr)._1).exists(_.is[Token.LeftBrace]) ||
-            t.expr.is[Term.Block] && ctx.writtenWithBraces(t.expr)
+            ctx.tokensBetween(tryTerm.pos.start, ctx.span(tryTerm.expr)._1).exists(_.is[Token.LeftBrace]) ||
+            tryTerm.expr.is[Term.Block] && ctx.writtenWithBraces(tryTerm.expr)
           val braces = ctx.usesBraces(Construct.Try, written)
           val edges  = if braces then ctx.config.blankLines(Construct.Try) else BlankLinePolicy.Never
           val catches =
@@ -83,11 +85,15 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
           if braces then
 
             def braced(term: Term): Doc = Doc.braced(terms.bracedBody(term, indent + 2, Construct.Try))
-            Doc.text("try ") ++ braced(t.expr) ++
-            catches.fold(Doc.Empty)((_, c) => Doc.text(" catch ") ++ Doc.braced(c)) ++
-            t.finallyp.fold(Doc.Empty)(f => Doc.text(" finally ") ++ braced(f))
+            val tryBody                 = Doc.text("try ") ++ braced(tryTerm.expr)
+            val catchDoc =
+              catches.fold(Doc.Empty)((_, caught) => Doc.text(" catch ") ++ Doc.braced(caught))
+            val finallyDoc =
+              tryTerm.finallyp.fold(Doc.Empty)(finallyTerm => Doc.text(" finally ") ++ braced(finallyTerm))
+
+            tryBody ++ catchDoc ++ finallyDoc
           else
-            bracelessTry(t, indent, policy, catches.map(_._2))
+            bracelessTry(tryTerm, indent, policy, catches.map(_._2))
     }
 
   // A body of a try as a member of its group: a body holding an if, a match or a try cannot be on the line of its
@@ -97,20 +103,20 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
 
   // A braceless try: its body and its `finally` body on the lines of their keywords or below them, by `policy`; its
   // cases below `catch`.
-  private def bracelessTry(t: Term.Try, indent: Int, policy: MultiBodyPolicy, catches: Option[Doc]): Doc =
+  private def bracelessTry(tryTerm: Term.Try, indent: Int, policy: MultiBodyPolicy, catches: Option[Doc]): Doc =
     val finallyEnd =
-      t
+      tryTerm
         .finallyp
-        .flatMap { f =>
+        .flatMap { finallyTerm =>
           ctx
-            .tokensBetween(ctx.span(t.expr)._2, ctx.span(f)._1)
+            .tokensBetween(ctx.span(tryTerm.expr)._2, ctx.span(finallyTerm)._1)
             .collect { case kw: Token.KwFinally => kw.end }
             .lastOption
         }
 
     val bodies =
-      (("try", t.pos.start + "try".length, t.expr) ::
-      t.finallyp.zip(finallyEnd).map((f, end) => ("finally", end, f)).toList)
+      (("try", tryTerm.pos.start + "try".length, tryTerm.expr) ::
+      tryTerm.finallyp.zip(finallyEnd).map((finallyTerm, end) => ("finally", end, finallyTerm)).toList)
         .map { (keyword, keywordEnd, term) =>
           val doc   = terms.renderBody(term, indent + 2, forceExplode = false)
           val fits  = ctx.fits(doc, indent + keyword.length + 1)
@@ -123,12 +129,15 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
     def part(keyword: String, doc: Doc): Doc =
       if allBelow then Doc.text(keyword) ++ Doc.Nest(2, Doc.Line ++ doc) else Doc.text(keyword + " ") ++ doc
 
-    val parts =
-      bodies.headOption.map((k, d, _) => part(k, d)).toList ++
-      catches.map(c => Doc.text("catch") ++ Doc.Nest(2, Doc.Line ++ c)).toList ++
-      bodies.drop(1).map((k, d, _) => part(k, d))
+    val tryParts =
+      bodies
+        .headOption
+        .map((keyword, doc, _) => part(keyword, doc))
+        .toList
+    val catchParts   = catches.map(caught => Doc.text("catch") ++ Doc.Nest(2, Doc.Line ++ caught)).toList
+    val finallyParts = bodies.drop(1).map((keyword, doc, _) => part(keyword, doc))
 
-    Doc.intercalate(Doc.Line, parts)
+    Doc.intercalate(Doc.Line, tryParts ++ catchParts ++ finallyParts)
 
   /**
    * The clauses found in `[start, end)` one per line at `indent`, keeping the blank lines and the comments between
@@ -150,37 +159,40 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
   // The clauses with their bodies on the lines of their `=>`, the arrows of consecutive clauses aligned; None when a
   // clause would not fit once aligned.
   private def aligned(clauses: List[Case], indent: Int): Option[List[Doc]] =
-    val unpadded = clauses.map(c => c.pos.start -> caseClause(c, indent, None, false)).toMap
+    val unpadded = clauses.map(oneCase => oneCase.pos.start -> caseClause(oneCase, indent, None, false)).toMap
     val targets =
       Alignment.groupedTargets(ctx, clauses, (_, _) => true)(
         eligible =
-          c => ctx.config.alignment.arrows.cases && unpadded.get(c.pos.start).flatMap(Render.flatWidth).isDefined,
+          oneCase =>
+            ctx.config.alignment.arrows.cases && unpadded.get(oneCase.pos.start).flatMap(Render.flatWidth).isDefined,
         width = headerWidth,
-        fitsAt = (c, target) => paddedWidth(unpadded, c, target).exists(ctx.fitsWidth(indent, _)),
+        fitsAt = (oneCase, target) => paddedWidth(unpadded, oneCase, target).exists(ctx.fitsWidth(indent, _)),
       )
     Option.when(!targets.contains(Some(Alignment.Placement.Broken))) {
       clauses
         .zip(targets)
         .map {
-          case (c, Some(Alignment.Placement.Padded(target))) => caseClause(c, indent, Some(target), false)
-          case (c, _)                                        => unpadded.getOrElse(c.pos.start, ctx.sourceDoc(c))
+          case (oneCase, Some(Alignment.Placement.Padded(target))) =>
+            caseClause(oneCase, indent, Some(target), false)
+          case (oneCase, _) =>
+            unpadded.getOrElse(oneCase.pos.start, ctx.sourceDoc(oneCase))
         }
     }
 
   // The body of a clause as a member of the group of the bodies of its case list: it cannot be on the line of its `=>`
   // when it does not fit there, a comment is between the parts of the clause, or it holds an if, a match or a try. None
   // for a clause with an empty body, or without an arrow.
-  private def member(c: Case, indent: Int): Option[BodyLayout.Member] =
-    (c.body, header(c)) match {
+  private def member(oneCase: Case, indent: Int): Option[BodyLayout.Member] =
+    (oneCase.body, header(oneCase)) match {
       case (Term.Block(Nil), _) =>
         None
-      case (_, Some((_, arrowEnd))) if ctx.hasGapComments(c) =>
-        Some(BodyLayout.Member(BodyLayout.writtenBelow(ctx, arrowEnd, c.body), false, false))
+      case (_, Some((_, arrowEnd))) if ctx.hasGapComments(oneCase) =>
+        Some(BodyLayout.Member(BodyLayout.writtenBelow(ctx, arrowEnd, oneCase.body), false, false))
       case (_, Some((pattern, arrowEnd))) =>
         val lead   = pattern ++ Doc.text(" =>")
-        val body   = BodyLayout.of(ctx, terms, arrowEnd, c.body, indent + 2, Some(Construct.CaseBody))
+        val body   = BodyLayout.of(ctx, terms, arrowEnd, oneCase.body, indent + 2, Some(Construct.CaseBody))
         val column = ctx.columnAfter(lead, indent) + 1
-        val fits   = body.onSeparatorLine(ctx.fits(_, column)).isDefined && !BodyLayout.holdsControl(c.body)
+        val fits   = body.onSeparatorLine(ctx.fits(_, column)).isDefined && !BodyLayout.holdsControl(oneCase.body)
         Some(BodyLayout.Member(body.writtenBelow, fits, body.simple))
       case _ =>
         None
@@ -189,43 +201,48 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
   /**
    * A single clause at the given indent, its body one level in, placed by `body.case-body` as a group of its own.
    */
-  def clause(c: Case, indent: Int): Doc =
-    caseClause(c, indent, None, member(c, indent).exists(m => BodyLayout.groupBelow(ctx.config.body.caseBody, List(m))))
+  def clause(oneCase: Case, indent: Int): Doc =
+    caseClause(
+      oneCase,
+      indent,
+      None,
+      member(oneCase, indent).exists(m => BodyLayout.groupBelow(ctx.config.body.caseBody, List(m))),
+    )
 
   // The width of a one-line clause once its header is padded to `target`.
-  private def paddedWidth(unpadded: Map[Int, Doc], c: Case, target: Int): Option[Int] =
+  private def paddedWidth(unpadded: Map[Int, Doc], oneCase: Case, target: Int): Option[Int] =
     for
-      line  <- unpadded.get(c.pos.start).flatMap(Render.flatWidth)
-      width <- headerWidth(c)
+      line  <- unpadded.get(oneCase.pos.start).flatMap(Render.flatWidth)
+      width <- headerWidth(oneCase)
     yield
       line + math.max(0, target - width)
 
-  private def headerWidth(c: Case): Option[Int] =
-    header(c).flatMap { case (doc, _) => Render.flatWidth(doc) }
+  private def headerWidth(oneCase: Case): Option[Int] =
+    header(oneCase).flatMap { case (doc, _) => Render.flatWidth(doc) }
 
   // A clause: its header as written, padded to `padTo` columns when aligned, and its body after `=>`, below it when
   // `below`, else on the `=>` line when it can be there. A clause with comments between its parts, or with an empty
   // body, is kept as written.
-  private def caseClause(c: Case, indent: Int, padTo: Option[Int], below: Boolean): Doc =
-    (c.body, header(c)) match {
+  private def caseClause(oneCase: Case, indent: Int, padTo: Option[Int], below: Boolean): Doc =
+    (oneCase.body, header(oneCase)) match {
       case (Term.Block(Nil), _) =>
-        ctx.sourceDoc(c)
-      case (_, Some((pattern, arrowEnd))) if !ctx.hasGapComments(c) =>
+        ctx.sourceDoc(oneCase)
+      case (_, Some((pattern, arrowEnd))) if !ctx.hasGapComments(oneCase) =>
         val pad    = Alignment.padding(padTo, Render.flatWidth(pattern))
         val lead   = pattern ++ pad ++ Doc.text(" =>")
-        val body   = BodyLayout.of(ctx, terms, arrowEnd, c.body, indent + 2, Some(Construct.CaseBody))
+        val body   = BodyLayout.of(ctx, terms, arrowEnd, oneCase.body, indent + 2, Some(Construct.CaseBody))
         val column = ctx.columnAfter(lead, indent) + 1
         if below then body.belowSeparator(lead) else body.placed(lead, ctx.fits(_, column), SingleBodyPolicy.AlwaysJoin)
       case _ =>
-        ctx.sourceDoc(c)
+        ctx.sourceDoc(oneCase)
     }
 
   // The `case pattern if guard` part of a clause, before its arrow, and the end of the arrow.
-  private def header(c: Case): Option[(Doc, Int)] =
+  private def header(oneCase: Case): Option[(Doc, Int)] =
     ctx
-      .arrowBefore(c.pos.start, ctx.span(c.body)._1)
+      .arrowBefore(oneCase.pos.start, ctx.span(oneCase.body)._1)
       .map { arrow =>
-        (ctx.trimmedSourceDoc(c.pos.start, arrow.start), arrow.end)
+        (ctx.trimmedSourceDoc(oneCase.pos.start, arrow.start), arrow.end)
       }
 
 }

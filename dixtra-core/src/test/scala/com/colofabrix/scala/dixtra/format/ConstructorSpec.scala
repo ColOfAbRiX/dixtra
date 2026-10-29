@@ -19,6 +19,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
           s"""$header(firstParameter: String, secondParameter: Int) {
              |  $member
              |}""".stripMargin
+
         val expected =
           s"""$header(
              |  firstParameter: String,
@@ -26,6 +27,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
              |) {
              |  $member
              |}""".stripMargin
+
         input should formatTo(expected, 40)
       }
     }
@@ -35,7 +37,10 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """class MyClass(first: String, second: Int) {
           |  val x = 1
           |}""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "count the rest of the header towards the width" in {
@@ -43,11 +48,13 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """class MyClass(first: String) extends SomeBase(first) {
           |  val x = 1
           |}""".stripMargin
+
       val expected =
         """class MyClass(first: String)
           |  extends SomeBase(first) {
           |  val x = 1
           |}""".stripMargin
+
       input should formatTo(expected, 50)
     }
 
@@ -56,6 +63,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """class MyClass[TypeParam1, TypeParam2, TypeParam3](parameter_1: String) {
           |   val x = 1
           |}""".stripMargin
+
       val expected =
         """class MyClass[
           |  TypeParam1,
@@ -65,6 +73,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |) {
           |   val x = 1
           |}""".stripMargin
+
       input should formatTo(expected, 40)
     }
 
@@ -73,6 +82,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """class MyClass[TypeParam1, TypeParam2](parameter_1: String, parameter_2: Int) {
           |   val x = 1
           |}""".stripMargin
+
       val expected =
         """class MyClass[TypeParam1, TypeParam2](
           |  parameter_1: String,
@@ -80,6 +90,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |) {
           |   val x = 1
           |}""".stripMargin
+
       input should formatTo(expected, 50)
     }
 
@@ -88,6 +99,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """class MyClass(firstParameter: String)(using context: Context) {
           |   val x = 1
           |}""".stripMargin
+
       val expected =
         """class MyClass(
           |  firstParameter: String,
@@ -96,6 +108,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |) {
           |   val x = 1
           |}""".stripMargin
+
       input should formatTo(expected, 40)
     }
   }
@@ -103,6 +116,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "the parameters of a case class without a body" should {
     "explode when they over-flow" in {
       val input = "final case class Person(firstName: String, lastName: String, age: Int)\n"
+
       val expected =
         """final case class Person(
           |  firstName: String,
@@ -110,6 +124,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  age: Int,
           |)
           |""".stripMargin
+
       input should formatTo(expected, 40)
     }
 
@@ -120,6 +135,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |   index: Long, altitude: Double
           |)
           |""".stripMargin
+
       val expected =
         """final private case class PhaseTransition(
           |  phase: FlightPhase,
@@ -127,12 +143,16 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  altitude: Double,
           |)
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
     "stay on one line when the author wrote them so and they fit" in {
       val input = "final private case class PhaseTransition(phase: FlightPhase, index: Long, altitude: Double)\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 
@@ -144,7 +164,10 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  y: Int,
           |)
           |""".stripMargin
-      input should formatTo("class Point(x: Int, y: Int)\n")
+
+      val expected = "class Point(x: Int, y: Int)\n"
+
+      input should formatTo(expected)
     }
   }
 

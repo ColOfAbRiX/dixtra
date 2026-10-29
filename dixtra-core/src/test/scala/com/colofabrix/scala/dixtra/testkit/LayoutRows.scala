@@ -18,8 +18,8 @@ trait LayoutRows extends FormatMatchers { this: AnyWordSpec & Matchers =>
     rows
       .zipWithIndex
       .foreach {
-        case ((what, config, input, expected), i) =>
-          s"lay out $what (row ${i.toString})" in {
+        case ((what, config, input, expected), index) =>
+          s"lay out $what (row ${index.toString})" in {
             input should formatTo(expected, config)
           }
       }
@@ -29,8 +29,8 @@ trait LayoutRows extends FormatMatchers { this: AnyWordSpec & Matchers =>
       .filter { case ((_, _, input, expected), _) => input != expected }
       .distinctBy { case ((_, config, _, expected), _) => (config, expected) }
       .foreach {
-        case ((what, config, _, expected), i) =>
-          s"be idempotent for $what (row ${i.toString})" in {
+        case ((what, config, _, expected), index) =>
+          s"be idempotent for $what (row ${index.toString})" in {
             expected should formatTo(expected, config)
           }
       }

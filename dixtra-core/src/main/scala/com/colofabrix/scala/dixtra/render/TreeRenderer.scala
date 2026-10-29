@@ -11,12 +11,12 @@ import scala.meta.*
 import scala.meta.tokens.Token
 
 /**
- * The AON tree renderer: the single routing point over a parsed compilation unit.
+ * The dixtra tree renderer: the single routing point over a parsed compilation unit.
  *
- * It owns the shared [[com.colofabrix.scala.dixtra.render.context.RenderContext]] and the per-construct renderers, dispatching each node to its rule. Any
- * construct without a rule falls back to the safety net (verbatim source), so the tool never corrupts unsupported code.
- * Text between handled nodes (whitespace, blank lines, comments) is preserved exactly by splicing formatted node slices
- * back into the original source.
+ * It owns the shared [[com.colofabrix.scala.dixtra.render.context.RenderContext]] and the per-construct renderers,
+ * dispatching each node to its rule. Any construct without a rule falls back to the safety net (verbatim source), so
+ * the tool never corrupts unsupported code. Text between handled nodes (whitespace, blank lines, comments) is preserved
+ * exactly by splicing formatted node slices back into the original source.
  *
  * Formatting is recursive: the members of containers, and the definitions and expressions nested in blocks, case bodies
  * and lambdas, all follow the same rules. Consecutive one-line definitions align their `=` (see [[Alignment]]). Every

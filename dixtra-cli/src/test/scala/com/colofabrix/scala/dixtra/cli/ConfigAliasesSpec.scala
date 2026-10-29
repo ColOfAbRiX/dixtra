@@ -21,37 +21,64 @@ class ConfigAliasesSpec extends AnyWordSpec with Matchers {
       .toSet
 
   // Values to probe what a setting accepts: every key of the enumerations of the configuration, booleans and numbers.
-  private val probes: List[String] =
-    (BlankLinePolicy.values.map(_.key) ++ SingleBodyPolicy.values.map(_.key) ++ YieldBodyPolicy.values.map(_.key) ++
-    MultiBodyPolicy.values.map(_.key) ++ BracePolicy.values.map(_.key) ++ BracesStyle.values.map(_.key) ++
+  private val bodyPolicies =
+    BlankLinePolicy.values.map(_.key) ++ SingleBodyPolicy.values.map(_.key) ++ YieldBodyPolicy.values.map(_.key) ++
+    MultiBodyPolicy.values.map(_.key)
+  private val bracePolicies =
+    BracePolicy.values.map(_.key) ++ BracesStyle.values.map(_.key)
+  private val chainPolicies =
     ChainHeadPolicy.values.map(_.key) ++ GroupsBreak.values.map(_.key) ++ GroupsSeparator.values.map(_.key) ++
-    InlineChainPolicy.values.map(_.key) ++ NestedChainPolicy.values.map(_.key) ++ ScaladocSpacing.values.map(_.key) ++
-    TrailingOverflow.values.map(_.key) ++ TrailingCommas.values.map(_.key))
-      .toList
-      .distinct ++
-    List("true", "false", "1", "3")
+    InlineChainPolicy.values.map(_.key) ++ NestedChainPolicy.values.map(_.key)
+  private val settingValues =
+    ScaladocSpacing.values.map(_.key) ++ TrailingOverflow.values.map(_.key) ++ TrailingCommas.values.map(_.key)
+
+  private val probes: List[String] =
+    val enumerated = (bodyPolicies ++ bracePolicies ++ chainPolicies ++ settingValues).toList.distinct
+
+    enumerated ++ List("true", "false", "1", "3")
 
   "the table of aliases" should {
     "point every alias to settings of reference.conf" in {
-      ConfigAliases.all.flatMap(alias => alias.targets.filterNot(settings).map(t => s"${alias.name} -> $t")) shouldBe
-      empty
+      val expected = true
+
+      val actual =
+        ConfigAliases
+          .all
+          .flatMap(alias => alias.targets.filterNot(settings).map(target => s"${alias.name} -> $target"))
+          .isEmpty
+
+      actual shouldBe expected
     }
 
     "never use a setting, or a section holding settings, as an alias" in {
-      val clashes =
+      val expected = true
+
+      val actual =
         ConfigAliases
           .all
           .map(_.name)
           .filter(name => settings.exists(s => s == name || s.startsWith(name + ".")))
-      clashes shouldBe empty
+          .isEmpty
+
+      actual shouldBe expected
     }
 
     "give each alias at least one target, without duplicates" in {
-      ConfigAliases.all.filter(a => a.targets.isEmpty || a.targets.distinct.sizeIs != a.targets.size) shouldBe empty
+      val expected = true
+
+      val actual =
+        ConfigAliases
+          .all
+          .filter(a => a.targets.isEmpty || a.targets.distinct.sizeIs != a.targets.size)
+          .isEmpty
+
+      actual shouldBe expected
     }
 
     "only group settings that accept the same values" in {
-      val mismatched =
+      val expected = true
+
+      val actual =
         ConfigAliases
           .all
           .filter(_.targets.sizeIs > 1)
@@ -61,50 +88,88 @@ class ConfigAliasesSpec extends AnyWordSpec with Matchers {
               .headOption
               .toList
               .flatMap { (first, values) =>
-                accepted.collect { case (t, other) if other != values => s"${alias.name}: $first and $t" }
+                accepted.collect { case (target, other) if other != values => s"${alias.name}: $first and $target" }
               }
           }
-      mismatched shouldBe empty
+          .isEmpty
+
+      actual shouldBe expected
     }
   }
 
   "a configuration with an alias" should {
     "set the target of the alias, leaving the other settings as they are" in {
-      ConfigCli
-        .fromString("scaladoc.align-tags = true")
-        .map(c => (c.alignment.scaladoc.tags, c.blankLines.beforeScaladoc)) shouldBe
-        Validated.valid((true, ScaladocSpacing.Always))
+      val expected = Validated.valid((true, ScaladocSpacing.Always))
+
+      val actual =
+        ConfigCli
+          .fromString("scaladoc.align-tags = true")
+          .map(c => (c.alignment.scaladoc.tags, c.blankLines.beforeScaladoc))
+
+      actual shouldBe expected
     }
 
     "accept a setting given again with the same value" in {
-      val config = ConfigCli.fromString("scaladoc.align-tags = true, alignment.scaladoc.tags = true")
-      config.map(_.alignment.scaladoc.tags) shouldBe Validated.valid(true)
+      val expected = Validated.valid(true)
+
+      val actual =
+        ConfigCli
+          .fromString("scaladoc.align-tags = true, alignment.scaladoc.tags = true")
+          .map(_.alignment.scaladoc.tags)
+
+      actual shouldBe expected
     }
 
     "reject a setting given again with another value, naming both" in {
-      val result = ConfigCli.fromString("scaladoc.align-tags = true\nalignment.scaladoc.tags = false")
-      result.fold(_.toList.mkString, _ => "valid") should
-      (include("scaladoc.align-tags") and include("alignment.scaladoc.tags"))
+      val message =
+        ConfigCli
+          .fromString("scaladoc.align-tags = true\nalignment.scaladoc.tags = false")
+          .fold(
+            _.toList.mkString,
+            _ => "valid",
+          )
+
+      val expected = true
+
+      val actual = message.contains("scaladoc.align-tags") && message.contains("alignment.scaladoc.tags")
+
+      actual shouldBe expected
     }
 
     "reject a value its targets do not accept" in {
-      ConfigCli.fromString("scaladoc.align-tags = always").isInvalid shouldBe true
+      val expected = true
+
+      val actual = ConfigCli.fromString("scaladoc.align-tags = always").isInvalid
+
+      actual shouldBe expected
     }
 
     "set its target when it lives in a section of settings, leaving that section's settings as they are" in {
-      ConfigCli
-        .fromString("comments { align-trailing = true, trailing-overflow = keep }")
-        .map(c => (c.alignment.trailingComments, c.trailingCommentOverflow)) shouldBe
-        Validated.valid((true, TrailingOverflow.Keep))
+      val expected = Validated.valid((true, TrailingOverflow.Keep))
+
+      val actual =
+        ConfigCli
+          .fromString("comments { align-trailing = true, trailing-overflow = keep }")
+          .map(c => (c.alignment.trailingComments, c.trailingCommentOverflow))
+
+      actual shouldBe expected
     }
 
     "reject two construct aliases that give a shared setting different values" in {
-      ConfigCli.fromString("class.align-extends = true\ntrait.align-extends = false").isInvalid shouldBe true
+      val expected = true
+
+      val actual = ConfigCli.fromString("class.align-extends = true\ntrait.align-extends = false").isInvalid
+
+      actual shouldBe expected
     }
 
     "resolve a substitution in its value" in {
-      ConfigCli.fromString("scaladoc.align-tags = ${alignment.extends-clauses}").map(_.alignment.scaladoc.tags) shouldBe
-      Validated.valid(true)
+      val expected = Validated.valid(true)
+
+      val actual =
+        ConfigCli.fromString("scaladoc.align-tags = ${alignment.extends-clauses}").map(_.alignment.scaladoc.tags)
+
+      actual shouldBe expected
     }
   }
 

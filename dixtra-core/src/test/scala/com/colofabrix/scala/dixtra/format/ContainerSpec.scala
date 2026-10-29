@@ -24,6 +24,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
              |    elementTwo
              |  )
              |}""".stripMargin
+
         val expected =
           s"""$keyword A {
              |  val xs =
@@ -32,6 +33,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
              |      elementTwo,
              |    )
              |}""".stripMargin
+
         input should formatTo(expected)
       }
     }
@@ -46,6 +48,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |   */
           |  def myMethod() = ???
           |}""".stripMargin
+
       val expected =
         """class Temp {
           |
@@ -55,6 +58,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  def myMethod() = ???
 
           |}""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -68,6 +72,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |   /** Doc. */
           |   def myMethod2() = ???
           |}""".stripMargin
+
       val expected =
         """class Temp {
           |
@@ -81,6 +86,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |   def myMethod2() = ???
           |
           |}""".stripMargin
+
       input should formatStablyTo(expected)
     }
 
@@ -93,7 +99,10 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |   @inline
           |   def c() = 3
           |}""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 
@@ -105,7 +114,10 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |
           |  def g() = 2
           |}""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "add a blank line between two adjacent methods" in {
@@ -116,6 +128,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  def g() =
           |    2
           |}""".stripMargin
+
       val expected =
         """class A {
           |  def f() =
@@ -124,6 +137,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  def g() =
           |    2
           |}""".stripMargin
+
       input should formatTo(expected)
     }
   }
@@ -138,7 +152,10 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  def g() = 2
           |
           |}""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "add a trailing blank when only the leading blank is present" in {
@@ -149,6 +166,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |
           |  def g() = 2
           |}""".stripMargin
+
       val expected =
         """class A {
           |
@@ -157,6 +175,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  def g() = 2
           |
           |}""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -168,6 +187,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  def g() = 2
           |
           |}""".stripMargin
+
       val expected =
         """class A {
           |
@@ -176,6 +196,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  def g() = 2
           |
           |}""".stripMargin
+
       input should formatTo(expected)
     }
   }
@@ -188,6 +209,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  val x = 1
           |}
           |""".stripMargin
+
       val expected =
         """trait T { self =>
           |
@@ -195,6 +217,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |
           |}
           |""".stripMargin
+
       input should formatTo(expected)
     }
   }
@@ -206,7 +229,10 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |
           |  val x = 1
           |""".stripMargin
-      input should formatTo(input, withBraces(Construct.Object -> BracePolicy.Keep))
+
+      val expected = input
+
+      input should formatTo(expected, withBraces(Construct.Object -> BracePolicy.Keep))
     }
 
     "get braces, with the padding balanced, when the brace style uses them" in {
@@ -215,6 +241,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |
           |  val x = 1
           |""".stripMargin
+
       val expected =
         """object A {
           |
@@ -222,6 +249,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |
           |}
           |""".stripMargin
+
       input should formatTo(expected)
     }
   }
@@ -236,6 +264,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      b)
           |}
           |""".stripMargin
+
       val expected =
         """package a
           |
@@ -247,6 +276,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    )
           |}
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -258,6 +288,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |val xs = List(a,
           |  b)
           |""".stripMargin
+
       val expected =
         """package a
           |package b
@@ -268,6 +299,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    b,
           |  )
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -278,6 +310,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    b)
           |}
           |""".stripMargin
+
       val expected =
         """package object a {
           |  val xs =
@@ -287,6 +320,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    )
           |}
           |""".stripMargin
+
       input should formatTo(expected)
     }
   }

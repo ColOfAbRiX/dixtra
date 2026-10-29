@@ -41,7 +41,10 @@ class AssignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "keep a fitting single-expression body inline after =" in {
       val input = "val x = None\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
   }

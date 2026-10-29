@@ -17,27 +17,51 @@ class EquivalenceSpec extends AnyWordSpec with Matchers {
   "output verification" should {
 
     "accept a pure layout change" in {
-      equivalent("val x = List(a,\n  b)\n", "val x =\n  List(\n    a,\n    b\n  )\n") shouldBe true
+      val expected = true
+
+      val actual = equivalent("val x = List(a,\n  b)\n", "val x =\n  List(\n    a,\n    b\n  )\n")
+
+      actual shouldBe expected
     }
 
     "accept unwrapping a single-expression block" in {
-      equivalent("def f = { x }\n", "def f = x\n") shouldBe true
+      val expected = true
+
+      val actual = equivalent("def f = { x }\n", "def f = x\n")
+
+      actual shouldBe expected
     }
 
     "reject a change of program structure" in {
-      equivalent("val x = (a + b) * c\n", "val x = a + b * c\n") shouldBe false
+      val expected = false
+
+      val actual = equivalent("val x = (a + b) * c\n", "val x = a + b * c\n")
+
+      actual shouldBe expected
     }
 
     "reject output that does not parse" in {
-      equivalent("val x = (a + b).foo\n", "val x = a + b).foo\n") shouldBe false
+      val expected = false
+
+      val actual = equivalent("val x = (a + b).foo\n", "val x = a + b).foo\n")
+
+      actual shouldBe expected
     }
 
     "reject a lost comment" in {
-      equivalent("val x = // note\n  42\n", "val x = 42\n") shouldBe false
+      val expected = false
+
+      val actual = equivalent("val x = // note\n  42\n", "val x = 42\n")
+
+      actual shouldBe expected
     }
 
     "reject a changed string literal" in {
-      equivalent("val s = \"\"\"a\nb\"\"\"\n", "val s = \"\"\"a\n  b\"\"\"\n") shouldBe false
+      val expected = false
+
+      val actual = equivalent("val s = \"\"\"a\nb\"\"\"\n", "val s = \"\"\"a\n  b\"\"\"\n")
+
+      actual shouldBe expected
     }
 
   }

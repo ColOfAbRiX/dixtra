@@ -13,21 +13,37 @@ class RenderSpec extends AnyWordSpec with Matchers {
   "rendering a document" should {
 
     "concatenate text" in {
-      Render.render(Doc.text("a") ++ Doc.text("b")) shouldBe "ab"
+      val expected = "ab"
+
+      val actual = Render.render(Doc.text("a") ++ Doc.text("b"))
+
+      actual shouldBe expected
     }
 
     "start each line break at the current nesting" in {
       val doc = Doc.text("a") ++ Doc.Nest(2, Doc.Line ++ Doc.text("b")) ++ Doc.Line ++ Doc.text("c")
-      Render.render(doc) shouldBe "a\n  b\nc"
+
+      val expected = "a\n  b\nc"
+
+      val actual = Render.render(doc)
+
+      actual shouldBe expected
     }
 
     "start continuation lines at the base indent" in {
-      Render.render(Doc.text("a") ++ Doc.Line ++ Doc.text("b"), baseIndent = 4) shouldBe "a\n    b"
+      val expected = "a\n    b"
+
+      val actual = Render.render(Doc.text("a") ++ Doc.Line ++ Doc.text("b"), baseIndent = 4)
+
+      actual shouldBe expected
     }
 
     "separate documents with intercalate, not after the last one" in {
-      Render.render(Doc.intercalate(Doc.text(", "), List(Doc.text("a"), Doc.text("b"), Doc.text("c")))) shouldBe
-      "a, b, c"
+      val expected = "a, b, c"
+
+      val actual = Render.render(Doc.intercalate(Doc.text(", "), List(Doc.text("a"), Doc.text("b"), Doc.text("c"))))
+
+      actual shouldBe expected
     }
 
   }
@@ -36,12 +52,22 @@ class RenderSpec extends AnyWordSpec with Matchers {
 
     "keep the indentation of its lines relative to its source line" in {
       val slice = Doc.Verbatim("f {\n      x\n    }", sourceIndent = 4, frozenLines = Set.empty)
-      Render.render(Doc.Nest(2, slice)) shouldBe "f {\n    x\n  }"
+
+      val expected = "f {\n    x\n  }"
+
+      val actual = Render.render(Doc.Nest(2, slice))
+
+      actual shouldBe expected
     }
 
     "emit its frozen lines untouched" in {
       val slice = Doc.Verbatim("s = \"\"\"a\n  b\"\"\"", sourceIndent = 0, frozenLines = Set(1))
-      Render.render(Doc.Nest(4, slice)) shouldBe "s = \"\"\"a\n  b\"\"\""
+
+      val expected = "s = \"\"\"a\n  b\"\"\""
+
+      val actual = Render.render(Doc.Nest(4, slice))
+
+      actual shouldBe expected
     }
 
   }
@@ -49,11 +75,19 @@ class RenderSpec extends AnyWordSpec with Matchers {
   "a standalone document" should {
 
     "render as its content" in {
-      Render.render(Doc.Standalone(Doc.text("val x = 1"))) shouldBe "val x = 1"
+      val expected = "val x = 1"
+
+      val actual = Render.render(Doc.Standalone(Doc.text("val x = 1")))
+
+      actual shouldBe expected
     }
 
     "never count as single-line" in {
-      Render.flatWidth(Doc.Standalone(Doc.text("x"))) shouldBe None
+      val expected = None
+
+      val actual = Render.flatWidth(Doc.Standalone(Doc.text("x")))
+
+      actual shouldBe expected
     }
 
   }
@@ -61,15 +95,27 @@ class RenderSpec extends AnyWordSpec with Matchers {
   "the flat width of a document" should {
 
     "be the width of a single-line document" in {
-      Render.flatWidth(Doc.text("ab") ++ Doc.Nest(2, Doc.text("c"))) shouldBe Some(3)
+      val expected = Some(3)
+
+      val actual = Render.flatWidth(Doc.text("ab") ++ Doc.Nest(2, Doc.text("c")))
+
+      actual shouldBe expected
     }
 
     "be undefined with a line break" in {
-      Render.flatWidth(Doc.text("a") ++ Doc.Line) shouldBe None
+      val expected = None
+
+      val actual = Render.flatWidth(Doc.text("a") ++ Doc.Line)
+
+      actual shouldBe expected
     }
 
     "be undefined for a multiline verbatim slice" in {
-      Render.flatWidth(Doc.Verbatim("a\nb", sourceIndent = 0, frozenLines = Set.empty)) shouldBe None
+      val expected = None
+
+      val actual = Render.flatWidth(Doc.Verbatim("a\nb", sourceIndent = 0, frozenLines = Set.empty))
+
+      actual shouldBe expected
     }
 
   }

@@ -86,7 +86,7 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
           List(Set(Val, LazyVal, Var), Set(Def)),
           List(Set(Val, LazyVal, Var, Def, GivenAlias, Type)),
           Nil,
-        ).map(gs => (c: Config) => alignment(c)(_.copy(assignmentGroups = gs))),
+        ).map(groups => (c: Config) => alignment(c)(_.copy(assignmentGroups = groups))),
       ),
       Setting(
         "before-scaladoc",
@@ -230,9 +230,9 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
   private def allBraces(policy: BracePolicy): Config =
     Construct
       .values
-      .foldLeft(Config.default) { (c, construct) =>
+      .foldLeft(Config.default) { (config, construct) =>
         withBrace(
-          c,
+          config,
           construct,
           if construct.allowsEnd || policy != BracePolicy.ForceEnd then policy else BracePolicy.ForceIndent,
         )
@@ -245,19 +245,19 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
 
     val pairs =
       for
-        i <- settings.indices
-        j <- settings.indices if i < j
-        a <- settings(i).values.indices
-        b <- settings(j).values.indices
+        leftSetting  <- settings.indices
+        rightSetting <- settings.indices if leftSetting < rightSetting
+        leftValue    <- settings(leftSetting).values.indices
+        rightValue   <- settings(rightSetting).values.indices
       yield
-        (i, a, j, b)
+        (leftSetting, leftValue, rightSetting, rightValue)
 
     def covered(row: Vector[Int]): Set[(Int, Int, Int, Int)] =
       (for
-        i <- settings.indices
-        j <- settings.indices if i < j
+        leftSetting  <- settings.indices
+        rightSetting <- settings.indices if leftSetting < rightSetting
       yield
-        (i, row(i), j, row(j))).toSet
+        (leftSetting, row(leftSetting), rightSetting, row(rightSetting))).toSet
 
     @scala.annotation.tailrec
     def loop(uncovered: Set[(Int, Int, Int, Int)], acc: List[Vector[Int]]): List[Vector[Int]] =
@@ -265,9 +265,14 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
         acc.reverse
       else
         // Seed each candidate with one uncovered pair so every row makes progress
-        val (i, a, j, b) = uncovered.head
+        val (leftSetting, leftValue, rightSetting, rightValue) = uncovered.head
         val candidates =
-          List.fill(30)(settings.map(s => random.nextInt(s.values.length)).updated(i, a).updated(j, b))
+          List.fill(30)(
+            settings
+              .map(s => random.nextInt(s.values.length))
+              .updated(leftSetting, leftValue)
+              .updated(rightSetting, rightValue),
+          )
         val best = candidates.maxBy(row => covered(row).count(uncovered.contains))
         loop(uncovered -- covered(best), best :: acc)
 
@@ -291,36 +296,44 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
   "the pairwise configurations" should {
 
     "cover every pair of setting values in a few dozen configurations" in {
-      rows.length should be < 80
+      val expected = true
+
+      val actual = rows.length < 80
+
+      actual shouldBe expected
     }
 
     rows
       .zipWithIndex
-      .foreach {
-        case (row, n) =>
-          s"preserve structure and be idempotent with configuration ${n.toString}" in {
-            val config = configOf(row)
-            val failures =
-              corpus
-                .zipWithIndex
-                .flatMap { (src, i) =>
-                  Dixtra.format(src, config) match {
-                    case Left(error) =>
-                      List(s"snippet ${i.toString} fails: ${error.getMessage}")
-                    case Right(once) if !equivalent(src, once) =>
-                      List(s"snippet ${i.toString} changes structure:\n$once")
-                    case Right(once) if Dixtra.format(once, config) != Right(once) =>
-                      List(
-                        s"snippet ${i.toString} is not idempotent:\n$once\n---\n${Dixtra.format(once, config).toString}",
-                      )
-                    case Right(_) =>
-                      Nil
-                  }
+      .foreach { (row, configIndex) =>
+        s"preserve structure and be idempotent with configuration ${configIndex.toString}" in {
+          val config = configOf(row)
+
+          val expected = true
+
+          val actual =
+            corpus
+              .zipWithIndex
+              .flatMap { (src, idx) =>
+                Dixtra.format(src, config) match {
+                  case Left(error) =>
+                    List(s"snippet ${idx.toString} fails: ${error.getMessage}")
+                  case Right(once) if !equivalent(src, once) =>
+                    List(s"snippet ${idx.toString} changes structure:\n$once")
+                  case Right(once) if Dixtra.format(once, config) != Right(once) =>
+                    List(
+                      s"snippet ${idx.toString} is not idempotent:\n$once\n---\n${Dixtra.format(once, config).toString}",
+                    )
+                  case Right(_) =>
+                    Nil
                 }
-            withClue(s"${describe(row)}\n") {
-              failures shouldBe empty
-            }
+              }
+              .isEmpty
+
+          withClue(s"${describe(row)}\n") {
+            actual shouldBe expected
           }
+        }
       }
 
   }
@@ -335,15 +348,23 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
     "converge from braces to braceless and back" in {
       val braces    = allBraces(BracePolicy.ForceBraces)
       val braceless = allBraces(BracePolicy.ForceIndent)
-      val diverging = corpus.filterNot(converges(_, braces, braceless))
-      diverging shouldBe empty
+
+      val expected = true
+
+      val actual = corpus.filterNot(converges(_, braces, braceless)).isEmpty
+
+      actual shouldBe expected
     }
 
     "converge from end markers to braces and back" in {
-      val braces    = allBraces(BracePolicy.ForceBraces)
-      val ended     = allBraces(BracePolicy.ForceEnd)
-      val diverging = corpus.filterNot(converges(_, ended, braces))
-      diverging shouldBe empty
+      val braces = allBraces(BracePolicy.ForceBraces)
+      val ended  = allBraces(BracePolicy.ForceEnd)
+
+      val expected = true
+
+      val actual = corpus.filterNot(converges(_, ended, braces)).isEmpty
+
+      actual shouldBe expected
     }
 
   }

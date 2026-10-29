@@ -4,20 +4,20 @@ import scala.meta.*
 
 /**
  * The Scalameta dialect a whole source file is parsed with.
- *
- * Only whole files depend on it: a statement, a definition or a token stream parses the same way in every dialect here.
  */
 object SourceDialect {
 
   /**
    * Scala 3 sources.
    */
-  val scala: Dialect = dialects.Scala3
+  val scala: Dialect =
+    dialects.Scala3
 
   /**
    * sbt build definitions: Scala 3 with statements at the top level (`name := "x"`), as sbt 2 reads them.
    */
-  val sbt: Dialect = dialects.Scala3.withAllowToplevelTerms(true)
+  val sbt: Dialect =
+    dialects.Scala3.withAllowToplevelTerms(true)
 
   /**
    * The Scala 2 counterpart of `dialect`, used only to recognise Scala 2 files: sbt 1 build definitions for [[sbt]],

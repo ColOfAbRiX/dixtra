@@ -42,7 +42,9 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |val b = 2
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
   }
@@ -55,7 +57,9 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |val b = 2
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
   }
@@ -77,6 +81,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |
           |  val b = 2
           |}""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -102,6 +107,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  val b = 2
           |
           |  a + b""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -113,7 +119,9 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  a
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "be dropped at the edges of a block that loses its braces" in {
@@ -129,6 +137,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """def f =
           |  val a = 1
           |  a""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -146,7 +155,9 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  }
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "be removed at the edges of a lambda argument by default" in {
@@ -181,7 +192,9 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    2
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "be preserved between and inside cases" in {
@@ -198,7 +211,9 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  }
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
   }
@@ -217,7 +232,9 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  a + b
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
   }
@@ -233,7 +250,9 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |val z = 3
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
   }
@@ -276,6 +295,7 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |   */
           |  val y = 2
           |}""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -318,7 +338,9 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |val y = 2
           |""".stripMargin
 
-      input should formatTo(input)
+      val expected = input
+
+      input should formatTo(expected)
     }
 
   }
@@ -427,32 +449,43 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "blank lines between imports" should {
 
     "be removed" in {
-      val input    = "package a\n\nimport b.C\n\nimport d.E\n\n\nimport f.G\n\nobject H\n"
+      val input = "package a\n\nimport b.C\n\nimport d.E\n\n\nimport f.G\n\nobject H\n"
+
       val expected = "package a\n\nimport b.C\nimport d.E\nimport f.G\n\nobject H\n"
+
       input should formatStablyTo(expected)
     }
 
     "be removed around a comment, keeping the comment" in {
-      val input    = "import b.C\n\n// Effects\n\nimport d.E // trailing\n\nimport f.G\n"
+      val input = "import b.C\n\n// Effects\n\nimport d.E // trailing\n\nimport f.G\n"
+
       val expected = "import b.C\n// Effects\nimport d.E // trailing\nimport f.G\n"
+
       input should formatTo(expected)
     }
 
     "be removed after an import over several lines" in {
-      val input    = "import b.{\n  C,\n  D,\n}\n\nimport e.F\n"
+      val input = "import b.{\n  C,\n  D,\n}\n\nimport e.F\n"
+
       val expected = "import b.{\n  C,\n  D,\n}\nimport e.F\n"
+
       input should formatTo(expected)
     }
 
     "be removed inside a body" in {
-      val input    = "object A {\n  import b.C\n\n  import d.E\n\n  val x = 1\n}\n"
+      val input = "object A {\n  import b.C\n\n  import d.E\n\n  val x = 1\n}\n"
+
       val expected = "object A {\n  import b.C\n  import d.E\n\n  val x = 1\n}\n"
+
       input should formatTo(expected)
     }
 
     "keep a block comment over several lines between imports as it is" in {
       val input = "import b.C\n\n/* one\n\n    two */\nimport d.E\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
   }

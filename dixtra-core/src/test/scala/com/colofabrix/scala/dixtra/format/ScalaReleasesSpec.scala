@@ -86,14 +86,20 @@ class ScalaReleasesSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "the syntax of a Scala 3 release" should {
     releases.foreach { (release, source) =>
       s"be formatted and stable for Scala $release" in {
-        source should formatTo(source)
+        val expected = source
+
+        source should formatTo(expected)
       }
     }
 
     // A known limitation: Scalameta (4.17.4) does not parse `into` on a type yet, so such a file fails and is left as
     // it is. This test fails once it does: move the source to the 3.9 fixture then.
     "fail on the into modifier of a type (Scala 3.9), until Scalameta parses it" in {
-      Dixtra.format("def concat(xs: into Seq[Int]): Seq[Int] = xs\n").isLeft shouldBe true
+      val expected = true
+
+      val actual = Dixtra.format("def concat(xs: into Seq[Int]): Seq[Int] = xs\n").isLeft
+
+      actual shouldBe expected
     }
 
     "skip the constructs that Scala 3 dropped" in {
@@ -104,8 +110,11 @@ class ScalaReleasesSpec extends AnyWordSpec with Matchers with FormatMatchers {
           "object A {\n  type T = List[X] forSome { type X }\n}\n",
           "object A {\n  def f: Int = macro impl\n}\n",
         )
-      dropped.map(Dixtra.format(_).left.map(_.getClass.getSimpleName)) shouldBe
-      dropped.map(_ => Left("Scala2Error"))
+      val expected = dropped.map(_ => Left("Scala2Error"))
+
+      val actual = dropped.map(Dixtra.format(_).left.map(_.getClass.getSimpleName))
+
+      actual shouldBe expected
     }
   }
 

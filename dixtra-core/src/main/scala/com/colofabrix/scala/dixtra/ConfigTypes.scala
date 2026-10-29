@@ -637,8 +637,7 @@ enum TrailingCommas(val key: String) {
 }
 
 /**
- * What happens to a line of code that goes past the maximum width only because of the comment at its end. What happens
- * to a line of code that goes past the maximum width only because of the comment at its end.
+ * What happens to a line of code that goes past the maximum width only because of the comment at its end.
  */
 enum TrailingOverflow(val key: String) {
 

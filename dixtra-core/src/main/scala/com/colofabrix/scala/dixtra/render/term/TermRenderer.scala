@@ -9,10 +9,10 @@ import scala.meta.*
 import scala.meta.tokens.Token
 
 /**
- * Renders terms (expressions) into a fully-decided [[com.colofabrix.scala.dixtra.doc.Doc]]: the routing point that dispatches each term to the renderer
- * of its construct.
+ * Renders terms (expressions) into a fully-decided [[com.colofabrix.scala.dixtra.doc.Doc]]: the routing point that
+ * dispatches each term to the renderer of its construct.
  *
- * Each supported term applies the All-or-Nothing decision: a construct stays inline unless a trigger fires
+ * Each supported term applies the whole-construct decision: a construct stays inline unless a trigger fires
  * (author-signalled newline, forced explode, or overflow past the configured max column), in which case it explodes
  * fully. A construct whose inline form would contain a multiline child always explodes. Unsupported terms fall back to
  * a verbatim slice of their original source.

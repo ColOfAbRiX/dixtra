@@ -23,21 +23,37 @@ class SbtFileSpec extends AnyWordSpec with Matchers {
   "a build definition" should {
     "keep fitting top-level settings as written" in {
       val input = "ThisBuild / scalaVersion := \"3.8.4\"\nThisBuild / organization := \"com.example\"\n"
-      format(input) shouldBe Right(input)
+
+      val expected = Right(input)
+
+      val actual = format(input)
+
+      actual shouldBe expected
     }
 
     "format the definitions among its settings" in {
-      val input    = "name := \"demo\"\n\nval x =\n  list.filter(_ > 0).map(_ * 2).headOption\n"
-      val expected = "name := \"demo\"\n\nval x =\n  list\n    .filter(_ > 0)\n    .map(_ * 2)\n    .headOption\n"
-      format(input) shouldBe Right(expected)
+      val input = "name := \"demo\"\n\nval x =\n  list.filter(_ > 0).map(_ * 2).headOption\n"
+
+      val expected =
+        Right("name := \"demo\"\n\nval x =\n  list\n    .filter(_ > 0)\n    .map(_ * 2)\n    .headOption\n")
+
+      val actual = format(input)
+
+      actual shouldBe expected
     }
 
     "align the operators of adjacent settings" in {
       val input = "name := \"demo\"\nscalaVersion := \"3.8.4\"\nlibraryDependencies += \"org\" %% \"lib\" % \"1.0\"\n"
+
       val expected =
-        "name                := \"demo\"\nscalaVersion        := \"3.8.4\"\n" +
-        "libraryDependencies += \"org\" %% \"lib\" % \"1.0\"\n"
-      format(input) shouldBe Right(expected)
+        Right(
+          "name                := \"demo\"\nscalaVersion        := \"3.8.4\"\n" +
+          "libraryDependencies += \"org\" %% \"lib\" % \"1.0\"\n",
+        )
+
+      val actual = format(input)
+
+      actual shouldBe expected
     }
 
     "align the operators of the argument of adjacent calls" in {
@@ -45,15 +61,25 @@ class SbtFileSpec extends AnyWordSpec with Matchers {
         "addSbtPlugin(\"ch.epfl.scala\" % \"sbt-scalafix\" % \"0.14.7\")\n" +
         "addSbtPlugin(\"org.typelevel\" % \"sbt-tpolecat\" % \"0.5.7\")\n" +
         "addSbtPlugin(\"pl.project13.scala\" % \"sbt-jmh\" % \"0.4.8\")\n"
+
       val expected =
-        "addSbtPlugin(\"ch.epfl.scala\"      % \"sbt-scalafix\" % \"0.14.7\")\n" +
-        "addSbtPlugin(\"org.typelevel\"      % \"sbt-tpolecat\" % \"0.5.7\")\n" +
-        "addSbtPlugin(\"pl.project13.scala\" % \"sbt-jmh\"      % \"0.4.8\")\n"
-      format(input) shouldBe Right(expected)
+        Right(
+          "addSbtPlugin(\"ch.epfl.scala\"      % \"sbt-scalafix\" % \"0.14.7\")\n" +
+          "addSbtPlugin(\"org.typelevel\"      % \"sbt-tpolecat\" % \"0.5.7\")\n" +
+          "addSbtPlugin(\"pl.project13.scala\" % \"sbt-jmh\"      % \"0.4.8\")\n",
+        )
+
+      val actual = format(input)
+
+      actual shouldBe expected
     }
 
     "not parse as a Scala source" in {
-      Dixtra.format("name := \"demo\"\n", Config.default).isLeft shouldBe true
+      val expected = true
+
+      val actual = Dixtra.format("name := \"demo\"\n", Config.default).isLeft
+
+      actual shouldBe expected
     }
   }
 
@@ -62,7 +88,12 @@ class SbtFileSpec extends AnyWordSpec with Matchers {
     List(List("..", "build.sbt"), List("..", "project", "plugins.sbt")).foreach { path =>
       s"format ${path.drop(1).mkString("/")} and be stable" in {
         val once = format(read(path*))
-        (once.isRight, once.flatMap(format)) shouldBe (true, once)
+
+        val expected = (true, once)
+
+        val actual = (once.isRight, once.flatMap(format))
+
+        actual shouldBe expected
       }
     }
   }

@@ -18,6 +18,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    xs.map(_ + 1).filter(_ > 0).sum
           |  ys
           |""".stripMargin
+
       val expected =
         """def f =
           |  val ys =
@@ -38,6 +39,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |   def g(first: Int, second: Int): Int = first
           |   g(1, 2)
           |""".stripMargin
+
       val expected =
         """def f =
           |  def g(first: Int, second: Int): Int =
@@ -57,6 +59,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |       case None             => (t, acc)
           |   loop(term, Nil)
           |""".stripMargin
+
       val expected =
         """def flatten(term: Term): (Term, List[Term]) =
           |  @annotation.tailrec
@@ -81,6 +84,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    println(ys)
           |  }
           |""".stripMargin
+
       val expected =
         """def f =
           |  xs.foreach { x =>
@@ -106,6 +110,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    case None => false
           |  }
           |""".stripMargin
+
       val expected =
         """def f(x: Option[String]) =
           |  x match {
@@ -133,6 +138,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    case None => 0
           |  }
           |""".stripMargin
+
       val expected =
         """def f(x: Option[Int]) =
           |  x match {
@@ -157,6 +163,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |       v.trim.toLowerCase.nonEmpty
           |   }
           |""".stripMargin
+
       val expected =
         """def f =
           |  xs.collect {
@@ -180,6 +187,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |        e.getMessage.trim.nonEmpty
           |    }
           |""".stripMargin
+
       val expected =
         """def f =
           |  try {
@@ -205,6 +213,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    case 1 => "a" // one
           |    case _ => "b"
           |""".stripMargin
+
       val expected =
         """def f(x: Int) =
           |  x match {
@@ -228,6 +237,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      case _ => false
           |  )
           |""".stripMargin
+
       val expected =
         """def f =
           |  g(
@@ -252,6 +262,8 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      Test(first = aaaaa, second = bbbbbb),
           |  )
           |""".stripMargin
+      val config = joinAfterEquals.copy(maxColumn = 40)
+
       val expected =
         """def f =
           |  g(
@@ -261,7 +273,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    ),
           |  )
           |""".stripMargin
-      val config = joinAfterEquals.copy(maxColumn = 40)
+
       input should formatStablyTo(expected, config)
     }
   }
@@ -279,6 +291,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      )
           |  )
           |""".stripMargin
+
       val expected =
         """def f =
           |  my_func(
@@ -289,6 +302,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    ),
           |  )
           |""".stripMargin
+
       input should formatTo(expected, joinAfterEquals)
     }
 
@@ -301,6 +315,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    ),
           |  )
           |""".stripMargin
+
       val expected =
         """def f =
           |  g(
@@ -310,12 +325,16 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      ),
           |  )
           |""".stripMargin
+
       input should formatTo(expected, 32)
     }
 
     "keep a value that fits on one line" in {
       val input = "def f =\n  g(\n    a = Test(1, 2),\n    b = 3,\n  )\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "hang an exploded chain from the = line" in {
@@ -350,6 +369,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    ys
           |  }
           |}""".stripMargin
+
       val expected =
         """class ASpec {
           |  "a" should {
@@ -365,18 +385,27 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "indent the value of an assignment operator broken after the operator" in {
-      val input    = "object A {\n  xs ++=\n  Set(\n    a,\n    b,\n  )\n}\n"
+      val input = "object A {\n  xs ++=\n  Set(\n    a,\n    b,\n  )\n}\n"
+
       val expected = "object A {\n  xs ++=\n    Set(\n      a,\n      b,\n    )\n}\n"
+
       input should formatTo(expected)
     }
 
     "keep the parentheses of its argument" in {
       val input = "def f = a * (b + c)\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "keep the author's break after the operator, the operands at one column" in {
-      List("val x =\n  a ++\n  b\n", "def f =\n  a &&\n  b\n").foreach(input => input should formatTo(input))
+      List("val x =\n  a ++\n  b\n", "def f =\n  a &&\n  b\n").foreach { input =>
+        val expected = input
+
+        input should formatTo(expected)
+      }
     }
 
     "keep the author's break before the operator" in {
@@ -385,7 +414,10 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  a
           |  && b
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 

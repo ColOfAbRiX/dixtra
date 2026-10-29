@@ -23,7 +23,11 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
   "the defaults" should {
 
     "be the hardcoded default configuration" in {
-      ConfigCli.default shouldBe Config.default
+      val expected = Config.default
+
+      val actual = ConfigCli.default
+
+      actual shouldBe expected
     }
 
   }
@@ -31,16 +35,22 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
   "an override" should {
 
     "change only the keys it sets" in {
-      ConfigCli.fromString("max-column = 80") shouldBe Validated.valid(Config.withMaxColumn(80))
+      val expected = Validated.valid(Config.withMaxColumn(80))
+
+      val actual = ConfigCli.fromString("max-column = 80")
+
+      actual shouldBe expected
     }
 
     "set the brace style of a construct, keeping the others" in {
-      val braces =
+      val expected = Validated.valid((BracePolicy.ForceBraces, BracePolicy.ForceBraces))
+
+      val actual =
         ConfigCli
           .fromString("braces.if = force-braces")
-          .map(b => (b.braces(Construct.If), b.braces(Construct.Match)))
+          .map(config => (config.braces(Construct.If), config.braces(Construct.Match)))
 
-      braces shouldBe Validated.valid((BracePolicy.ForceBraces, BracePolicy.ForceBraces))
+      actual shouldBe expected
     }
 
     "set the setting it names, trying every value of the settings with few values" in {
@@ -93,51 +103,93 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
         )
 
       table.foreach { (setting, read, expected) =>
+        val actual = ConfigCli.fromString(setting).map(read)
+
         withClue(setting) {
-          ConfigCli.fromString(setting).map(read) shouldBe Validated.valid(expected)
+          actual shouldBe Validated.valid(expected)
         }
       }
     }
 
     "keep the brace styles of the constructs when setting the braces style" in {
-      val braces = ConfigCli.fromString("braces.style = stroustrup").map(_.braces.policies)
-      braces shouldBe Validated.valid(Config.default.braces.policies)
+      val expected = Validated.valid(Config.default.braces.policies)
+
+      val actual = ConfigCli.fromString("braces.style = stroustrup").map(_.braces.policies)
+
+      actual shouldBe expected
     }
 
     "read a construct without a setting as keep" in {
-      ConfigCli.default.braces(Construct.GivenAlias) shouldBe BracePolicy.Keep
+      val expected = BracePolicy.Keep
+
+      val actual = ConfigCli.default.braces(Construct.GivenAlias)
+
+      actual shouldBe expected
     }
 
     "set the assignment groups" in {
-      val groups =
+      val expected =
+        Validated.valid(
+          List(
+            Set(DefinitionKind.Val, DefinitionKind.LazyVal),
+            Set(DefinitionKind.Def, DefinitionKind.GivenAlias, DefinitionKind.Type),
+          ),
+        )
+
+      val actual =
         ConfigCli
           .fromString("alignment.assignment-groups = [[val, lazy-val], [def, given-alias, type]]")
           .map(_.alignment.assignmentGroups)
 
-      groups shouldBe Validated.valid(
-        List(
-          Set(DefinitionKind.Val, DefinitionKind.LazyVal),
-          Set(DefinitionKind.Def, DefinitionKind.GivenAlias, DefinitionKind.Type),
-        ),
-      )
+      actual shouldBe expected
     }
 
     "set the excluded paths, keeping the included ones" in {
-      val output =
+      val expected = Validated.valid((List("**/gen/**"), List("**")))
+
+      val actual =
         ConfigCli
           .fromString("""paths.excluded = ["**/gen/**"]""")
-          .map(p => (p.paths.excluded, p.paths.included))
+          .map(paths => (paths.paths.excluded, paths.paths.included))
 
-      output shouldBe Validated.valid((List("**/gen/**"), List("**")))
+      actual shouldBe expected
     }
 
     "read a configuration that states the current version" in {
-      val config = ConfigCli.fromString(s"config-version = \"${ConfigCli.configVersion}\", max-column = 90")
-      config.map(_.maxColumn) shouldBe Validated.valid(90)
+      val expected = Validated.valid(90)
+
+      val actual =
+        ConfigCli.fromString(s"config-version = \"${ConfigCli.configVersion}\", max-column = 90").map(_.maxColumn)
+
+      actual shouldBe expected
     }
 
     "set where the body of each construct goes" in {
-      val body =
+      val expected =
+        Validated.valid(
+          BodyConfig(
+            defBody = SingleBodyPolicy.AlwaysBreak,
+            valBody = SingleBodyPolicy.AlwaysJoin,
+            lazyVal = SingleBodyPolicy.Keep,
+            varBody = SingleBodyPolicy.AlwaysBreak,
+            givenAlias = SingleBodyPolicy.AlwaysJoin,
+            typeBody = SingleBodyPolicy.AlwaysBreak,
+            assignment = SingleBodyPolicy.AlwaysJoin,
+            namedArgument = SingleBodyPolicy.AlwaysBreak,
+            lambdaArgument = SingleBodyPolicy.AlwaysJoin,
+            lambdaBody = SingleBodyPolicy.AlwaysBreak,
+            blockArgument = SingleBodyPolicy.AlwaysJoin,
+            testBlock = SingleBodyPolicy.AlwaysBreak,
+            ifBody = MultiBodyPolicy.JoinMixed,
+            caseBody = MultiBodyPolicy.AlwaysJoin,
+            tryBody = MultiBodyPolicy.AlwaysBreak,
+            forBody = SingleBodyPolicy.AlwaysJoin,
+            forYield = YieldBodyPolicy.BreakComplex,
+            whileBody = SingleBodyPolicy.AlwaysJoin,
+          ),
+        )
+
+      val actual =
         ConfigCli
           .fromString(
             """body {
@@ -150,86 +202,87 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
           )
           .map(_.body)
 
-      body shouldBe Validated.valid(
-        BodyConfig(
-          defBody = SingleBodyPolicy.AlwaysBreak,
-          valBody = SingleBodyPolicy.AlwaysJoin,
-          lazyVal = SingleBodyPolicy.Keep,
-          varBody = SingleBodyPolicy.AlwaysBreak,
-          givenAlias = SingleBodyPolicy.AlwaysJoin,
-          typeBody = SingleBodyPolicy.AlwaysBreak,
-          assignment = SingleBodyPolicy.AlwaysJoin,
-          namedArgument = SingleBodyPolicy.AlwaysBreak,
-          lambdaArgument = SingleBodyPolicy.AlwaysJoin,
-          lambdaBody = SingleBodyPolicy.AlwaysBreak,
-          blockArgument = SingleBodyPolicy.AlwaysJoin,
-          testBlock = SingleBodyPolicy.AlwaysBreak,
-          ifBody = MultiBodyPolicy.JoinMixed,
-          caseBody = MultiBodyPolicy.AlwaysJoin,
-          tryBody = MultiBodyPolicy.AlwaysBreak,
-          forBody = SingleBodyPolicy.AlwaysJoin,
-          forYield = YieldBodyPolicy.BreakComplex,
-          whileBody = SingleBodyPolicy.AlwaysJoin,
-        ),
-      )
+      actual shouldBe expected
     }
 
     "ignore the settings that no longer exist, with a warning" in {
-      List(
-        "body.if-else = explode"      -> "body.if-else",
-        "body.cases = break-together" -> "body.cases",
-        "body.try-finally = keep"     -> "body.try-finally",
-        "body.loops = keep"           -> "body.loops",
-        "braces-style = 1tbs"         -> "braces-style",
-        "body.all-constructs = keep"  -> "body.all-constructs",
-        "body.after-equals = keep"    -> "body.after-equals",
-      ).foreach { (setting, key) =>
-        warnings(setting) shouldBe Validated.valid(List(s"unknown setting $key (line 1), ignored"))
+      val table =
+        List(
+          "body.if-else = explode"      -> "body.if-else",
+          "body.cases = break-together" -> "body.cases",
+          "body.try-finally = keep"     -> "body.try-finally",
+          "body.loops = keep"           -> "body.loops",
+          "braces-style = 1tbs"         -> "braces-style",
+          "body.all-constructs = keep"  -> "body.all-constructs",
+          "body.after-equals = keep"    -> "body.after-equals",
+        )
+
+      table.foreach { (setting, key) =>
+        val expected = Validated.valid(List(s"unknown setting $key (line 1), ignored"))
+
+        val actual = warnings(setting)
+
+        actual shouldBe expected
       }
     }
 
     "reject the values that no longer exist" in {
-      List(
-        "selector-chain.inline-chains = break",
-        "body.if = join",
-        "body.case-body = keep",
-        "body.def = break",
-        "body.def = break-complex",
-        "selector-chain.in-for = break",
-        "selector-chain.in-call = break",
-      ).foreach { setting =>
-        ConfigCli.fromString(setting).isInvalid shouldBe true
+      val table =
+        List(
+          "selector-chain.inline-chains = break",
+          "body.if = join",
+          "body.case-body = keep",
+          "body.def = break",
+          "body.def = break-complex",
+          "selector-chain.in-for = break",
+          "selector-chain.in-call = break",
+        )
+
+      table.foreach { setting =>
+        val expected = true
+
+        val actual = ConfigCli.fromString(setting).isInvalid
+
+        actual shouldBe expected
       }
     }
 
     "set the housekeeping" in {
-      val config =
-        ConfigCli.fromString(
-          "housekeeping { trim-trailing-whitespace = false, enforce-eof = false, line-ending = crlf }",
-        )
-
       val expected =
         Validated.valid(
           HousekeepingConfig(trimTrailingWhitespace = false, enforceEof = false, lineEnding = LineEnding.Crlf),
         )
 
-      config.map(_.housekeeping) shouldBe expected
+      val actual =
+        ConfigCli
+          .fromString("housekeeping { trim-trailing-whitespace = false, enforce-eof = false, line-ending = crlf }")
+          .map(_.housekeeping)
+
+      actual shouldBe expected
     }
 
     "set the edge blank lines of block arguments and test blocks" in {
-      val result =
+      val expected = Validated.valid((BlankLinePolicy.Keep, BlankLinePolicy.Never))
+
+      val actual =
         ConfigCli
           .fromString("blank-lines.body-edges { block-argument = keep, test-block = never }")
           .map(_.blankLines)
-          .map(e => (e(Construct.BlockArgument), e(Construct.TestBlock)))
+          .map(edges => (edges(Construct.BlockArgument), edges(Construct.TestBlock)))
 
-      result shouldBe Validated.valid((BlankLinePolicy.Keep, BlankLinePolicy.Never))
+      actual shouldBe expected
     }
 
     "set the brace style of block arguments and test blocks, without end markers" in {
-      val braces = ConfigCli.fromString("braces { block-argument = force-indent, test-block = keep }").map(_.braces)
-      braces.map(b => (b(Construct.BlockArgument), b(Construct.TestBlock))) shouldBe
-      Validated.valid((BracePolicy.ForceIndent, BracePolicy.Keep))
+      val expected = Validated.valid((BracePolicy.ForceIndent, BracePolicy.Keep))
+
+      val actual =
+        ConfigCli
+          .fromString("braces { block-argument = force-indent, test-block = keep }")
+          .map(_.braces)
+          .map(braces => (braces(Construct.BlockArgument), braces(Construct.TestBlock)))
+
+      actual shouldBe expected
     }
 
   }
@@ -256,16 +309,24 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
         )
 
       table.foreach { (setting, problem) =>
-        errors(ConfigCli.fromString(setting)) should include(problem)
+        val actual = errors(ConfigCli.fromString(setting))
+
+        actual should include(problem)
       }
     }
 
     "reject a wrong value beside an unknown key" in {
-      errors(ConfigCli.fromString("max-colum = 80\nmax-column = wide")) should include("max-column")
+      val message = errors(ConfigCli.fromString("max-colum = 80\nmax-column = wide"))
+
+      message should include("max-column")
     }
 
     "reject malformed HOCON" in {
-      ConfigCli.fromString("braces {").isInvalid shouldBe true
+      val expected = true
+
+      val actual = ConfigCli.fromString("braces {").isInvalid
+
+      actual shouldBe expected
     }
 
   }
@@ -286,20 +347,32 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
         )
 
       table.foreach { (setting, key) =>
-        (warnings(setting), ConfigCli.fromString(setting)) shouldBe
-        (Validated.valid(List(s"unknown setting $key, ignored")), Validated.valid(ConfigCli.default))
+        val expected =
+          (Validated.valid(List(s"unknown setting $key, ignored")), Validated.valid(ConfigCli.default))
+
+        val actual = (warnings(setting), ConfigCli.fromString(setting))
+
+        actual shouldBe expected
       }
     }
 
     "leave the known settings beside it" in {
-      ConfigCli.fromString("max-colum = 80\nmax-column = 90").map(_.maxColumn) shouldBe Validated.valid(90)
+      val expected = Validated.valid(90)
+
+      val actual = ConfigCli.fromString("max-colum = 80\nmax-column = 90").map(_.maxColumn)
+
+      actual shouldBe expected
     }
 
     "be named with its file" in {
       withTempDir { dir =>
         val conf = write(dir.resolve(ConfigCli.fileName), "max-colum = 60")
-        ConfigCli.loadFile(conf).map(_.warnings) shouldBe
-        Validated.valid(List(s"${conf.toString}: unknown setting max-colum (line 1), ignored"))
+
+        val expected = Validated.valid(List(s"${conf.toString}: unknown setting max-colum (line 1), ignored"))
+
+        val actual = ConfigCli.loadFile(conf).map(_.warnings)
+
+        actual shouldBe expected
       }
     }
 
@@ -310,7 +383,12 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
     "be the defaults when no .dixtra.conf is above it" in {
       withTempDir { dir =>
         val source = write(dir.resolve("A.scala"), "object A\n")
-        ConfigCli.discover(source).map(_.base.maxColumn) shouldBe Validated.valid(ConfigCli.default.maxColumn)
+
+        val expected = Validated.valid(ConfigCli.default.maxColumn)
+
+        val actual = ConfigCli.discover(source).map(_.base.maxColumn)
+
+        actual shouldBe expected
       }
     }
 
@@ -319,17 +397,23 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
         val _      = write(dir.resolve(ConfigCli.fileName), "max-column = 60")
         val _      = write(dir.resolve("sub").resolve(ConfigCli.fileName), "max-column = 70")
         val source = write(dir.resolve("sub").resolve("deep").resolve("A.scala"), "object A\n")
-        ConfigCli.discover(source).map(_.base.maxColumn) shouldBe Validated.valid(70)
+
+        val expected = Validated.valid(70)
+
+        val actual = ConfigCli.discover(source).map(_.base.maxColumn)
+
+        actual shouldBe expected
       }
     }
 
     "report an invalid file with its path" in {
-
       withTempDir { dir =>
         val conf = write(dir.resolve(ConfigCli.fileName), "max-column = wide")
-        errors(ConfigCli.discover(dir).map(_.base)) should include(conf.toString)
-      }
 
+        val actual = errors(ConfigCli.discover(dir).map(_.base))
+
+        actual should include(conf.toString)
+      }
     }
 
   }

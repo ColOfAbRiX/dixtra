@@ -20,7 +20,10 @@ class WhitespaceSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "extra spaces inside a string literal" should {
     "be preserved" in {
       val input = "val a = \"hello     world\"\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 
@@ -30,6 +33,7 @@ class WhitespaceSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """object A {
           |  val a =   1
           |}""".stripMargin
+
       val expected =
         """object A {
           |  val a = 1

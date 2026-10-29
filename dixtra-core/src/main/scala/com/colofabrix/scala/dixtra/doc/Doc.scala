@@ -1,12 +1,12 @@
 package com.colofabrix.scala.dixtra.doc
 
 /**
- * A minimal document intermediate representation tuned for the All-or-Nothing (AON) style.
+ * A minimal document intermediate representation tuned for the dixtra style.
  *
  * Unlike a Wadler/Paiges pretty-printer, this IR has no automatic flat-vs-broken selection: the explode-vs-inline
  * decision is made upstream by the renderers and encoded directly as hard `Line`s. The renderer therefore only realizes
- * a fully-decided layout — it never searches. This keeps the AON rules (which must explode even when a construct fits)
- * a 1:1 match to the IR.
+ * a fully-decided layout — it never searches. This keeps the layout rules (which must explode even when a construct
+ * fits) a 1:1 match to the IR.
  */
 enum Doc {
 

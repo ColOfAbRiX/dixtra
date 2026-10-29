@@ -24,31 +24,43 @@ class SelfFormatSpec extends AnyWordSpec with Matchers {
         stream
           .iterator()
           .asScala
-          .filter(p => p.toString.endsWith(".scala") && Files.isRegularFile(p))
+          .filter(path => path.toString.endsWith(".scala") && Files.isRegularFile(path))
           .toList
           .sorted
-          .map(p => (p, new String(Files.readAllBytes(p), StandardCharsets.UTF_8)))
+          .map(path => (path, new String(Files.readAllBytes(path), StandardCharsets.UTF_8)))
       }
     }
 
   "formatting this project's sources" should {
     "find a corpus to format" in {
-      sources.size should be > 20
+      val expected = true
+
+      val actual = sources.size > 20
+
+      actual shouldBe expected
     }
 
     "succeed for every file" in {
-      val failures =
-        sources.collect { case (path, text) if Dixtra.format(text).isLeft => path.toString }
-      failures shouldBe empty
+      val expected = true
+
+      val actual =
+        sources.collect { case (path, text) if Dixtra.format(text).isLeft => path.toString }.isEmpty
+
+      actual shouldBe expected
     }
 
     "be idempotent for every file" in {
-      val unstable =
-        sources.collect {
-          case (path, text) if Dixtra.format(text).flatMap(Dixtra.format) != Dixtra.format(text) =>
-            path.toString
-        }
-      unstable shouldBe empty
+      val expected = true
+
+      val actual =
+        sources
+          .collect {
+            case (path, text) if Dixtra.format(text).flatMap(Dixtra.format) != Dixtra.format(text) =>
+              path.toString
+          }
+          .isEmpty
+
+      actual shouldBe expected
     }
   }
 

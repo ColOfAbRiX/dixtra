@@ -12,11 +12,11 @@ import scala.meta.*
  * Renders definitions with a header kept as written followed by `=` and a body: `val` / `lazy val`, `var`,
  * parameterless `def` and `given` aliases.
  *
- * The body follows the rules of [[com.colofabrix.scala.dixtra.render.term.BodyLayout]], placed by the `body` setting of its keyword (`body.val`,
- * `body.lazy-val`, `body.var`, `body.def`, `body.given-alias`): it drops below the `=` when it does not fit or renders
- * multiline, and a newline after `=` is an author signal for it. Only a newline *after* the `=` counts: a break earlier
- * in the header (e.g. after an annotation) is not a signal. The header can be padded so that the `=` lines up with the
- * definitions around it (see [[com.colofabrix.scala.dixtra.render.Alignment]]).
+ * The body follows the rules of [[com.colofabrix.scala.dixtra.render.term.BodyLayout]], placed by the `body` setting of
+ * its keyword (`body.val`, `body.lazy-val`, `body.var`, `body.def`, `body.given-alias`): it drops below the `=` when it
+ * does not fit or renders multiline, and a newline after `=` is an author signal for it. Only a newline *after* the `=`
+ * counts: a break earlier in the header (e.g. after an annotation) is not a signal. The header can be padded so that
+ * the `=` lines up with the definitions around it (see [[com.colofabrix.scala.dixtra.render.Alignment]]).
  *
  * @param ctx The shared render context.
  * @param terms The term renderer used to lay out the right-hand side.

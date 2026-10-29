@@ -56,16 +56,16 @@ object DixtraPlugin extends AutoPlugin {
   import autoImport.*
 
   // The configurations whose sources the *All tasks cover.
-  private val allConfigurations = 
+  private val allConfigurations =
     ScopeFilter(configurations = inConfigurations(Compile, Test))
 
   // The class loaders of dixtra, one for each classpath, kept across runs.
-  private val loaders = 
+  private val loaders =
     TrieMap.empty[Seq[File], ClassLoader]
 
   // Formats the sources before they are compiled, when `dixtraOnCompile` is on;
   // a file that fails (e.g. one that does not parse) is left to the compiler.
-  private val dixtraOnCompileFormat = 
+  private val dixtraOnCompileFormat =
     taskKey[Unit]("Format the sources before compiling, if dixtraOnCompile")
 
   // What a run does with the files: rewrite them, or report the ones that are not formatted.
@@ -107,35 +107,37 @@ object DixtraPlugin extends AutoPlugin {
     )
 
   override lazy val projectSettings: Seq[Setting[?]] =
-    Seq(
-      dixtraVersion      := BuildInfo.version,
-      dixtraConfig       := None,
-      dixtraChangedSince := None,
-      dixtraOnCompile    := false,
-      dixtraFormatAll    := Def.uncached(dixtraTask(Mode.Format, allSourcesAndBuild, OnFailure.Fail).value),
-      dixtraCheckAll     := Def.uncached(dixtraTask(Mode.Check, allSourcesAndBuild, OnFailure.Fail).value),
-      dixtraFormatSbt    := Def.uncached(dixtraTask(Mode.Format, buildDefinition, OnFailure.Fail).value),
-      dixtraCheckSbt     := Def.uncached(dixtraTask(Mode.Check, buildDefinition, OnFailure.Fail).value),
-      dixtraClasspath := Def.uncached {
-        val module = BuildInfo.organization % s"${BuildInfo.dixtraModule}_3" % dixtraVersion.value
-        dependencyResolution
-          .value
-          .retrieve(module, None, csrCacheDirectory.value, streams.value.log)
-          .fold(warning => sys.error(warning.resolveException.getMessage), identity)
-      },
-      dixtraFormatOnly := {
-        val base = baseDirectory.value
-        val files =
-          Def
-            .spaceDelimited("<files>")
-            .parsed
-            .map(name => IO.resolve(base, new File(name)))
-        val args = arguments(Mode.Format, dixtraConfig.value, None, files)
-        run(dixtraClasspath.value, args, Mode.Format, OnFailure.Fail, streams.value.log)
-      },
-    ) ++
-    inConfig(Compile)(configSettings) ++
-    inConfig(Test)(configSettings)
+    val projectWide =
+      Seq(
+        dixtraVersion      := BuildInfo.version,
+        dixtraConfig       := None,
+        dixtraChangedSince := None,
+        dixtraOnCompile    := false,
+        dixtraFormatAll    := Def.uncached(dixtraTask(Mode.Format, allSourcesAndBuild, OnFailure.Fail).value),
+        dixtraCheckAll     := Def.uncached(dixtraTask(Mode.Check, allSourcesAndBuild, OnFailure.Fail).value),
+        dixtraFormatSbt    := Def.uncached(dixtraTask(Mode.Format, buildDefinition, OnFailure.Fail).value),
+        dixtraCheckSbt     := Def.uncached(dixtraTask(Mode.Check, buildDefinition, OnFailure.Fail).value),
+        dixtraClasspath := Def.uncached {
+          val module = BuildInfo.organization % s"${BuildInfo.dixtraModule}_3" % dixtraVersion.value
+          dependencyResolution
+            .value
+            .retrieve(module, None, csrCacheDirectory.value, streams.value.log)
+            .fold(warning => sys.error(warning.resolveException.getMessage), identity)
+        },
+        dixtraFormatOnly := {
+          val base = baseDirectory.value
+          val files =
+            Def
+              .spaceDelimited("<files>")
+              .parsed
+              .map(name => IO.resolve(base, new File(name)))
+          val args = arguments(Mode.Format, dixtraConfig.value, None, files)
+          run(dixtraClasspath.value, args, Mode.Format, OnFailure.Fail, streams.value.log)
+        },
+      )
+    val perConfiguration = inConfig(Compile)(configSettings) ++ inConfig(Test)(configSettings)
+
+    projectWide ++ perConfiguration
 
   // Run dixtra in `mode` on `paths`, with the settings of the task's scope.
   private def dixtraTask(
@@ -171,10 +173,12 @@ object DixtraPlugin extends AutoPlugin {
     if paths.isEmpty then
       Nil
     else
-      (if mode == Mode.Check then Seq("--check") else Nil) ++
-      config.toSeq.flatMap(file => Seq("--config-path", file.getAbsolutePath)) ++
-      changedSince.toSeq.flatMap(ref => Seq("--changed-since", ref)) ++
-      paths.map(_.getAbsolutePath)
+      val checkFlags   = if mode == Mode.Check then Seq("--check") else Nil
+      val configFlags  = config.toSeq.flatMap(file => Seq("--config-path", file.getAbsolutePath))
+      val changedFlags = changedSince.toSeq.flatMap(ref => Seq("--changed-since", ref))
+      val pathFlags    = paths.map(_.getAbsolutePath)
+
+      checkFlags ++ configFlags ++ changedFlags ++ pathFlags
 
   // Run dixtra with `args`, failing the task or only logging a warning when the run fails. The failure is a message
   // only: the files at fault are already logged.
@@ -209,7 +213,7 @@ object DixtraPlugin extends AutoPlugin {
         .getMethod("run", classOf[Array[String]], classOf[Consumer[String]], classOf[Consumer[String]])
 
     // The level of each line by its prefix, as `CliReport` of dixtra writes it.
-    val out: Consumer[String] = 
+    val out: Consumer[String] =
       line => if line.startsWith("unchanged:") then log.debug(line) else log.info(line)
 
     val err: Consumer[String] =
@@ -218,7 +222,7 @@ object DixtraPlugin extends AutoPlugin {
     val thread   = Thread.currentThread
     val previous = thread.getContextClassLoader
     thread.setContextClassLoader(loader)
-    
+
     try {
       entry.invoke(null, args.toArray, out, err) match {
         case code: Integer => code.intValue

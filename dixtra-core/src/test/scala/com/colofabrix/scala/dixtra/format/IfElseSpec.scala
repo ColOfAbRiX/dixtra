@@ -36,6 +36,7 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    run()
           |  else ()
           |""".stripMargin
+
       val expected =
         """def f =
           |  if enabled then
@@ -43,18 +44,23 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  else
           |    ()
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
     "not be added to a bare if" in {
       val input = "def f =\n  if enabled then\n    run()\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 
   "an if/else with a multiline branch" should {
     "explode instead of inlining the child's line breaks" in {
       val input = "val x = if c then { a; b } else d\n"
+
       val expected =
         """val x =
           |  if c then
@@ -75,8 +81,10 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  else if x == 1 then "one"
           |  else "many"
           |""".stripMargin
-      input should
-      formatTo(input, withBody(_.copy(ifBody = MultiBodyPolicy.AlwaysJoin)))
+
+      val expected = input
+
+      input should formatTo(expected, withBody(_.copy(ifBody = MultiBodyPolicy.AlwaysJoin)))
     }
 
     "keep each else if on the else line when exploded" in {
@@ -87,6 +95,7 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  else if x == 1 then "one"
           |  else "many"
           |""".stripMargin
+
       val expected =
         """def f(x: Int): String =
           |  if x == 0 then
@@ -101,7 +110,10 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "stay on one line when it fits" in {
       val input = "val s = if x == 0 then \"zero\" else if x == 1 then \"one\" else \"many\"\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 

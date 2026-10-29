@@ -10,23 +10,38 @@ import org.scalatest.wordspec.AnyWordSpec
  */
 class BlankLineNormalizerSpec extends AnyWordSpec with Matchers {
 
-  private val q = "\"\"\""
+  private val tripleQuote = "\"\"\""
 
   "blank lines inside a multi-line string" should {
 
     "be preserved by blank-line collapsing" in {
-      val input = s"val s = ${q}a\n\n\n\nb$q\n"
-      BlankLineNormalizer.collapseBlankRuns(input) shouldBe input
+      val input = s"val s = ${tripleQuote}a\n\n\n\nb$tripleQuote\n"
+
+      val expected = input
+
+      val actual = BlankLineNormalizer.collapseBlankRuns(input)
+
+      actual shouldBe expected
     }
 
     "be preserved by the full pipeline" in {
-      val input = s"val s = ${q}a\n\n\n\nb$q\n"
-      Normalize(input, Config.default, SourceDialect.scala) shouldBe input
+      val input = s"val s = ${tripleQuote}a\n\n\n\nb$tripleQuote\n"
+
+      val expected = input
+
+      val actual = Normalize(input, Config.default, SourceDialect.scala)
+
+      actual shouldBe expected
     }
 
     "be preserved inside an interpolated string" in {
-      val input = s"val s = s${q}a\n\n\n$${x}\n\n\nb$q\n"
-      Normalize(input, Config.default, SourceDialect.scala) shouldBe input
+      val input = s"val s = s${tripleQuote}a\n\n\n$${x}\n\n\nb$tripleQuote\n"
+
+      val expected = input
+
+      val actual = Normalize(input, Config.default, SourceDialect.scala)
+
+      actual shouldBe expected
     }
 
   }
@@ -34,8 +49,13 @@ class BlankLineNormalizerSpec extends AnyWordSpec with Matchers {
   "blank-line runs outside strings" should {
 
     "still collapse to one" in {
-      val input = s"val s = ${q}a\n\nb$q\n\n\n\nval t = 1\n"
-      BlankLineNormalizer.collapseBlankRuns(input) shouldBe s"val s = ${q}a\n\nb$q\n\nval t = 1\n"
+      val input = s"val s = ${tripleQuote}a\n\nb$tripleQuote\n\n\n\nval t = 1\n"
+
+      val expected = s"val s = ${tripleQuote}a\n\nb$tripleQuote\n\nval t = 1\n"
+
+      val actual = BlankLineNormalizer.collapseBlankRuns(input)
+
+      actual shouldBe expected
     }
 
   }

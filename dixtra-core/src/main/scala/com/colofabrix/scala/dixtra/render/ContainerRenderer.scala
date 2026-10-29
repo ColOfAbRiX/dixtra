@@ -11,10 +11,11 @@ import scala.meta.tokens.Token
 /**
  * Renders containers (`object` / `class` / `trait`).
  *
- * The constructor parameters of a class or trait follow the signature rules of a `def` (see [[com.colofabrix.scala.dixtra.render.definition.SignatureRenderer]]),
- * with the rest of the header line (e.g. ` extends A {`) counting towards the width; the rest of the header, the braces
- * and the surrounding whitespace are preserved, and each member statement is formatted in place at its own source
- * column. A container whose new header does not verify keeps its original header.
+ * The constructor parameters of a class or trait follow the signature rules of a `def` (see
+ * [[com.colofabrix.scala.dixtra.render.definition.SignatureRenderer]]), with the rest of the header line (e.g. `
+ * extends A {`) counting towards the width; the rest of the header, the braces and the surrounding whitespace are
+ * preserved, and each member statement is formatted in place at its own source column. A container whose new header
+ * does not verify keeps its original header.
  *
  * The blank lines at the edges of the body follow `blank-lines.body-edges` for the container's construct (see
  * `EdgeBlankLines`); a braceless (Scala 3 `:`) body has no closing edge.

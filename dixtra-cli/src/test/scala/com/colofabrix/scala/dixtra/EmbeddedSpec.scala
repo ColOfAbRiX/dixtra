@@ -14,7 +14,7 @@ import scala.jdk.CollectionConverters.*
  */
 class EmbeddedSpec extends AnyWordSpec with Matchers {
 
-  private val unformatted = 
+  private val unformatted =
     "val x =\n  list.filter(_ > 0).map(_ * 2).headOption\n"
 
   // The exit code and the lines given to `out` and `err`.
@@ -35,7 +35,7 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
         .directory(dir.toFile)
         .redirectErrorStream(true)
         .start()
-    
+
     val _ = process.getInputStream.readAllBytes()
     val _ = process.waitFor() shouldBe 0
 
@@ -43,17 +43,22 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
     "report each file and return the exit code without exiting" in {
       withTempDir { dir =>
         val file = write(dir.resolve("A.scala"), unformatted)
-        run("--check", file.toString) shouldBe (
-          1,
-          List(s"would format: ${file.toString}", "1 file: 1 would format"),
-          Nil,
-        )
+
+        val expected = (1, List(s"would format: ${file.toString}", "1 file: 1 would format"), Nil)
+
+        val actual = run("--check", file.toString)
+
+        actual shouldBe expected
       }
     }
 
     "return 2 and the usage for invalid arguments" in {
+      val expected = (2, Nil, true)
+
       val (code, out, err) = run("--max-column", "0", "A.scala")
-      (code, out, err.exists(_.contains("--max-column must be a positive integer"))) shouldBe (2, Nil, true)
+      val actual           = (code, out, err.exists(_.contains("--max-column must be a positive integer")))
+
+      actual shouldBe expected
     }
   }
 
@@ -63,11 +68,17 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
         val conf = write(dir.resolve(ConfigCli.fileName), "max-colum = 30\n")
         val a    = write(dir.resolve("A.scala"), unformatted)
         val b    = write(dir.resolve("B.scala"), unformatted)
-        run("--check", a.toString, b.toString) shouldBe (
-          1,
-          List(s"would format: ${a.toString}", s"would format: ${b.toString}", "2 files: 2 would format"),
-          List(s"warning: ${conf.toString}: unknown setting max-colum (line 1), ignored"),
-        )
+
+        val expected =
+          (
+            1,
+            List(s"would format: ${a.toString}", s"would format: ${b.toString}", "2 files: 2 would format"),
+            List(s"warning: ${conf.toString}: unknown setting max-colum (line 1), ignored"),
+          )
+
+        val actual = run("--check", a.toString, b.toString)
+
+        actual shouldBe expected
       }
     }
 
@@ -79,7 +90,12 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
         val old = write(dir.resolve("legacy").resolve("A.scala"), call)
         val src = write(dir.resolve("src").resolve("A.scala"), call)
         val _   = run("--max-column", "30", dir.toString)
-        (read(old), read(src)) shouldBe (call.replace("secondArgument,", "secondArgument"), call)
+
+        val expected = (call.replace("secondArgument,", "secondArgument"), call)
+
+        val actual = (read(old), read(src))
+
+        actual shouldBe expected
       }
     }
   }
@@ -95,7 +111,12 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
         val (code, out, _) = run("--check", "--changed-since", "HEAD", dir.toString)
         val report         = out.map(_.replace(untracked.toString, "B"))
         val listsCommitted = out.exists(_.contains(committed.getFileName.toString))
-        (code, report, listsCommitted) shouldBe (1, List("would format: B", "1 file: 1 would format"), false)
+
+        val expected = (1, List("would format: B", "1 file: 1 would format"), false)
+
+        val actual = (code, report, listsCommitted)
+
+        actual shouldBe expected
       }
     }
 
@@ -107,18 +128,25 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
         git(dir, "commit", "-q", "-m", "a")
         val untracked      = write(dir.resolve("Ä.scala"), unformatted)
         val (code, out, _) = run("--check", "--changed-since", "HEAD", dir.toString)
-        (code, out.map(_.replace(untracked.toString, "Ä"))) shouldBe (
-          1,
-          List("would format: Ä", "1 file: 1 would format"),
-        )
+
+        val expected = (1, List("would format: Ä", "1 file: 1 would format"))
+
+        val actual = (code, out.map(_.replace(untracked.toString, "Ä")))
+
+        actual shouldBe expected
       }
     }
 
     "fail outside a git repository" in {
       withTempDir { dir =>
-        val _              = write(dir.resolve("A.scala"), unformatted)
+        val _ = write(dir.resolve("A.scala"), unformatted)
+
+        val expected = (1, true)
+
         val (code, _, err) = run("--changed-since", "HEAD", dir.toString)
-        (code, err.exists(_.startsWith(s"failed: ${dir.toString}"))) shouldBe (1, true)
+        val actual         = (code, err.exists(_.startsWith(s"failed: ${dir.toString}")))
+
+        actual shouldBe expected
       }
     }
   }

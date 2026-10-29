@@ -25,41 +25,40 @@ private[term] final class WhileRenderer(ctx: RenderContext, terms: TermRenderer)
   /**
    * Render a `while` loop at the given indent.
    */
-  def render(w: Term.While, indent: Int): Doc =
-    val inline = ctx.ownSourceDoc(w)
-    val cond   = ctx.ownSourceDoc(w.expr)
+  def render(whileTerm: Term.While, indent: Int): Doc =
+    val inline = ctx.ownSourceDoc(whileTerm)
+    val cond   = ctx.ownSourceDoc(whileTerm.expr)
     val policy =
       ctx
         .config
         .body
         .whileBody
-    val hasDo  = ctx.tokensBetween(ctx.span(w.expr)._2, ctx.span(w.body)._1).exists(_.is[Token.KwDo])
+    val hasDo  = ctx.tokensBetween(ctx.span(whileTerm.expr)._2, ctx.span(whileTerm.body)._1).exists(_.is[Token.KwDo])
     val braces = ctx.usesBraces(Construct.While, !hasDo)
     val asWritten =
       braces != hasDo &&
       policy != SingleBodyPolicy.AlwaysBreak &&
-      !w.pos.text.contains('\n') &&
+      !whileTerm.pos.text.contains('\n') &&
       ctx.fits(inline, indent)
     if asWritten || !Render.isFlat(cond) then
       inline
     else if braces then
-      val body   = terms.renderBody(BodyLayout.unwrapped(ctx, w.body), indent + 2, forceExplode = false)
+      val body   = terms.renderBody(BodyLayout.unwrapped(ctx, whileTerm.body), indent + 2, forceExplode = false)
       val onLine = Doc.text("while (") ++ cond ++ Doc.text(") ") ++ body
-      val below  = BodyLayout.writtenBelow(ctx, ctx.span(w.expr)._2, w.body)
-      val member = BodyLayout.Member(below, ctx.fits(onLine, indent), BodyLayout.isSimple(ctx, w.body))
+      val below  = BodyLayout.writtenBelow(ctx, ctx.span(whileTerm.expr)._2, whileTerm.body)
+      val member = BodyLayout.Member(below, ctx.fits(onLine, indent), BodyLayout.isSimple(ctx, whileTerm.body))
       if BodyLayout.singleBelow(policy, member) then
-        Doc.text("while (") ++
-        cond ++
-        Doc.text(") ") ++
-        Doc.braced(terms.bracedBody(w.body, indent + 2, Construct.While))
+        val opening = Doc.text("while (") ++ cond ++ Doc.text(") ")
+
+        opening ++ Doc.braced(terms.bracedBody(whileTerm.body, indent + 2, Construct.While))
       else
         onLine
     else
-      val body   = terms.renderBody(w.body, indent + 2, forceExplode = false)
+      val body   = terms.renderBody(whileTerm.body, indent + 2, forceExplode = false)
       val head   = Doc.text("while ") ++ cond ++ Doc.text(" do")
       val onLine = head ++ Doc.text(" ") ++ body
-      val below  = BodyLayout.writtenBelow(ctx, ctx.span(w.expr)._2, w.body)
-      val member = BodyLayout.Member(below, ctx.fits(onLine, indent), BodyLayout.isSimple(ctx, w.body))
+      val below  = BodyLayout.writtenBelow(ctx, ctx.span(whileTerm.expr)._2, whileTerm.body)
+      val member = BodyLayout.Member(below, ctx.fits(onLine, indent), BodyLayout.isSimple(ctx, whileTerm.body))
       if BodyLayout.singleBelow(policy, member) then
         head ++ Doc.Nest(2, Doc.Line ++ body)
       else

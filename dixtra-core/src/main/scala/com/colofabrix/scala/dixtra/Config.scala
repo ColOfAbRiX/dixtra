@@ -3,11 +3,6 @@ package com.colofabrix.scala.dixtra
 /**
  * Formatting configuration for the dixtra formatter.
  *
- * The settings describe visual results (which constructs use braces, when a chain breaks, what aligns with what), not
- * weights for low-level rules: every rule still lives in code and applies All-or-Nothing. This is a pure data
- * structure; reading it from HOCON is a CLI concern (see `cli.ConfigCli`), and `src/main/resources/reference.conf`
- * mirrors [[Config.default]].
- *
  * @param maxColumn The maximum allowed line width before a construct is forced to break.
  * @param trailingCommas Whether the last element of a list laid out one element per line is followed by a comma.
  * @param braces Where the braces go, and the brace style of each construct.
@@ -17,8 +12,7 @@ package com.colofabrix.scala.dixtra
  * @param callSite The layout of the arguments of calls.
  * @param alignment What aligns with what.
  * @param blankLines The blank lines at the edges of bodies, between alignment groups and before scaladoc.
- * @param trailingCommentOverflow What happens to a line that goes past `maxColumn` only because of its trailing
- *                                comment.
+ * @param trailingCommentOverflow What happens to a line that goes past `maxColumn` only because of its trailing comment
  * @param housekeeping The housekeeping of a whole file.
  * @param paths The files and directories to format.
  */
@@ -40,7 +34,7 @@ final case class Config(
 object Config {
 
   /**
-   * The default configuration, hardcoded as a pure value so the formatter core has no configuration-loading dependency.
+   * The default configuration.
    */
   val default: Config =
     Config(

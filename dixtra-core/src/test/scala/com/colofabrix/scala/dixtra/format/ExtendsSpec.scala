@@ -14,7 +14,10 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "a class header with an extends list" should {
     "stay on one line when it fits" in {
       val input = "class A(x: Int) extends B with C {\n  val y = 1\n}"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "break at extends first, one part per line at +2" in {
@@ -22,6 +25,7 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """class VeryLongName(very: Long, parameters: Int) extends TraitA with TraitB with TraitC {
           |  val y = 1
           |}""".stripMargin
+
       val expected =
         """class VeryLongName(very: Long, parameters: Int)
           |  extends TraitA
@@ -29,6 +33,7 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  with TraitC {
           |  val y = 1
           |}""".stripMargin
+
       input should formatStablyTo(expected, 60)
     }
 
@@ -37,6 +42,7 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """class VeryLongName(veryLongParameter: Long, anotherParameter: Int) extends TraitA with TraitB {
           |   val y = 1
           |}""".stripMargin
+
       val expected =
         """class VeryLongName(
           |  veryLongParameter: Long,
@@ -44,6 +50,7 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |) extends TraitA with TraitB {
           |   val y = 1
           |}""".stripMargin
+
       input should formatStablyTo(expected, 50)
     }
 
@@ -53,6 +60,7 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """with TraitBBBBBBBBB {
          |   val y = 1
          |}""").stripMargin
+
       val expected =
         """class VeryLongName(
           |  veryLongParameter: Long,
@@ -61,6 +69,7 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  with TraitBBBBBBBBB {
           |   val y = 1
           |}""".stripMargin
+
       input should formatStablyTo(expected, 40)
     }
 
@@ -70,12 +79,14 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  with C {
           |  val y = 1
           |}""".stripMargin
+
       val expected =
         """class A(x: Int)
           |  extends B
           |  with C {
           |  val y = 1
           |}""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -85,12 +96,14 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |C {
           |  val y = 1
           |}""".stripMargin
+
       val expected =
         """class A(x: Int)
           |  extends B
           |  with C {
           |  val y = 1
           |}""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -99,11 +112,13 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """object VeryLongObjectName extends TraitAAAAAAAAA, TraitBBBBBBBBBB {
           |  val y = 1
           |}""".stripMargin
+
       val expected =
         """object VeryLongObjectName
           |  extends TraitAAAAAAAAA, TraitBBBBBBBBBB {
           |  val y = 1
           |}""".stripMargin
+
       input should formatTo(expected, 50)
     }
 
@@ -112,12 +127,14 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """case class Point(x: Int, y: Int) extends Shape derives CanEqual, Ordering {
           |   val z = 1
           |}""".stripMargin
+
       val expected =
         """case class Point(x: Int, y: Int)
           |  extends Shape
           |  derives CanEqual, Ordering {
           |   val z = 1
           |}""".stripMargin
+
       input should formatTo(expected, 50)
     }
 
@@ -126,12 +143,14 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """class A(x: Int) extends B /* note */ with C {
           |   val y = 1
           |}""".stripMargin
+
       val expected =
         """class A(
           |  x: Int,
           |) extends B /* note */ with C {
           |   val y = 1
           |}""".stripMargin
+
       input should formatTo(expected, 30)
     }
   }

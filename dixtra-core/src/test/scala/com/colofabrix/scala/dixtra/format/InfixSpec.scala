@@ -22,6 +22,7 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    argument + 1
           |  } >> somethingElse(3)
           |""".stripMargin
+
       val expected =
         """def a =
           |  IO.blocking {
@@ -34,6 +35,7 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  } >>
           |  somethingElse(3)
           |""".stripMargin
+
       input should formatStablyTo(expected)
     }
 
@@ -43,6 +45,7 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  bar
           |} ++ baz * qux
           |""".stripMargin
+
       val expected =
         """def c =
           |  foo {
@@ -51,6 +54,7 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  baz *
           |  qux
           |""".stripMargin
+
       input should formatStablyTo(expected)
     }
 
@@ -62,6 +66,7 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    newCode(argument)
           |  } >> other
           |""").stripMargin
+
       val expected =
         """def b =
           |  xs
@@ -73,6 +78,7 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    } >>
           |    other
           |""".stripMargin
+
       input should formatStablyTo(expected)
     }
   }
@@ -88,23 +94,33 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  }
           |}
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "stay on one line" in {
       val input = "def d = a ++ b ++ c\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 
   "an operation with several arguments" should {
     "stay on one line when it fits" in {
       val input = "def t = x shouldBe (1, 2)\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "break its arguments as a call does, after the operator" in {
       val input = "def t =\n  result shouldBe (firstValue, secondValue)\n"
+
       val expected =
         """def t =
           |  result shouldBe (
@@ -112,12 +128,16 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    secondValue,
           |  )
           |""".stripMargin
+
       input should formatTo(expected, 30)
     }
 
     "keep the author's line break after the operator" in {
       val input = "def t =\n  result shouldBe\n  (firstValue, secondValue)\n"
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 

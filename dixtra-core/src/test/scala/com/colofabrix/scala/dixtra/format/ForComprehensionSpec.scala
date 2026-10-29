@@ -24,6 +24,7 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    verified <- verify(lf, tree, formatted)
           |  yield if crlf then verified.replace("\n", "\r\n") else verified
           |""".stripMargin
+
       val expected =
         """def f =
           |  for
@@ -32,8 +33,8 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    verified  <- verify(lf, tree, formatted)
           |  yield if crlf then verified.replace("\n", "\r\n") else verified
           |""".stripMargin
-      input should
-      formatTo(expected, withBody(_.copy(forYield = YieldBodyPolicy.Keep)))
+
+      input should formatTo(expected, withBody(_.copy(forYield = YieldBodyPolicy.Keep)))
     }
 
     "keep the yield of a single variable on the yield line" in {
@@ -44,6 +45,7 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    verified <- verify(lf, tree)
           |  yield verified
           |""".stripMargin
+
       val expected =
         """def f =
           |  for
@@ -51,6 +53,7 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    verified <- verify(lf, tree)
           |  yield verified
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -68,7 +71,10 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    b <- ys
           |  yield "done"
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "keep a path of plain names on the yield line" in {
@@ -79,7 +85,10 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    b <- ys
           |  yield ExitCode.Success
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "keep a call below yield where the author wrote it" in {
@@ -91,7 +100,10 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |  yield
           |    a.combine(b)
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "keep value definitions and guards as enumerators" in {
@@ -103,6 +115,7 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    if b > 2
           |  yield b
           |""".stripMargin
+
       val expected =
         """def f =
           |  for
@@ -111,6 +124,7 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |         if b > 2
           |  yield b
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -123,7 +137,10 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    val b = a + 1
           |    b * 2
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 
@@ -138,7 +155,10 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    a + b
           |  }
           |""".stripMargin
-      input should formatTo(input, withBraces(Construct.ForYield -> BracePolicy.Keep))
+
+      val expected = input
+
+      input should formatTo(expected, withBraces(Construct.ForYield -> BracePolicy.Keep))
     }
 
     "keep a yield expression on the yield line without adding braces" in {
@@ -150,7 +170,10 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |  } yield a + b
           |""".stripMargin
       val config = withBraces(Construct.ForYield -> BracePolicy.Keep)
-      input should formatTo(input, withBody(_.copy(forYield = YieldBodyPolicy.Keep), config))
+
+      val expected = input
+
+      input should formatTo(expected, withBody(_.copy(forYield = YieldBodyPolicy.Keep), config))
     }
 
     "take a braced yield out of its braces onto the yield line with body.for-yield = join" in {
@@ -163,6 +186,8 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    ()
           |  }
           |""".stripMargin
+      val config = withBraces(Construct.ForYield -> BracePolicy.Keep)
+
       val expected =
         """def f =
           |  for {
@@ -170,7 +195,7 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    b <- ys
           |  } yield ()
           |""".stripMargin
-      val config = withBraces(Construct.ForYield -> BracePolicy.Keep)
+
       input should formatTo(expected, withBody(_.copy(forYield = YieldBodyPolicy.AlwaysJoin), config))
     }
 
@@ -181,6 +206,7 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    a <- xs; b <- ys
           |  } yield a
           |""".stripMargin
+
       val expected =
         """def f =
           |  for {
@@ -188,6 +214,7 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    b <- ys
           |  } yield a
           |""".stripMargin
+
       input should formatTo(expected, withBraces(Construct.ForYield -> BracePolicy.Keep))
     }
   }
@@ -198,7 +225,10 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
         """def f = for x <- xs yield x
           |def g = for (x <- xs) yield x * 2
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 
@@ -209,7 +239,10 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |  for (a <- xs;
           |        b <- ys) yield a + b
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 
@@ -222,7 +255,10 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    b <- ys
           |  do println(a + b)
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 

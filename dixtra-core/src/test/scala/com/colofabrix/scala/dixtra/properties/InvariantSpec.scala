@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 /**
- * Property/invariant tests: the AON principles as predicates over a corpus of representative snippets, complementing
+ * Property/invariant tests: the layout principles as predicates over a corpus of representative snippets, complementing
  * the golden per-construct specs.
  *
  * For every snippet we assert:
@@ -61,7 +61,11 @@ class InvariantSpec extends AnyWordSpec with Matchers {
       corpus.foreach { src =>
         Dixtra.format(src, config) match {
           case Right(out) =>
-            AllOrNothing.lonelyDelimiterViolations(out) shouldBe empty
+            val expected = true
+
+            val actual = LayoutProperties.lonelyDelimiterViolations(out).isEmpty
+
+            actual shouldBe expected
           case Left(err) =>
             fail(s"parse/format failed for:\n$src\nerror: ${err.getMessage}")
         }
@@ -72,7 +76,11 @@ class InvariantSpec extends AnyWordSpec with Matchers {
       corpus.foreach { src =>
         Dixtra.format(src, config) match {
           case Right(out) =>
-            AllOrNothing.partialBreakViolations(out) shouldBe empty
+            val expected = true
+
+            val actual = LayoutProperties.partialBreakViolations(out).isEmpty
+
+            actual shouldBe expected
           case Left(err) =>
             fail(s"parse/format failed for:\n$src\nerror: ${err.getMessage}")
         }
@@ -83,7 +91,11 @@ class InvariantSpec extends AnyWordSpec with Matchers {
       corpus.foreach { src =>
         Dixtra.format(src, config) match {
           case Right(out) =>
-            AllOrNothing.newlineAfterEqViolations(out) shouldBe empty
+            val expected = true
+
+            val actual = LayoutProperties.newlineAfterEqViolations(out).isEmpty
+
+            actual shouldBe expected
           case Left(err) =>
             fail(s"parse/format failed for:\n$src\nerror: ${err.getMessage}")
         }
@@ -92,16 +104,24 @@ class InvariantSpec extends AnyWordSpec with Matchers {
 
     "be idempotent" in {
       corpus.foreach { src =>
+        val expected = true
+
+        val actual = LayoutProperties.isIdempotent(src, config)
+
         withClue(s"not idempotent for:\n$src\n") {
-          AllOrNothing.isIdempotent(src, config) shouldBe true
+          actual shouldBe expected
         }
       }
     }
 
     "preserve program structure (round-trip)" in {
       corpus.foreach { src =>
+        val expected = true
+
+        val actual = LayoutProperties.isStructurePreserving(src, config)
+
         withClue(s"structure changed for:\n$src\n") {
-          AllOrNothing.isStructurePreserving(src, config) shouldBe true
+          actual shouldBe expected
         }
       }
     }

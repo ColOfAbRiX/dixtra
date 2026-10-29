@@ -4,13 +4,13 @@ import com.colofabrix.scala.dixtra.*
 import scala.meta.*
 
 /**
- * Property/invariant checkers for the AON style.
+ * Property/invariant checkers for the dixtra layout.
  *
  * These generalize the normative principles into predicates that can be asserted over any formatted output,
  * complementing the example-based golden fixtures. Each returns a list of human-readable violations (empty means the
  * property holds).
  */
-object AllOrNothing {
+object LayoutProperties {
 
   /**
    * No line may strand a closing bracket against a following opening bracket.
@@ -41,8 +41,8 @@ object AllOrNothing {
     lines
       .zipWithIndex
       .flatMap {
-        case (line, i) =>
-          val next      = lines.lift(i + 1)
+        case (line, lineNo) =>
+          val next      = lines.lift(lineNo + 1)
           val assignIdx = indexOfBareEquals(line)
 
           // A trailing comment after `=` is not RHS content.
@@ -56,13 +56,13 @@ object AllOrNothing {
             next.exists(n => n.trim.nonEmpty && leadingSpaces(n) > leadingSpaces(line))
 
           if hasTrailing && nextIsDeeper then
-            Vector(s"newline-after-= violation at line ${i + 1}: ${line.trim}")
+            Vector(s"newline-after-= violation at line ${lineNo + 1}: ${line.trim}")
           else
             Vector.empty
       }
 
   /**
-   * Within a select chain, breaking is all-or-nothing: either every `.member` selection begins a new line, or none do.
+   * Within a select chain, breaking is complete: either every `.member` selection begins a new line, or none do.
    *
    * Detected textually per top-level statement: if any line (after the receiver) starts with `.` then *all* subsequent
    * `.member` selections of that chain must also start their own line. We approximate by flagging a line that contains

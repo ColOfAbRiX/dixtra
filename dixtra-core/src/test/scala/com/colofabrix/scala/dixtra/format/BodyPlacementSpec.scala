@@ -22,6 +22,7 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  }
           |  .filter(_ > 0)
           |""".stripMargin
+
       val expected =
         """val y =
           |  xs
@@ -30,6 +31,7 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    }
           |    .filter(_ > 0)
           |""".stripMargin
+
       input should formatTo(expected)
     }
   }
@@ -40,7 +42,10 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """def foldLeft[A, B](fa: NonEmptyFilled[A], b: B)(f: (B, A) => B): B =
           |  fa.toVector.foldLeft(b)(f)
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "still explode a chain with two selections that the author broke" in {
@@ -49,12 +54,14 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  list.filter(_ > 0)
           |      .map(_ * 2)
           |""".stripMargin
+
       val expected =
         """val x =
           |  list
           |    .filter(_ > 0)
           |    .map(_ * 2)
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -64,12 +71,14 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  list
           |    .filter(_ > 0).map(_ * 2)
           |""".stripMargin
+
       val expected =
         """val x =
           |  list
           |    .filter(_ > 0)
           |    .map(_ * 2)
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -78,7 +87,10 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """def f =
           |  try g() catch { case _: E => h() }
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "not explode the arguments of a fitting function call" in {
@@ -86,33 +98,43 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """def g(s: String) =
           |  format(s, Config.default)
           |""".stripMargin
-      input should formatTo(input)
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 
   "a newline before =" should {
     "not be an author signal after the annotation of a def" in {
-      val annotated = "@tailrec\ndef f(x: Int): Int = xs.map(f).sum\n"
-      annotated should formatTo(annotated)
+      val input = "@tailrec\ndef f(x: Int): Int = xs.map(f).sum\n"
+
+      val expected = input
+
+      input should formatTo(expected)
     }
 
     "not be an author signal after the annotation of a val" in {
-      val annotated = "@nowarn\nval x = xs.map(f).sum\n"
-      annotated should formatTo(annotated)
+      val input = "@nowarn\nval x = xs.map(f).sum\n"
+
+      val expected = input
+
+      input should formatTo(expected)
     }
   }
 
   "a body that does not fit after =" should {
-    val input = "val someRatherLongValueName = firstCollection.map(transform).filter(keepThem).sum\n"
-    val expected =
-      """val someRatherLongValueName =
-        |  firstCollection
-        |    .map(transform)
-        |    .filter(keepThem)
-        |    .sum
-        |""".stripMargin
-
     "drop the body below = in its exploded form, which stays as it is" in {
+      val input = "val someRatherLongValueName = firstCollection.map(transform).filter(keepThem).sum\n"
+
+      val expected =
+        """val someRatherLongValueName =
+          |  firstCollection
+          |    .map(transform)
+          |    .filter(keepThem)
+          |    .sum
+          |""".stripMargin
+
       input should formatStablyTo(expected, 80)
     }
   }

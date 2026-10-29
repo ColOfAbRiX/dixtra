@@ -410,8 +410,8 @@ private[term] final class ApplicationRenderer(
         .blockArgument
 
   // A brace block (D5): a lambda, a multi-statement block, or a `{ case ... }` partial function. Braces are always
-  // kept; the contents follow the same AON rules and re-indent when exploded. A lambda's body follows the `=>` rules of
-  // [[BodyLayout]], placed by `body.lambda-argument`: on the `=>` line it stays on one line with the braces,
+  // kept; the contents follow the same layout rules and re-indent when exploded. A lambda's body follows the `=>` rules
+  // of [[BodyLayout]], placed by `body.lambda-argument`: on the `=>` line it stays on one line with the braces,
   // `{ x => body }`.
   private def braceBlock(arg: Term, indent: Int, column: Int): Doc =
     val authorSignal =

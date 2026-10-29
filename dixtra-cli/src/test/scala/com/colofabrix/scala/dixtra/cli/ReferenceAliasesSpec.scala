@@ -25,11 +25,19 @@ class ReferenceAliasesSpec extends AnyWordSpec with Matchers {
 
   "references.aliases.conf" should {
     "load to the defaults" in {
-      ConfigCli.fromString(text) shouldBe Validated.valid(ConfigCli.default)
+      val expected = Validated.valid(ConfigCli.default)
+
+      val actual = ConfigCli.fromString(text)
+
+      actual shouldBe expected
     }
 
     "hold the settings of reference.conf with their default values, once its aliases are resolved" in {
-      ConfigAliases.resolve(file, ConfigFactory.empty()).map(_.root.unwrapped) shouldBe Right(references.root.unwrapped)
+      val expected = Right(references.root.unwrapped)
+
+      val actual = ConfigAliases.resolve(file, ConfigFactory.empty()).map(_.root.unwrapped)
+
+      actual shouldBe expected
     }
 
     "write each setting once, directly or through the only alias that reaches it" in {
@@ -53,11 +61,17 @@ class ReferenceAliasesSpec extends AnyWordSpec with Matchers {
           .sorted
       val (throughAliases, direct) = keys.partition(aliases.contains)
       val written                  = direct ++ throughAliases.flatMap(aliases)
-      (
-        written.groupBy(identity).collect { case (setting, ways) if ways.sizeIs > 1 => setting }.toList.sorted,
-        direct.filter(setting => reach.get(setting).contains(1)),
-        throughAliases.filter(alias => aliases(alias).exists(target => reach.getOrElse(target, 0) > 1)),
-      ) shouldBe (Nil, Nil, Nil)
+
+      val expected = (Nil, Nil, Nil)
+
+      val actual =
+        (
+          written.groupBy(identity).collect { case (setting, ways) if ways.sizeIs > 1 => setting }.toList.sorted,
+          direct.filter(setting => reach.get(setting).contains(1)),
+          throughAliases.filter(alias => aliases(alias).exists(target => reach.getOrElse(target, 0) > 1)),
+        )
+
+      actual shouldBe expected
     }
   }
 
