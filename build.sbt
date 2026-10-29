@@ -21,17 +21,17 @@ Global / tpolecatExcludeOptions ++=
 // The settings of the Scala 3 projects
 lazy val scala3Settings =
   Seq(
-    scalaVersion                := scala3Version,
-    scalacOptions               += "-Wall",
+    scalaVersion  := scala3Version,
+    scalacOptions += "-Wall",
     // The compile-only options (plugins, wartremover, semanticdb) only produce warnings in scaladoc
     Compile / doc / scalacOptions := Seq("-project", name.value, "-project-version", version.value),
-    semanticdbEnabled           := true,
-    semanticdbVersion           := scalafixSemanticdb.revision,
-    javaOptions                 += "-Dfile.encoding=UTF-8",
-    Test / fork                 := true,
-    Compile / wartremoverErrors := Warts.unsafe,
-    Test / wartremoverErrors    := Nil,
-    Test / wartremoverWarnings  := Nil,
+    semanticdbEnabled             := true,
+    semanticdbVersion             := scalafixSemanticdb.revision,
+    javaOptions                   += "-Dfile.encoding=UTF-8",
+    Test / fork                   := true,
+    Compile / wartremoverErrors   := Warts.unsafe,
+    Test / wartremoverErrors      := Nil,
+    Test / wartremoverWarnings    := Nil,
     Test / scalacOptions ~= (_.filterNot(_.startsWith("-P:wartremover:"))),
   )
 
@@ -126,14 +126,14 @@ lazy val sbtDixtra =
     .in(file("dixtra-sbt"))
     .enablePlugins(SbtPlugin, BuildInfoPlugin)
     .settings(
-      name                 := "sbt-dixtra",
-      scalaVersion         := sbtScalaVersion,
-      semanticdbEnabled    := true,
-      semanticdbVersion    := scalafixSemanticdb.revision,
+      name                          := "sbt-dixtra",
+      scalaVersion                  := sbtScalaVersion,
+      semanticdbEnabled             := true,
+      semanticdbVersion             := scalafixSemanticdb.revision,
       Compile / doc / scalacOptions := Seq("-project", name.value, "-project-version", version.value),
       buildInfoKeys := Seq[BuildInfoKey](organization, version, "dixtraModule" -> (dixtraCli / moduleName).value),
-      buildInfoPackage     := "com.colofabrix.scala.sbtdixtra",
-      scriptedLaunchOpts   ++= Seq("-Xmx1024M", s"-Dplugin.version=${version.value}"),
-      scriptedBufferLog    := false,
+      buildInfoPackage              := "com.colofabrix.scala.sbtdixtra",
+      scriptedLaunchOpts            ++= Seq("-Xmx1024M", s"-Dplugin.version=${version.value}"),
+      scriptedBufferLog             := false,
       scriptedDependencies := scriptedDependencies.dependsOn(dixtraCore / publishLocal, dixtraCli / publishLocal).value,
     )

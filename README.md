@@ -1,6 +1,6 @@
 # dixtra
 
-A formatter for Scala 3 with an *All-or-Nothing* layout: every construct is either entirely on one line or entirely
+A formatter for Scala 3: every construct is either entirely on one line or entirely
 broken, one element per line. Never half of each.
 
 ```scala
@@ -31,10 +31,13 @@ default of every setting.
 - [Leaving code as written](#leaving-code-as-written)
 - [Using dixtra as a library](#using-dixtra-as-a-library)
 - [Building from source](#building-from-source)
+- [Contributing](#contributing)
+- [Changelog](#changelog)
+- [License](#license)
 
 ## Principles
 
-- **All or nothing.** A construct (an argument list, a chain of calls, a signature, an if/else) is laid out either
+- **Whole constructs.** A construct (an argument list, a chain of calls, a signature, an if/else) is laid out either
   fully inline or fully exploded. Nothing is ever partly broken.
 - **Two triggers.** A construct breaks when its one-line form goes past `max-column`, or when the author wrote a line
   break inside it. Otherwise it is joined on one line.
@@ -441,3 +444,21 @@ changing the dependencies, or the way the command line reads its configuration.
 
 The build formats itself with its own plugin (`project/plugins.sbt`), so in a fresh clone the plugin must already be
 resolvable. Comment out the `addSbtPlugin` line for the first `sbt publishLocal`.
+
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING](.github/CONTRIBUTING.md) for how to build the project, run its tests and
+submit a pull request, and the [Code of conduct](.github/CODE_OF_CONDUCT.md) that everyone participating in it is
+expected to follow.
+
+## Changelog
+
+You can check [the changelog of dixtra here](CHANGELOG.md)
+
+## License
+
+dixtra is released under a "MIT" license. See [LICENSE](LICENSE) for specifics and copyright declaration.
+
+## Author Information
+
+[Fabrizio Colonna](mailto:colofabrix@tin.it)

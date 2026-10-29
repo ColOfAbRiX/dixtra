@@ -76,9 +76,11 @@ object NativeImage {
           .foreach { arguments =>
             log.info(s"tracing ${arguments.mkString(" ")}")
             // A run that reports an error is traced too: its exit code is not a failure
-            val command =
-              List(path(tool("java")), s"-agentlib:native-image-agent=config-merge-dir=${path(metadata)}") ++
-              List("-cp", classpath.map(path).mkString(java.io.File.pathSeparator), mainClass) ++ arguments
+            val agentOptions =
+              List(path(tool("java")), s"-agentlib:native-image-agent=config-merge-dir=${path(metadata)}")
+
+            val launchOptions = List("-cp", classpath.map(path).mkString(java.io.File.pathSeparator), mainClass)
+            val command       = agentOptions ++ launchOptions ++ arguments
 
             Process(command, scratch).!(ProcessLogger(_ => (), _ => ()))
           }
