@@ -7,7 +7,6 @@ val scala3Version = "3.9.0"
 // The sbt plugin is built for sbt 2.0, with the Scala version sbt 2.0 runs on
 val sbtScalaVersion = "3.8.4"
 
-ThisBuild / version      := "1.0.0-RC1"
 ThisBuild / organization := "com.colofabrix.scala"
 
 Global / run / fork := true
@@ -144,7 +143,7 @@ lazy val sbtDixtra =
         Seq("-Xmx1024M", s"-Dplugin.version=${version.value}") ++
         // The scripted builds do not inherit the options of the sbt launcher (`/etc/sbt/sbtopts`): they are given the
         // redirected homes of the caches again, when the launcher runs with them.
-        Seq("sbt.ivy.home", "sbt.boot.directory", "sbt.coursier.home", "sbt.global.base").flatMap { key => 
+        Seq("sbt.ivy.home", "sbt.boot.directory", "sbt.coursier.home", "sbt.global.base").flatMap { key =>
           Option(System.getProperty(key)).map(value => s"-D$key=$value")
         },
       scriptedBufferLog    := false,
@@ -159,6 +158,7 @@ lazy val dixtraVsCode =
     .in(file("dixtra-vscode"))
     .settings(
       name           := "dixtra-vscode",
+      version        := "1.0.0-RC1",
       scalaVersion   := scala3Version,
       publish / skip := true,
       vscodePackage := {
@@ -171,10 +171,19 @@ lazy val dixtraVsCode =
         val pattern  = """("version" *: *")[^"]+(")""".r
         val synced   = pattern.replaceFirstIn(current, s"$$1${version.value}$$2")
 
-        if synced != current then 
+        if synced != current then
           IO.write(manifest, synced)
 
-        val sources = ((folder / "src") ** "*.ts").get() ++ Seq(folder / "package.json", folder / "tsconfig.json")
+        val license = (ThisBuild / baseDirectory).value / "LICENSE"
+        val copy    = folder / "LICENSE"
+
+        if !copy.exists() || IO.read(copy) != IO.read(license) then
+          IO.copyFile(license, copy)
+
+        val sources =
+          ((folder / "src") ** "*.ts").get() ++
+          Seq(folder / "package.json", folder / "tsconfig.json", folder / "LICENSE")
+
         val cached =
           FileFunction.cached(streams.value.cacheDirectory / "vscode-package", FilesInfo.hash) { _ =>
             npmBuild(folder, streams.value.log, "install", "--no-fund", "--no-audit")
@@ -182,7 +191,7 @@ lazy val dixtraVsCode =
             npmBuild(folder, streams.value.log, "run", "package")
             (folder * "*.vsix").get().toSet
           }
-          
+
         val produced =
           cached(sources.toSet)
             .toList
@@ -195,14 +204,14 @@ lazy val dixtraVsCode =
 
 // The build task of the VS Code extension in `dixtra-vscode/`
 @transient
-lazy val vscodePackage = 
+lazy val vscodePackage =
   taskKey[File]("Package the VS Code extension into a .vsix")
 
 def npmBuild(folder: File, log: Logger, arguments: String*): Unit =
   val npm =
-    if sys.props("os.name").toLowerCase.contains("windows") then 
+    if sys.props("os.name").toLowerCase.contains("windows") then
       Seq("cmd", "/c", "npm") ++ arguments
-    else 
+    else
       Seq("npm") ++ arguments
 
   log.info(s"npm ${arguments.mkString(" ")}")
