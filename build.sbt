@@ -1,4 +1,5 @@
 import org.typelevel.scalacoptions.ScalacOptions
+import scala.sys.process.*
 
 // Released with the Scala 3 LTS version
 val scala3Version = "3.9.0"
@@ -39,7 +40,7 @@ lazy val scala3Settings =
 lazy val dixtra =
   project
     .in(file("."))
-    .aggregate(dixtraCore, dixtraCli, sbtDixtra)
+    .aggregate(dixtraCore, dixtraCli, sbtDixtra, dixtraVsCode)
     .settings(
       name                      := "dixtra",
       scalaVersion              := scala3Version,
@@ -54,7 +55,8 @@ lazy val dixtraCore =
     .in(file("dixtra-core"))
     .settings(scala3Settings)
     .settings(
-      name := "dixtra-core",
+      name    := "dixtra-core",
+      version := "1.0.0-RC1",
       libraryDependencies ++= List(
         "org.scalameta" %% "scalameta"                % "4.17.4",
         "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.20" % Test,
@@ -72,6 +74,7 @@ lazy val dixtraCli =
     .settings(scala3Settings)
     .settings(
       name                := "dixtra-cli",
+      version             := "1.0.0-RC1",
       buildInfoKeys       := Seq[BuildInfoKey](version),
       buildInfoPackage    := "com.colofabrix.scala.dixtra",
       wartremoverExcluded += (Compile / sourceManaged).value,
@@ -87,7 +90,9 @@ lazy val dixtraCli =
         "org.typelevel"         %% "cats-effect"                   % "3.7.0",
       ),
     )
-    .settings(NativeImage.settings("com.colofabrix.scala.dixtra.Main", "dixtra"))
+    .settings(
+      NativeImage.settings("com.colofabrix.scala.dixtra.Main", "dixtra"),
+    )
     .settings(
       // The runs traced for the native-image metadata: every option, and each kind of result, on a copy of the sources
       NativeImage.nativeImageRuns := {
@@ -127,17 +132,81 @@ lazy val sbtDixtra =
     .enablePlugins(SbtPlugin, BuildInfoPlugin)
     .settings(
       name                          := "sbt-dixtra",
+      version                       := "1.0.0-RC1",
       scalaVersion                  := sbtScalaVersion,
       semanticdbEnabled             := true,
       semanticdbVersion             := scalafixSemanticdb.revision,
       Compile / doc / scalacOptions := Seq("-project", name.value, "-project-version", version.value),
-      buildInfoKeys := Seq[BuildInfoKey](organization, version, "dixtraModule" -> (dixtraCli / moduleName).value),
       buildInfoPackage              := "com.colofabrix.scala.sbtdixtra",
-      scriptedLaunchOpts ++= Seq("-Xmx1024M", s"-Dplugin.version=${version.value}") ++
+      buildInfoKeys :=
+        Seq[BuildInfoKey](organization, version, "dixtraModule" -> (dixtraCli / moduleName).value),
+      scriptedLaunchOpts ++=
+        Seq("-Xmx1024M", s"-Dplugin.version=${version.value}") ++
         // The scripted builds do not inherit the options of the sbt launcher (`/etc/sbt/sbtopts`): they are given the
         // redirected homes of the caches again, when the launcher runs with them.
-        Seq("sbt.ivy.home", "sbt.boot.directory", "sbt.coursier.home", "sbt.global.base")
-          .flatMap(key => Option(System.getProperty(key)).map(value => s"-D$key=$value")),
+        Seq("sbt.ivy.home", "sbt.boot.directory", "sbt.coursier.home", "sbt.global.base").flatMap { key => 
+          Option(System.getProperty(key)).map(value => s"-D$key=$value")
+        },
       scriptedBufferLog    := false,
       scriptedDependencies := scriptedDependencies.dependsOn(dixtraCore / publishLocal, dixtraCli / publishLocal).value,
     )
+
+// The VS Code extension: it formats the document of the editor with dixtra on Format Document, and npm builds it in
+// this folder. `vscodePackage` installs the npm dependencies, compiles the extension and packages it into a `.vsix`,
+// again when its sources change.
+lazy val dixtraVsCode =
+  project
+    .in(file("dixtra-vscode"))
+    .settings(
+      name           := "dixtra-vscode",
+      scalaVersion   := scala3Version,
+      publish / skip := true,
+      vscodePackage := {
+        val folder = baseDirectory.value
+
+        // The version of the extension follows the version of the build: when it differs, the first `version` field of
+        // `package.json` (the first of the file, the top-level one) is rewritten with it, and committed with it.
+        val manifest = folder / "package.json"
+        val current  = IO.read(manifest)
+        val pattern  = """("version" *: *")[^"]+(")""".r
+        val synced   = pattern.replaceFirstIn(current, s"$$1${version.value}$$2")
+
+        if synced != current then 
+          IO.write(manifest, synced)
+
+        val sources = ((folder / "src") ** "*.ts").get() ++ Seq(folder / "package.json", folder / "tsconfig.json")
+        val cached =
+          FileFunction.cached(streams.value.cacheDirectory / "vscode-package", FilesInfo.hash) { _ =>
+            npmBuild(folder, streams.value.log, "install", "--no-fund", "--no-audit")
+            npmBuild(folder, streams.value.log, "run", "compile")
+            npmBuild(folder, streams.value.log, "run", "package")
+            (folder * "*.vsix").get().toSet
+          }
+          
+        val produced =
+          cached(sources.toSet)
+            .toList
+            .sortBy(_.lastModified)
+            .lastOption
+
+        produced.getOrElse(throw new MessageOnlyException("The build of the extension produced no .vsix"))
+      },
+    )
+
+// The build task of the VS Code extension in `dixtra-vscode/`
+@transient
+lazy val vscodePackage = 
+  taskKey[File]("Package the VS Code extension into a .vsix")
+
+def npmBuild(folder: File, log: Logger, arguments: String*): Unit =
+  val npm =
+    if sys.props("os.name").toLowerCase.contains("windows") then 
+      Seq("cmd", "/c", "npm") ++ arguments
+    else 
+      Seq("npm") ++ arguments
+
+  log.info(s"npm ${arguments.mkString(" ")}")
+
+  val exitCode = Process(npm, Some(folder)).!
+  if exitCode != 0 then
+    throw new MessageOnlyException(s"npm ${arguments.mkString(" ")} failed with exit code $exitCode")

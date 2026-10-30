@@ -1,0 +1,52 @@
+{
+  "name": "dixtra-vscode",
+  "displayName": "dixtra formatter",
+  "description": "Format Scala with dixtra, on Format Document",
+  "version": "1.0.0-RC1",
+  "publisher": "colofabrix",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ColOfAbRiX/dixtra"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onLanguage:scala"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "dixtra",
+      "properties": {
+        "dixtra.executablePath": {
+          "type": "string",
+          "default": "dixtra",
+          "description": "The dixtra executable to format with"
+        },
+        "dixtra.arguments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Extra arguments for dixtra (e.g. --max-column 100)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "package": "tsc -p ./ && vsce package"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.0.0",
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.75.0",
+    "typescript": "^5.4.0"
+  }
+}
