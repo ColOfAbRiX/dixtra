@@ -34,11 +34,10 @@ object Equivalence {
    */
   def isEquivalentPackage(original: Pkg, rendered: String): Boolean =
     parse[Source](rendered).exists { after =>
-      val solePackage  = after.stats.sizeIs == 1
       val samePackage  = after.stats.forall(equivalent(original, _))
       val sameComments = comments(original.pos.text) == comments(rendered)
 
-      solePackage && samePackage && sameComments
+      after.stats.sizeIs == 1 && samePackage && sameComments
     }
 
   /**
@@ -83,11 +82,10 @@ object Equivalence {
       case (x, y) if x.children.isEmpty && y.children.isEmpty =>
         sameLeaf(x, y)
       case (x, y) if x.children.nonEmpty && y.children.nonEmpty =>
-        val xs       = x.children.filterNot(_.is[Term.EndMarker])
-        val ys       = y.children.filterNot(_.is[Term.EndMarker])
-        val sameKind = x.productPrefix == y.productPrefix
-        val sameSize = xs.sizeCompare(ys) == 0
-        sameKind && sameSize && xs.lazyZip(ys).forall(equivalent)
+        val xs = x.children.filterNot(_.is[Term.EndMarker])
+        val ys = y.children.filterNot(_.is[Term.EndMarker])
+
+        x.productPrefix == y.productPrefix && xs.sizeCompare(ys) == 0 && xs.lazyZip(ys).forall(equivalent)
       case (x, y) =>
         canonical(x) == canonical(y)
     }
@@ -151,6 +149,10 @@ object Equivalence {
       .toList
       .map(line => line.trim.stripPrefix("*"))
       .flatMap(_.split("\\s+").toList)
-      .filter(word => word.nonEmpty && !word.forall(_ == '*'))
+      .filter { word =>
+        val allStars = word.forall(_ == '*')
+
+        word.nonEmpty && !allStars
+      }
 
 }

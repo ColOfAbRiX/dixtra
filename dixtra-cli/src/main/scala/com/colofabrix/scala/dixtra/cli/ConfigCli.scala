@@ -159,11 +159,13 @@ object ConfigCli {
               base               <- read(merged)
               overrides          <- entries.traverse((glob, written) => pathOverride(glob, written, settings))
             yield
+              val overrideWarnings = overrides.flatMap(_._2)
+
               LoadedConfig(
                 base,
                 settings.withoutPath(versionKey),
                 overrides.map(_._1),
-                unknown ++ overrides.flatMap(_._2),
+                unknown ++ overrideWarnings,
                 anchor,
               )
 
@@ -308,7 +310,7 @@ object ConfigCli {
     (semver(written), semver(configVersion)) match {
       case (None, _) =>
         Left(s"""$versionKey must be a version like "$configVersion", not "$written"""")
-      case (Some(version), Some(current)) if version._1 != current._1 =>
+      case (Some((writtenMajor, _, _)), Some((currentMajor, _, _))) if writtenMajor != currentMajor =>
         Left(s"$versionKey = $written is not read by this dixtra, which reads $configVersion")
       case (Some(version), Some(current)) if Ordering[(Int, Int, Int)].gt(version, current) =>
         Left(s"$versionKey = $written is for a later dixtra, this one reads up to $configVersion")

@@ -126,12 +126,13 @@ object Dixtra {
 
     // The blank lines between imports, and with `blank-lines.before-scaladoc = never` before scaladocs, are removed
     // before rendering, so the layout sees the result
-    val spaced  = ImportSpacingNormalizer.normalize(WhitespaceNormalizer.normalize(lf))
-    val cleaned = DocCommentSpacingNormalizer.glued(spaced, config.blankLines.beforeScaladoc)
+    val spaced    = ImportSpacingNormalizer.normalize(WhitespaceNormalizer.normalize(lf))
+    val cleaned   = DocCommentSpacingNormalizer.glued(spaced, config.blankLines.beforeScaladoc)
+    val unchanged = cleaned == lf
 
     for
       tree      <- parseOriginal(lf, dialect)
-      cleanTree <- if cleaned == lf then Right(tree) else parse(cleaned, dialect)
+      cleanTree <- if unchanged then Right(tree) else parse(cleaned, dialect)
       formatted <- render(cleaned, cleanTree, config, dialect)
       restored  <- FormatterOff
                      .restore(lf, Housekeeping(formatted, config.housekeeping), dialect)

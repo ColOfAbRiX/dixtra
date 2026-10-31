@@ -40,13 +40,14 @@ private[term] final class WhileRenderer(ctx: RenderContext, terms: TermRenderer)
         .tokensBetween(ctx.span(whileTerm.expr)._2, ctx.span(whileTerm.body)._1)
         .exists(_.is[Token.KwDo])
 
-    val braces           = ctx.usesBraces(Construct.While, !hasDo)
-    val bracesDiffer     = braces != hasDo
-    val policyAllows     = policy != SingleBodyPolicy.AlwaysBreak
-    val writtenOnOneLine = !whileTerm.pos.text.contains('\n')
-    val inlineFits       = ctx.fits(inline, indent)
+    val braces     = ctx.usesBraces(Construct.While, !hasDo)
+    val inlineFits = ctx.fits(inline, indent)
 
-    val asWritten = bracesDiffer && policyAllows && writtenOnOneLine && inlineFits
+    val asWritten =
+      braces != hasDo &&
+      policy != SingleBodyPolicy.AlwaysBreak &&
+      !whileTerm.pos.text.contains('\n') &&
+      inlineFits
     if asWritten || !Render.isFlat(cond) then
       inline
     else if braces then

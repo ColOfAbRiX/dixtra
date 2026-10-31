@@ -115,10 +115,10 @@ object BraceStyleNormalizer {
   private def continuations(text: Text, tree: Tree, style: BracesStyle, maxColumn: Int): List[Edit] =
     descendants(tree)
       .flatMap {
-        case term: Term.If        => List(term.thenp).filter(_.is[Term.Block])
-        case term: Term.Try      => List(term.expr).filter(_.is[Term.Block]) ++ tryTerm.catchClause.toList
+        case term: Term.If       => List(term.thenp).filter(_.is[Term.Block])
+        case term: Term.Try      => List(term.expr).filter(_.is[Term.Block]) ++ term.catchClause.toList
         case term: Term.ForYield => List(term.enumsBlock)
-        case _                      => Nil
+        case _                   => Nil
       }
       .flatMap { closed =>
         // A construct without braces can still end with a `}`, as the enumerators of a braceless `for` ending with a
@@ -211,22 +211,17 @@ object BraceStyleNormalizer {
             .contains('\n')
         }
 
-    val hasCodeBefore = !text.startsLine(open.start)
-    val closeAlone    = text.startsLine(close.start)
-
-    Option.when(endsLine && hasCodeBefore && closeAlone) {
+    Option.when(endsLine && !text.startsLine(open.start) && text.startsLine(close.start)) {
       Edit(prev.end, open.start, "\n" + " " * text.indentOf(close.start))
     }
 
   // 1TBS and Stroustrup: a `{` starting its line joins the line before it.
   private def joinedOpening(text: Text, prev: Token, open: Token, maxColumn: Int): Option[Edit] =
-    val width      = (prev.end - text.lineStart(prev.end)) + 1 + (text.lineEnd(open.start) - open.start)
-    val gap        = text.source.slice(prev.end, open.start)
-    val opensLine  = text.startsLine(open.start)
-    val blankGap   = gap.contains('\n') && gap.isBlank
-    val fitsColumn = width <= maxColumn
+    val width    = (prev.end - text.lineStart(prev.end)) + 1 + (text.lineEnd(open.start) - open.start)
+    val gap      = text.source.slice(prev.end, open.start)
+    val blankGap = gap.contains('\n') && gap.isBlank
 
-    Option.when(opensLine && blankGap && fitsColumn) {
+    Option.when(text.startsLine(open.start) && blankGap && width <= maxColumn) {
       Edit(prev.end, open.start, " ")
     }
 

@@ -40,10 +40,9 @@ object AtomicFiles {
   private def tempFileBeside(target: Path): Resource[IO, Path] =
     val directory = Option(target.getParent).getOrElse(target.toAbsolutePath.getRoot)
     val prefix    = s".${target.getFileName.toString}."
-    Resource.make(
-      IO.blocking(Files.createTempFile(directory, prefix, ".dixtra.tmp")))(
-      temp => IO.blocking(Files.deleteIfExists(temp)).void,
-    )
+    Resource.make(IO.blocking(Files.createTempFile(directory, prefix, ".dixtra.tmp"))) { temp =>
+      IO.blocking(Files.deleteIfExists(temp)).void
+    }
 
   private def copyPermissions(from: Path, to: Path): Unit =
     if Files.getFileStore(from).supportsFileAttributeView("posix") then

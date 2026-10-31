@@ -171,8 +171,8 @@ object CommentNormalizer {
     val oneLineFits = oneLine && text.lineWidth(comment.start) <= maxColumn
     val hasBanner   = contents.exists(isBanner)
     val untouched   = oneLineFits || hasBanner
-    val paras = docParas(parse(contents, withTags = true))
-    val width = maxColumn - col - 3
+    val paras       = docParas(parse(contents, withTags = true))
+    val width       = maxColumn - col - 3
 
     Option
       .when(!untouched)(render(paras, width, alignTags))
@@ -201,7 +201,7 @@ object CommentNormalizer {
         .map(_.trim)
         .toVector
 
-    val rest = 
+    val rest =
       lines
         .drop(1)
         .map(withoutGutter(_, col))
@@ -240,7 +240,7 @@ object CommentNormalizer {
           .reverse
           .dropWhile(_ == Blank)
           .reverse
-          
+
       val tags = trimmed.drop(firstTag)
 
       description ++ Vector(Blank) ++ tags

@@ -307,10 +307,9 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
     left :+ rhs(infix, arg, indent)
 
   private def sameRun(outer: Term.ApplyInfix, inner: Term.ApplyInfix): Boolean =
-    val sameOperator = inner.op.value == outer.op.value && !ctx.isParenthesized(inner)
-    val unbroken     = operation(inner).exists(arg => authorBreaks(inner, arg) == (false, false))
+    val unbroken = operation(inner).exists(arg => authorBreaks(inner, arg) == (false, false))
 
-    sameOperator && unbroken
+    inner.op.value == outer.op.value && !ctx.isParenthesized(inner) && unbroken
 
   // The parentheses of the argument clause around `arg` (as in `a + (b * c)`), which belong to the clause rather than
   // to the argument; None when the clause holds anything else around the argument.

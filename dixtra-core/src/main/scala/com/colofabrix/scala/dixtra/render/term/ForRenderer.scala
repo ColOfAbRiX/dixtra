@@ -254,8 +254,8 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
     enumeratorTree match {
       case e: Enumerator.Generator     => Some(e.rhs)
       case e: Enumerator.CaseGenerator => Some(e.rhs)
-      case e: Enumerator.Val         => Some(e.rhs)
-      case _                             => None
+      case e: Enumerator.Val           => Some(e.rhs)
+      case _                           => None
     }
 
   private def expression(enumeratorTree: Enumerator): Option[Term] =

@@ -157,8 +157,11 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
           (false, false)
       }
 
-    val objectMember = (path > 0 || capitalRoot) && selections.lift(path).exists(joinsHead(chain.objectMember, _))
-    val shortMember  = path == 0 && shortRoot && selections.headOption.exists(joinsHead(ChainHeadPolicy.Keep, _))
+    val joinsObject = selections.lift(path).exists(joinsHead(chain.objectMember, _))
+    val joinsShort  = selections.headOption.exists(joinsHead(ChainHeadPolicy.Keep, _))
+
+    val objectMember = (path > 0 || capitalRoot) && joinsObject
+    val shortMember  = path == 0 && shortRoot && joinsShort
 
     ChainHead(path, objectMember || shortMember, if shortMember && !objectMember then 1 else 0)
 
@@ -243,7 +246,6 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
     val tooLong         = selections.sizeIs >= 2 && (overflow || internalNewline)
     val overBudget      = selections.size + counted >= ctx.config.selectorChain.breakAtCount
     val alwaysBreak     = forceExplode || ctx.config.selectorChain.inlineChains == InlineChainPolicy.BreakAtCount
-
     authorBreak || tooLong || (asBody && overBudget && alwaysBreak)
 
   // The comments between a selection's qualifier and its dot: those on the qualifier's line trail the previous segment,

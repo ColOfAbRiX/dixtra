@@ -111,12 +111,11 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
   private def typeParam(tparam: Type.Param, indent: Int): Doc =
     val (start, end) = ctx.span(tparam)
     val inner        = tparam.tparamClause
-    val noInner      = inner.values.isEmpty
     val fitsOneLine  = ctx.fits(oneLine(tparam) ++ Doc.text(","), indent)
 
     if ctx.commentsBetween(start, end).nonEmpty then
       ctx.sourceDoc(tparam)
-    else if noInner || fitsOneLine then
+    else if inner.values.isEmpty || fitsOneLine then
       oneLine(tparam)
     else
       val comma = ctx.config.trailingCommas == TrailingCommas.Always

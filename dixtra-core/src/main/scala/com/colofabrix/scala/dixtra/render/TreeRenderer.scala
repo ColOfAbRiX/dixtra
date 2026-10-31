@@ -204,9 +204,9 @@ final class TreeRenderer(original: String, config: Config) {
     stat match {
       case defn: Defn.EnumCase => defn.inits.nonEmpty
       case defn: Defn.Class    => defn.templ.inits.nonEmpty && defn.templ.body.stats.isEmpty
-      case defn: Defn.Object  => defn.templ.inits.nonEmpty && defn.templ.body.stats.isEmpty
+      case defn: Defn.Object   => defn.templ.inits.nonEmpty && defn.templ.body.stats.isEmpty
       case defn: Defn.Trait    => defn.templ.inits.nonEmpty && defn.templ.body.stats.isEmpty
-      case _                       => false
+      case _                   => false
     }
 
   // The offset of the `extends` keyword in a one-line rendered definition.

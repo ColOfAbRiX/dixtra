@@ -43,14 +43,14 @@ final case class LoadedConfig(
    * relative to the anchor. Two matching overrides that give a setting different values fail the file.
    */
   def configFor(file: Path): ValidatedNel[String, Config] =
-    val matching = 
-      relative(file).fold(List.empty[PathOverride]) { path => 
+    val matching =
+      relative(file).fold(List.empty[PathOverride]) { path =>
         overrides.filter(_.pattern.matches(path))
       }
-      
-    if matching.isEmpty then 
+
+    if matching.isEmpty then
       Validated.valid(base)
-    else 
+    else
       combined.getOrElseUpdate(matching.map(_.glob), ConfigCli.overridden(settings, matching))
 
   // The path of `file` relative to the anchor, with `/` between directories, when `file` is inside it.

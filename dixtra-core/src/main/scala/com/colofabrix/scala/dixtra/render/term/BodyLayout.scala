@@ -136,10 +136,12 @@ private[render] object BodyLayout {
    */
   def groupBelow(policy: MultiBodyPolicy, members: List[Member]): Boolean =
     val cannotJoin = members.exists(!_.fitsOnLine)
+    val allBelow   = members.nonEmpty && members.forall(_.writtenBelow)
+
     policy match {
       case MultiBodyPolicy.AlwaysBreak => true
       case MultiBodyPolicy.AlwaysJoin  => cannotJoin
-      case MultiBodyPolicy.JoinMixed   => cannotJoin || (members.nonEmpty && members.forall(_.writtenBelow))
+      case MultiBodyPolicy.JoinMixed   => cannotJoin || allBelow
       case MultiBodyPolicy.BreakMixed  => cannotJoin || members.exists(_.writtenBelow)
     }
 
@@ -262,7 +264,7 @@ private[render] object BodyLayout {
      val writtenBraced    = ctx.writtenWithBraces(block)
 
      statements && notParenthesised && ctx.usesBraces(construct, writtenBraced)
-
+     
   /**
    * The end offset of a lambda's `=>`, or the start of its body if not found.
    */

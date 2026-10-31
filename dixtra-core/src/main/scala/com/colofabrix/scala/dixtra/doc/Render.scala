@@ -51,10 +51,10 @@ object Render {
         flatWidth(inner)
       case Doc.Concat(l, r) =>
         for
-          lw <- flatWidth(l)
-          rw <- flatWidth(r)
+          leftWidth  <- flatWidth(l)
+          rightWidth <- flatWidth(r)
         yield
-          lw + rw
+          leftWidth + rightWidth
       case Doc.Verbatim(value, _, _) =>
         if value.contains('\n') then None else Some(value.length)
     }

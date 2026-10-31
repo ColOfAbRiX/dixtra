@@ -253,8 +253,7 @@ object MethodSpacingNormalizer {
   // A definition line with a `=` body that ends on the same line, or a declaration without a body: it does not open a
   // body, and the next line is not a continuation indented under it.
   private def oneLiner(layout: LineLayout, i: Int): Boolean =
-    val line        = layout.lines(i)
-    val notAnOpener = !LineLayout.isOpener(line)
+    val line = layout.lines(i)
 
     val noContinuation =
       layout
@@ -266,7 +265,7 @@ object MethodSpacingNormalizer {
           !layout.insideToken(i + 1) && notIndentedUnder
         }
 
-    notAnOpener && noContinuation
+    !LineLayout.isOpener(line) && noContinuation
 
   // First line of the decoration group (annotations and comments) directly above the method starting on line `i`, or
   // `i` itself when undecorated.
