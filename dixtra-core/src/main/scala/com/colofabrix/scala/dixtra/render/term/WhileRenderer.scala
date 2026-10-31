@@ -28,13 +28,13 @@ private[term] final class WhileRenderer(ctx: RenderContext, terms: TermRenderer)
   def render(whileTerm: Term.While, indent: Int): Doc =
     val inline = ctx.ownSourceDoc(whileTerm)
     val cond   = ctx.ownSourceDoc(whileTerm.expr)
-    
+
     val policy =
       ctx
         .config
         .body
         .whileBody
-    
+
     val hasDo =
       ctx
         .tokensBetween(ctx.span(whileTerm.expr)._2, ctx.span(whileTerm.body)._1)
@@ -54,7 +54,7 @@ private[term] final class WhileRenderer(ctx: RenderContext, terms: TermRenderer)
       val onLine = Doc.text("while (") ++ cond ++ Doc.text(") ") ++ body
       val below  = BodyLayout.writtenBelow(ctx, ctx.span(whileTerm.expr)._2, whileTerm.body)
       val member = BodyLayout.Member(below, ctx.fits(onLine, indent), BodyLayout.isSimple(ctx, whileTerm.body))
-      
+
       if BodyLayout.singleBelow(policy, member) then
         val opening = Doc.text("while (") ++ cond ++ Doc.text(") ")
         opening ++ Doc.braced(terms.bracedBody(whileTerm.body, indent + 2, Construct.While))

@@ -48,19 +48,19 @@ object FormatterOff {
     tokens(source, dialect).map { all =>
       val markers =
         all
-          .collect { case c: Token.Comment => c }
-          .flatMap { c =>
-            c.text.trim match {
-              case Marker(state) => Some((state.toLowerCase == "off", c))
+          .collect { case comment: Token.Comment => comment }
+          .flatMap { comment =>
+            comment.text.trim match {
+              case Marker(state) => Some((state.toLowerCase == "off", comment))
               case _             => None
             }
           }
 
       val (closed, open) =
         markers.foldLeft((List.empty[(Int, Int)], Option.empty[Int])) {
-          case ((acc, None), (true, c))         => (acc, Some(c.end))
-          case ((acc, Some(start)), (false, c)) => (acc :+ (start -> c.start), None)
-          case (state, _)                       => state
+          case ((acc, None), (true, comment))         => (acc, Some(comment.end))
+          case ((acc, Some(start)), (false, comment)) => (acc :+ (start -> comment.start), None)
+          case (state, _)                             => state
         }
 
       closed ++ open.map(_ -> source.length)

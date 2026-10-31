@@ -46,7 +46,7 @@ object WhitespaceNormalizer {
               (acc.append(token.text), false, false)
           }
       }
-      
+
     sb.toString
 
 }

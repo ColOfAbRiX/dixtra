@@ -81,10 +81,10 @@ private[term] final class BlockRenderer(
       .map { case (((stat, marker), definition), assignment) =>
         val doc =
           (stat, definition, assignment) match {
-            case (_: Term, _, Some(a)) => a
-            case (t: Term, _, None)    => terms.render(t, indent, forceExplode = false)
-            case (_, Some(d), _)       => d
-            case (other, None, _)      => ctx.sourceDoc(other)
+            case (_: Term, _, Some(assignment)) => assignment
+            case (term: Term, _, None)          => terms.render(term, indent, forceExplode = false)
+            case (_, Some(definition), _)       => definition
+            case (other, None, _)               => ctx.sourceDoc(other)
           }
         EndMarkers
           .marker(ctx, stat, marker, Render.render(doc, indent))

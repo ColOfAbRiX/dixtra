@@ -40,13 +40,13 @@ final class DefRenderer(
    * Render a `def` with its signature padded to `padTo` columns when given and its body below the `=` when `below`, or
    * None to keep unsupported clause shapes as written.
    */
-  def render(d: Defn.Def, baseIndent: Int, padTo: Option[Int], below: Boolean): Option[Doc] =
-    d.paramClauseGroups match {
+  def render(defn: Defn.Def, baseIndent: Int, padTo: Option[Int], below: Boolean): Option[Doc] =
+    defn.paramClauseGroups match {
       case group :: Nil =>
-        val signature = parts(d.pos.start, d.name, group, d.decltpe)
-        renderWithClauses(signature, d.body, Construct.Def, ctx.config.body.defBody, baseIndent, padTo, below)
+        val signature = parts(defn.pos.start, defn.name, group, defn.decltpe)
+        renderWithClauses(signature, defn.body, Construct.Def, ctx.config.body.defBody, baseIndent, padTo, below)
       case Nil =>
-        assignments.render(d, d.body, baseIndent, padTo, below)
+        assignments.render(defn, defn.body, baseIndent, padTo, below)
       case _ =>
         None
     }
@@ -56,11 +56,22 @@ final class DefRenderer(
    * anonymous one, one with several clause groups, or one in the syntax of Scala 3.6 (`given a: [A] => B = ...`),
    * whose parameters do not follow its name.
    */
-  def renderGiven(g: Defn.GivenAlias, baseIndent: Int, below: Boolean): Option[Doc] =
-    g.paramClauseGroups match {
-      case group :: Nil if g.name.value.nonEmpty && ctx.slice(g.name.pos.end, group.pos.start).isBlank =>
-        val signature = parts(g.pos.start, g.name, group, Some(g.decltpe))
-        renderWithClauses(signature, g.body, Construct.GivenAlias, ctx.config.body.givenAlias, baseIndent, None, below)
+  def renderGiven(givenAlias: Defn.GivenAlias, baseIndent: Int, below: Boolean): Option[Doc] =
+    def blankBefore(group: Tree): Boolean =
+      ctx.slice(givenAlias.name.pos.end, group.pos.start).isBlank
+
+    givenAlias.paramClauseGroups match {
+      case group :: Nil if givenAlias.name.value.nonEmpty && blankBefore(group) =>
+        val signature = parts(givenAlias.pos.start, givenAlias.name, group, Some(givenAlias.decltpe))
+        renderWithClauses(
+          signature,
+          givenAlias.body,
+          Construct.GivenAlias,
+          ctx.config.body.givenAlias,
+          baseIndent,
+          None,
+          below,
+        )
       case _ =>
         None
     }
@@ -69,13 +80,13 @@ final class DefRenderer(
    * Render an abstract `def`: its signature, breaking as the signature of a `def` does. None to keep it as written: a
    * parameterless one, one with several clause groups, or one holding comments that cannot be re-attached.
    */
-  def renderDecl(d: Decl.Def, baseIndent: Int): Option[Doc] =
-    d.paramClauseGroups match {
+  def renderDecl(defn: Decl.Def, baseIndent: Int): Option[Doc] =
+    defn.paramClauseGroups match {
       case group :: Nil =>
-        val signature = parts(d.pos.start, d.name, group, Some(d.decltpe))
-        if signatures.hasUnattachableComments(signature, d.pos.end) then 
+        val signature = parts(defn.pos.start, defn.name, group, Some(defn.decltpe))
+        if signatures.hasUnattachableComments(signature, defn.pos.end) then
           None
-        else 
+        else
           signatures.render(signature, baseIndent, Doc.Empty).map(_.doc)
       case _ =>
         None
@@ -84,10 +95,10 @@ final class DefRenderer(
   /**
    * The width of the signature before the `=`, when it is on one line.
    */
-  def headerWidth(d: Defn.Def): Option[Int] =
-    d.paramClauseGroups match {
-      case group :: Nil => signatures.inlineWidth(parts(d.pos.start, d.name, group, d.decltpe))
-      case Nil          => assignments.headerWidth(d, d.body)
+  def headerWidth(defn: Defn.Def): Option[Int] =
+    defn.paramClauseGroups match {
+      case group :: Nil => signatures.inlineWidth(parts(defn.pos.start, defn.name, group, defn.decltpe))
+      case Nil          => assignments.headerWidth(defn, defn.body)
       case _            => None
     }
 
@@ -116,20 +127,20 @@ final class DefRenderer(
 
         signatures
           .render(signature, baseIndent, lineRest)
-          .map { signature =>
-            val lead   = signature.doc ++ pad ++ Doc.text(" =")
-            val column = signature.lastLineWidth + Render.flatWidth(pad).getOrElse(0) + 3
+          .map { laidOut =>
+            val lead   = laidOut.doc ++ pad ++ Doc.text(" =")
+            val column = laidOut.lastLineWidth + Render.flatWidth(pad).getOrElse(0) + 3
 
             // Only a one-line signature takes the body up onto its line
             val placement =
-              if policy == SingleBodyPolicy.AlwaysJoin && !Render.isFlat(signature.doc) then
+              if policy == SingleBodyPolicy.AlwaysJoin && !Render.isFlat(laidOut.doc) then
                 SingleBodyPolicy.Keep
               else
                 policy
 
-            if down then 
-              body.belowSeparator(lead) 
-            else 
+            if down then
+              body.belowSeparator(lead)
+            else
               body.placed(lead, ctx.fits(_, column), placement)
           }
 

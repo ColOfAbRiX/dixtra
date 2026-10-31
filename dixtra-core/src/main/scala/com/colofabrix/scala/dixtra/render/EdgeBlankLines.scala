@@ -19,12 +19,13 @@ private[render] object EdgeBlankLines {
    * otherwise, by the policy of `construct`.
    */
   def apply(rendered: String, openIdx: Int, construct: Construct, ctx: RenderContext): String =
-    val policy = ctx.config.blankLines(construct)
     val doc =
       ctx
         .config
         .blankLines
         .beforeScaladoc
+
+    val policy = ctx.config.blankLines(construct)
     if rendered.split("\n", -1).lift(openIdx).exists(_.stripTrailing.endsWith("{")) then
       braced(rendered, openIdx, policy, doc)
     else
@@ -46,11 +47,11 @@ private[render] object EdgeBlankLines {
     else
       val written =
         body.headOption.exists(_.isBlank) || body.lastOption.exists(_.isBlank) || opensWithDoc(content, beforeScaladoc)
-      
-      val edge = 
-        if wanted(policy, written) then 
-          Vector("") 
-        else 
+
+      val edge =
+        if wanted(policy, written) then
+          Vector("")
+        else
           Vector.empty
 
       (lines.take(openIdx + 1) ++ edge ++ content ++ edge :+ lines(closeIdx)).mkString("\n")
@@ -92,7 +93,7 @@ private[render] object EdgeBlankLines {
     lines
       .headOption
       .map(_.trim)
-      .exists { first => 
+      .exists { first =>
         SourceEdits.isScaladoc(first) && beforeScaladoc.wantsBlank(first)
       }
 

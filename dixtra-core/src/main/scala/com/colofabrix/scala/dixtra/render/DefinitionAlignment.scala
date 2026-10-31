@@ -43,12 +43,18 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
         case _                         => false
       }
 
-    val sameGroup = 
+    val sameGroup =
       (a: Stat, b: Stat) => kindOf(a).zip(kindOf(b)).exists(alignment.sameGroup)
-    
+
+    def isEligible(stat: Stat): Boolean =
+      val alignedKind = kindOf(stat).exists(alignment.groupOf(_).isDefined)
+      val sized       = lineWidth(stat).isDefined
+
+      alignedKind && sized && !documented(stat)
+
     val targets =
       Alignment.groupedTargets(ctx, stats, sameGroup)(
-        eligible = s => kindOf(s).exists(alignment.groupOf(_).isDefined) && lineWidth(s).isDefined && !documented(s),
+        eligible = isEligible,
         width = headerWidth,
         fitsAt = fitsAt,
       )
@@ -66,9 +72,17 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
           // move up again
           val grouped =
             before.exists { (prev, target) =>
-              target.isDefined && ctx.slice(prev.pos.end, stat.pos.start).count(_ == '\n') == 1
+              val oneLineApart = ctx.slice(prev.pos.end, stat.pos.start).count(_ == '\n') == 1
+
+              target.isDefined && oneLineApart
             }
-          unpadded.get(stat.pos.start).flatten.map(doc => if grouped then Doc.Line ++ doc else doc)
+
+          unpadded
+            .get(stat.pos.start)
+            .flatten
+            .map { doc =>
+              if grouped then Doc.Line ++ doc else doc
+            }
         case ((stat, Some(Alignment.Placement.Broken)), _) =>
           definitionDoc(stat, indentOf(stat), None, true)
         case ((stat, None), _) =>
@@ -98,43 +112,54 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
   // or None when it has no rule.
   private def definitionDoc(stat: Stat, indent: Int, padTo: Option[Int], below: Boolean): Option[Doc] =
     (stat, assignmentBody(stat)) match {
-      case (_, Some(body))         => assignments.render(stat, body, indent, padTo, below)
-      case (d: Defn.Def, _)        => defs.render(d, indent, padTo, below)
-      case (g: Defn.GivenAlias, _) => defs.renderGiven(g, indent, below)
-      case (d: Decl.Def, _)        => defs.renderDecl(d, indent)
-      case (t: Defn.Type, _)       => typeAlias(t, padTo, below)
-      case _                       => None
+      case (_, Some(body))                  => assignments.render(stat, body, indent, padTo, below)
+      case (defn: Defn.Def, _)              => defs.render(defn, indent, padTo, below)
+      case (givenAlias: Defn.GivenAlias, _) => defs.renderGiven(givenAlias, indent, below)
+      case (decl: Decl.Def, _)              => defs.renderDecl(decl, indent)
+      case (alias: Defn.Type, _)            => typeAlias(alias, padTo, below)
+      case _                                => None
     }
 
   // The width of a definition's text before its `=` on one line.
   private def headerWidth(stat: Stat): Option[Int] =
     (stat, assignmentBody(stat)) match {
-      case (_, Some(body))   => assignments.headerWidth(stat, body)
-      case (d: Defn.Def, _)  => defs.headerWidth(d)
-      case (t: Defn.Type, _) => typeAliasName(t).flatMap(Render.flatWidth)
-      case _                 => None
+      case (_, Some(body))       => assignments.headerWidth(stat, body)
+      case (defn: Defn.Def, _)   => defs.headerWidth(defn)
+      case (alias: Defn.Type, _) => typeAliasName(alias).flatMap(Render.flatWidth)
+      case _                     => None
     }
 
   // The alignment keyword of a definition, if it can align its `=`.
   private def kindOf(stat: Stat): Option[DefinitionKind] =
     stat match {
-      case v: Defn.Val if v.mods.exists(_.is[Mod.Lazy])      => Some(DefinitionKind.LazyVal)
-      case _: Defn.Val                                       => Some(DefinitionKind.Val)
-      case _: Defn.Var                                       => Some(DefinitionKind.Var)
-      case _: Defn.Def                                       => Some(DefinitionKind.Def)
-      case g: Defn.GivenAlias if g.paramClauseGroups.isEmpty => Some(DefinitionKind.GivenAlias)
-      case _: Defn.Type                                      => Some(DefinitionKind.Type)
-      case _                                                 => None
+      case valDef: Defn.Val if valDef.mods.exists(_.is[Mod.Lazy]) =>
+        Some(DefinitionKind.LazyVal)
+      case _: Defn.Val =>
+        Some(DefinitionKind.Val)
+      case _: Defn.Var =>
+        Some(DefinitionKind.Var)
+      case _: Defn.Def =>
+        Some(DefinitionKind.Def)
+      case givenAlias: Defn.GivenAlias if givenAlias.paramClauseGroups.isEmpty =>
+        Some(DefinitionKind.GivenAlias)
+      case _: Defn.Type =>
+        Some(DefinitionKind.Type)
+      case _ =>
+        None
     }
 
   // The body after `=` of a definition rendered as an assignment: a `val`, a `var`, or a `given` alias without
   // parameters.
   private def assignmentBody(stat: Stat): Option[Term] =
     stat match {
-      case v: Defn.Val                                       => Some(v.rhs)
-      case v: Defn.Var                                       => Some(v.body)
-      case g: Defn.GivenAlias if g.paramClauseGroups.isEmpty => Some(g.body)
-      case _                                                 => None
+      case valDef: Defn.Val =>
+        Some(valDef.rhs)
+      case varDef: Defn.Var =>
+        Some(varDef.body)
+      case givenAlias: Defn.GivenAlias if givenAlias.paramClauseGroups.isEmpty =>
+        Some(givenAlias.body)
+      case _ =>
+        None
     }
 
   // A one-line type alias, its `=` padded to `padTo` when aligned and its body
@@ -146,8 +171,10 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
       typeAliasName(t).map { name =>
         val body = ctx.trimmedSourceDoc(t.body.pos.start, t.pos.end)
         val lead = name ++ Alignment.padding(padTo, Render.flatWidth(name)) ++ Doc.text(" =")
-        if below || ctx.config.body.typeBody == SingleBodyPolicy.AlwaysBreak then lead ++ Doc.Nest(2, Doc.Line ++ body)
-        else lead ++ Doc.text(" ") ++ body
+        if below || ctx.config.body.typeBody == SingleBodyPolicy.AlwaysBreak then
+          lead ++ Doc.Nest(2, Doc.Line ++ body)
+        else
+          lead ++ Doc.text(" ") ++ body
       }
 
   // The text of a type alias before its `=`.

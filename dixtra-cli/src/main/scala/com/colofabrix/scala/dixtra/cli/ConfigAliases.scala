@@ -86,7 +86,9 @@ object ConfigAliases {
         .split('.')
         .dropRight(1)
         .mkString(".")
-    if parent.isEmpty || !Try(removed.getObject(parent).isEmpty).getOrElse(false) then removed
+    val parentKeepsSettings = Try(removed.getObject(parent).isEmpty).getOrElse(false)
+
+    if parent.isEmpty || !parentKeepsSettings then removed
     else without(removed, parent)
 
   // Whether the user wrote a setting at `path`, null included.

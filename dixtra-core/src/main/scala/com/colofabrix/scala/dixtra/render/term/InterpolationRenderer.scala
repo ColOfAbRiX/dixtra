@@ -21,7 +21,7 @@ private[term] final class InterpolationRenderer(ctx: RenderContext, terms: TermR
    */
   def render(interpolate: Term.Interpolate): Doc =
     val parts = interpolate.parts
-    
+
     val splices =
       interpolate
         .args
@@ -29,9 +29,9 @@ private[term] final class InterpolationRenderer(ctx: RenderContext, terms: TermR
         .map { case (arg, (before, after)) =>
           spliceText(arg).getOrElse(ctx.slice(before.pos.end, after.pos.start))
         }
-        
+
     val lastPart = parts.length - 1
-    
+
     val texts =
       parts
         .zipWithIndex
@@ -40,13 +40,18 @@ private[term] final class InterpolationRenderer(ctx: RenderContext, terms: TermR
           val end   = if i == lastPart then interpolate.pos.end else part.pos.end
           ctx.slice(start, end)
         }
-        
-    val text      = texts.headOption.getOrElse("") + splices.zip(texts.drop(1)).map { case (sp, t) => sp + t }.mkString
+
+    val spliced =
+      splices
+        .zip(texts.drop(1))
+        .map { case (splice, textPart) => splice + textPart }
+        .mkString
+    val text      = texts.headOption.getOrElse("") + spliced
     val lineCount = text.count(_ == '\n')
-    
-    if lineCount == 0 then 
+
+    if lineCount == 0 then
       Doc.Text(text)
-    else 
+    else
       Doc.Verbatim(text, sourceIndent = 0, frozenLines = (1 to lineCount).toSet)
 
   // The inline `${expr}` form of a braced single-expression splice, if it fits on one line and carries no comments.

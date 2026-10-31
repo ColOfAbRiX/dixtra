@@ -60,8 +60,11 @@ object ImportSpacingNormalizer {
   // The index of the last token of the import starting at token `start`.
   private def statementEnd(tokens: Vector[Token], start: Int): Int =
     // A whitespace with a newline, outside any braces and not right after a comma: the statement ended before it.
-    def endsStatement(t: Token, depth: Int, last: Int): Boolean =
-      isSpace(t) && t.text.contains('\n') && depth == 0 && !tokens(last).is[Token.Comma]
+    def endsStatement(token: Token, depth: Int, last: Int): Boolean =
+      val outsideBraces = depth == 0
+      val afterComma    = tokens(last).is[Token.Comma]
+
+      isSpace(token) && token.text.contains('\n') && outsideBraces && !afterComma
 
     @annotation.tailrec
     def loop(i: Int, depth: Int, last: Int): Int =

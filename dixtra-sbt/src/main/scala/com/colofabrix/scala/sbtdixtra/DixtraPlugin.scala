@@ -185,7 +185,10 @@ object DixtraPlugin extends AutoPlugin {
       Option(dir.listFiles())
         .toSeq
         .flatten
-        .filter(f => f.isFile && extensions.exists(f.getName.endsWith))
+        .filter { file =>
+          val hasKnownExtension = extensions.exists(file.getName.endsWith)
+          file.isFile && hasKnownExtension
+        }
         .sortBy(_.getName)
 
     files(base, Set(".sbt")) ++ files(base / "project", Set(".sbt", ".scala"))

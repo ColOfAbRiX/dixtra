@@ -127,17 +127,22 @@ object FormatRunner {
    * @param maxColumn The maximum width given on the command line, over the one of every configuration.
    * @param check When true, run in verification mode and never write to disk.
    */
+  // FIXME: Move the complext argument initalization outside the new FormatRunner()
   def apply(loaded: LoadedConfig, maxColumn: Option[Int], check: Boolean): FormatRunner =
     new FormatRunner(
       check,
-      path =>
+      { path =>
         loaded
           .configFor(path)
           .toEither
           .bimap(
             _.toList.mkString("; "),
-            config => dixtra(maxColumn.fold(config)(n => config.copy(maxColumn = n)), path),
-          ),
+            config => {
+              val effective = maxColumn.fold(config)(column => config.copy(maxColumn = column))
+              dixtra(effective, path)
+            },
+          )
+      },
       loaded.base.paths,
     )
 

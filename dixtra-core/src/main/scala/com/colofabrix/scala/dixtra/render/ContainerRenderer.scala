@@ -43,10 +43,9 @@ final class ContainerRenderer(
         case Some(header) if header.text != ctx.slice(container.pos.start, header.end) =>
           val members  = renderRegion(header.end, container.pos.end, stats)
           val rendered = withPadding(header.text + members, container, templ, brace, Some(header))
-          
-          if Equivalence.isEquivalentStat(container, rendered) then 
+          if Equivalence.isEquivalentStat(container, rendered) then
             (rendered, Some(header))
-          else 
+          else
             (plain(container, templ, brace), None)
         case _ =>
           (plain(container, templ, brace), None)
@@ -107,15 +106,22 @@ final class ContainerRenderer(
         .filterNot(_.is[Token.Whitespace])
         .lastOption
 
+    def noCommentsBetween(from: Int, to: Int): Boolean =
+      ctx.commentsBetween(from, to).isEmpty
+
     opener.collect {
-      case colon: Token.Colon if !isGiven && ctx.commentsBetween(colon.end, first.pos.start).isEmpty =>
-        val at   = offset(colon.start)
-        val head = rendered.take(at).stripTrailing + " {"
-        edgeBlanks(container, head + rendered.drop(at + 1) + "\n" + closing(container), head.count(_ == '\n'))
-      case kw: Token.KwWith if isGiven && ctx.commentsBetween(kw.end, first.pos.start).isEmpty =>
-        val at   = offset(kw.end)
-        val head = rendered.take(at) + " {"
-        edgeBlanks(container, head + rendered.drop(at) + "\n" + closing(container), head.count(_ == '\n'))
+      case colon: Token.Colon if !isGiven && noCommentsBetween(colon.end, first.pos.start) =>
+        val at     = offset(colon.start)
+        val head   = rendered.take(at).stripTrailing + " {"
+        val body   = rendered.drop(at + 1) + "\n" + closing(container)
+        val openIx = head.count(_ == '\n')
+        edgeBlanks(container, head + body, openIx)
+      case kw: Token.KwWith if isGiven && noCommentsBetween(kw.end, first.pos.start) =>
+        val at     = offset(kw.end)
+        val head   = rendered.take(at) + " {"
+        val body   = rendered.drop(at) + "\n" + closing(container)
+        val openIx = head.count(_ == '\n')
+        edgeBlanks(container, head + body, openIx)
     }
 
   // A braced body made braceless, when `{` ends the header line and `}` stands on its own line.
@@ -133,13 +139,14 @@ final class ContainerRenderer(
         .drop(at + 1)
         .split("\n", -1)
         .toList
+
     val opensLine  = lines.headOption.exists(_.isBlank) && ctx.commentsBetween(open.end, first.pos.start).isEmpty
     val closesLine = lines.lastOption.exists(_.trim == "}")
-    
-    val keyword    = 
-      if container.is[Defn.Given] then 
-        Option.when(before.endsWith("with"))("") 
-      else 
+
+    val keyword =
+      if container.is[Defn.Given] then
+        Option.when(before.endsWith("with"))("")
+      else
         Some(":")
 
     keyword
@@ -160,9 +167,12 @@ final class ContainerRenderer(
   private def constructorHeader(container: Tree, templ: Template, brace: Option[Token]): Option[Header] =
     val parts =
       container match {
-        case c: Defn.Class if c.ctor.mods.isEmpty => Some(constructorParts(c, c.name, c.tparamClause, c.ctor))
-        case t: Defn.Trait if t.ctor.mods.isEmpty => Some(constructorParts(t, t.name, t.tparamClause, t.ctor))
-        case _                                    => None
+        case cls: Defn.Class if cls.ctor.mods.isEmpty =>
+          Some(constructorParts(cls, cls.name, cls.tparamClause, cls.ctor))
+        case traitDef: Defn.Trait if traitDef.ctor.mods.isEmpty =>
+          Some(constructorParts(traitDef, traitDef.name, traitDef.tparamClause, traitDef.ctor))
+        case _ =>
+          None
       }
 
     val restEnd = brace.map(_.end).getOrElse(templ.body.stats.headOption.map(_.pos.start).getOrElse(container.pos.end))
@@ -184,7 +194,9 @@ final class ContainerRenderer(
               .takeWhile(_ != '\n')
               .stripTrailing
 
-          signatures.render(p, indent, Doc.text(rest)).map(s => Header(Render.render(s.doc, indent), headerEnd))
+          signatures
+            .render(p, indent, Doc.text(rest))
+            .map(s => Header(Render.render(s.doc, indent), headerEnd))
         }
     }
 
@@ -232,17 +244,19 @@ final class ContainerRenderer(
       }
 
     val derives =
-      if templ.derives.isEmpty then 
+      if templ.derives.isEmpty then
         Nil
-      else 
+      else
         List("derives " + templ.derives.map(d => ctx.slice(d.pos.start, d.pos.end)).mkString(", "))
+
+    val noBreaks = !(texts ++ derives).exists(_.contains('\n'))
 
     for
       start <- keyword
       stop  <- end
                if templ.earlyClause.isEmpty
                if ctx.commentsBetween(start, stop).isEmpty
-               if !(texts ++ derives).exists(_.contains('\n'))
+               if noBreaks
     yield
       ExtendsList(inits ++ derives, start, stop)
 
@@ -299,7 +313,7 @@ final class ContainerRenderer(
           fits(indent + 2 + item.length + (if i == ext.items.length - 1 then tail.length else 0))
         }
 
-    val singleLine = 
+    val singleLine =
       (doc: Doc) => !Render.render(doc, indent).contains('\n')
 
     def allOnOneLine =
@@ -352,11 +366,13 @@ final class ContainerRenderer(
   ): SignatureParts =
     val clauses = ctor.paramClauses.toList
     val isCase  = Constructs.of(container).contains(Construct.CaseClass)
+
     val written =
       (clauses.headOption, clauses.lastOption) match {
         case (Some(first), Some(last)) => ctx.slice(first.pos.start, last.pos.end).contains('\n')
         case _                         => false
       }
+
     SignatureParts(
       prefixStart = container.pos.start,
       nameEnd = name.pos.end,
@@ -386,22 +402,31 @@ final class ContainerRenderer(
       templ
         .body
         .selfOpt
-        .flatMap(
-          self => ctx.tokensBetween(self.pos.start, container.pos.end).collectFirst { case t: Token.RightArrow => t },
-        )
-        
+        .flatMap { self =>
+          ctx.tokensBetween(self.pos.start, container.pos.end).collectFirst { case t: Token.RightArrow => t }
+        }
+
     brace match {
       case Some(open) =>
         edgeBlanks(container, rendered, linesBefore(selfArrow.getOrElse(open).start))
       case None =>
+        def opensBody(opener: Token): Boolean =
+          opener.is[Token.Colon] || opener.is[Token.KwWith]
+
+        def lineEndsWithOpener(at: Int): Boolean =
+          rendered
+            .split("\n", -1)
+            .lift(at)
+            .exists(line => line.endsWith(":") || line.endsWith("with"))
+
         templ
           .body
           .stats
           .headOption
           .flatMap(first => ctx.previousSignificant(first.pos.start))
-          .filter(opener => opener.is[Token.Colon] || opener.is[Token.KwWith])
+          .filter(opensBody)
           .map(opener => linesBefore(opener.start))
-          .filter(at => rendered.split("\n", -1).lift(at).exists(l => l.endsWith(":") || l.endsWith("with")))
+          .filter(lineEndsWithOpener)
           .map(leadingBlanks(container, rendered, _))
           .getOrElse(rendered)
     }
@@ -435,15 +460,14 @@ final class ContainerRenderer(
   private def edgeBlanks(container: Tree, rendered: String, openIdx: Int): String =
     Constructs
       .of(container)
-      .map(
-        construct =>
-          EdgeBlankLines.braced(
-            rendered,
-            openIdx,
-            ctx.config.blankLines(construct),
-            ctx.config.blankLines.beforeScaladoc,
-          ),
-      )
+      .map { construct =>
+        EdgeBlankLines.braced(
+          rendered,
+          openIdx,
+          ctx.config.blankLines(construct),
+          ctx.config.blankLines.beforeScaladoc,
+        )
+      }
       .getOrElse(rendered)
 
   // The blank line at the top of a braceless container body, opened by the end of line `openIdx` of `rendered`, by the
@@ -451,15 +475,14 @@ final class ContainerRenderer(
   private def leadingBlanks(container: Tree, rendered: String, openIdx: Int): String =
     Constructs
       .of(container)
-      .map(
-        construct =>
-          EdgeBlankLines.leading(
-            rendered,
-            openIdx,
-            ctx.config.blankLines(construct),
-            ctx.config.blankLines.beforeScaladoc,
-          ),
-      )
+      .map { construct =>
+        EdgeBlankLines.leading(
+          rendered,
+          openIdx,
+          ctx.config.blankLines(construct),
+          ctx.config.blankLines.beforeScaladoc,
+        )
+      }
       .getOrElse(rendered)
 
 }

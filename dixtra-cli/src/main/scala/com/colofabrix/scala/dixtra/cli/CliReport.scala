@@ -49,8 +49,8 @@ object CliReport {
     val outcomes = results.map(outcome)
     val counts =
       List("formatted", "would format", "unchanged", "skipped", "failed")
-        .map(o => o -> outcomes.count(_ == o))
-        .collect { case (o, n) if n > 0 => s"${n.toString} $o" }
+        .map(outcome => outcome -> outcomes.count(_ == outcome))
+        .collect { case (outcome, count) if count > 0 => s"${count.toString} $outcome" }
     val files = if results.sizeIs == 1 then "1 file" else s"${results.size.toString} files"
     if counts.isEmpty then files else s"$files: ${counts.mkString(", ")}"
 

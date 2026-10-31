@@ -235,9 +235,11 @@ private[render] object BodyLayout {
            None
        }
 
+     val trailing = Doc.concat(ctx.commentDocs(onSeparatorLine).map(Doc.text(" ") ++ _))
+
      new BodyLayout(
        authorBreak,
-       trailing = Doc.concat(ctx.commentDocs(onSeparatorLine).map(Doc.text(" ") ++ _)),
+       trailing = trailing,
        leading = ctx.commentDocs(ownLines),
        hasComments = comments.nonEmpty,
        onLine = onLine,
@@ -255,14 +257,17 @@ private[render] object BodyLayout {
          case Nil              => false
          case _                => true
        }
-       
-     statements && !ctx.isParenthesized(block) && ctx.usesBraces(construct, ctx.writtenWithBraces(block))
+
+     val notParenthesised = !ctx.isParenthesized(block)
+     val writtenBraced    = ctx.writtenWithBraces(block)
+
+     statements && notParenthesised && ctx.usesBraces(construct, writtenBraced)
 
   /**
    * The end offset of a lambda's `=>`, or the start of its body if not found.
    */
-  def arrowEnd(ctx: RenderContext, f: Term.Function): Int =
-    val bodyStart = ctx.span(f.body)._1
-    ctx.arrowBefore(f.pos.start, bodyStart).map(_.end).getOrElse(bodyStart)
+  def arrowEnd(ctx: RenderContext, fn: Term.Function): Int =
+    val bodyStart = ctx.span(fn.body)._1
+    ctx.arrowBefore(fn.pos.start, bodyStart).map(_.end).getOrElse(bodyStart)
 
 }

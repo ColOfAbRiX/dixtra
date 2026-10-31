@@ -38,7 +38,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
   private def layout(ifTerm: Term.If, indent: Int, explode: Boolean): Doc =
     val (braces, ifThen) = header(ifTerm)
     val branches         = new Branches(ifTerm, indent, ifThen)
-    
+
     val policy =
       ctx
         .config
@@ -64,11 +64,11 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
     val condEnd = ctx.span(ifTerm.cond)._2
     val hasThen = ctx.tokensBetween(condEnd, ctx.span(ifTerm.thenp)._1).exists(_.is[Token.KwThen])
     val braces  = ctx.usesBraces(Construct.If, !hasThen)
-    
+
     val ifThen =
-      if braces then 
+      if braces then
         Doc.text("if (") ++ ctx.ownSourceDoc(ifTerm.cond) ++ Doc.text(")")
-      else 
+      else
         Doc.text("if ") ++ ctx.ownSourceDoc(ifTerm.cond) ++ Doc.text(" then")
 
     (braces, ifThen)
@@ -80,7 +80,12 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
  // Whether the author wrote an `else` of the chain on a line of its own.
   private def elsesOnOwnLines(ifTerm: Term.If): Boolean =
     chain(ifTerm).exists { link =>
-      elseKeyword(link).exists(kw => ctx.slice(ctx.span(link.thenp)._2, kw.start).contains('\n'))
+      val breakBeforeElse =
+        elseKeyword(link).exists { kw =>
+          ctx.slice(ctx.span(link.thenp)._2, kw.start).contains('\n')
+        }
+
+      breakBeforeElse
     }
 
   // The branches of the chain as members of their group, `fits` telling whether they can be on the lines of their
@@ -198,7 +203,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
       case Some(kwElse) =>
         val elseStart = ctx.span(ifTerm.elsep)._1
         val elseGap   = CommentGaps.separator(ctx, kwElse.end, elseStart)
-        
+
         val elseBranch =
           elseIf(ifTerm) match {
             case Some(nested) if !ctx.slice(kwElse.end, elseStart).contains('\n') =>

@@ -66,8 +66,8 @@ object Doc {
     docs
       .iterator
       .zipWithIndex
-      .foldLeft(Doc.Empty: Doc) { case (acc, (d, i)) =>
-        if i == 0 then acc ++ d else acc ++ separator ++ d
+      .foldLeft(Doc.Empty: Doc) { case (acc, (doc, i)) =>
+        if i == 0 then acc ++ doc else acc ++ separator ++ doc
       }
 
   /**

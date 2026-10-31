@@ -119,12 +119,15 @@ private[render] object StatementComments {
         }
 
     val statements = items.indices.toList
+    val leading    = statements.map(i => split(i)._2)
+    val trailing   = statements.map(i => Doc.concat(ctx.commentDocs(split(i + 1)._1).map(Doc.text(" ") ++ _)))
+    val closing =
+      split
+        .lastOption
+        .map(_._2)
+        .getOrElse(Nil)
 
-    StatementComments(
-      leading = statements.map(i => split(i)._2),
-      trailing = statements.map(i => Doc.concat(ctx.commentDocs(split(i + 1)._1).map(Doc.text(" ") ++ _))),
-      closing = split.lastOption.map(_._2).getOrElse(Nil),
-    )
+    StatementComments(leading = leading, trailing = trailing, closing = closing)
 
   // The own-line comments of a gap ending at `end` as lines, with `Doc.Empty` wherever the author left a blank line
   // before a comment or before `end`.
@@ -133,7 +136,7 @@ private[render] object StatementComments {
       comments.foldLeft((List.empty[Doc], start)) { case ((acc, from), c) =>
         (acc ++ blank(ctx, from, c.start) ++ ctx.commentDocs(List(c)), c.end)
       }
-      
+
     lines ++ blank(ctx, lastEnd, end)
 
   private def blank(ctx: RenderContext, start: Int, end: Int): List[Doc] =

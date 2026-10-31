@@ -154,6 +154,7 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
         .alignment
         .operators
         .toSet
+
     val rows =
       stats
         .map { stat =>
@@ -162,40 +163,49 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
           stat.pos.start -> OperatorRow(operation, unpadded, unpadded.flatMap(Render.flatWidth))
         }
         .toMap
-    val row = (s: Stat) => rows(s.pos.start)
+
+    def row(stat: Stat): OperatorRow =
+      rows(stat.pos.start)
+
+    def eligible(stat: Stat): Boolean =
+      row(stat).operation.isDefined && row(stat).width.isDefined
+
+    def fitsAt(stat: Stat, pad: List[Int]): Boolean =
+      row(stat).width.exists(width => ctx.fitsWidth(indentOf(stat), width + pad.sum))
+
     val segments =
-      (s: Stat) =>
-        row(s)
+      (stat: Stat) =>
+        row(stat)
           .operation
           .flatMap {
-            case OperatorStatement.Assign(a) =>
-              assigns.leftWidth(a).map(List(_))
-            case OperatorStatement.Infix(i) =>
-              infixSegments(i, indentOf(s), operators)
+            case OperatorStatement.Assign(assignment) =>
+              assigns.leftWidth(assignment).map(List(_))
+            case OperatorStatement.Infix(infix) =>
+              infixSegments(infix, indentOf(stat), operators)
             case OperatorStatement.Call(_, fun, infix) =>
-              infixSegments(infix, indentOf(s), operators).map {
+              infixSegments(infix, indentOf(stat), operators).map {
                 case first :: rest => first + fun.length + 1 :: rest
                 case Nil           => Nil
               }
           }
     val pads =
       Alignment.columnTargets(ctx, stats, Alignment.Grouping.Lines)(
-        eligible = s => row(s).operation.isDefined && row(s).width.isDefined,
+        eligible = eligible,
         segments = segments,
-        fitsAt = (s, p) => row(s).width.exists(w => ctx.fitsWidth(indentOf(s), w + p.sum)),
+        fitsAt = fitsAt,
       )
     stats
       .zip(pads)
       .map { (stat, pad) =>
         (row(stat).operation, pad) match {
-          case (Some(OperatorStatement.Assign(a)), Some(p)) =>
-            Some(assigns.render(a, indentOf(stat), assigns.leftWidth(a).map(_ + p.sum)))
-          case (Some(OperatorStatement.Infix(i)), Some(p)) =>
-            paddedInfixColumns(i, indentOf(stat), operators, p)
-          case (Some(OperatorStatement.Call(_, fun, infix)), Some(p)) =>
-            paddedInfixColumns(infix, indentOf(stat), operators, p).map(
-              arg => Doc.text(fun + "(") ++ arg ++ Doc.text(")"),
-            )
+          case (Some(OperatorStatement.Assign(assignment)), Some(pad)) =>
+            Some(assigns.render(assignment, indentOf(stat), assigns.leftWidth(assignment).map(_ + pad.sum)))
+          case (Some(OperatorStatement.Infix(infix)), Some(pad)) =>
+            paddedInfixColumns(infix, indentOf(stat), operators, pad)
+          case (Some(OperatorStatement.Call(_, fun, infix)), Some(pad)) =>
+            paddedInfixColumns(infix, indentOf(stat), operators, pad).map { arg =>
+              Doc.text(fun + "(") ++ arg ++ Doc.text(")")
+            }
           case _ =>
             row(stat).unpadded
         }
@@ -216,12 +226,12 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
 
   private def operatorStatement(stat: Stat, operators: Set[String]): Option[OperatorStatement] =
     stat match {
-      case a: Term.Assign if operators("=") && !ctx.isParenthesized(a) =>
-        Some(OperatorStatement.Assign(a))
-      case i: Term.ApplyInfix if operators(i.op.value) && !ctx.isParenthesized(i) =>
-        Some(OperatorStatement.Infix(i))
-      case c: Term.Apply =>
-        callOperation(c, operators).map((fun, infix) => OperatorStatement.Call(c, fun, infix))
+      case assign: Term.Assign if operators("=") && !ctx.isParenthesized(assign) =>
+        Some(OperatorStatement.Assign(assign))
+      case infix: Term.ApplyInfix if operators(infix.op.value) && !ctx.isParenthesized(infix) =>
+        Some(OperatorStatement.Infix(infix))
+      case call: Term.Apply =>
+        callOperation(call, operators).map((fun, arg) => OperatorStatement.Call(call, fun, arg))
       case _ =>
         None
     }
@@ -284,32 +294,32 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
         interpolations.render(interpolate)
       case _ if chains.isChain(term) =>
         chains.render(term, indent, forceExplode, asBody)
-      case m: Term.Match =>
-        caseClauses.renderMatch(m, indent)
+      case matchTerm: Term.Match =>
+        caseClauses.renderMatch(matchTerm, indent)
       case pf: Term.PartialFunction =>
         applications.operand(pf, indent)
       case _ if ctx.hasGapComments(term) =>
         ctx.ownSourceDoc(term)
-      case f: Term.ForYield =>
-        fors.render(f, indent)
-      case f: Term.For =>
-        fors.renderFor(f, indent)
-      case w: Term.While =>
-        whiles.render(w, indent)
+      case forYield: Term.ForYield =>
+        fors.render(forYield, indent)
+      case forLoop: Term.For =>
+        fors.renderFor(forLoop, indent)
+      case whileLoop: Term.While =>
+        whiles.render(whileLoop, indent)
       case n: Term.NewAnonymous =>
         newAnonymous(n, indent)
       case infix: Term.ApplyInfix =>
         infixes.render(infix, indent)
       case assign: Term.Assign =>
         assigns.render(assign, indent)
-      case t: Term.Try =>
-        caseClauses.renderTry(t, indent)
-      case f: Term.Function =>
-        lambdas.render(f, indent)
+      case tryTerm: Term.Try =>
+        caseClauses.renderTry(tryTerm, indent)
+      case fn: Term.Function =>
+        lambdas.render(fn, indent)
       case Term.Apply.After_4_6_0(fun, argClause) =>
         applications.render(fun, argClause, indent)
-      case t: Term.Tuple =>
-        applications.tuple(t, indent)
+      case tuple: Term.Tuple =>
+        applications.tuple(tuple, indent)
       case _ =>
         ctx.ownSourceDoc(term)
     }

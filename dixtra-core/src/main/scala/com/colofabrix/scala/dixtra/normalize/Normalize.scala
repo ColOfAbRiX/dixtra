@@ -22,22 +22,24 @@ object Normalize {
    */
   def apply(rendered: String, config: Config, dialect: Dialect): String =
     val braced = BraceStyleNormalizer.normalize(rendered, config.braces.style, config.maxColumn, dialect)
-    val moved = TrailingCommentNormalizer.moveAbove(braced, config.maxColumn, config.trailingCommentOverflow)
-    
-    val spaced =
-      BlankLineNormalizer.collapseBlankRuns(
-        DocCommentSpacingNormalizer.normalize(
-          MethodSpacingNormalizer.normalize(
-            ArrowSpacingNormalizer.normalize(
-              CommentNormalizer.normalize(moved, config.maxColumn, config.alignment.scaladoc.tags),
-            ),
-            config.alignment,
-            config.blankLines.betweenAlignmentGroups,
-            config.blankLines.beforeScaladoc,
-          ),
-          config.blankLines.beforeScaladoc,
-        ),
+    val moved  = TrailingCommentNormalizer.moveAbove(braced, config.maxColumn, config.trailingCommentOverflow)
+
+    val arrowSpaced =
+      ArrowSpacingNormalizer.normalize(
+        CommentNormalizer.normalize(moved, config.maxColumn, config.alignment.scaladoc.tags),
       )
+
+    val methodsSpaced =
+      MethodSpacingNormalizer.normalize(
+        arrowSpaced,
+        config.alignment,
+        config.blankLines.betweenAlignmentGroups,
+        config.blankLines.beforeScaladoc,
+      )
+
+    val docSpaced = DocCommentSpacingNormalizer.normalize(methodsSpaced, config.blankLines.beforeScaladoc)
+
+    val spaced = BlankLineNormalizer.collapseBlankRuns(docSpaced)
 
     // Aligned last, once the blank lines that end the runs of consecutive lines are in place
     TrailingCommentNormalizer.align(spaced, config.maxColumn, config.alignment.trailingComments)

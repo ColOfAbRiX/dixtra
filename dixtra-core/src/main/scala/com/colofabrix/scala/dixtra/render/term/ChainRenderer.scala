@@ -62,9 +62,9 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
       ctx.ownSourceDoc(term)
     else
       val headDoc =
-        if head.path > 0 || member.isDefined then 
-          pathDoc(pathEnd) 
-        else 
+        if head.path > 0 || member.isDefined then
+          pathDoc(pathEnd)
+        else
           applications.operand(start, indent)
 
       val memberDoc = member.fold(Doc.Empty)(segment(_, indent, headDoc))
@@ -191,11 +191,12 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
             .map(_.pos.end)
             .getOrElse(root.pos.end)
 
-        val broken = ctx.slice(root.pos.start, end).contains('\n') && policy == ChainHeadPolicy.Keep
+        val broken     = ctx.slice(root.pos.start, end).contains('\n') && policy == ChainHeadPolicy.Keep
+        val noComments = ctx.commentsBetween(root.pos.start, end).isEmpty
 
-        if capital >= 0 && !broken && ctx.commentsBetween(root.pos.start, end).isEmpty then 
+        if capital >= 0 && !broken && noComments then
           capital + 1
-        else 
+        else
           0
       case _ =>
         0

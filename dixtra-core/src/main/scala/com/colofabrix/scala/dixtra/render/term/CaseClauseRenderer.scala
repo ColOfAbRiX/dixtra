@@ -92,20 +92,23 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
             catchClause.map(c => (c.pos.start, cases(c.pos.start, c.cases, c.pos.end, indent + 2, edges)))
 
           if braces then
-            def braced(term: Term): Doc = 
+
+            def braced(term: Term): Doc =
               Doc.braced(terms.bracedBody(term, indent + 2, Construct.Try))
 
-            val tryBody                 = Doc.text("try ") ++ braced(tryTerm.expr)
+            val tryBody = Doc.text("try ") ++ braced(tryTerm.expr)
 
             val catchDoc =
-              catches.fold(Doc.Empty) { (_, caught) => 
+              catches.fold(Doc.Empty) { (_, caught) =>
                 Doc.text(" catch ") ++ Doc.braced(caught)
               }
 
             val finallyDoc =
-              tryTerm.finallyp.fold(Doc.Empty) { finallyTerm => 
-                Doc.text(" finally ") ++ braced(finallyTerm)
-              }
+              tryTerm
+                .finallyp
+                .fold(Doc.Empty) { finallyTerm =>
+                  Doc.text(" finally ") ++ braced(finallyTerm)
+                }
 
             tryBody ++ catchDoc ++ finallyDoc
           else
@@ -176,18 +179,18 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
   // The clauses with their bodies on the lines of their `=>`, the arrows of consecutive clauses aligned; None when a
   // clause would not fit once aligned.
   private def aligned(clauses: List[Case], indent: Int): Option[List[Doc]] =
-    val unpadded = 
+    val unpadded =
       clauses
-      .map { oneCase => 
-        oneCase.pos.start -> caseClause(oneCase, indent, None, false)
-      }
-      .toMap
+        .map { oneCase =>
+          oneCase.pos.start -> caseClause(oneCase, indent, None, false)
+        }
+        .toMap
 
     val targets =
       Alignment.groupedTargets(ctx, clauses, (_, _) => true)(
-        eligible =
-          oneCase =>
-            ctx.config.alignment.arrows.cases && unpadded.get(oneCase.pos.start).flatMap(Render.flatWidth).isDefined,
+        eligible = { oneCase =>
+          ctx.config.alignment.arrows.cases && unpadded.get(oneCase.pos.start).flatMap(Render.flatWidth).isDefined
+        },
         width = headerWidth,
         fitsAt = (oneCase, target) => paddedWidth(unpadded, oneCase, target).exists(ctx.fitsWidth(indent, _)),
       )
@@ -256,9 +259,9 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
         val lead   = pattern ++ pad ++ Doc.text(" =>")
         val body   = BodyLayout.of(ctx, terms, arrowEnd, oneCase.body, indent + 2, Some(Construct.CaseBody))
         val column = ctx.columnAfter(lead, indent) + 1
-        if below then 
-          body.belowSeparator(lead) 
-        else 
+        if below then
+          body.belowSeparator(lead)
+        else
           body.placed(lead, ctx.fits(_, column), SingleBodyPolicy.AlwaysJoin)
       case _ =>
         ctx.sourceDoc(oneCase)

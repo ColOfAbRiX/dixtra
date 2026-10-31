@@ -68,11 +68,11 @@ private[render] object ClauseGroups {
    * when the first element is preceded by a comment on its own line.
    */
   def gluedElements(group: Group, closes: Boolean): Doc =
-    if group.elements.isEmpty then 
+    if group.elements.isEmpty then
       Doc.Empty
-    else if group.comments.firstCanGlue then 
+    else if group.comments.firstCanGlue then
       Doc.Nest(2, lines(group, closes))
-    else 
+    else
       Doc.Nest(2, Doc.Line ++ lines(group, closes))
 
   // Whether the `)(` before `next` follows the last element of `group`.
@@ -91,14 +91,14 @@ private[render] object ClauseGroups {
   // A group opened via `)(` at the start of a line: a keyword group keeps the keyword on that line and nests its
   // elements; a plain group glues its first element onto the `)(` line.
   private def gluedContent(group: Group, closes: Boolean): Doc =
-    if group.keyword.nonEmpty then 
+    if group.keyword.nonEmpty then
       openContent(group, closes)
     else
       gluedElements(group, closes)
 
   // The elements of a group one per line, without the comma after the last one when `closes`.
   private def lines(group: Group, closes: Boolean): Doc =
-    val exploded = 
+    val exploded =
       group
         .comments
         .exploded(group.elements)

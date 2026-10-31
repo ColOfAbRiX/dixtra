@@ -43,20 +43,30 @@ final case class LoadedConfig(
    * relative to the anchor. Two matching overrides that give a setting different values fail the file.
    */
   def configFor(file: Path): ValidatedNel[String, Config] =
-    val matching = relative(file).fold(List.empty[PathOverride])(path => overrides.filter(_.pattern.matches(path)))
-    if matching.isEmpty then Validated.valid(base)
-    else combined.getOrElseUpdate(matching.map(_.glob), ConfigCli.overridden(settings, matching))
+    val matching = 
+      relative(file).fold(List.empty[PathOverride]) { path => 
+        overrides.filter(_.pattern.matches(path))
+      }
+      
+    if matching.isEmpty then 
+      Validated.valid(base)
+    else 
+      combined.getOrElseUpdate(matching.map(_.glob), ConfigCli.overridden(settings, matching))
 
   // The path of `file` relative to the anchor, with `/` between directories, when `file` is inside it.
   private def relative(file: Path): Option[String] =
     val path = anchor.relativize(file.toAbsolutePath.normalize)
+
     val segments =
       path
         .iterator()
         .asScala
         .map(_.toString)
         .toList
-    Option.when(!segments.headOption.contains(".."))(segments.mkString("/"))
+
+    Option.when(!segments.headOption.contains("..")) {
+      segments.mkString("/")
+    }
 
 }
 

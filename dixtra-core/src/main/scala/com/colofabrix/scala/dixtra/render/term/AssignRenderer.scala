@@ -91,10 +91,12 @@ private[term] final class AssignRenderer(ctx: RenderContext, terms: TermRenderer
         val closes   = lines.lastOption.exists(last => last.trim.headOption.exists(")]}".contains(_)))
         val chain    = lines.lift(1).exists(_.trim.startsWith("."))
 
+        val notBraced = bracedValue(assign, indent, column).isEmpty
+
         // The value stays hanging from the `=`: not braced, more than one line, the first line fits and the rest closes
         // there or continues as a chain.
-        val hanging = bracedValue(assign, indent, column).isEmpty && lines.sizeIs > 1 && firstFit && (closes || chain)
-        
+        val hanging = notBraced && lines.sizeIs > 1 && firstFit && (closes || chain)
+
         if hanging then
           lead ++ Doc.text(" ") ++ value
         else

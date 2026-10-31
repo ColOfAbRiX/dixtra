@@ -22,7 +22,7 @@ private[render] object CommentGaps {
       comments.foldLeft((Doc.Empty: Doc, start)) { case ((acc, from), c) =>
         (acc ++ lineOrSpace(ctx, from, c.start) ++ ctx.sourceDoc(c.start, c.end), c.end)
       }
-      
+
     doc ++ lineOrSpace(ctx, cursor, end)
 
   // A line break when the author broke the line within `[start, end)`.

@@ -67,8 +67,10 @@ object Housekeeping {
       SourceEdits
         .tokens(source)
         .fold(source) { tokens =>
-          val literals =
-            tokens.filter(t => !t.is[Token.Whitespace] && !t.is[Token.Comment] && t.text.contains('\n'))
+          def isMultilineLiteral(token: Token): Boolean =
+            !token.is[Token.Whitespace] && !token.is[Token.Comment] && token.text.contains('\n')
+
+          val literals = tokens.filter(isMultilineLiteral)
 
           val protectedEnds =
             literals

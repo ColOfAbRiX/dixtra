@@ -212,10 +212,16 @@ private[render] object Alignment {
     if ctx.config.alignment.acrossComments then
       // Each comment becomes one character, so only the blank lines stay blank
       val comments = ctx.commentsBetween(prevEnd, nextStart)
-      val lines    = comments.foldRight(gap)((c, g) => g.patch(c.start - prevEnd, "c", c.end - c.start)).split("\n", -1)
-      lines.length >= 2 && lines.drop(1).dropRight(1).forall(_.trim.nonEmpty)
+      val lines =
+        comments.foldRight(gap)((c, g) => g.patch(c.start - prevEnd, "c", c.end - c.start)).split("\n", -1)
+      val onlyBlanksBetween = lines.length >= 2 && lines.drop(1).dropRight(1).forall(_.trim.nonEmpty)
+
+      onlyBlanksBetween
     else
-      gap.count(_ == '\n') == 1 && ctx.commentsBetween(prevEnd + newline, nextStart).isEmpty
+      val oneNewline = gap.count(_ == '\n') == 1
+      val noComments = ctx.commentsBetween(prevEnd + newline, nextStart).isEmpty
+
+      oneNewline && noComments
 
   // True when no comment line separates two list elements (a comment trailing `prev` on its line is allowed; blank
   // lines are not kept in lists), or always with `alignment.across-comments`.
@@ -224,11 +230,11 @@ private[render] object Alignment {
     val nextStart = ctx.span(next)._1
     val newline   = ctx.slice(prevEnd, nextStart).indexOf('\n')
 
-    if ctx.config.alignment.acrossComments then 
+    if ctx.config.alignment.acrossComments then
       true
-    else if newline < 0 then 
+    else if newline < 0 then
       ctx.commentsBetween(prevEnd, nextStart).isEmpty
-    else 
+    else
       ctx.commentsBetween(prevEnd + newline, nextStart).isEmpty
 
   // Like [[settle]], with a padding for each separator of each member.
@@ -244,9 +250,9 @@ private[render] object Alignment {
       val padded = group.zip(paddings(group.map(segments)))
       val kept   = padded.filter(fitsAt.tupled).map(_._1)
 
-      if kept.length == group.length then 
+      if kept.length == group.length then
         padded
-      else 
+      else
         settleColumns(kept, segments, fitsAt)
 
   // The padding before each separator of each row, so that the k-th separators of the rows that have one start in the
@@ -276,7 +282,7 @@ private[render] object Alignment {
     else
       val target = group.map(width).foldLeft(0)(math.max)
       val broken = group.filterNot(fitsAt(_, target))
-      
+
       if broken.isEmpty then
         group.map(i => (i, Placement.Padded(target)))
       else
@@ -286,8 +292,10 @@ private[render] object Alignment {
             case (i, current :: rest)            => (i :: current) :: rest
             case (i, Nil)                        => List(List(i))
           }
-    
-        broken.map(i => (i, Placement.Broken)) ++ between.flatMap(split(_, width, fitsAt))
+
+        val rebroken = between.flatMap(split(_, width, fitsAt))
+
+        broken.map(i => (i, Placement.Broken)) ++ rebroken
 
   // Pad a group to its widest member, dropping members that no longer fit, until every remaining member fits. Groups of
   // fewer than two members are not aligned.
@@ -298,9 +306,9 @@ private[render] object Alignment {
     else
       val target = group.map(width).foldLeft(0)(math.max)
       val kept   = group.filter(fitsAt(_, target))
-      if kept.length == group.length then 
+      if kept.length == group.length then
         group.map(i => (i, target))
-      else 
+      else
         settle(kept, width, fitsAt)
 
 }

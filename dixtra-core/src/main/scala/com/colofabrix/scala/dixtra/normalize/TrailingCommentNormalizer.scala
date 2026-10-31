@@ -33,17 +33,15 @@ object TrailingCommentNormalizer {
       case TrailingOverflow.MoveAbove =>
         edited(source) { trailings =>
           trailings
-            .filter(t => t.width > maxColumn && t.movable)
-            .flatMap { t =>
-              val above =
-                source
-                  .slice(SourceEdits.lineStart(source, t.lineStart - 1), (t.lineStart - 1).max(0))
-                  .trim
+            .filter(trailing => trailing.width > maxColumn && trailing.movable)
+            .flatMap { trailing =>
+              val lineAbove = trailing.lineStart - 1
+              val above     = source.slice(SourceEdits.lineStart(source, lineAbove), lineAbove.max(0)).trim
 
-              val separator = if t.lineStart > 0 && above.startsWith("//") then t.indent + "//\n" else ""
+              val separator = if trailing.lineStart > 0 && above.startsWith("//") then trailing.indent + "//\n" else ""
               List(
-                Edit(t.lineStart, t.lineStart, separator + t.indent + t.text + "\n"),
-                Edit(t.codeEnd, t.end, ""),
+                Edit(trailing.lineStart, trailing.lineStart, separator + trailing.indent + trailing.text + "\n"),
+                Edit(trailing.codeEnd, trailing.end, ""),
               )
             }
         }
@@ -53,10 +51,10 @@ object TrailingCommentNormalizer {
    * Align on one column the trailing comments of consecutive lines, when `enabled`, never past `maxColumn`.
    */
   def align(source: String, maxColumn: Int, enabled: Boolean): String =
-    if !enabled then 
+    if !enabled then
       source
-    else 
-      edited(source) { trailings => 
+    else
+      edited(source) { trailings =>
         runs(trailings).flatMap(aligned(_, maxColumn))
       }
 
@@ -72,10 +70,10 @@ object TrailingCommentNormalizer {
     movable: Boolean,
   ) {
 
-    def width: Int = 
+    def width: Int =
       end - lineStart
 
-    def codeWidth: Int = 
+    def codeWidth: Int =
       codeEnd - lineStart
 
   }
@@ -85,7 +83,7 @@ object TrailingCommentNormalizer {
     try {
       SourceEdits
         .tokens(source)
-        .fold(source) { tokens => 
+        .fold(source) { tokens =>
           SourceEdits.applyEdits(source, change(trailings(source, tokens)))
         }
     } catch {
@@ -111,6 +109,9 @@ object TrailingCommentNormalizer {
       .collect {
         case (code, comment: Token.Comment) if isTrailing(code, comment) =>
           val lineStart = SourceEdits.lineStart(source, comment.start)
+          val indent    = source.slice(lineStart, comment.start).takeWhile(c => c == ' ' || c == '\t')
+          val movable   = !tokens.exists(t => t.start < lineStart && t.end > lineStart)
+
           Trailing(
             lineStart = lineStart,
             lineEnd = SourceEdits.lineEnd(source, comment.end),
@@ -118,8 +119,8 @@ object TrailingCommentNormalizer {
             start = comment.start,
             end = comment.end,
             text = comment.text,
-            indent = source.slice(lineStart, comment.start).takeWhile(c => c == ' ' || c == '\t'),
-            movable = !tokens.exists(t => t.start < lineStart && t.end > lineStart),
+            indent = indent,
+            movable = movable,
           )
       }
       .toList
@@ -127,8 +128,10 @@ object TrailingCommentNormalizer {
   // The trailing comments split in runs of consecutive lines.
   private def runs(trailings: List[Trailing]): List[List[Trailing]] =
     trailings.foldRight(List.empty[List[Trailing]]) {
-      case (t, (run @ (next :: _)) :: rest) if next.lineStart == t.lineEnd + 1 => (t :: run) :: rest
-      case (t, acc)                                                            => List(t) :: acc
+      case (trailing, (run @ (next :: _)) :: rest) if next.lineStart == trailing.lineEnd + 1 =>
+        (trailing :: run) :: rest
+      case (trailing, acc) =>
+        List(trailing) :: acc
     }
 
   // The edits that align a run, the lines that would not fit once aligned left as they are and splitting the run.
@@ -137,9 +140,12 @@ object TrailingCommentNormalizer {
       Nil
     else
       val column = run.map(_.codeWidth).foldLeft(0)(math.max) + 1
-      if run.forall(t => column + t.end - t.start <= maxColumn) then
-        run.map(t => Edit(t.codeEnd, t.start, " " * (column - t.codeWidth)))
+
+      def fits(trailing: Trailing): Boolean = column + trailing.end - trailing.start <= maxColumn
+
+      if run.forall(fits) then
+        run.map(trailing => Edit(trailing.codeEnd, trailing.start, " " * (column - trailing.codeWidth)))
       else
-        runs(run.filter(t => column + t.end - t.start <= maxColumn)).flatMap(aligned(_, maxColumn))
+        runs(run.filter(fits)).flatMap(aligned(_, maxColumn))
 
 }

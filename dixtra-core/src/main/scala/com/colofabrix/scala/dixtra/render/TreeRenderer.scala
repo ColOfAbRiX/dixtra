@@ -41,9 +41,9 @@ final class TreeRenderer(original: String, config: Config) {
    */
   def renderSource(source: Source): String =
     source.stats match {
-      case (pkg: Pkg) :: Nil => 
+      case (pkg: Pkg) :: Nil =>
         original.take(pkg.pos.start) + singlePackage(pkg) + original.drop(pkg.pos.end)
-      case stats           => 
+      case stats =>
         renderRegion(0, original.length, stats)
     }
 
@@ -53,13 +53,13 @@ final class TreeRenderer(original: String, config: Config) {
    */
   def restylesPackage(source: Source): Boolean =
     source.stats match {
-      case (pkg: Pkg) :: Nil => 
+      case (pkg: Pkg) :: Nil =>
         packageBraces(pkg).exists(braced => ctx.usesBraces(Construct.Package, braced) != braced)
-      case _               => 
+      case _ =>
         false
     }
 
-  // Whether the single package clause `p` is written with braces, when it can change style: it has members and no
+  // Whether the single package clause `pkg` is written with braces, when it can change style: it has members and no
   // nested package.
   private def packageBraces(pkg: Pkg): Option[Boolean] =
     pkg
@@ -106,17 +106,18 @@ final class TreeRenderer(original: String, config: Config) {
     definition: Option[Doc],
     extendsTarget: Option[Int],
   ): String =
-    val node     = renderNode(stat, indent, definition)
+    val node = renderNode(stat, indent, definition)
 
-    val rendered = 
-      extendsTarget.fold(node) { target => 
+    val rendered =
+      extendsTarget.fold(node) { target =>
         padExtends(node, target).getOrElse(node)
       }
 
     EndMarkers
       .marker(ctx, stat, marker, rendered)
-      .fold(rendered) { end => 
-        rendered + "\n" + " " * ctx.lineIndentOf(stat.pos.start) + end
+      .fold(rendered) { end =>
+        val indent = " " * ctx.lineIndentOf(stat.pos.start)
+        rendered + "\n" + indent + end
       }
 
   /**
@@ -173,8 +174,8 @@ final class TreeRenderer(original: String, config: Config) {
           }
           .toMap
 
-      val width = 
-        (stat: Stat) => 
+      val width =
+        (stat: Stat) =>
           oneLine
             .get(stat.pos.start)
             .flatMap(beforeExtends)
@@ -201,11 +202,11 @@ final class TreeRenderer(original: String, config: Config) {
 
   private def hasBodilessExtends(stat: Stat): Boolean =
     stat match {
-      case c: Defn.EnumCase => c.inits.nonEmpty
-      case c: Defn.Class    => c.templ.inits.nonEmpty && c.templ.body.stats.isEmpty
-      case o: Defn.Object   => o.templ.inits.nonEmpty && o.templ.body.stats.isEmpty
-      case t: Defn.Trait    => t.templ.inits.nonEmpty && t.templ.body.stats.isEmpty
-      case _                => false
+      case defn: Defn.EnumCase => defn.inits.nonEmpty
+      case defn: Defn.Class    => defn.templ.inits.nonEmpty && defn.templ.body.stats.isEmpty
+      case defn: Defn.Object  => defn.templ.inits.nonEmpty && defn.templ.body.stats.isEmpty
+      case defn: Defn.Trait    => defn.templ.inits.nonEmpty && defn.templ.body.stats.isEmpty
+      case _                       => false
     }
 
   // The offset of the `extends` keyword in a one-line rendered definition.
@@ -244,11 +245,12 @@ final class TreeRenderer(original: String, config: Config) {
 
     val braced = opener.exists(_.is[Token.LeftBrace])
 
+    val noNestedPkg  = !pkg.body.stats.exists(_.is[Pkg])
+    val wantsRestyle = ctx.usesBraces(Construct.Package, braced) != braced
+
     val restyled =
       (opener, pkg.body.stats.headOption) match {
-        case (Some(open), Some(_))
-          if !pkg.body.stats.exists(_.is[Pkg]) && ctx.usesBraces(Construct.Package, braced) != braced =>
-
+        case (Some(open), Some(_)) if noNestedPkg && wantsRestyle =>
           val head = ctx.slice(pkg.pos.start, if braced then open.start else open.end).stripTrailing
 
           if braced then
@@ -276,14 +278,17 @@ final class TreeRenderer(original: String, config: Config) {
 
     val result = restyled.filter(Equivalence.isEquivalentPackage(pkg, _)).getOrElse(rendered)
 
+    def membersOnNextLine(open: Token): Boolean =
+      pkg
+        .body
+        .stats
+        .headOption
+        .exists { first =>
+          !first.is[Pkg] && ctx.slice(open.end, first.pos.start).contains('\n')
+        }
+
     opener
-      .filter { open =>
-        pkg
-          .body
-          .stats
-          .headOption
-          .exists(first => !first.is[Pkg] && ctx.slice(open.end, first.pos.start).contains('\n'))
-      }
+      .filter(membersOnNextLine)
       .map { open =>
         EdgeBlankLines(result, ctx.slice(pkg.pos.start, open.start).count(_ == '\n'), Construct.Package, ctx)
       }
@@ -309,13 +314,13 @@ final class TreeRenderer(original: String, config: Config) {
           .toList
           .zip(starts)
           .map { (line, start) =>
-            if literals.exists(t => t.start < start && start < t.end) then 
+            if literals.exists(t => t.start < start && start < t.end) then
               line
-            else if line.isBlank then 
+            else if line.isBlank then
               ""
-            else if delta >= 0 then 
+            else if delta >= 0 then
               " " * delta + line
-            else 
+            else
               line.drop(math.min(-delta, line.takeWhile(_ == ' ').length))
           }
           .mkString("\n")
@@ -357,8 +362,17 @@ final class TreeRenderer(original: String, config: Config) {
             val header = rendered.take(at)
             val end    = header.stripTrailing.length
 
-            Option.when(header.drop(end).contains('\n') && ctx.commentsBetween(e.pos.start, first.pos.start).isEmpty) {
-              header.take(end) + " {" + header.drop(end) + rendered.drop(at) + "\n" + " " * ctx.lineIndentOf(e.pos.start) + "}"
+            val brokenHeader = header.drop(end).contains('\n')
+            val noComments   = ctx.commentsBetween(e.pos.start, first.pos.start).isEmpty
+            val indent       = " " * ctx.lineIndentOf(e.pos.start)
+
+            Option.when(brokenHeader && noComments) {
+              header.take(end) +
+              " {" +
+              header.drop(end) +
+              rendered.drop(at) +
+              "\n" +
+              indent + "}"
             }
         case _ =>
           None

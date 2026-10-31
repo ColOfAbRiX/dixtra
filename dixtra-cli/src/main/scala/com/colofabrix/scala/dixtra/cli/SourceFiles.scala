@@ -57,7 +57,9 @@ object SourceFiles {
             else FileVisitResult.CONTINUE
 
           override def visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult =
-            if attrs.isRegularFile && isScalaSource(file) && isSelected(directory, file, selection) then found += file
+            val isSource = attrs.isRegularFile && isScalaSource(file)
+            if isSource && isSelected(directory, file, selection) then
+              found += file
             FileVisitResult.CONTINUE
         }
       val _ = Files.walkFileTree(directory, visitor)
@@ -74,6 +76,7 @@ object SourceFiles {
         .asScala
         .map(_.toString)
         .toList
+
     val prefixes       = segments.indices.map(i => segments.take(i + 1).mkString("/"))
     val relative       = segments.mkString("/")
     val matchesInclude = selection.include.exists(_.matches(relative))

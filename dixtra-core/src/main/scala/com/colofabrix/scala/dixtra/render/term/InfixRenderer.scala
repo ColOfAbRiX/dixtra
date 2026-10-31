@@ -42,10 +42,13 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
    * Render an infix application at the given indent.
    */
   def render(infix: Term.ApplyInfix, indent: Int): Doc =
+    val severalArgs =
+      infix.targClause.values.isEmpty && infix.argClause.values.sizeIs > 1 && !ctx.hasGapComments(infix)
+
     operation(infix) match {
       case Some(arg) =>
         flowing(infix, indent).getOrElse(layout(infix, arg, indent))
-      case None if infix.targClause.values.isEmpty && infix.argClause.values.sizeIs > 1 && !ctx.hasGapComments(infix) =>
+      case None if severalArgs =>
         severalArguments(infix, indent)
       case None =>
         ctx.ownSourceDoc(infix)
@@ -97,8 +100,10 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
       val (head, rest) = flattened(infix, "", "")
       val operands     = head :: rest.map(_._2)
       val docs         = operands.map(_.doc(indent))
-      
-      Option.when(rest.nonEmpty && docs.dropRight(1).exists(d => !Render.isFlat(d))) {
+
+      val anyMultiline = docs.dropRight(1).exists(doc => !Render.isFlat(doc))
+
+      Option.when(rest.nonEmpty && anyMultiline) {
         val separators = Doc.Empty :: rest.map((op, operand) => separator(op, operand))
         val trailers =
           rest
@@ -128,15 +133,15 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
               }
 
             val breaks = trailer.isDefined && isChain(operand) && brokenChain(doc, at)
-            if shifted then 
+            if shifted then
               (before, after ++ sep ++ doc, true)
             else
               (before ++ sep ++ doc, after, breaks)
           }
 
-        if after == Doc.Empty then 
+        if after == Doc.Empty then
           before
-        else 
+        else
           before ++ Doc.Nest(2, after)
       }
     }
@@ -145,9 +150,9 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
   // opens with `{`.
   private def trailerWidth(op: Doc, next: Operand, nextDoc: Doc, indent: Int): Int =
     val opWidth = 1 + Render.flatWidth(op).getOrElse(0)
-    if next.braced then 
+    if next.braced then
       opWidth + 1 + Render.render(nextDoc, indent).linesIterator.nextOption().fold(0)(_.length)
-    else 
+    else
       opWidth
 
   private def isChain(operand: Operand): Boolean =
@@ -164,9 +169,9 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
 
   // The operator before `operand`: at the end of its line, with `operand` on the next line unless it opens with `{`.
   private def separator(op: Doc, operand: Operand): Doc =
-    if operand.braced then 
+    if operand.braced then
       Doc.text(" ") ++ op ++ Doc.text(" ")
-    else 
+    else
       Doc.text(" ") ++ op ++ Doc.Line
 
   // The argument of an operation that flattens with the operations in its operands: not parenthesised, without comments
@@ -236,12 +241,15 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
     }
 
   // The first operand and the (operator, operand) pairs after it of an operation whose operators are all from
-  // `operators`, flattening the operations from the list nested in its operands in source order (`"a" %% "b" % "1"`,
+  // `operators`, flattening the operations from the list nested in its operands in source order (`"a" %% "b" % "1"`, A
+  // plainly written operation from `operators`: not parenthesised and without comments in its gaps.
+  private def plainOperation(infix: Term.ApplyInfix, operators: Set[String]): Boolean =
+    operators(infix.op.value) && !ctx.isParenthesized(infix) && !ctx.hasGapComments(infix)
+
   // and `deps += "a" % "b"`); None for any other term.
   private def columns(term: Term, indent: Int, operators: Set[String]): Option[(Doc, List[(Doc, Doc)])] =
     term match {
-      case infix: Term.ApplyInfix
-        if operators(infix.op.value) && !ctx.isParenthesized(infix) && !ctx.hasGapComments(infix) =>
+      case infix: Term.ApplyInfix if plainOperation(infix, operators) =>
         operation(infix).map { arg =>
           val (head, left) =
             columns(infix.lhs, indent, operators).getOrElse((applications.operand(infix.lhs, indent), Nil))
@@ -295,7 +303,7 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
         case lhs =>
           List(applications.operand(lhs, indent))
       }
-      
+
     left :+ rhs(infix, arg, indent)
 
   private def sameRun(outer: Term.ApplyInfix, inner: Term.ApplyInfix): Boolean =

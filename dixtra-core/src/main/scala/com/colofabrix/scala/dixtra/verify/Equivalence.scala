@@ -34,8 +34,11 @@ object Equivalence {
    */
   def isEquivalentPackage(original: Pkg, rendered: String): Boolean =
     parse[Source](rendered).exists { after =>
-      val singleEquivalentStat = after.stats.sizeIs == 1 && after.stats.forall(equivalent(original, _))
-      singleEquivalentStat && comments(original.pos.text) == comments(rendered)
+      val solePackage  = after.stats.sizeIs == 1
+      val samePackage  = after.stats.forall(equivalent(original, _))
+      val sameComments = comments(original.pos.text) == comments(rendered)
+
+      solePackage && samePackage && sameComments
     }
 
   /**
@@ -119,7 +122,10 @@ object Equivalence {
       case leaf if leaf.children.isEmpty =>
         leaf.structure
       case node =>
-        node.productPrefix + node.children.filterNot(_.is[Term.EndMarker]).map(canonical).mkString("(", ", ", ")")
+        val withoutMarkers   = node.children.filterNot(_.is[Term.EndMarker])
+        val renderedChildren = withoutMarkers.map(canonical).mkString("(", ", ", ")")
+
+        node.productPrefix + renderedChildren
     }
 
   // The words of the comments in source order, without delimiters and gutters, so that reindenting, reflowing and

@@ -20,8 +20,7 @@ private[dixtra] object Scala2Syntax {
       case _: Type.Existential                   => Some("an existential type")
       case _: Defn.Macro                         => Some("a macro definition")
       case d: Defn.Def if isProcedure(d, source) => Some("procedure syntax")
-      case _                                     => droppedInChildren(tree, source)
-    }
+      case _                                     => droppedInChildren(tree, source)    }
 
   private def droppedInChildren(tree: Tree, source: String): Option[String] =
     tree
@@ -31,10 +30,10 @@ private[dixtra] object Scala2Syntax {
       .nextOption()
 
   // `def f() { ... }`: no `=` before the body (Scalameta gives it a `Unit` result type that is not in the source).
-  private def isProcedure(d: Defn.Def, source: String): Boolean =
-    val clauseEnds   = d.paramClauseGroups.map(_.pos.end)
-    val signatureEnd = clauseEnds.foldLeft(d.name.pos.end)(math.max)
-    val beforeBody   = source.slice(signatureEnd, d.body.pos.start)
+  private def isProcedure(defn: Defn.Def, source: String): Boolean =
+    val clauseEnds   = defn.paramClauseGroups.map(_.pos.end)
+    val signatureEnd = clauseEnds.foldLeft(defn.name.pos.end)(math.max)
+    val beforeBody   = source.slice(signatureEnd, defn.body.pos.start)
     !beforeBody.contains('=')
 
 }

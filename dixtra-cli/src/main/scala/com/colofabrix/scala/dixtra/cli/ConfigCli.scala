@@ -171,29 +171,42 @@ object ConfigCli {
         },
       )
 
-   /**
-    * The configuration of the files that `matching` overrides match, over `settings`. A setting given different values
-    * by two of them is an error.
-    */
-   private[cli] def overridden(settings: HoconConfig, matching: List[PathOverride]): ValidatedNel[String, Config] =
-     val conflicts =
-       matching
-         .flatMap(o => o.settings.entrySet().asScala.toList.map(e => (e.getKey, o.glob, e.getValue.unwrapped)))
-         .groupBy(_._1)
-         .toList
-         .sortBy(_._1)
-         .collect {
-           case (key, values) if values.map(_._3).distinct.sizeIs > 1 =>
-             s"$key is set to different values by ${values.map(v => s"$overridesKey.\"${v._2}\"").mkString(" and ")}"
-         }
+  /**
+   * The configuration of the files that `matching` overrides match, over `settings`. A setting given different values
+   * by two of them is an error.
+   */
+  private[cli] def overridden(settings: HoconConfig, matching: List[PathOverride]): ValidatedNel[String, Config] =
+    val conflicts =
+      matching
+        .flatMap { pathOverride =>
+          pathOverride
+            .settings
+            .entrySet()
+            .asScala
+            .toList
+            .map { entry =>
+              (entry.getKey, pathOverride.glob, entry.getValue.unwrapped)
+            }
+        }
+        .groupBy(_._1)
+        .toList
+        .sortBy(_._1)
+        .collect {
+          case (key, values) if values.map(_._3).distinct.sizeIs > 1 =>
+            s"$key is set to different values by ${values.map(v => s"$overridesKey.\"${v._2}\"").mkString(" and ")}"
+        }
 
-     NonEmptyList.fromList(conflicts) match {
-       case Some(errors) =>
-         Validated.invalid(errors)
-       case None =>
-         val merged = matching.foldLeft(settings)((acc, o) => o.settings.withFallback(acc))
-         Validated.fromEither(read(merged.withFallback(references).resolve())).toValidatedNel
-     }
+    NonEmptyList.fromList(conflicts) match {
+      case Some(errors) =>
+        Validated.invalid(errors)
+      case None =>
+        val merged =
+          matching.foldLeft(settings) { (acc, pathOverride) =>
+            pathOverride.settings.withFallback(acc)
+          }
+
+        Validated.fromEither(read(merged.withFallback(references).resolve())).toValidatedNel
+    }
 
   // The settings outside `path-overrides`, and its entries: each glob with its settings.
   private def splitOverrides(parsed: HoconConfig): Either[String, (HoconConfig, List[(String, HoconConfig)])] =
@@ -267,7 +280,11 @@ object ConfigCli {
           segments
             .indices
             .map(i => ConfigUtil.joinPath(segments.take(i + 1).asJava))
-            .find(path => !Try(known.hasPathOrNull(path)).getOrElse(false) && !aliasPrefixes.contains(path))
+            .find { path =>
+              val isKnown       = Try(known.hasPathOrNull(path)).getOrElse(false)
+              val aliasPrefixed = aliasPrefixes.contains(path)
+              !isKnown && !aliasPrefixed
+            }
         }
         .distinct
 
@@ -307,11 +324,11 @@ object ConfigCli {
       .flatMap {
         case List(major, minor, patch) =>
           for
-            m <- major.toIntOption
-            n <- minor.toIntOption
-            p <- patch.toIntOption
+            majorNumber <- major.toIntOption
+            minorNumber <- minor.toIntOption
+            patchNumber <- patch.toIntOption
           yield
-            (m, n, p)
+            (majorNumber, minorNumber, patchNumber)
         case _ =>
           None
       }
@@ -446,8 +463,10 @@ object ConfigCli {
         .toList
         .foldLeft[Either[FailureReason, Map[Construct, BracePolicy]]](Right(Map.empty)) {
           case (acc, (key, policy)) =>
+            val construct = Construct.values.find(_.key == key)
+
             acc.flatMap { policies =>
-              Construct.values.find(_.key == key) match {
+              construct match {
                 case None =>
                   Left(unknownConstruct(key))
                 case Some(construct) if policy == BracePolicy.ForceEnd && !construct.allowsEnd =>
@@ -507,8 +526,10 @@ object ConfigCli {
     deriveReader[Config]
 
   private def keyed[A](values: List[A])(key: A => String): ConfigReader[A] =
-    ConfigReader[String].emap { s =>
-      values.find(key(_) == s).toRight(cannotConvert(s, s"expected one of ${values.map(key).mkString(", ")}"))
+    ConfigReader[String].emap { written =>
+      values
+        .find(key(_) == written)
+        .toRight(cannotConvert(written, s"expected one of ${values.map(key).mkString(", ")}"))
     }
 
   private def unknownConstruct(key: String): FailureReason =

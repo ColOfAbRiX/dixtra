@@ -97,12 +97,15 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
     else
       val body = terms.renderBody(forLoop.body, indent + 2, forceExplode = false)
 
+      val noEnumComments =
+        ctx.commentsBetween(forLoop.enumsBlock.pos.start, forLoop.enumsBlock.pos.end).isEmpty
+
       val single =
         forLoop.enumsBlock.enums match {
-          case only :: Nil if ctx.commentsBetween(forLoop.enumsBlock.pos.start, forLoop.enumsBlock.pos.end).isEmpty =>
-            Some(enumerator(only, indent + 4, None)).filter(
-              enumerated => ctx.fits(Doc.text("for ") ++ enumerated ++ Doc.text(" do"), indent),
-            )
+          case only :: Nil if noEnumComments =>
+            Some(enumerator(only, indent + 4, None)).filter { enumerated =>
+              ctx.fits(Doc.text("for ") ++ enumerated ++ Doc.text(" do"), indent)
+            }
           case _ =>
             None
         }
@@ -159,7 +162,7 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
           enums.flatMap(header).map(_.width).maxOption
         }
         .flatten
-      
+
     val docs = lines.map { case (lead, guards) => enumeratorLine(lead, guards, indent + 2, column) }
 
     Doc.Nest(2, Doc.Line ++ comments.lines(docs))
@@ -249,16 +252,16 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
 
   private def generated(enumeratorTree: Enumerator): Option[Term] =
     enumeratorTree match {
-      case g: Enumerator.Generator     => Some(g.rhs)
-      case g: Enumerator.CaseGenerator => Some(g.rhs)
-      case v: Enumerator.Val           => Some(v.rhs)
-      case _                           => None
+      case e: Enumerator.Generator     => Some(e.rhs)
+      case e: Enumerator.CaseGenerator => Some(e.rhs)
+      case e: Enumerator.Val         => Some(e.rhs)
+      case _                             => None
     }
 
   private def expression(enumeratorTree: Enumerator): Option[Term] =
     enumeratorTree match {
-      case g: Enumerator.Guard => Some(g.cond)
-      case _                   => generated(enumeratorTree)
+      case guard: Enumerator.Guard => Some(guard.cond)
+      case _                       => generated(enumeratorTree)
     }
 
   // The yield expression after `yield`, placed by `body.for-yield`: on the `yield` line out of any braces it had, or
@@ -268,7 +271,7 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
     val value   = BodyLayout.unwrapped(ctx, body)
     val doc     = terms.renderBody(value, indent + 2, forceExplode = false)
     val keyword = if braces then "} yield " else "yield "
-    
+
     val yieldEnd =
       ctx
         .tokensBetween(forYield.enumsBlock.pos.end, ctx.span(body)._1)

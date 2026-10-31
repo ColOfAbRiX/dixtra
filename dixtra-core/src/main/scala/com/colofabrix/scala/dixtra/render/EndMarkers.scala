@@ -17,11 +17,14 @@ private[render] object EndMarkers {
    * themselves are left out of the list.
    */
   def pair(ctx: RenderContext, stats: List[Stat]): List[(Stat, Option[Term.EndMarker])] =
+    def whitespaceBetween(prev: Stat, marker: Term.EndMarker): Boolean =
+      ctx.slice(prev.pos.end, marker.pos.start).forall(_.isWhitespace)
+
     stats
       .foldLeft(List.empty[(Stat, Option[Term.EndMarker])]) {
-        case ((prev, None) :: rest, m: Term.EndMarker)
-            if Constructs.closes(prev, m) && ctx.slice(prev.pos.end, m.pos.start).forall(_.isWhitespace) =>
-          (prev, Some(m)) :: rest
+        case ((prev, None) :: rest, marker: Term.EndMarker)
+            if Constructs.closes(prev, marker) && whitespaceBetween(prev, marker) =>
+          (prev, Some(marker)) :: rest
         case (acc, stat) =>
           (stat, None) :: acc
       }
@@ -32,11 +35,14 @@ private[render] object EndMarkers {
    * (it does not end with `}`) and spans several lines. `existing` is the marker the source had.
    */
   def marker(ctx: RenderContext, stat: Tree, existing: Option[Term.EndMarker], rendered: String): Option[String] =
+    def braceless(text: String): Boolean =
+      text.trim.contains('\n') && !text.stripTrailing.endsWith("}")
+
     for
       construct <- Constructs.of(stat)
       name      <- Constructs.endName(stat)
                    if construct.allowsEnd
-                   if rendered.trim.contains('\n') && !rendered.stripTrailing.endsWith("}")
+                   if braceless(rendered)
                    if ctx.braceStyle(construct, braced = false, ended = existing.isDefined) == BracePolicy.ForceEnd
     yield
       "end " + name

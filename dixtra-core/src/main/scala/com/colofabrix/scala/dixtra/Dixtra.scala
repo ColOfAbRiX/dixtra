@@ -186,15 +186,10 @@ object Dixtra {
         Right(once)
       else
         val relaid =
-          parse(once, dialect)
-            .map(
-              t =>
-                Normalize(
-                  new TreeRenderer(once, config).renderSource(t),
-                  config,
-                  dialect,
-                ),
-            )
+          parse(once, dialect).map { reparsed =>
+            val renderedAgain = new TreeRenderer(once, config).renderSource(reparsed)
+            Normalize(renderedAgain, config, dialect)
+          }
 
         Right(relaid.getOrElse(once))
     } catch {

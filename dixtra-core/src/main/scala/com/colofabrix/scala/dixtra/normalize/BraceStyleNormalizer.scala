@@ -115,10 +115,10 @@ object BraceStyleNormalizer {
   private def continuations(text: Text, tree: Tree, style: BracesStyle, maxColumn: Int): List[Edit] =
     descendants(tree)
       .flatMap {
-        case t: Term.If       => List(t.thenp).filter(_.is[Term.Block])
-        case t: Term.Try      => List(t.expr).filter(_.is[Term.Block]) ++ t.catchClause.toList
-        case t: Term.ForYield => List(t.enumsBlock)
-        case _                => Nil
+        case term: Term.If        => List(term.thenp).filter(_.is[Term.Block])
+        case term: Term.Try      => List(term.expr).filter(_.is[Term.Block]) ++ tryTerm.catchClause.toList
+        case term: Term.ForYield => List(term.enumsBlock)
+        case _                      => Nil
       }
       .flatMap { closed =>
         // A construct without braces can still end with a `}`, as the enumerators of a braceless `for` ending with a

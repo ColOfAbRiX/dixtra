@@ -39,11 +39,14 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
     val outside =
       ctx
         .commentsBetween(parts.nameEnd, end)
-        .exists { c =>
-          !spans.exists { case (s, e) => c.start >= s && c.end <= e }
+        .exists { comment =>
+          val insideAnySpan = spans.exists { case (from, to) => comment.start >= from && comment.end <= to }
+          !insideAnySpan
         }
     val inEmptyClause =
-      clauses.exists(c => c.values.isEmpty && ctx.commentsBetween(c.pos.start, c.pos.end).nonEmpty)
+      clauses.exists { clause =>
+        clause.values.isEmpty && ctx.commentsBetween(clause.pos.start, clause.pos.end).nonEmpty
+      }
     outside || inEmptyClause
 
   /**
@@ -108,9 +111,12 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
   private def typeParam(tparam: Type.Param, indent: Int): Doc =
     val (start, end) = ctx.span(tparam)
     val inner        = tparam.tparamClause
+    val noInner      = inner.values.isEmpty
+    val fitsOneLine  = ctx.fits(oneLine(tparam) ++ Doc.text(","), indent)
+
     if ctx.commentsBetween(start, end).nonEmpty then
       ctx.sourceDoc(tparam)
-    else if inner.values.isEmpty || ctx.fits(oneLine(tparam) ++ Doc.text(","), indent) then
+    else if noInner || fitsOneLine then
       oneLine(tparam)
     else
       val comma = ctx.config.trailingCommas == TrailingCommas.Always

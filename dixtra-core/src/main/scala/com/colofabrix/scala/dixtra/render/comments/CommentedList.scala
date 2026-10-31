@@ -132,13 +132,13 @@ private[render] object CommentedList {
         .indices
         .toList
         .map(i => docs(classified(i), Kind.OwnLine))
-    
+
     val trailings =
       elements
         .indices
         .toList
         .map(i => spaced(docs(classified(i + 1), Kind.Trailing)))
-    
+
     val closing =
       classified
         .lastOption
@@ -162,18 +162,20 @@ private[render] object CommentedList {
     case Prefix, Trailing, OwnLine
   }
 
-  private def classify(ctx: RenderContext, c: Token.Comment, prevEnd: Option[Int], nextStart: Option[Int]): Kind =
-    val gluedToNext    = !isLineComment(c) && nextStart.exists(n => !ctx.slice(c.end, n).contains('\n'))
-    val sameLineAsPrev = prevEnd.exists(p => !ctx.slice(p, c.start).contains('\n'))
+  private def classify(ctx: RenderContext, comment: Token.Comment, prevEnd: Option[Int], nextStart: Option[Int]): Kind =
+    def noNewline(from: Int, to: Int): Boolean = !ctx.slice(from, to).contains('\n')
 
-    if gluedToNext then 
+    val gluedToNext    = !isLineComment(comment) && nextStart.exists(noNewline(comment.end, _))
+    val sameLineAsPrev = prevEnd.exists(noNewline(_, comment.start))
+
+    if gluedToNext then
       Kind.Prefix
-    else if sameLineAsPrev then 
+    else if sameLineAsPrev then
       Kind.Trailing
-    else 
+    else
       Kind.OwnLine
 
-  private def isLineComment(c: Token.Comment): Boolean =
-    c.text.startsWith("//")
+  private def isLineComment(comment: Token.Comment): Boolean =
+    comment.text.startsWith("//")
 
 }
