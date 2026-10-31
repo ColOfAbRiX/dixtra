@@ -12,6 +12,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class TryCatchSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a single-line try/catch that overflows" should {
+
     "break both blocks together, keeping braces on the keyword lines" in {
       val input =
         "def f = try { risky() } catch { case e => recover(e) }\n"
@@ -27,9 +28,11 @@ class TryCatchSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, 40)
     }
+  
   }
 
   "a braceless try/catch" should {
+
     "add braces on the keyword lines" in {
       val input =
         """def f =
@@ -48,6 +51,7 @@ class TryCatchSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatStablyTo(expected)
     }
+  
   }
 
 }

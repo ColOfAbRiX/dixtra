@@ -11,13 +11,16 @@ import org.scalatest.wordspec.AnyWordSpec
 class WhitespaceSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "extra spaces around = and around an infix operator" should {
+
     "collapse to a single space" in {
       val table = List("val a =      \"3\"\n" -> "val a = \"3\"\n", "val a = 1   +   2\n" -> "val a = 1 + 2\n")
       table.foreach((input, expected) => input should formatTo(expected))
     }
+
   }
 
   "extra spaces inside a string literal" should {
+
     "be preserved" in {
       val input = "val a = \"hello     world\"\n"
 
@@ -25,9 +28,11 @@ class WhitespaceSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+
   }
 
   "indentation" should {
+
     "be preserved while inner runs collapse" in {
       val input =
         """object A {
@@ -38,8 +43,10 @@ class WhitespaceSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """object A {
           |  val a = 1
           |}""".stripMargin
+          
       input should formatTo(expected)
     }
+
   }
 
 }

@@ -79,7 +79,10 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
     val (breakBefore, breakAfter) = authorBreaks(infix, arg)
     val lhs                       = applications.operand(infix.lhs, indent)
     val op                        = ctx.ownSourceDoc(infix.op)
-    def assigned                  = lhs ++ Doc.text(" ") ++ op ++ Doc.Nest(2, Doc.Line ++ rhs(infix, arg, indent + 2))
+
+    def assigned =
+      lhs ++ Doc.text(" ") ++ op ++ Doc.Nest(2, Doc.Line ++ rhs(infix, arg, indent + 2))
+
     if breakBefore then
       lhs ++ Doc.Line ++ op ++ Doc.text(" ") ++ rhs(infix, arg, indent)
     else if breakAfter && isAssignment(infix.op.value) then
@@ -88,9 +91,12 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
       lhs ++ Doc.text(" ") ++ op ++ Doc.Line ++ rhs(infix, arg, indent)
     else
       val inline = lhs ++ Doc.text(" ") ++ op ++ Doc.text(" ") ++ rhs(infix, arg, indent)
-      if !ctx.overflows(inline, indent) then inline
-      else if isAssignment(infix.op.value) then assigned
-      else Doc.intercalate(Doc.text(" ") ++ op ++ Doc.Line, run(infix, arg, indent))
+      if !ctx.overflows(inline, indent) then 
+        inline
+      else if isAssignment(infix.op.value) then 
+        assigned
+      else
+        Doc.intercalate(Doc.text(" ") ++ op ++ Doc.Line, run(infix, arg, indent))
 
   // The operation broken after every operator, when an operand before an operator is over several lines; None
   // otherwise. A chain operand that does not fit with what follows it on its line (` >>`, ` >> { x =>`) breaks, and the
@@ -225,7 +231,9 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
   def segments(infix: Term.ApplyInfix, indent: Int, operators: Set[String]): Option[List[Int]] =
     columns(infix, indent, operators).flatMap { (head, rest) =>
       val widths = (head :: rest.map((op, operand) => Doc.text("  ") ++ op ++ operand)).map(Render.flatWidth)
-      Option.when(widths.forall(_.isDefined))(widths.flatten.dropRight(1))
+      Option.when(widths.forall(_.isDefined)) { 
+        widths.flatten.dropRight(1)
+      }
     }
 
   /**

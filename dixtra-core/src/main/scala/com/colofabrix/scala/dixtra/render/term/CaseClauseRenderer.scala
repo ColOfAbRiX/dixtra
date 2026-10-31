@@ -36,18 +36,24 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
 
     kwMatch match {
       case Some(kw) if !commented =>
-        val clauses = (edges: BlankLinePolicy) => cases(kw.end, block.cases, block.pos.end, indent + 2, edges)
+        val clauses = 
+          (edges: BlankLinePolicy) => cases(kw.end, block.cases, block.pos.end, indent + 2, edges)
+
         val written =
           ctx
             .tokensBetween(kw.end, block.pos.end)
             .find(!_.is[Token.Whitespace])
             .exists(_.is[Token.LeftBrace])
+
         if ctx.usesBraces(Construct.Match, written) then
           ctx.sourceDoc(matchTerm.expr) ++
           Doc.text(" match ") ++
           Doc.braced(clauses(ctx.config.blankLines(Construct.Match)))
         else
-          ctx.sourceDoc(matchTerm.expr) ++ Doc.text(" match") ++ Doc.Nest(2, Doc.Line ++ clauses(BlankLinePolicy.Never))
+          ctx.sourceDoc(matchTerm.expr) ++
+          Doc.text(" match") ++
+          Doc.Nest(2, Doc.Line ++
+          clauses(BlankLinePolicy.Never))
       case _ =>
         ctx.ownSourceDoc(matchTerm)
     }
@@ -80,7 +86,9 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
           inline
         else
           val bracedTry =
-            ctx.tokensBetween(tryTerm.pos.start, ctx.span(tryTerm.expr)._1).exists(_.is[Token.LeftBrace])
+            ctx
+              .tokensBetween(tryTerm.pos.start, ctx.span(tryTerm.expr)._1)
+              .exists(_.is[Token.LeftBrace])
 
           val bracedBody = tryTerm.expr.is[Term.Block] && ctx.writtenWithBraces(tryTerm.expr)
 
@@ -259,6 +267,7 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
         val lead   = pattern ++ pad ++ Doc.text(" =>")
         val body   = BodyLayout.of(ctx, terms, arrowEnd, oneCase.body, indent + 2, Some(Construct.CaseBody))
         val column = ctx.columnAfter(lead, indent) + 1
+
         if below then
           body.belowSeparator(lead)
         else

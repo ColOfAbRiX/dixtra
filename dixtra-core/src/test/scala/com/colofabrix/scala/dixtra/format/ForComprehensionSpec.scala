@@ -186,6 +186,7 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
           |    ()
           |  }
           |""".stripMargin
+          
       val config = withBraces(Construct.ForYield -> BracePolicy.Keep)
 
       val expected =

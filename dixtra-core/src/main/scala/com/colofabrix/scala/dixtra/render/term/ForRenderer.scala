@@ -89,8 +89,12 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
         .filterNot(_ => BodyLayout.singleBelow(policy, member))
         .getOrElse {
           val bracedBody = terms.bracedBody(forLoop.body, indent + 2, Construct.For)
+
           val opening =
-            Doc.text("for {") ++ enumeratorLines(forLoop.enumsBlock, indent) ++ Doc.Line ++ Doc.text("} ")
+            Doc.text("for {") ++ 
+            enumeratorLines(forLoop.enumsBlock, indent) ++ 
+            Doc.Line ++ 
+            Doc.text("} ")
 
           opening ++ Doc.braced(bracedBody)
         }
@@ -120,18 +124,22 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
 
       def afterDo(lineWidth: Int): Doc =
         val member = BodyLayout.Member(below, ctx.fits(body, lineWidth + 1), BodyLayout.isSimple(ctx, forLoop.body))
-        if BodyLayout.singleBelow(policy, member) then Doc.Nest(2, Doc.Line ++ body)
-        else Doc.text(" ") ++ body
+
+        if BodyLayout.singleBelow(policy, member) then 
+          Doc.Nest(2, Doc.Line ++ body)
+        else 
+          Doc.text(" ") ++ body
 
       single match {
         case Some(enumerators) =>
           val head = Doc.text("for ") ++ enumerators ++ Doc.text(" do")
-
           head ++ afterDo(ctx.columnAfter(head, indent))
         case None =>
-          val opening = Doc.text("for") ++ enumeratorLines(forLoop.enumsBlock, indent) ++ Doc.Line ++ Doc.text("do")
-
-          opening ++ afterDo(indent + 2)
+          Doc.text("for") ++
+          enumeratorLines(forLoop.enumsBlock, indent) ++
+          Doc.Line ++
+          Doc.text("do") ++
+          afterDo(indent + 2)
       }
 
   // The enumerators on one line, `;` before a generator or a value definition and a space before a guard; None with
@@ -143,7 +151,13 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
           .enums
           .zipWithIndex
           .foldLeft(Doc.Empty) { case (acc, (current, index)) =>
-            val separator = if index == 0 then Doc.Empty else if isGuard(current) then Doc.text(" ") else Doc.text("; ")
+            val separator = 
+              if index == 0 then 
+                Doc.Empty
+              else if isGuard(current) then
+                Doc.text(" ")
+              else 
+                Doc.text("; ")
 
             acc ++ separator ++ enumerator(current, indent, None)
           }
@@ -210,7 +224,10 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
   private def enumeratorLine(lead: Enumerator, guards: List[Enumerator.Guard], indent: Int, column: Option[Int]): Doc =
     guards.foldLeft(enumerator(lead, indent, column)) { (acc, guard) =>
       val onLine = acc ++ Doc.text(" ") ++ enumerator(guard, indent, None)
-      if ctx.fits(onLine, indent) then onLine else acc ++ Doc.Line ++ enumerator(guard, indent, column)
+      if ctx.fits(onLine, indent) then
+        onLine
+      else
+        acc ++ Doc.Line ++ enumerator(guard, indent, column)
     }
 
   // An enumerator: its header as written, then its expression. A generator or a value definition starts its expression

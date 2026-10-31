@@ -46,6 +46,7 @@ private[term] final class InterpolationRenderer(ctx: RenderContext, terms: TermR
         .zip(texts.drop(1))
         .map { case (splice, textPart) => splice + textPart }
         .mkString
+        
     val text      = texts.headOption.getOrElse("") + spliced
     val lineCount = text.count(_ == '\n')
 

@@ -93,8 +93,6 @@ object TrailingCommentNormalizer {
   // The trailing comments of `source`: a one-line comment with only whitespace after it on its line, after code that
   // ends on its line.
   private def trailings(source: String, tokens: Vector[Token]): List[Trailing] =
-    val solid = tokens.filterNot(t => t.is[Token.Whitespace] || t.is[Token.BOF] || t.is[Token.EOF])
-
     // After code on its line, on one line, with only whitespace after it.
     def isTrailing(code: Token, comment: Token.Comment): Boolean =
       val realCode   = !code.is[Token.Comment]
@@ -102,6 +100,8 @@ object TrailingCommentNormalizer {
       val afterCode  = code.end > SourceEdits.lineStart(source, comment.start)
       val blankAfter = source.slice(comment.end, SourceEdits.lineEnd(source, comment.end)).isBlank
       realCode && oneLine && afterCode && blankAfter
+
+    val solid = tokens.filterNot(t => t.is[Token.Whitespace] || t.is[Token.BOF] || t.is[Token.EOF])
 
     solid
       .zip(solid.drop(1))
@@ -143,8 +143,11 @@ object TrailingCommentNormalizer {
       def fits(trailing: Trailing): Boolean = column + trailing.end - trailing.start <= maxColumn
 
       if run.forall(fits) then
-        run.map(trailing => Edit(trailing.codeEnd, trailing.start, " " * (column - trailing.codeWidth)))
+        run.map { trailing => 
+          Edit(trailing.codeEnd, trailing.start, " " * (column - trailing.codeWidth))
+        }
       else
-        runs(run.filter(fits)).flatMap(aligned(_, maxColumn))
+        runs(run.filter(fits))
+          .flatMap(aligned(_, maxColumn))
 
 }

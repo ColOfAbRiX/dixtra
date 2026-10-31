@@ -13,36 +13,33 @@ class HousekeepingSpec extends AnyWordSpec with Matchers {
   private def housekeeping(trimTrailingWhitespace: Boolean, enforceEof: Boolean, lineEnding: LineEnding): Config =
     Config.default.copy(housekeeping = HousekeepingConfig(trimTrailingWhitespace, enforceEof, lineEnding))
 
-  private val defaults = Config.default
+  private val defaults = 
+    Config.default
 
-  private val withBlanks = "object A { \n  val x = 1 \t\n  // note  \n}\n"
+  private val withBlanks = 
+    "object A { \n  val x = 1 \t\n  // note  \n}\n"
 
-  private val multilineString = "object A {\n  val s = \"\"\"one  \n  two\t\n  \"\"\" \n}\n"
+  private val multilineString = 
+    "object A {\n  val s = \"\"\"one  \n  two\t\n  \"\"\" \n}\n"
 
   "trim-trailing-whitespace" should {
+    
     "remove the spaces and tabs at the end of each line by default" in {
       val expected = Right("object A {\n  val x = 1\n  // note\n}\n")
-
       val actual = Dixtra.format(withBlanks, defaults)
-
       actual shouldBe expected
     }
 
     "keep the spaces and tabs at the end of a line inside a string literal" in {
       val expected = Right("object A {\n  val s =\n    \"\"\"one  \n  two\t\n  \"\"\"\n}\n")
-
       val actual = Dixtra.format(multilineString, defaults)
-
       actual shouldBe expected
     }
 
     "be idempotent" in {
       val once = Dixtra.format(multilineString, defaults)
-
       val expected = once
-
       val actual = once.flatMap(Dixtra.format(_, defaults))
-
       actual shouldBe expected
     }
 
@@ -59,27 +56,22 @@ class HousekeepingSpec extends AnyWordSpec with Matchers {
   }
 
   "enforce-eof" should {
+    
     "add a missing line break at the end of the file by default" in {
       val expected = Right("object A\n")
-
       val actual = Dixtra.format("object A", defaults)
-
       actual shouldBe expected
     }
 
     "remove the blank lines at the end of the file" in {
       val expected = Right("object A\n")
-
       val actual = Dixtra.format("object A\n\n\n", defaults)
-
       actual shouldBe expected
     }
 
     "keep an empty file empty" in {
       val expected = Right("")
-
       val actual = Dixtra.format("", defaults)
-
       actual shouldBe expected
     }
 
@@ -87,9 +79,7 @@ class HousekeepingSpec extends AnyWordSpec with Matchers {
       val config = housekeeping(true, false, LineEnding.Lf)
 
       val expected = Right("object A")
-
       val actual = Dixtra.format("object A", config)
-
       actual shouldBe expected
     }
   }
@@ -100,9 +90,7 @@ class HousekeepingSpec extends AnyWordSpec with Matchers {
     "keep the line breaks of the file by default" in {
       List("\n", "\r\n", "\r").foreach { eol =>
         val expected = Right(lf.replace("\n", eol))
-
         val actual = Dixtra.format(lf.replace("\n", eol), defaults)
-
         actual shouldBe expected
       }
     }
@@ -115,11 +103,10 @@ class HousekeepingSpec extends AnyWordSpec with Matchers {
           (LineEnding.Cr, "\n", "\r"),
           (LineEnding.Lf, "\r", "\n"),
         )
+
       table.foreach { (ending, fromEol, toEol) =>
         val expected = Right(lf.replace("\n", toEol))
-
         val actual = Dixtra.format(lf.replace("\n", fromEol), housekeeping(true, true, ending))
-
         actual shouldBe expected
       }
     }

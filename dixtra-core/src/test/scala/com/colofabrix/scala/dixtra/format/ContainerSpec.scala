@@ -15,6 +15,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "an object, a class or a trait body" should {
+
     "format its members while preserving the header and braces" in {
       List("object", "class", "trait").foreach { keyword =>
         val input =
@@ -37,9 +38,11 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
         input should formatTo(expected)
       }
     }
+    
   }
 
   "container padding" should {
+
     "count a multiline scaladoc right after the brace as a leading blank" in {
       val input =
         """class Temp {
@@ -104,9 +107,11 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "blank line between methods" should {
+
     "keep a single blank line between two methods" in {
       val input =
         """class A {
@@ -140,9 +145,11 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "container padding with multiple members" should {
+
     "keep both blanks when both are present" in {
       val input =
         """class A {
@@ -199,9 +206,11 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "a braced container with a self type" should {
+
     "balance its padding" in {
       val input =
         """trait T { self =>
@@ -220,9 +229,11 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "a braceless container" should {
+
     "not have padding inserted around nested braces" in {
       val input =
         """object A:
@@ -252,9 +263,11 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "package clauses" should {
+
     "format the members of a file with a package clause" in {
       val input =
         """package a
@@ -323,6 +336,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
 }

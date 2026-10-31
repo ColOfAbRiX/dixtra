@@ -48,7 +48,9 @@ private[dixtra] object SourceEdits {
    * empty block comment nor a banner of stars.
    */
   def isScaladoc(comment: String): Boolean =
-    comment.startsWith("/**") && !comment.startsWith("/**/") && !comment.startsWith("/***")
+    comment.startsWith("/**") && 
+    !comment.startsWith("/**/") && 
+    !comment.startsWith("/***")
 
   /**
    * The Scala 3 tokens of `source`, or None when it cannot be tokenised.

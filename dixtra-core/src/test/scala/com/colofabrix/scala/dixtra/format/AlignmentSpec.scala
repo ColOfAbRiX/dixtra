@@ -323,6 +323,7 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "a for-comprehension" should {
+
     "align the start of every right-hand side" in {
       val input =
         """def f =
@@ -463,9 +464,11 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, withBraces(Construct.ForYield -> BracePolicy.Keep))
     }
+    
   }
 
   "the cases of a match" should {
+
     "align the arrows of consecutive one-line cases" in {
       val input =
         """def f =
@@ -648,6 +651,7 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, withBody(_.copy(caseBody = MultiBodyPolicy.AlwaysJoin)))
     }
+    
   }
 
   "the pairs of an exploded argument list" should {

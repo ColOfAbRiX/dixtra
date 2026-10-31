@@ -112,8 +112,10 @@ object CommentNormalizer {
 
   private def spaced(comment: String): String =
     val content = comment.drop(2)
-    if content.isEmpty || content.headOption.exists(_.isWhitespace) then comment
-    else "// " + content
+    if content.isEmpty || content.headOption.exists(_.isWhitespace) then 
+      comment
+    else "// " + 
+    content
 
   // Runs of own-line `//` comments on consecutive lines at the same column.
   private def lineCommentRuns(text: CommentSource, comments: Vector[Token.Comment]): List[Vector[Token.Comment]] =
@@ -156,7 +158,8 @@ object CommentNormalizer {
   ): List[Edit] =
     comments
       .toList
-      .filter(comment => comment.text.startsWith("/*") && text.ownLine(comment))
+      .filter { comment => comment.text.startsWith("/*") && text.ownLine(comment)
+      }
       .flatMap { comment =>
         if SourceEdits.isScaladoc(comment.text) then
           scaladoc(text, comment, maxColumn, alignTags)
@@ -553,7 +556,6 @@ object CommentNormalizer {
   private def badStart(word: String): Boolean =
     val looksStructured = itemMarker.matches(word) || noteStart.matches(word)
     val looksReserved   = List("@", "|", "#", "=", "}", ")", "```", "{{{", "<pre").exists(word.startsWith)
-
     looksStructured || looksReserved || isBanner(word)
 
 }

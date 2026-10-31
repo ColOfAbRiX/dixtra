@@ -26,9 +26,11 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
     "explode one element per line, keeping the comment on its element" in {
       input should formatStablyTo(expected, 80)
     }
+    
   }
 
   "a fitting argument list with a block comment" should {
+
     "stay inline with the comment" in {
       val input = "val xs = List(a, /* n */ b)\n"
 
@@ -36,9 +38,11 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "an argument list with a line comment" should {
+
     "explode even when it would fit" in {
       val input = "val xs = List(a, // n\n  b)\n"
 
@@ -71,9 +75,11 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "an argument list with an own-line comment" should {
+
     "keep the comment on its own line before its element" in {
       val input =
         """val xs = List(
@@ -94,9 +100,11 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "an overflowing signature with a comment between parameters" should {
+
     "explode its parameters, keeping the comment on its parameter" in {
       val input = "def f(a: Int, /* legacy */ b: Int, c: Int, d: Int, e: Int, f: Int, g: Int): Int = 1\n"
 
@@ -114,9 +122,11 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, 80)
     }
+    
   }
 
   "a signature with a line comment on a parameter" should {
+
     "explode and keep the comment after the comma" in {
       val input = "def f(a: Int, // first\n  b: Int): Int = 1\n"
 
@@ -129,9 +139,11 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatStablyTo(expected)
     }
+    
   }
 
   "a chain with a comment before a dot" should {
+
     "explode, keeping the comment after the previous selection" in {
       val input = "val x = xs.map(f) /* c */ .filter(g).map(h).filter(anotherVeryLongPredicateName).toList\n"
 
@@ -164,6 +176,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "an if/else with a comment" should {
@@ -191,9 +204,11 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "a comment after =" should {
+
     "not swallow the body of a val" in {
       val input = "val x = // important\n  42\n"
 
@@ -209,9 +224,11 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "a comment in a block" should {
+
     "stay on its own line between statements" in {
       val input =
         """def f =
@@ -241,6 +258,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
 }

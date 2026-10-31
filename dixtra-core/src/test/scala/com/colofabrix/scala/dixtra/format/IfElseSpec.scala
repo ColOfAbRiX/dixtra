@@ -12,11 +12,13 @@ import org.scalatest.wordspec.AnyWordSpec
 class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a long if/else in a def body (bare)" should {
+
     "break both branches consistently" in {
       val input =
         """def f =
           |  if someLongCondition then firstBranch() else secondBranch()
           |""".stripMargin
+
       val expected =
         """def f =
           |  if someLongCondition then
@@ -24,11 +26,14 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  else
           |    secondBranch()
           |""".stripMargin
+
       input should formatTo(expected, Config.withMaxColumn(50))
     }
+    
   }
 
   "an explicit else ()" should {
+
     "be kept, as a bare if has the same tree" in {
       val input =
         """def f =
@@ -50,14 +55,14 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "not be added to a bare if" in {
       val input = "def f =\n  if enabled then\n    run()\n"
-
       val expected = input
-
       input should formatTo(expected)
     }
+    
   }
 
   "an if/else with a multiline branch" should {
+
     "explode instead of inlining the child's line breaks" in {
       val input = "val x = if c then { a; b } else d\n"
 
@@ -69,11 +74,14 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  else
           |    d
           |""".stripMargin
+
       input should formatTo(expected)
     }
+    
   }
 
   "an else-if chain" should {
+
     "keep each branch on its line and each else on its own line" in {
       val input =
         """def f(x: Int): String =
@@ -105,16 +113,16 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  else
           |    "many"
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
     "stay on one line when it fits" in {
       val input = "val s = if x == 0 then \"zero\" else if x == 1 then \"one\" else \"many\"\n"
-
       val expected = input
-
       input should formatTo(expected)
     }
+    
   }
 
 }

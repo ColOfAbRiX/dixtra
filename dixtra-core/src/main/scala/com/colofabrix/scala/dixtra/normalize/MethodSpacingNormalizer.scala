@@ -74,21 +74,19 @@ object MethodSpacingNormalizer {
   ): String =
     val insertBefore = blankBefore(layout, alignment, betweenGroups, beforeScaladoc) ++ blankAfterDocumented(layout)
     val removed      = blanksToRemove(layout, alignment, betweenGroups)
-
-    val out =
-      layout
-        .lines
-        .zipWithIndex
-        .flatMap { case (line, i) =>
-          if removed.contains(i) then
-            Vector.empty
-          else if insertBefore.contains(i) then
-            Vector("", line)
-          else
-            Vector(line)
-        }
-
-    out.mkString("\n")
+    
+    layout
+      .lines
+      .zipWithIndex
+      .flatMap { case (line, i) =>
+        if removed.contains(i) then
+          Vector.empty
+        else if insertBefore.contains(i) then
+          Vector("", line)
+        else
+          Vector(line)
+      }
+      .mkString("\n")
 
   // The lines that get a blank line before them: the first line of a method with its decorations after other content,
   // and a one-liner after one of another alignment group when those are always separated.

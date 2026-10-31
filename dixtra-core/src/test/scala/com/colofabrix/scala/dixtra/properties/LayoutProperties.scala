@@ -61,7 +61,7 @@ object LayoutProperties {
             Vector.empty
       }
 
-  /**
+  /** 
    * Within a select chain, breaking is complete: either every `.member` selection begins a new line, or none do.
    *
    * Detected textually per top-level statement: if any line (after the receiver) starts with `.` then *all* subsequent

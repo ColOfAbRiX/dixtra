@@ -24,7 +24,6 @@ object Equivalence {
     parse[Stat](rendered).exists { after =>
       val sameStructure = equivalent(original, after)
       val sameComments  = comments(original.pos.text) == comments(rendered)
-
       sameStructure && sameComments
     }
 
@@ -36,7 +35,6 @@ object Equivalence {
     parse[Source](rendered).exists { after =>
       val samePackage  = after.stats.forall(equivalent(original, _))
       val sameComments = comments(original.pos.text) == comments(rendered)
-
       after.stats.sizeIs == 1 && samePackage && sameComments
     }
 
@@ -57,7 +55,6 @@ object Equivalence {
       parse[Source](formatted, dialect).exists { after =>
         val sameStructure = equivalent(original, after)
         val sameComments  = comments(originalText) == comments(formatted)
-
         sameStructure && sameComments
       }
 

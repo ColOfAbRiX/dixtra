@@ -41,6 +41,7 @@ private[term] final class AssignRenderer(ctx: RenderContext, terms: TermRenderer
         val lhs    = ctx.sourceDoc(assign.lhs)
         val lead   = lhs ++ Alignment.padding(padTo, Render.flatWidth(lhs)) ++ Doc.text(" =")
         val column = ctx.columnAfter(lead, indent) + 1
+
         bracedValue(assign, indent, column) match {
           case Some(braced) =>
             lead ++ Doc.text(" ") ++ braced
@@ -139,7 +140,9 @@ private[term] final class AssignRenderer(ctx: RenderContext, terms: TermRenderer
 
   // The braced value, when it is a block or a partial function.
   private def bracedValue(assign: Term.Assign, indent: Int, column: Int): Option[Doc] =
-    if ctx.hasGapComments(assign) then None
-    else applications.braced(assign.rhs, indent, column)
+    if ctx.hasGapComments(assign) then
+      None
+    else 
+      applications.braced(assign.rhs, indent, column)
 
 }

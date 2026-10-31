@@ -11,11 +11,13 @@ import org.scalatest.wordspec.AnyWordSpec
 class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a fitting-but-author-broken chain (bare)" should {
+
     "explode so each selection is on its own line" in {
       val input =
         """val x =
           |  list.filter(_ > 0).map(_ * 2).headOption
           |""".stripMargin
+          
       val expected =
         """val x =
           |  list
@@ -23,11 +25,14 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    .map(_ * 2)
           |    .headOption
           |""".stripMargin
+
       input should formatStablyTo(expected)
     }
+
   }
 
   "a fitting-but-author-broken chain (wrapped)" should {
+
     "explode within an object body, preserving indentation" in {
       val input =
         """object A {
@@ -43,11 +48,14 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      .map(_ * 2)
           |      .headOption
           |}""".stripMargin
+
       input should formatTo(expected)
     }
+
   }
 
   "a chain with a single higher-order-function call" should {
+
     "hang the lambda block below = without exploding the sole selection (D1)" in {
       val input =
         """val x = list.map { x =>
@@ -59,11 +67,14 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  list.map { x =>
           |    x + 1
           |  }""".stripMargin
+
       input should formatStablyTo(expected)
     }
+
   }
 
   "a chain with multiple calls including a lambda block" should {
+
     "explode each selection onto its own line, keeping the lambda block" in {
       val input =
         """val x = list.map { x =>
@@ -77,8 +88,10 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      x + 1
           |    }
           |    .filter(_ > 0)""".stripMargin
+
       input should formatTo(expected)
     }
+
   }
 
   "an exploded chain with a one-line lambda (D3)" should {
@@ -148,6 +161,7 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "a single-selection chain after a long receiver" should {
+
     "measure its arguments from where they start on the line" in {
       val input =
         """val c =
@@ -160,11 +174,14 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    e => e > 1000000000,
           |  )
           |""".stripMargin
+
       input should formatStablyTo(expected, 60)
     }
+
   }
 
   "a chain with redundant whitespace" should {
+
     "be measured on the normalised text, not on redundant source whitespace" in {
       val input = "val x = xs.map(f)          .filter(g)\n"
 
@@ -172,9 +189,11 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, 28)
     }
+
   }
 
   "a curried call" should {
+
     "keep a single case on the line of its brace when written there" in {
       val input =
         """def f(docs: List[Doc]): Doc =
@@ -210,11 +229,14 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |        acc ++ d
           |    }
           |""".stripMargin
+
       input should formatTo(expected)
     }
+
   }
 
   "an exploded chain with a call that has type arguments" should {
+
     "indent the call's arguments under its own line" in {
       val input =
         """val input: Opts[Path] =
@@ -231,9 +253,11 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+
   }
 
   "a chain that starts with a path ending at a capitalised name" should {
+
     "keep the path together and count only the selections after it" in {
       val input =
         """def f =
@@ -266,6 +290,7 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    .sorted
           |    .distinct
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -286,6 +311,7 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      .trim
           |  }
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -302,6 +328,7 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    .Defaults
           |    .value(x)
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -322,11 +349,14 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      .trim
           |  }
           |""".stripMargin
+
       input should formatTo(expected)
     }
+
   }
 
   "a chain on a parenthesised receiver" should {
+
     "re-indent its lambda arguments with its selections" in {
       val input =
         """object A {
@@ -348,16 +378,16 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      .toVector
           |}
           |""".stripMargin
+
       input should formatStablyTo(expected)
     }
 
     "not reach inside the parentheses" in {
       val input = "val d =\n  (xs.map(f)).filter(p).map(g).sum\n"
-
       val expected = "val d =\n  (xs.map(f))\n    .filter(p)\n    .map(g)\n    .sum\n"
-
       input should formatTo(expected)
     }
+
   }
 
 }

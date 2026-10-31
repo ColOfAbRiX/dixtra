@@ -11,6 +11,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a val inside a def body" should {
+
     "be formatted like a top-level val" in {
       val input =
         """def f =
@@ -28,11 +29,14 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      .sum
           |  ys
           |""".stripMargin
+
       input should formatTo(expected)
     }
+    
   }
 
   "a def inside a def body" should {
+
     "be formatted like a top-level def" in {
       val input =
         """def f =
@@ -46,6 +50,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    first
           |  g(1, 2)
           |""".stripMargin
+
       input should formatTo(expected, 40)
     }
 
@@ -70,11 +75,14 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    }
           |  loop(term, Nil)
           |""".stripMargin
+
       input should formatTo(expected)
     }
+    
   }
 
   "a val inside a lambda body" should {
+
     "be formatted like a top-level val" in {
       val input =
         """def f =
@@ -96,11 +104,14 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    println(ys)
           |  }
           |""".stripMargin
+
       input should formatTo(expected)
     }
+    
   }
 
   "a case body" should {
+
     "follow the rules of a body after => (breaking after any receiver by default), the other cases below too" in {
       val input =
         """def f(x: Option[String]) =
@@ -123,6 +134,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      false
           |  }
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -152,6 +164,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      0
           |  }
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -174,6 +187,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |        .nonEmpty
           |  }
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -200,11 +214,14 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |        .nonEmpty
           |  }
           |""".stripMargin
+
       input should formatTo(expected)
     }
+    
   }
 
   "a match with comments between its cases" should {
+
     "be braced, keeping the comments on their cases" in {
       val input =
         """def f(x: Int) =
@@ -222,11 +239,14 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    case _ => "b"
           |  }
           |""".stripMargin
+
       input should formatTo(expected)
     }
+    
   }
 
   "a named argument" should {
+
     "have its value formatted like a body after =" in {
       val input =
         """def f =
@@ -249,11 +269,14 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |      },
           |  )
           |""".stripMargin
+
       input should formatTo(expected)
     }
+    
   }
 
   "a named argument with an application that fits only at the argument's indent" should {
+
     "hang the exploded application from the = line, also when written below the = with always-join" in {
       val input =
         """def f =
@@ -276,9 +299,11 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatStablyTo(expected, config)
     }
+    
   }
 
   "a named argument with a multi-line application" should {
+
     "move the application up to the = line with always-join" in {
       val input =
         """def f =
@@ -357,9 +382,11 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, 30)
     }
+    
   }
 
   "an infix application" should {
+
     "have a block operand formatted" in {
       val input =
         """class ASpec {
@@ -381,6 +408,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    ys
           |  }
           |}""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -419,6 +447,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
 }

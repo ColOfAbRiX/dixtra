@@ -10,11 +10,12 @@ import org.scalatest.wordspec.AnyWordSpec
  */
 class NormalizeSpec extends AnyWordSpec with Matchers {
 
+  private val tripleQuote = 
+    "\"\"\""
+
   // The pipeline with the default configuration.
   private def normalize(rendered: String): String =
     Normalize(rendered, Config.default, SourceDialect.scala)
-
-  private val tripleQuote = "\"\"\""
 
   "a block comment containing blank lines and a def line" should {
 

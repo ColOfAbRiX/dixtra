@@ -15,6 +15,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class BraceSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "def definitions (never braces)" should {
+
     "keep a braceless single-expression body unchanged" in {
       val input = "def f = 1\n"
 
@@ -34,9 +35,11 @@ class BraceSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+
   }
 
   "given (always braces)" should {
+
     "keep an already-braced given body unchanged" in {
       val input =
         """given intOrd: Ord[Int] {
@@ -47,9 +50,11 @@ class BraceSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+
   }
 
   "a block holding a single definition" should {
+
     "become an indented block below =" in {
       val input = "def f(): Unit = { val x = 1 }\n"
 
@@ -57,6 +62,7 @@ class BraceSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """def f(): Unit =
           |  val x = 1
           |""".stripMargin
+
       input should formatTo(expected)
     }
 
@@ -73,8 +79,10 @@ class BraceSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  if c then
           |    val _ = g()
           |""".stripMargin
+          
       input should formatTo(expected)
     }
+
   }
 
 }

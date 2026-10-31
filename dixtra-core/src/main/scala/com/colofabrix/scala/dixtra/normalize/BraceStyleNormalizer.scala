@@ -51,8 +51,10 @@ object BraceStyleNormalizer {
         val noEdits       = edits.isEmpty
         val notEquivalent = !Equivalence.isEquivalentSource(tree, source, out, dialect)
 
-        if noEdits || notEquivalent then source
-        else out
+        if noEdits || notEquivalent then 
+          source
+        else 
+          out
       }
     } catch {
       case NonFatal(_) => source

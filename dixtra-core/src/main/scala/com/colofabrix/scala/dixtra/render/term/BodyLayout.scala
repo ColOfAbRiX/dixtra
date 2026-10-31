@@ -79,8 +79,10 @@ private[render] final class BodyLayout(
    */
   def belowSeparator(lead: Doc): Doc =
     braced match {
-      case Some(block) => lead ++ Doc.text(" ") ++ block
-      case None        => lead ++ trailing ++ Doc.Nest(2, Doc.Line ++ Doc.concat(leading.map(_ ++ Doc.Line)) ++ below)
+      case Some(block) => 
+        lead ++ Doc.text(" ") ++ block
+      case None        => 
+        lead ++ trailing ++ Doc.Nest(2, Doc.Line ++ Doc.concat(leading.map(_ ++ Doc.Line)) ++ below)
     }
 
   /**

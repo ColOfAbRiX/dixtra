@@ -13,6 +13,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class FunctionTypeSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a function type" should {
+
     "have exactly one space around =>" in {
       val table =
         List(
@@ -21,8 +22,12 @@ class FunctionTypeSpec extends AnyWordSpec with Matchers with FormatMatchers {
           "val f: Int   =>   String = _.toString\n" -> "val f: Int => String = _.toString\n",
           "val f: Int=>String = _.toString\n"       -> "val f: Int => String = _.toString\n",
         )
-      table.foreach((input, expected) => input should formatTo(expected))
+        
+      table.foreach { (input, expected) => 
+        input should formatTo(expected)
+      }
     }
+
   }
 
 }

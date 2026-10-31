@@ -76,8 +76,9 @@ object Config {
       callSite = CallSiteConfig(groupsSeparator = GroupsSeparator.PreviousGroup, groupsBreak = GroupsBreak.LastFirst),
       alignment =
         AlignmentConfig(
-          assignmentGroups =
-            List(Set(DefinitionKind.Val, DefinitionKind.LazyVal, DefinitionKind.Var, DefinitionKind.Def)),
+          assignmentGroups = List(
+            Set(DefinitionKind.Val, DefinitionKind.LazyVal, DefinitionKind.Var, DefinitionKind.Def)
+          ),
           operators = List("=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"),
           arrows = ArrowsConfig(cases = true, pairs = true, forEnumerators = true),
           extendsClauses = true,
@@ -88,8 +89,11 @@ object Config {
         ),
       blankLines = BlankLinesConfig.default,
       trailingCommentOverflow = TrailingOverflow.Keep,
-      housekeeping =
-        HousekeepingConfig(trimTrailingWhitespace = true, enforceEof = true, lineEnding = LineEnding.Keep),
+      housekeeping = HousekeepingConfig(
+        trimTrailingWhitespace = true, 
+        enforceEof = true, 
+        lineEnding = LineEnding.Keep
+      ),
       paths = PathsConfig.everything,
     )
 

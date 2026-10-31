@@ -140,8 +140,10 @@ object Dixtra {
                      .map(UnsafeOutputError(_))
       verified  <- verify(lf, tree, restored, dialect)
     yield
-      if eol == "\n" then verified
-      else verified.replace("\n", eol)
+      if eol == "\n" then 
+        verified
+      else 
+        verified.replace("\n", eol)
 
   // Parse the source as written: a Scala 2 source is reported as such, so that it is skipped. It either parses only as
   // Scala 2, or it parses as Scala 3 too but uses a construct that Scala 3 dropped (see [[Scala2Syntax]]).
@@ -183,6 +185,7 @@ object Dixtra {
     try {
       val renderer = new TreeRenderer(source, config)
       val once     = Normalize(renderer.renderSource(tree), config, dialect)
+
       if !renderer.restylesPackage(tree) then
         Right(once)
       else

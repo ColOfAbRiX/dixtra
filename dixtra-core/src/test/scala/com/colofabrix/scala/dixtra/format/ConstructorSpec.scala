@@ -13,6 +13,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "the parameters of a class" should {
+
     "explode when the header overflows, also in a trait" in {
       List("class MyClass" -> "val x = 1", "trait MyTrait" -> "def x: Int").foreach { (header, member) =>
         val input =
@@ -111,9 +112,11 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, 40)
     }
+    
   }
 
   "the parameters of a case class without a body" should {
+
     "explode when they over-flow" in {
       val input = "final case class Person(firstName: String, lastName: String, age: Int)\n"
 
@@ -154,9 +157,11 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
   "the parameters of a plain class written one per line" should {
+
     "join when they fit" in {
       val input =
         """class Point(
@@ -169,6 +174,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
 }

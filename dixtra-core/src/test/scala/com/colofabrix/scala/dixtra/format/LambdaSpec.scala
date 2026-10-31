@@ -43,7 +43,6 @@ class LambdaSpec extends AnyWordSpec with Matchers with FormatMatchers {
     "stay on the = line when written there" in {
       List("val f = x => x + 1\n", "val f = (x: Int) => x + 1\n").foreach { input =>
         val expected = input
-
         input should formatTo(expected)
       }
     }

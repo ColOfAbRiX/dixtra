@@ -35,8 +35,18 @@ object Main extends IODeclineApp[CliOptions] {
    * Format or check the paths of `cliOptions`, reporting each file with `printer`, and return the exit code.
    */
   def program(cliOptions: CliOptions, printer: CliReport.Printer): IO[ExitCode] =
-    val configs  = cliOptions.paths.map(path => path -> cliOptions.config.getOrElse(ConfigCli.discover(path)))
-    val warnings = configs.flatMap((_, loaded) => loaded.toList.flatMap(_.warnings)).distinct
+    val configs  = 
+      cliOptions
+        .paths
+        .map { path => 
+          path -> cliOptions.config.getOrElse(ConfigCli.discover(path))
+        }
+
+    val warnings = 
+      configs
+        .flatMap((_, loaded) => loaded.toList.flatMap(_.warnings))
+        .distinct
+
     warnings.traverse_(warning => printer.err(s"warning: $warning")) >>
     configs
       .flatTraverse((path, loaded) => formatPath(cliOptions, path, loaded))

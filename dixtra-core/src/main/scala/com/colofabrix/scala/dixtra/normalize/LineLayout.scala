@@ -40,7 +40,9 @@ private[normalize] object LineLayout {
 
     val endsLikeContainer =
       List("{", ":", "=", "=>").exists(trimmed.endsWith) || trailingWith.findFirstIn(trimmed).isDefined
-    val isExtensionHeader = extensionHeader.findFirstIn(line).isDefined
+
+    val isExtensionHeader = 
+      extensionHeader.findFirstIn(line).isDefined
 
     endsLikeContainer || isExtensionHeader
 
@@ -68,6 +70,7 @@ private[normalize] object LineLayout {
         .map(t => (t.is[Token.Comment], lineOf(t.start), lineOf(math.max(t.start, t.end - 1))))
 
     val inside = BitSet.fromSpecific(spans.iterator.flatMap((_, first, last) => first + 1 to last))
+    
     val commented =
       BitSet.fromSpecific(
         spans

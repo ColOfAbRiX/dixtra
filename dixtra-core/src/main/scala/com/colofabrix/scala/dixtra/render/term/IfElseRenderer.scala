@@ -99,6 +99,7 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
         elseKeyword(link)
           .filter(_ => elseIf(link).isEmpty)
           .map(kw => member(BodyLayout.writtenBelow(ctx, kw.end, link.elsep), link.elsep))
+
       member(BodyLayout.writtenBelow(ctx, ctx.span(link.cond)._2, link.thenp), link.thenp) :: elseMember.toList
     }
 

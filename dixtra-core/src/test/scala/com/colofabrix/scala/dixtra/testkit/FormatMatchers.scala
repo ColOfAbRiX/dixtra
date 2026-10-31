@@ -117,8 +117,7 @@ trait FormatMatchers {
         else
           expected
 
-      val result = Dixtra.format(input, config)
-      result match {
+      Dixtra.format(input, config) match {
         case Left(error) =>
           MatchResult(
             matches = false,

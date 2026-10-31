@@ -22,8 +22,7 @@ private[render] object EndMarkers {
 
     stats
       .foldLeft(List.empty[(Stat, Option[Term.EndMarker])]) {
-        case ((prev, None) :: rest, marker: Term.EndMarker)
-            if Constructs.closes(prev, marker) && whitespaceBetween(prev, marker) =>
+        case ((prev, None) :: rest, marker: Term.EndMarker) if Constructs.closes(prev, marker) && whitespaceBetween(prev, marker) =>
           (prev, Some(marker)) :: rest
         case (acc, stat) =>
           (stat, None) :: acc
@@ -43,7 +42,7 @@ private[render] object EndMarkers {
       name      <- Constructs.endName(stat)
                    if construct.allowsEnd
                    if braceless(rendered)
-                   if ctx.braceStyle(construct, braced = false, ended = existing.isDefined) == BracePolicy.ForceEnd
+                   if ctx.braceStyle(construct, false, existing.isDefined) == BracePolicy.ForceEnd
     yield
       "end " + name
 

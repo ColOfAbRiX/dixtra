@@ -11,6 +11,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class GivenExtensionSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "given and extension definitions" should {
+
     "be separated from their neighbours exactly like defs" in {
       val input =
         """object A {
@@ -69,6 +70,7 @@ class GivenExtensionSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+    
   }
 
 }

@@ -12,6 +12,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "an operation with an operand over several lines before an operator" should {
+
     "break after every operator, a braced operand opening on its operator's line" in {
       val input =
         """def a =
@@ -81,9 +82,11 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatStablyTo(expected)
     }
+
   }
 
   "an operation without an operand over several lines before an operator" should {
+
     "keep a braced last operand on the line of its operator" in {
       val input =
         """class S {
@@ -102,19 +105,17 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "stay on one line" in {
       val input = "def d = a ++ b ++ c\n"
-
       val expected = input
-
       input should formatTo(expected)
     }
+
   }
 
   "an operation with several arguments" should {
+
     "stay on one line when it fits" in {
       val input = "def t = x shouldBe (1, 2)\n"
-
       val expected = input
-
       input should formatTo(expected)
     }
 
@@ -134,11 +135,10 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "keep the author's line break after the operator" in {
       val input = "def t =\n  result shouldBe\n  (firstValue, secondValue)\n"
-
       val expected = input
-
       input should formatTo(expected)
     }
+
   }
 
 }

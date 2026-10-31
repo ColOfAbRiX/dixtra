@@ -188,12 +188,8 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
                 case Nil           => Nil
               }
           }
-    val pads =
-      Alignment.columnTargets(ctx, stats, Alignment.Grouping.Lines)(
-        eligible = eligible,
-        segments = segments,
-        fitsAt = fitsAt,
-      )
+    val pads = Alignment.columnTargets(ctx, stats, Alignment.Grouping.Lines)(eligible, segments, fitsAt)
+    
     stats
       .zip(pads)
       .map { (stat, pad) =>

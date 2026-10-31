@@ -49,7 +49,6 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
     def isEligible(stat: Stat): Boolean =
       val alignedKind = kindOf(stat).exists(alignment.groupOf(_).isDefined)
       val sized       = lineWidth(stat).isDefined
-
       alignedKind && sized && !documented(stat)
 
     val targets =

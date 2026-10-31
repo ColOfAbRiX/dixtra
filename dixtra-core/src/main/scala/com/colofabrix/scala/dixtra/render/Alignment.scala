@@ -192,9 +192,12 @@ private[render] object Alignment {
       items
         .indices
         .foldLeft((List.empty[List[Int]], List.empty[Int])) { case ((acc, run), i) =>
-          if !candidates(i) then (acc :+ run, Nil)
-          else if joins(i) then (acc, run :+ i)
-          else (acc :+ run, List(i))
+          if !candidates(i) then 
+            (acc :+ run, Nil)
+          else if joins(i) then 
+            (acc, run :+ i)
+          else 
+            (acc :+ run, List(i))
         }
 
     (done :+ current).filter(_.length > 1)

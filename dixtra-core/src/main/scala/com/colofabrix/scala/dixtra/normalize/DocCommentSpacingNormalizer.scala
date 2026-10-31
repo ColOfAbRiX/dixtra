@@ -82,8 +82,11 @@ object DocCommentSpacingNormalizer {
       false
     else
       val previous = layout.lines(i - 1)
-      if previous.trim.isEmpty then false
-      else if LineLayout.isOpener(previous) then !line.contains("*/")
-      else true
+      if previous.trim.isEmpty then 
+        false
+      else if LineLayout.isOpener(previous) then 
+        !line.contains("*/")
+      else 
+        true
 
 }

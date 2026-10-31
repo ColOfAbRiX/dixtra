@@ -14,6 +14,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "an expression after =" should {
+
     "explode a chain with several selections, one per line" in {
       val input =
         """val y =
@@ -34,9 +35,11 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+
   }
 
   "a newline after =" should {
+
     "keep a fitting chain with two selections on one line" in {
       val input =
         """def foldLeft[A, B](fa: NonEmptyFilled[A], b: B)(f: (B, A) => B): B =
@@ -103,27 +106,27 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+
   }
 
   "a newline before =" should {
+
     "not be an author signal after the annotation of a def" in {
       val input = "@tailrec\ndef f(x: Int): Int = xs.map(f).sum\n"
-
       val expected = input
-
       input should formatTo(expected)
     }
 
     "not be an author signal after the annotation of a val" in {
       val input = "@nowarn\nval x = xs.map(f).sum\n"
-
       val expected = input
-
       input should formatTo(expected)
     }
+
   }
 
   "a body that does not fit after =" should {
+
     "drop the body below = in its exploded form, which stays as it is" in {
       val input = "val someRatherLongValueName = firstCollection.map(transform).filter(keepThem).sum\n"
 
@@ -137,6 +140,7 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatStablyTo(expected, 80)
     }
+
   }
 
 }

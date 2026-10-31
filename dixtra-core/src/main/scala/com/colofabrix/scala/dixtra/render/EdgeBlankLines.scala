@@ -26,6 +26,7 @@ private[render] object EdgeBlankLines {
         .beforeScaladoc
 
     val policy = ctx.config.blankLines(construct)
+    
     if rendered.split("\n", -1).lift(openIdx).exists(_.stripTrailing.endsWith("{")) then
       braced(rendered, openIdx, policy, doc)
     else
