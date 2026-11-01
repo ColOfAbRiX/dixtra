@@ -86,7 +86,7 @@ lazy val dixtraCli =
         "org.scalatest"         %% "scalatest-wordspec"            % "3.2.20" % Test,
         "org.typelevel"         %% "cats-core"                     % "2.13.0",
         "org.typelevel"         %% "cats-effect-testing-scalatest" % "1.8.0"  % Test,
-        "org.typelevel"         %% "cats-effect"                   % "3.7.0",
+        "org.typelevel"         %% "cats-effect"                   % "3.7.1",
       ),
     )
     .settings(
