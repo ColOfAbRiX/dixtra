@@ -440,6 +440,12 @@ The reflection and resource metadata of `native-image` is in
 traces the command line on the JVM of GraalVM over the runs of `nativeImageRuns` in `build.sbt`. Run it again after
 changing the dependencies, or the way the command line reads its configuration.
 
+### As a VS Code formatter
+
+The `dixtra-vscode` folder holds an extension that formats the document of the editor with dixtra when you run
+**Format Document** (`Shift+Alt+F`). It runs dixtra on the saved file, so the nearest `.dixtra.conf` and its
+`path-overrides` apply as in the command line. See its [README](dixtra-vscode/README.md) to build and install it.
+
 ### Bootstrapping
 
 The build formats itself with its own plugin (`project/plugins.sbt`), so in a fresh clone the plugin must already be

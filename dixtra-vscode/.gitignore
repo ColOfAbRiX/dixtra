@@ -1,5 +1,6 @@
 node_modules/
 out/
 target/
+bin/
 LICENSE
 *.vsix

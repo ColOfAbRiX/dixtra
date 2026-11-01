@@ -1,9 +1,9 @@
 {
   "name": "dixtra-vscode",
-  "displayName": "dixtra formatter",
-  "description": "Format Scala with dixtra, on Format Document",
+  "displayName": "Dixtra Scala3 Formatter",
+  "description": "Opinionated visual features formatter for Scala 3.",
   "version": "1.0.0-RC1",
-  "publisher": "colofabrix",
+  "publisher": "ColOfAbRIX",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -19,14 +19,15 @@
     "onLanguage:scala"
   ],
   "main": "./out/extension.js",
+  "icon": "bin/icon.png",
   "contributes": {
     "configuration": {
       "title": "dixtra",
       "properties": {
         "dixtra.executablePath": {
           "type": "string",
-          "default": "dixtra",
-          "description": "The dixtra executable to format with"
+          "default": "",
+          "description": "A dixtra executable to format with; empty uses the bundled one, or dixtra from the PATH"
         },
         "dixtra.arguments": {
           "type": "array",

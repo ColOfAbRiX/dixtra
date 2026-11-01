@@ -3,11 +3,8 @@ you run **Format Document** (`Shift+Alt+F`).
 
 ## Setup
 
-1. Build the dixtra executable and put it on your `PATH` (or note its location):
-
-   ```
-   sbt dixtraCli/nativeImage
-   ```
+1. The extension bundles the dixtra executable for Windows x64: no `PATH` setup is needed on Windows, and
+   `dixtra.executablePath` overrides the bundled executable.
 
 2. Build it with `sbt dixtraVsCode/vscodePackage` from the repository root (or run `npm install && npm run package`
    inside the folder), then install the `.vsix` it produces. The version of the extension follows `version` in
@@ -25,7 +22,7 @@ you run **Format Document** (`Shift+Alt+F`).
 
 | Setting                 | Default  | What it does                                    |
 | ----------------------- | -------- | ----------------------------------------------- |
-| `dixtra.executablePath` | `dixtra` | The dixtra executable to format with            |
+| `dixtra.executablePath` | ``       | The dixtra executable to format with            |
 | `dixtra.arguments`      | `[]`     | Extra arguments, e.g. `["--max-column", "100"]` |
 
 The extension runs dixtra on the saved file, so the nearest `.dixtra.conf` and its `path-overrides` apply as in the
