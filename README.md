@@ -1,13 +1,22 @@
-# dixtra
+# Dixtra
 
-A formatter for Scala 3: every construct is either entirely on one line or entirely
-broken, one element per line. Never half of each.
+Dixtra is an opinionated formatter for Scala 3.
+
+Unlike other Scala formatters, that allow you to tune typografic formatting like parentheses,
+indentation, commas, etc., Dixtra treats the code as having visual features that can be formatted as
+a unit.
+
+For example this function definition:
 
 ```scala
 // Fits on one line, and the author wrote it on one line: it stays on one line
 def total(xs: List[Int]) = xs.filter(_ > 0).map(_ * 2).sum
+```
 
-// Too long, or broken by the author: all of it breaks
+has a definition with a single parameter list and a body containing a selector chain that can be
+formatted as:
+
+```scala
 def total(xs: List[Int]) =
   xs
     .filter(_ > 0)
@@ -15,21 +24,22 @@ def total(xs: List[Int]) =
     .sum
 ```
 
-This page describes how to install and run dixtra, and how it behaves. The formatting options themselves are
-documented, with examples, in [`reference.conf`](dixtra-cli/src/main/resources/reference.conf), which also holds the
-default of every setting.
+This page describes how to install and run dixtra, and how it behaves. The formatting options
+themselves are documented, with examples, in
+[`reference.conf`](dixtra-cli/src/main/resources/reference.conf), which also holds the default
+every setting.
 
 ## Contents
 
 - [Principles](#principles)
-- [Safety](#safety)
 - [What gets formatted](#what-gets-formatted)
 - [The sbt plugin](#the-sbt-plugin)
 - [The command line](#the-command-line)
+- [The VS Code extension](#the-vs-code-extension)
 - [Configuration](#configuration)
 - [Fixed rules and limitations](#fixed-rules-and-limitations)
 - [Leaving code as written](#leaving-code-as-written)
-- [Using dixtra as a library](#using-dixtra-as-a-library)
+- [Using Dixtra as a library](#using-dixtra-as-a-library)
 - [Building from source](#building-from-source)
 - [Contributing](#contributing)
 - [Changelog](#changelog)
@@ -41,35 +51,12 @@ default of every setting.
   fully inline or fully exploded. Nothing is ever partly broken.
 - **Two triggers.** A construct breaks when its one-line form goes past `max-column`, or when the author wrote a line
   break inside it. Otherwise it is joined on one line.
-- **The author decides where the layout leaves a choice.** A line break written on purpose is a signal: dixtra keeps
+- **The author decides where the layout leaves a choice.** A line break written on purpose is a signal: Dixtra keeps
   it, and it doesn't add breaks the width doesn't call for.
 - **A multi-line value goes below its `=`.** When the right-hand side of a definition doesn't fit on one line, it
   starts on the line after the `=`, one level in.
 - **No lines of lone delimiters.** No line holds only `)(` or `](`. The next element is glued on instead.
 - **Stable.** Formatting a formatted file changes nothing, and the output doesn't depend on the order of the files.
-
-## Safety
-
-dixtra never corrupts code:
-
-- **Whole-file check.** The output is parsed again and compared with the input:
-  - the tree must be the same, names, literals and string contents included;
-  - the comments must hold the same words, in the same order, though their layout may change.
-
-  The only differences allowed are the ones a brace style asks for: `end` markers, and braces around a single
-  expression. If anything else differs, the file is left unchanged and reported as failed.
-- **Fallback for each construct.** Every rendered construct is checked the same way. A construct dixtra can't lay out
-  safely, or doesn't support, is copied exactly as written.
-- **Atomic writes.** Each file is written to a temporary file beside it, then moved over it in one step, keeping its
-  permissions; a symbolic link stays a link, and its target is rewritten. When another process holds the file open,
-  as an antivirus or an IDE briefly does on Windows, the move is tried again a few times. A file whose output is the
-  same as its input is not touched.
-- **Isolation.** The files are formatted in parallel, each on its own: a file that can't be read, parsed or written
-  fails alone, and the other files are still formatted.
-- **Scala 2 is skipped.** A Scala 2 file is reported and skipped, never rewritten. A file counts as Scala 2 when:
-  - it parses only as Scala 2;
-  - or it uses a construct Scala 3 dropped: procedure syntax (`def f() { ... }`), `do ... while`, existential types or
-    macro definitions.
 
 ## What gets formatted
 
@@ -77,10 +64,10 @@ dixtra never corrupts code:
   (`.sc`) are not picked up from directories.
 - **Dialect.** A `.sbt` file is parsed as an sbt 2 build file, which allows statements at the top level. Any other file
   is parsed as Scala 3.
-- **Directories.** dixtra walks them recursively, and formats their files in path order. Below the walked directory,
+- **Directories.** Dixtra walks them recursively, and formats their files in path order. Below the walked directory,
   it skips every hidden directory (`.git`, `.bsp`, `.metals`, ...) and every directory named `target`.
 - **Files.** A file named explicitly is always formatted, whatever its extension and the `paths` setting. A file
-   reached twice, for example named and inside a named directory, is formatted once.
+  reached twice, for example named and inside a named directory, is formatted once.
 - **The `paths` setting** narrows down what a directory walk picks up, with globs relative to the walked directory (see
   `paths` in `reference.conf`). A file is picked up when it matches an `included` glob, and neither it nor a directory
   above it matches an `excluded` one:
@@ -93,6 +80,7 @@ dixtra never corrupts code:
   ```
 
   `**/` matches any number of directories, `*` anything within one path segment, and `?` one character.
+
 - **Line endings.** The text is processed with `\n`, and written with the line endings of `housekeeping.line-ending`. By
   default, each file keeps its own.
 
@@ -105,21 +93,21 @@ addSbtPlugin("com.colofabrix.scala" % "sbt-dixtra" % "1.0.0-RC1")
 ```
 
 It is enabled automatically in every project. The plugin itself doesn't depend on dixtra: when a task first runs, it
-downloads `dixtra-cli` and runs it in a class loader of its own. dixtra therefore keeps its own Scala version
+downloads `dixtra-cli` and runs it in a class loader of its own. Dixtra therefore keeps its own Scala version
 whatever sbt runs on.
 
 ### Tasks
 
-| Task                          | What it does                                                                                             |
-|-------------------------------|----------------------------------------------------------------------------------------------------------|
-| `dixtraFormat`                | Formats the sources of a configuration (`Compile`; `Test / dixtraFormat` for the tests)                  |
-| `dixtraCheck`                 | Fails when a source of a configuration is not formatted                                                  |
-| `dixtraFormatAll`             | Formats the sources of `Compile` and `Test`, and the build files                                         |
-| `dixtraCheckAll`              | Fails when a source of `Compile` or `Test`, or a build file, is not formatted                            |
-| `dixtraFormatSbt`             | Formats the build: the `.sbt` files, and the `.sbt` / `.scala` files in `project/`                       |
-| `dixtraCheckSbt`              | Fails when a file of the build is not formatted                                                          |
-| `dixtraFormatOnly <files>` | Formats the given files, relative to the project directory                                        |
-| `dixtraClasspath`         | The jars of `dixtra-cli` and its dependencies, as resolved for `dixtraVersion` |
+| Task                       | What it does                                                                            |
+| -------------------------- | --------------------------------------------------------------------------------------- |
+| `dixtraFormat`             | Formats the sources of a configuration (`Compile`; `Test / dixtraFormat` for the tests) |
+| `dixtraCheck`              | Fails when a source of a configuration is not formatted                                 |
+| `dixtraFormatAll`          | Formats the sources of `Compile` and `Test`, and the build files                        |
+| `dixtraCheckAll`           | Fails when a source of `Compile` or `Test`, or a build file, is not formatted           |
+| `dixtraFormatSbt`          | Formats the build: the `.sbt` files, and the `.sbt` / `.scala` files in `project/`      |
+| `dixtraCheckSbt`           | Fails when a file of the build is not formatted                                         |
+| `dixtraFormatOnly <files>` | Formats the given files, relative to the project directory                              |
+| `dixtraClasspath`          | The jars of `dixtra-cli` and its dependencies, as resolved for `dixtraVersion`          |
 
 The tasks cover the unmanaged source directories of a configuration, so generated sources are left alone. To get them
 in a custom configuration, add `inConfig(MyConfig)(DixtraPlugin.configSettings)`. The build tasks take the `.sbt`
@@ -128,17 +116,17 @@ subdirectories. `dixtraFormatOnly` formats the files it is given even when `dixt
 
 ### Settings
 
-| Setting                 | Default                | What it does                                                          |
-|-------------------------|------------------------|-----------------------------------------------------------------------|
-| `dixtraVersion`         | the plugin's version   | The version of dixtra to format with                                  |
-| `dixtraConfig`          | `None`                 | A configuration file, instead of the nearest `.dixtra.conf`           |
-| `dixtraChangedSince`    | `None`                 | A git ref: format or check only the files changed since it            |
-| `dixtraOnCompile`       | `false`                | Format the sources of a configuration before compiling them           |
+| Setting              | Default              | What it does                                                |
+| -------------------- | -------------------- | ----------------------------------------------------------- |
+| `dixtraVersion`      | the plugin's version | The version of Dixtra to format with                        |
+| `dixtraConfig`       | `None`               | A configuration file, instead of the nearest `.dixtra.conf` |
+| `dixtraChangedSince` | `None`               | A git ref: format or check only the files changed since it  |
+| `dixtraOnCompile`    | `false`              | Format the sources of a configuration before compiling them |
 
 ```scala
 // build.sbt
-dixtraOnCompile    := true
-dixtraChangedSince := Some("origin/main")
+DixtraOnCompile    := true
+DixtraChangedSince := Some("origin/main")
 ```
 
 With `dixtraOnCompile`, a file that can't be formatted only logs a warning and is compiled as it is.
@@ -154,21 +142,21 @@ The command line is `dixtra-cli`. From a clone of this repository, run it with `
 build it as a native executable that starts instantly (see [Building from source](#building-from-source)).
 
 ```text
-dixtra [--config-string <hocon> | --config-path <file>] [--max-column <n>] [--check] [--changed-since <ref>]
+Dixtra [--config-string <hocon> | --config-path <file>] [--max-column <n>] [--check] [--changed-since <ref>]
       [--quiet] <path>...
 ```
 
-| Option                          | What it does                                                                                          |
-|---------------------------------|-------------------------------------------------------------------------------------------------------|
-| `<path>...`                     | Files and directories to format. At least one is required                                              |
-| `--check`, `-c`                 | Report the files that are not formatted, without writing them                                          |
-| `--max-column <n>`, `-w <n>`    | The longest a line can be, over every `max-column` of the configuration                                |
-| `--config-string <hocon>`       | The configuration, as HOCON text, instead of the `.dixtra.conf` files                                  |
-| `--config-path <file>`          | The configuration file to use, instead of the `.dixtra.conf` files                                     |
-| `--changed-since <ref>`         | Only the files changed since a git ref (see below)                                                     |
-| `--quiet`, `-q`                 | List only the files that change or fail, not the unchanged ones                                        |
-| `--version`, `-v`               | Print the version                                                                                      |
-| `--help`                        | Print the usage                                                                                        |
+| Option                       | What it does                                                            |
+| ---------------------------- | ----------------------------------------------------------------------- |
+| `<path>...`                  | Files and directories to format. At least one is required               |
+| `--check`, `-c`              | Report the files that are not formatted, without writing them           |
+| `--max-column <n>`, `-w <n>` | The longest a line can be, over every `max-column` of the configuration |
+| `--config-string <hocon>`    | The configuration, as HOCON text, instead of the `.dixtra.conf` files   |
+| `--config-path <file>`       | The configuration file to use, instead of the `.dixtra.conf` files      |
+| `--changed-since <ref>`      | Only the files changed since a git ref (see below)                      |
+| `--quiet`, `-q`              | List only the files that change or fail, not the unchanged ones         |
+| `--version`, `-v`            | Print the version                                                       |
+| `--help`                     | Print the usage                                                         |
 
 `--max-column` must be a positive number. It applies over the `max-column` of the configuration and of its
 `path-overrides` alike.
@@ -197,6 +185,19 @@ file doesn't change the exit code. A file that fails doesn't stop the others, an
 configuration: it fails the paths that use it, with one `failed` line for each path given on the command line. Invalid
 options print the usage on the standard error, and exit with 1.
 
+## The VS Code extension
+
+The `dixtra-vscode/` folder holds an extension that formats the document of the editor with Dixtra when you run
+**Format Document** (`Shift+Alt+F`). A document with unsaved changes is
+saved first, and Dixtra runs on the file on disk, so the nearest `.dixtra.conf` and its `path-overrides` apply as in
+the command line. An untitled document has no file to run on and is declined, and a file that fails to format is
+left unchanged, with the error of Dixtra reported.
+
+To build it, run `sbt dixtraVsCode/vscodePackage` from the repository root. It writes
+`dist/dixtra-vscode-<version>.vsix`, installed with `code --install-extension dist/dixtra-vscode-<version>.vsix`;
+[Building the VS Code extension](#building-the-vs-code-extension) describes the task, its requirements and every
+output it produces in `dist/`.
+
 ## Configuration
 
 A project overrides only the settings it changes, in a HOCON file named `.dixtra.conf`:
@@ -209,7 +210,7 @@ braces { style = stroustrup, if = force-braces }
 paths.excluded = ["**/generated/**"]
 ```
 
-- **Lookup.** For each path it formats, dixtra uses the nearest `.dixtra.conf` in the path's directory or above it.
+- **Lookup.** For each path it formats, Dixtra uses the nearest `.dixtra.conf` in the path's directory or above it.
   Without one, it uses the defaults. A file given with `--config-path` (or `dixtraConfig`), or text given with
   `--config-string`, replaces the lookup. A configuration overrides the defaults of `reference.conf` only: it is never
   merged with another `.dixtra.conf`.
@@ -223,6 +224,7 @@ paths.excluded = ["**/generated/**"]
   The warning names the shortest part of the key that is unknown, `foo` for `foo { bar = 1 }`, but under the name of
   a construct, `comments` or `scaladoc` it names the whole key, `if.brace` for a misspelt alias. A configuration used
   by several paths warns once. The sbt plugin logs the warnings at warn level.
+
 - **Invalid values** of known settings are rejected: a configuration with one fails the paths that use it, and so does
   a file that can't be read or isn't valid HOCON.
 - **`config-version`.** It states the version of the configuration schema. Without it, the file is read as the current
@@ -233,28 +235,28 @@ paths.excluded = ["**/generated/**"]
 The settings are grouped in sections. [`reference.conf`](dixtra-cli/src/main/resources/reference.conf) describes each
 setting and value with examples, and holds the defaults:
 
-| Section                | What it decides                                                                                                                          |      570A
-|------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| `max-column`           | The width that makes a construct break (default 120)                                                                                     |      16F0
-| `trailing-commas`      | A comma after the last element of a list laid out one element per line                                                                   |      6280
-| `trailing-comment-overflow` | A line too long only because of its trailing comment: kept, or the comment moved above                                              |
-| `braces`               | Braces, `end` markers or indentation for each construct, and where braces go                                                             |
-| `selector-chain`       | When a chain of calls `a.b(c).d` breaks, one `.member` per line                                                                          |
-| `body`                 | Whether a body stays after its `=` / `=>` / `then` / `do`, or goes below it                                                              |
-| `definition-site`      | How the parameter clauses of a `def` or a class break                                                                                    |      8A08
-| `call-site`            | How the argument clauses of a call break                                                                                                 |
-| `alignment`            | What lines up in columns: `=`, operators, arrows, `extends`, comments, scaladoc tags                                                     |
-| `blank-lines`          | Blank lines at the edges of bodies, between alignment groups, and before scaladoc                                                        |
-| `housekeeping`         | Trailing whitespace, the line break at the end of the file, and line endings                                                             |
-| `paths`                | The files of a directory to format (see [What gets formatted](#what-gets-formatted))                                                     |
-| `path-overrides`       | Other settings for some of the files (see below)                                                                                         |
+| Section                     | What it decides                                                                        | 570A |
+| --------------------------- | -------------------------------------------------------------------------------------- | ---- |
+| `max-column`                | The width that makes a construct break (default 120)                                   | 16F0 |
+| `trailing-commas`           | A comma after the last element of a list laid out one element per line                 | 6280 |
+| `trailing-comment-overflow` | A line too long only because of its trailing comment: kept, or the comment moved above |
+| `braces`                    | Braces, `end` markers or indentation for each construct, and where braces go           |
+| `selector-chain`            | When a chain of calls `a.b(c).d` breaks, one `.member` per line                        |
+| `body`                      | Whether a body stays after its `=` / `=>` / `then` / `do`, or goes below it            |
+| `definition-site`           | How the parameter clauses of a `def` or a class break                                  | 8A08 |
+| `call-site`                 | How the argument clauses of a call break                                               |
+| `alignment`                 | What lines up in columns: `=`, operators, arrows, `extends`, comments, scaladoc tags   |
+| `blank-lines`               | Blank lines at the edges of bodies, between alignment groups, and before scaladoc      |
+| `housekeeping`              | Trailing whitespace, the line break at the end of the file, and line endings           |
+| `paths`                     | The files of a directory to format (see [What gets formatted](#what-gets-formatted))   |
+| `path-overrides`            | Other settings for some of the files (see below)                                       |
 
 With `trailing-commas = always`, the default, the last element of a list laid out one element per line is followed by
-a comma: arguments (`List(...)` included), parameters, type parameters (higher-kinded ones included), the parameters                     8033
-of a class and the elements of a tuple. With `never` it isn't. A list on one line never has one, and neither does a                      05D2
+a comma: arguments (`List(...)` included), parameters, type parameters (higher-kinded ones included), the parameters 8033
+of a class and the elements of a tuple. With `never` it isn't. A list on one line never has one, and neither does a 05D2
 group glued as `b)(` by `groups-separator = previous-group`.
 
-The `housekeeping` section applies to the whole file, after the formatting. By default, the spaces and tabs at the end                    0CD7
+The `housekeeping` section applies to the whole file, after the formatting. By default, the spaces and tabs at the end 0CD7
 of each line are removed (`trim-trailing-whitespace`), but not those inside a string literal; the file ends with
 exactly one line break (`enforce-eof`); and each file keeps its own line endings (`line-ending = keep`, or `lf`,
 `crlf`, `cr`).
@@ -265,28 +267,28 @@ Aliases are second names for settings. Setting one setting twice with different 
 is an error:
 
 - **By construct.** Each construct gathers its settings under its own name: `<construct>.braces` sets
-  `braces.<construct>`, `<construct>.body` sets `body.<construct>`, and `<construct>.body-edges` sets                                    E0B5
+  `braces.<construct>`, `<construct>.body` sets `body.<construct>`, and `<construct>.body-edges` sets E0B5
   `blank-lines.body-edges.<construct>`, wherever the setting exists. A few constructs also reach a shared setting,
   which changes the other constructs too:
 
-  | Alias                                                                                       | Sets                                   |
-  |-------------------------------------------------|---------------------------------|
-  | `class.align-extends` (and the other templates) | `alignment.extends-clauses`     |
-  | `match.align-arrows`, `case-body.align-arrows`  | `alignment.arrows.cases`        |
+  | Alias                                           | Sets                               |
+  | ----------------------------------------------- | ---------------------------------- |
+  | `class.align-extends` (and the other templates) | `alignment.extends-clauses`        |
+  | `match.align-arrows`, `case-body.align-arrows`  | `alignment.arrows.cases`           |
   | `for.align-arrows`, `for-yield.align-arrows`    | `alignment.arrows.for-enumerators` |
-  | `for.chains`, `for-yield.chains`                | `selector-chain.in-for`         |
-  | `named-argument.align-equals`                   | `alignment.named-arguments`     |
+  | `for.chains`, `for-yield.chains`                | `selector-chain.in-for`            |
+  | `named-argument.align-equals`                   | `alignment.named-arguments`        |
   | `def.groups-separator`                          | `definition-site.groups-separator` |
 
 - **Comments and scaladoc:**
 
-  | Alias                            | Sets                               |
-  |----------------------------------|------------------------------------|
-  | `comments.align-trailing`        | `alignment.trailing-comments`      |
-  | `comments.align-across`          | `alignment.across-comments`        |
-  | `comments.trailing-overflow`     | `trailing-comment-overflow`        |
-  | `scaladoc.blank-line-before`     | `blank-lines.before-scaladoc`      |
-  | `scaladoc.align-tags`            | `alignment.scaladoc.tags`          |
+  | Alias                        | Sets                          |
+  | ---------------------------- | ----------------------------- |
+  | `comments.align-trailing`    | `alignment.trailing-comments` |
+  | `comments.align-across`      | `alignment.across-comments`   |
+  | `comments.trailing-overflow` | `trailing-comment-overflow`   |
+  | `scaladoc.blank-line-before` | `blank-lines.before-scaladoc` |
+  | `scaladoc.align-tags`        | `alignment.scaladoc.tags`     |
 
 The constructs are those of `braces`, `body` and `blank-lines.body-edges` in `reference.conf`, as `class`, `def`, `if`,
 `match`, `for-yield` or `lambda-body`. The templates are `abstract-class`, `case-class`, `class`, `enum`, `object` and
@@ -324,7 +326,7 @@ The default is `path-overrides {}`.
 Some rules have no setting:
 
 - **Indentation** is 2 spaces.
-- **Spaces.** A run of spaces between two tokens on a line becomes one, except where dixtra aligns code; the
+- **Spaces.** A run of spaces between two tokens on a line becomes one, except where Dixtra aligns code; the
   indentation and the insides of strings and comments are left alone. `=>` has one space on each side.
 - **Blank lines.** A run of blank lines becomes one. A method (`def`, `given`, `extension`) after another statement
   gets a blank line before it and before its annotations and comments, unless it follows the line that opens its body,
@@ -333,21 +335,21 @@ Some rules have no setting:
   comment, re-wrapped by paragraph, with at least one space after `//`. Directives (`///`, `//>`, `//noinspection`)
   and code inside comments are left alone. A trailing comment after code is left as written, but for the space after
   `//`, and never counts in the width of its line.
-- **Scaladoc** gets the javadoc layout: `/**` and `*/` on lines of their own, a ` * ` gutter, no blank lines at its
+- **Scaladoc** gets the javadoc layout: `/**` and `*/` on lines of their own, a `*` gutter, no blank lines at its
   edges, a blank line before its first tag, and no blank line between it and its definition. A one-line scaladoc that
   fits stays on one line.
-- **Imports** are not sorted, grouped or rewritten. dixtra only removes the blank lines between consecutive imports.
+- **Imports** are not sorted, grouped or rewritten. Dixtra only removes the blank lines between consecutive imports.
   Pair it with scalafix `OrganizeImports` to sort them.
-- **No rewrites** beyond the brace style and the `end` markers: dixtra never adds or removes parentheses, changes `_`
+- **No rewrites** beyond the brace style and the `end` markers: Dixtra never adds or removes parentheses, changes `_`
   into `?`, or turns old syntax into new.
 
-Some code is copied exactly as written, because dixtra has no rule for it yet:
+Some code is copied exactly as written, because Dixtra has no rule for it yet:
 
 - a secondary constructor (`def this(...)`), and a class whose constructor has modifiers (`class A private (...)`);
 - a `def` or a `given` with several parameter-clause groups (`def f[A](a: A)[B](b: B)`), an anonymous `given` with
   parameters, and a `given` in the syntax of Scala 3.6 (`given a: [A] => B = ...`);
 - a type alias written over several lines, and a match type;
-- a construct holding a comment dixtra cannot re-attach.
+- a construct holding a comment Dixtra cannot re-attach.
 
 A file that Scalameta (4.17.4) cannot parse fails and is left as it is. Among the Scala 3 syntax it does not parse yet
 is `into` on a type (Scala 3.9).
@@ -371,7 +373,7 @@ object Matrices {
 ```
 
 - **Marker syntax.** A marker is a line or a block comment that holds only the marker. Letter case and spaces don't
-  matter, so `//DIXTRA:OFF` and `/* dixtra : on */` are markers too.
+  matter, so `//DIXTRA:OFF` and `/* Dixtra : on */` are markers too.
 - **Unclosed regions.** Without `dixtra: on`, the region runs to the end of the file. A `// dixtra: off` at the top of
   a file leaves the whole file as written.
 - **Nesting.** An `off` inside a region, or an `on` outside one, does nothing.
@@ -379,7 +381,7 @@ object Matrices {
 - **Changes around a region.** The code around a region is still formatted. If a change around it can't keep the
   region as written, for example re-indenting a whole package, the file is left unchanged and reported as failed.
 
-## Using dixtra as a library
+## Using Dixtra as a library
 
 `dixtra-core` is the formatter alone, with no dependency other than scalameta:
 
@@ -413,11 +415,11 @@ own class loader.
 
 The build needs sbt 2.0 and a JDK that sbt 2 supports (17 or later). It has three projects:
 
-| Project          | Artifact       | Contents                                                                                          |
-|------------------|----------------|---------------------------------------------------------------------------------------------------|
-| `dixtra-core/`   | `dixtra-core`  | the formatter (Scala 3.9)                                                                          |
-| `dixtra-cli/`    | `dixtra-cli`   | the command line, the configuration files, `reference.conf` |
-| `dixtra-sbt/`    | `sbt-dixtra`   | the sbt plugin                                                                                     |
+| Project        | Artifact      | Contents                                                    |
+| -------------- | ------------- | ----------------------------------------------------------- |
+| `dixtra-core/` | `dixtra-core` | the formatter (Scala 3.9)                                   |
+| `dixtra-cli/`  | `dixtra-cli`  | the command line, the configuration files, `reference.conf` |
+| `dixtra-sbt/`  | `sbt-dixtra`  | the sbt plugin                                              |
 
 ```shell
 sbt publishLocal             # publish the three artifacts to the local Ivy repository
@@ -431,7 +433,7 @@ sbt "run --check dixtra-core/src"   # the command line from the build
 `sbt dixtraCli/nativeImage` builds the command line with GraalVM `native-image`, into
 `target/out/jvm/scala-3.9.0/dixtra-cli/native/dixtra` (`dixtra.exe` on Windows). It needs:
 
--  `GRAALVM_HOME` pointing to a GraalVM installation (GraalVM Community 25 or later);
+- `GRAALVM_HOME` pointing to a GraalVM installation (GraalVM Community 25 or later);
 - on Windows, the Visual Studio C++ build tools (the "Desktop development with C++" workload). If `native-image`
   doesn't find them, start sbt from an "x64 Native Tools Command Prompt", or after running `vcvars64.bat`.
 
@@ -440,11 +442,34 @@ The reflection and resource metadata of `native-image` is in
 traces the command line on the JVM of GraalVM over the runs of `nativeImageRuns` in `build.sbt`. Run it again after
 changing the dependencies, or the way the command line reads its configuration.
 
-### As a VS Code formatter
+### Building the VS Code extension
 
-The `dixtra-vscode` folder holds an extension that formats the document of the editor with dixtra when you run
-**Format Document** (`Shift+Alt+F`). It runs dixtra on the saved file, so the nearest `.dixtra.conf` and its
-`path-overrides` apply as in the command line. See its [README](dixtra-vscode/README.md) to build and install it.
+`sbt dixtraVsCode/vscodePackage` builds the extension of `dixtra-vscode/` (see
+[The VS Code extension](#the-vs-code-extension) for what it does). It needs `GRAALVM_HOME` and, on Windows, the
+Visual Studio build tools of [the native executable](#the-native-executable), because it builds it first. The task:
+
+1. writes the version of the build into the `version` of `dixtra-vscode/package.json`, and copies `LICENSE` into
+   the folder of the extension;
+2. builds the native executable of the current platform, and **moves** every executable it finds into `dist/`
+   (`win32-x64/dixtra.exe` and `linux-x64/dixtra`, whichever exist), then renders the icon of the extension from
+   `dixtra-vscode/icon.svg` into `dist/icon.png`, with rsvg-convert, ImageMagick or resvg, whichever is installed;
+3. stages what `vsce` packages into `dixtra-vscode/bin/`: the Windows executable and the icon; the Linux one is
+   left out of the bundle for now;
+4. runs `npm install`, `npm run compile` and `vsce package`, and copies the `.vsix` into `dist/` as well.
+
+Everything it produces lands in `dist/`, ignored by git:
+
+```text
+dist/
+├── dixtra-vscode-1.0.0-RC1.vsix   the extension, installable with code --install-extension
+├── win32-x64/dixtra.exe            the executable bundled with the extension
+├── linux-x64/dixtra                built, but not bundled for now
+└── icon.png                        rendered from dixtra-vscode/icon.svg
+```
+
+Install it with `code --install-extension dist/dixtra-vscode-<version>.vsix`. The packaging runs again whenever a
+source of the extension, the icon or an executable changes; `npm install && npm run package` in the folder rebuilds
+the `.vsix` on its own, packaging what `bin/` already holds, without sbt and without building anything.
 
 ### Bootstrapping
 
@@ -459,11 +484,12 @@ expected to follow.
 
 ## Changelog
 
-You can check [the changelog of dixtra here](CHANGELOG.md)
+You can check [the changelog of Dixtra here](CHANGELOG.md)
 
 ## License
 
-dixtra is released under a "MIT" license. See [LICENSE](LICENSE) for specifics and copyright declaration.
+Dixtra is released under a "MIT" license. See [LICENSE](LICENSE) for specifics and copyright 
+declaration.
 
 ## Author Information
 

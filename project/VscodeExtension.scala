@@ -43,8 +43,8 @@ object VsCodeExtension {
 
         // The outputs of the extension, all in `dist/`: the executables bundled with it and its icon. The native builds
         // of `dixtraCli` write into the shared drive: the one of the current platform first and the ones of the other
-        // platforms alongside, in the per-platform layouts of sbt, so the extension picks up every executable that is
-        // present and warns about the ones that are not.
+        // platforms alongside, in the per-platform layouts of sbt, so the extension moves every executable it finds
+        // into `dist/` and warns about the ones missing from both the build and the output.
         val log              = streams.value.log
         val nativeExecutable = (LocalProject("dixtraCli") / NativeImage.nativeImage).value
         val nativeOutputs =
@@ -57,7 +57,7 @@ object VsCodeExtension {
 
         val dist = (ThisBuild / baseDirectory).value / "dist"
 
-        def copyExecutable(platform: String, name: String, destination: File): Unit =
+        def moveExecutable(platform: String, name: String, destination: File): Unit =
           nativeOutputs
             .find(output => (output / name).exists())
             .map(_ / name) match {
@@ -65,15 +65,19 @@ object VsCodeExtension {
               if !destination.exists() || IO.readBytes(source) != IO.readBytes(destination) then
                 IO.createDirectory(destination.getParentFile)
                 IO.copyFile(source, destination)
-                destination.setExecutable(true, false)
+
+              destination.setExecutable(true, false)
+              IO.delete(source)
+            case None if destination.exists() =>
+              ()
             case None =>
               log.warn(
                 s"no $platform executable $name among ${nativeOutputs.mkString(", ")}: the extension is packaged without it",
               )
           }
 
-        copyExecutable("Linux", "dixtra", dist / "linux-x64" / "dixtra")
-        copyExecutable("Windows", "dixtra.exe", dist / "win32-x64" / "dixtra.exe")
+        moveExecutable("Linux", "dixtra", dist / "linux-x64" / "dixtra")
+        moveExecutable("Windows", "dixtra.exe", dist / "win32-x64" / "dixtra.exe")
 
         // The icon of the extension, rendered from the SVG source: the first renderer that works wins. Without a
         // renderer a previously rendered icon is reused, and with none at all the packaging fails.
@@ -84,16 +88,23 @@ object VsCodeExtension {
           val commands =
             Seq(
               Seq(
-                "rsvg-convert", 
-                "-w", 
-                "256", 
-                "-h", 
-                "256", (folder / "icon.svg").getPath, "-o", icon.getPath
+                "rsvg-convert",
+                "-w",
+                "256",
+                "-h",
+                "256",
+                (folder / "icon.svg").getPath,
+                "-o",
+                icon.getPath,
               ),
               Seq(
-                "convert", 
-                "-background", 
-                "none", (folder / "icon.svg").getPath, "-resize", "256x256", icon.getPath
+                "convert",
+                "-background",
+                "none",
+                (folder / "icon.svg").getPath,
+                "-resize",
+                "256x256",
+                icon.getPath,
               ),
               Seq(
                 "npx",
