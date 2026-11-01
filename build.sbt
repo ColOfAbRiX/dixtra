@@ -79,7 +79,7 @@ lazy val dixtraCli =
       wartremoverExcluded += (Compile / sourceManaged).value,
       libraryDependencies ++= List(
         "com.colofabrix.scala"  %% "declinio"                      % "1.0.0",
-        "com.github.pureconfig" %% "pureconfig-core"               % "0.17.10",
+        "com.github.pureconfig" %% "pureconfig-core"               % "0.17.11",
         "com.github.pureconfig" %% "pureconfig-generic-scala3"     % "0.17.10",
         "com.monovore"          %% "decline"                       % "2.6.2",
         "org.scalatest"         %% "scalatest-shouldmatchers"      % "3.2.20" % Test,
