@@ -1,23 +1,16 @@
-# macOS
-.DS_Store
-
 # sbt specific
-dist/*
-target/
-project/boot/
-project/plugins/project/
-project/local-plugins.sbt
+.bsp/
 .sbt-scripted/
+dist/*
 local.sbt
-
-# Bloop
-.bsp
+project/boot/
+project/local-plugins.sbt
+project/plugins/project/
+target/
 
 # VS Code
 .history/
 .vscode/
-
-# Metals
 .bloop/
 .metals/
 metals.sbt
@@ -29,4 +22,8 @@ metals.sbt
 
 # Project
 plans/
+dist/
 TODO.md
+
+# macOS
+.DS_Store

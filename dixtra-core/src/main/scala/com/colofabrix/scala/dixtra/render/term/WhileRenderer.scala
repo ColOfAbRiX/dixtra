@@ -68,7 +68,7 @@ private[term] final class WhileRenderer(ctx: RenderContext, terms: TermRenderer)
       val onLine = head ++ Doc.text(" ") ++ body
       val below  = BodyLayout.writtenBelow(ctx, ctx.span(whileTerm.expr)._2, whileTerm.body)
       val member = BodyLayout.Member(below, ctx.fits(onLine, indent), BodyLayout.isSimple(ctx, whileTerm.body))
-      
+
       if BodyLayout.singleBelow(policy, member) then
         head ++ Doc.Nest(2, Doc.Line ++ body)
       else

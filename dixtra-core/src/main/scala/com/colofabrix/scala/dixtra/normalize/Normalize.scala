@@ -21,12 +21,12 @@ object Normalize {
    * Apply every text post-pass, in order, to the rendered source of a file of the given dialect.
    */
   def apply(rendered: String, config: Config, dialect: Dialect): String =
-    val braced = 
+    val braced =
       BraceStyleNormalizer.normalize(rendered, config.braces.style, config.maxColumn, dialect)
 
-    val moved  = 
+    val moved =
       TrailingCommentNormalizer.moveAbove(braced, config.maxColumn, config.trailingCommentOverflow)
-      
+
     val arrowSpaced =
       ArrowSpacingNormalizer.normalize(
         CommentNormalizer.normalize(moved, config.maxColumn, config.alignment.scaladoc.tags),
@@ -40,10 +40,10 @@ object Normalize {
         config.blankLines.beforeScaladoc,
       )
 
-    val docSpaced = 
+    val docSpaced =
       DocCommentSpacingNormalizer.normalize(methodsSpaced, config.blankLines.beforeScaladoc)
 
-    val spaced = 
+    val spaced =
       BlankLineNormalizer.collapseBlankRuns(docSpaced)
 
     // Aligned last, once the blank lines that end the runs of consecutive lines are in place

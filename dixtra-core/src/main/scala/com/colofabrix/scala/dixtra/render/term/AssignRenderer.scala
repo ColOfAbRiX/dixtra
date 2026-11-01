@@ -142,7 +142,7 @@ private[term] final class AssignRenderer(ctx: RenderContext, terms: TermRenderer
   private def bracedValue(assign: Term.Assign, indent: Int, column: Int): Option[Doc] =
     if ctx.hasGapComments(assign) then
       None
-    else 
+    else
       applications.braced(assign.rhs, indent, column)
 
 }

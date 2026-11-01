@@ -70,7 +70,7 @@ class GivenExtensionSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
 }

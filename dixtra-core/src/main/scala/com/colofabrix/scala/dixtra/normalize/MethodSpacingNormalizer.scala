@@ -74,7 +74,7 @@ object MethodSpacingNormalizer {
   ): String =
     val insertBefore = blankBefore(layout, alignment, betweenGroups, beforeScaladoc) ++ blankAfterDocumented(layout)
     val removed      = blanksToRemove(layout, alignment, betweenGroups)
-    
+
     layout
       .lines
       .zipWithIndex

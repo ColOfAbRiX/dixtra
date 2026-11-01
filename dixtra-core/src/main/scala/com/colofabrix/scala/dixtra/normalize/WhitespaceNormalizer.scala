@@ -39,11 +39,11 @@ object WhitespaceNormalizer {
             case _: Token.AtEOL =>
               (acc.append(token.text), true, false)
             case _: Token.HSpace =>
-              if atLineStart then 
+              if atLineStart then
                 (acc.append(token.text), true, false)
-              else if prevWasHSpace then 
+              else if prevWasHSpace then
                 (acc, false, true)
-              else 
+              else
                 (acc.append(' '), false, true)
             case _ =>
               (acc.append(token.text), false, false)

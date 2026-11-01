@@ -96,7 +96,7 @@ object TrailingCommentNormalizer {
     // After code on its line, on one line, with only whitespace after it.
     def isTrailing(code: Token, comment: Token.Comment): Boolean =
       val realCode   = !code.is[Token.Comment]
-      val oneLine    = !comment.text.contains('\n')      
+      val oneLine    = !comment.text.contains('\n')
       val afterCode  = code.end > SourceEdits.lineStart(source, comment.start)
       val blankAfter = source.slice(comment.end, SourceEdits.lineEnd(source, comment.end)).isBlank
       realCode && oneLine && afterCode && blankAfter
@@ -143,7 +143,7 @@ object TrailingCommentNormalizer {
       def fits(trailing: Trailing): Boolean = column + trailing.end - trailing.start <= maxColumn
 
       if run.forall(fits) then
-        run.map { trailing => 
+        run.map { trailing =>
           Edit(trailing.codeEnd, trailing.start, " " * (column - trailing.codeWidth))
         }
       else

@@ -36,7 +36,7 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
 
     kwMatch match {
       case Some(kw) if !commented =>
-        val clauses = 
+        val clauses =
           (edges: BlankLinePolicy) => cases(kw.end, block.cases, block.pos.end, indent + 2, edges)
 
         val written =
@@ -52,8 +52,11 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
         else
           ctx.sourceDoc(matchTerm.expr) ++
           Doc.text(" match") ++
-          Doc.Nest(2, Doc.Line ++
-          clauses(BlankLinePolicy.Never))
+          Doc.Nest(
+            2,
+            Doc.Line ++
+            clauses(BlankLinePolicy.Never),
+          )
       case _ =>
         ctx.ownSourceDoc(matchTerm)
     }

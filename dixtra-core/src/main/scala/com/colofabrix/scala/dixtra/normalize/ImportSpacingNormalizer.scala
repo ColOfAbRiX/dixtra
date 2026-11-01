@@ -64,7 +64,7 @@ object ImportSpacingNormalizer {
       val outsideBraces = depth == 0
       val afterComma    = tokens(last).is[Token.Comma]
       isSpace(token) && token.text.contains('\n') && outsideBraces && !afterComma
-      
+
     @annotation.tailrec
     def loop(i: Int, depth: Int, last: Int): Int =
       if i >= tokens.length then

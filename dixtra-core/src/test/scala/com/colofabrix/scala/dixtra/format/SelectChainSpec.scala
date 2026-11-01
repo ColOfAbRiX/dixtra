@@ -17,7 +17,7 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """val x =
           |  list.filter(_ > 0).map(_ * 2).headOption
           |""".stripMargin
-          
+
       val expected =
         """val x =
           |  list
@@ -383,7 +383,7 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "not reach inside the parentheses" in {
-      val input = "val d =\n  (xs.map(f)).filter(p).map(g).sum\n"
+      val input    = "val d =\n  (xs.map(f)).filter(p).map(g).sum\n"
       val expected = "val d =\n  (xs.map(f))\n    .filter(p)\n    .map(g)\n    .sum\n"
       input should formatTo(expected)
     }

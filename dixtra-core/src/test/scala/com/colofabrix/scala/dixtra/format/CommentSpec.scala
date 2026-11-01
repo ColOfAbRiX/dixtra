@@ -11,6 +11,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "an overflowing argument list with a block comment" should {
+
     val input = "val xs = List(firstElement, /* note */ secondElement, thirdElement, fourthElement, fifthElement)\n"
     val expected =
       """val xs =
@@ -26,7 +27,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
     "explode one element per line, keeping the comment on its element" in {
       input should formatStablyTo(expected, 80)
     }
-    
+
   }
 
   "a fitting argument list with a block comment" should {
@@ -38,7 +39,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "an argument list with a line comment" should {
@@ -75,7 +76,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "an argument list with an own-line comment" should {
@@ -100,7 +101,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "an overflowing signature with a comment between parameters" should {
@@ -122,7 +123,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, 80)
     }
-    
+
   }
 
   "a signature with a line comment on a parameter" should {
@@ -139,7 +140,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatStablyTo(expected)
     }
-    
+
   }
 
   "a chain with a comment before a dot" should {
@@ -176,10 +177,11 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "an if/else with a comment" should {
+
     val input = "val x = if cond then a // why\n  else b\n"
     val expected =
       """val x =
@@ -204,7 +206,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "a comment after =" should {
@@ -224,7 +226,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "a comment in a block" should {
@@ -258,7 +260,7 @@ class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
 }

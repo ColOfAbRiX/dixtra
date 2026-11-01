@@ -79,9 +79,9 @@ private[render] final class BodyLayout(
    */
   def belowSeparator(lead: Doc): Doc =
     braced match {
-      case Some(block) => 
+      case Some(block) =>
         lead ++ Doc.text(" ") ++ block
-      case None        => 
+      case None =>
         lead ++ trailing ++ Doc.Nest(2, Doc.Line ++ Doc.concat(leading.map(_ ++ Doc.Line)) ++ below)
     }
 
@@ -266,7 +266,7 @@ private[render] object BodyLayout {
      val writtenBraced    = ctx.writtenWithBraces(block)
 
      statements && notParenthesised && ctx.usesBraces(construct, writtenBraced)
-     
+
   /**
    * The end offset of a lambda's `=>`, or the start of its body if not found.
    */

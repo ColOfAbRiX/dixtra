@@ -40,7 +40,7 @@ class AssignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "val with a short RHS (must stay inline)" should {
 
     "keep a fitting single-expression body inline after =" in {
-      val input = "val x = None\n"
+      val input    = "val x = None\n"
       val expected = input
       input should formatTo(expected)
     }

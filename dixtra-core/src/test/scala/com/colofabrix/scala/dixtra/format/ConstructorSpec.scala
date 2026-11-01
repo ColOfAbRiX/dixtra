@@ -112,7 +112,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, 40)
     }
-    
+
   }
 
   "the parameters of a case class without a body" should {
@@ -157,7 +157,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "the parameters of a plain class written one per line" should {
@@ -174,7 +174,7 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
 }

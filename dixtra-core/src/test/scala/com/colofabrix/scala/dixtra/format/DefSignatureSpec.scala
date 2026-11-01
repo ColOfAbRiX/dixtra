@@ -51,7 +51,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "join params written over several lines when they fit" in {
-      val input = "trait A {\n  def f(\n    a: Int,\n    b: Int,\n  ): Int\n}\n"
+      val input    = "trait A {\n  def f(\n    a: Int,\n    b: Int,\n  ): Int\n}\n"
       val expected = "trait A {\n  def f(a: Int, b: Int): Int\n}\n"
       input should formatTo(expected)
     }
@@ -185,7 +185,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "keep a signature that fits on one line" in {
-      val input = "def f(x: Int)(y: Int): Int = 1\n"
+      val input    = "def f(x: Int)(y: Int): Int = 1\n"
       val expected = input
       input should formatTo(expected, lastParameter)
     }
@@ -281,7 +281,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "an annotated def" should {
 
     "measure its signature from the def line, not the annotation" in {
-      val input = "@deprecated(\"x\", \"1\")\ndef f(a: Int): Int = 1\n"
+      val input    = "@deprecated(\"x\", \"1\")\ndef f(a: Int): Int = 1\n"
       val expected = input
       input should formatTo(expected, 30)
     }

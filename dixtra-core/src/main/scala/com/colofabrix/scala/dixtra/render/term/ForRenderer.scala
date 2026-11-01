@@ -91,9 +91,9 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
           val bracedBody = terms.bracedBody(forLoop.body, indent + 2, Construct.For)
 
           val opening =
-            Doc.text("for {") ++ 
-            enumeratorLines(forLoop.enumsBlock, indent) ++ 
-            Doc.Line ++ 
+            Doc.text("for {") ++
+            enumeratorLines(forLoop.enumsBlock, indent) ++
+            Doc.Line ++
             Doc.text("} ")
 
           opening ++ Doc.braced(bracedBody)
@@ -125,9 +125,9 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
       def afterDo(lineWidth: Int): Doc =
         val member = BodyLayout.Member(below, ctx.fits(body, lineWidth + 1), BodyLayout.isSimple(ctx, forLoop.body))
 
-        if BodyLayout.singleBelow(policy, member) then 
+        if BodyLayout.singleBelow(policy, member) then
           Doc.Nest(2, Doc.Line ++ body)
-        else 
+        else
           Doc.text(" ") ++ body
 
       single match {
@@ -151,12 +151,12 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
           .enums
           .zipWithIndex
           .foldLeft(Doc.Empty) { case (acc, (current, index)) =>
-            val separator = 
-              if index == 0 then 
+            val separator =
+              if index == 0 then
                 Doc.Empty
               else if isGuard(current) then
                 Doc.text(" ")
-              else 
+              else
                 Doc.text("; ")
 
             acc ++ separator ++ enumerator(current, indent, None)

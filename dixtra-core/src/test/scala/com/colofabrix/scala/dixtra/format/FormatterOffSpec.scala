@@ -48,14 +48,14 @@ class FormatterOffSpec extends AnyWordSpec with Matchers with FormatMatchers {
         )
 
       table.foreach { (offInput, onInput, offOutput, onOutput) =>
-        val input = s"object A {\n  $offInput\n  val m    =    1\n  $onInput\n  val b    =    2\n}\n"
+        val input    = s"object A {\n  $offInput\n  val m    =    1\n  $onInput\n  val b    =    2\n}\n"
         val expected = s"object A {\n  $offOutput\n  val m    =    1\n  $onOutput\n  val b = 2\n}\n"
         input should formatTo(expected)
       }
     }
 
     "run to the end of the file without dixtra: on" in {
-      val input = "object A {\n  val a    =    1\n}\n// dixtra: off\nobject B {\n  val b    =    2\n}\n"
+      val input    = "object A {\n  val a    =    1\n}\n// dixtra: off\nobject B {\n  val b    =    2\n}\n"
       val expected = "object A {\n  val a = 1\n}\n// dixtra: off\nobject B {\n  val b    =    2\n}\n"
       input should formatTo(expected)
     }
@@ -73,7 +73,8 @@ class FormatterOffSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "not be opened by a marker in a string or in a longer comment" in {
-      val input = "object A {\n  val s    =    \"// dixtra: off\"\n  // dixtra: off is a marker\n  val b    =    2\n}\n"
+      val input =
+        "object A {\n  val s    =    \"// dixtra: off\"\n  // dixtra: off is a marker\n  val b    =    2\n}\n"
       val expected = "object A {\n  val s = \"// dixtra: off\"\n  // dixtra: off is a marker\n  val b = 2\n}\n"
       input should formatTo(expected)
     }

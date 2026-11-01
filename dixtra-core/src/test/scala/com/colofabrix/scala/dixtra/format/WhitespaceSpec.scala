@@ -43,7 +43,7 @@ class WhitespaceSpec extends AnyWordSpec with Matchers with FormatMatchers {
         """object A {
           |  val a = 1
           |}""".stripMargin
-          
+
       input should formatTo(expected)
     }
 

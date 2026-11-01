@@ -91,9 +91,9 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
       lhs ++ Doc.text(" ") ++ op ++ Doc.Line ++ rhs(infix, arg, indent)
     else
       val inline = lhs ++ Doc.text(" ") ++ op ++ Doc.text(" ") ++ rhs(infix, arg, indent)
-      if !ctx.overflows(inline, indent) then 
+      if !ctx.overflows(inline, indent) then
         inline
-      else if isAssignment(infix.op.value) then 
+      else if isAssignment(infix.op.value) then
         assigned
       else
         Doc.intercalate(Doc.text(" ") ++ op ++ Doc.Line, run(infix, arg, indent))
@@ -231,7 +231,7 @@ private[term] final class InfixRenderer(ctx: RenderContext, applications: Applic
   def segments(infix: Term.ApplyInfix, indent: Int, operators: Set[String]): Option[List[Int]] =
     columns(infix, indent, operators).flatMap { (head, rest) =>
       val widths = (head :: rest.map((op, operand) => Doc.text("  ") ++ op ++ operand)).map(Render.flatWidth)
-      Option.when(widths.forall(_.isDefined)) { 
+      Option.when(widths.forall(_.isDefined)) {
         widths.flatten.dropRight(1)
       }
     }

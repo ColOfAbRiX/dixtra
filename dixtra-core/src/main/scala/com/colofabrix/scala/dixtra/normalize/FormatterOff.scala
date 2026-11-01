@@ -36,7 +36,7 @@ object FormatterOff {
                 .foldLeft((new StringBuilder, 0)) { case ((acc, from), ((start, end), (fStart, fEnd))) =>
                   (acc ++= formatted.substring(from, fStart) ++= original.substring(start, end), fEnd)
                 }
-                
+
             Right((text ++= formatted.substring(last)).toString)
           case _ =>
             Left("the regions between `dixtra: off` and `dixtra: on` could not be kept as written")

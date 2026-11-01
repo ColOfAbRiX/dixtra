@@ -28,7 +28,7 @@ class TryCatchSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, 40)
     }
-  
+
   }
 
   "a braceless try/catch" should {
@@ -51,7 +51,7 @@ class TryCatchSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatStablyTo(expected)
     }
-  
+
   }
 
 }

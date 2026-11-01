@@ -38,7 +38,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
         input should formatTo(expected)
       }
     }
-    
+
   }
 
   "container padding" should {
@@ -107,7 +107,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "blank line between methods" should {
@@ -145,7 +145,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "container padding with multiple members" should {
@@ -206,7 +206,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "a braced container with a self type" should {
@@ -229,7 +229,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "a braceless container" should {
@@ -263,7 +263,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "package clauses" should {
@@ -336,7 +336,7 @@ class ContainerSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
 }

@@ -79,7 +79,7 @@ class BraceSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |  if c then
           |    val _ = g()
           |""".stripMargin
-          
+
       input should formatTo(expected)
     }
 

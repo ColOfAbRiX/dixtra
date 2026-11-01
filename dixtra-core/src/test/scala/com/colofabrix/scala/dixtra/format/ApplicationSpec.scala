@@ -16,7 +16,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "a using argument clause" should {
 
     "keep the using keyword" in {
-      val input = "val u = f(using a)\n"
+      val input    = "val u = f(using a)\n"
       val expected = input
       input should formatTo(expected)
     }
@@ -26,7 +26,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "a partial-function argument" should {
 
     "keep its braces rather than become parentheses" in {
-      val input = "val p = f { case a => a }\n"
+      val input    = "val p = f { case a => a }\n"
       val expected = input
       input should formatTo(expected)
     }
@@ -34,6 +34,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "a trailing multi-statement brace block" should {
+
     val expected =
       """val x =
         |  process {
@@ -243,7 +244,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "a tuple" should {
 
     "stay on one line when it fits" in {
-      val input = "val pair = (first, second)\n"
+      val input    = "val pair = (first, second)\n"
       val expected = input
       input should formatTo(expected)
     }

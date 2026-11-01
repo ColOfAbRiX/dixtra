@@ -464,7 +464,7 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, withBraces(Construct.ForYield -> BracePolicy.Keep))
     }
-    
+
   }
 
   "the cases of a match" should {
@@ -651,7 +651,7 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, withBody(_.copy(caseBody = MultiBodyPolicy.AlwaysJoin)))
     }
-    
+
   }
 
   "the pairs of an exploded argument list" should {

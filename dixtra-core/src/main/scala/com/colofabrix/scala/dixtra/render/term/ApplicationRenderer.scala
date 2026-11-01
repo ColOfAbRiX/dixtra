@@ -135,7 +135,7 @@ private[term] final class ApplicationRenderer(
         groups.map { (clause, args, comments) =>
           ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), aligned(args, indent + 2), comments)
         }
-        
+
       val layout = ClauseGroups.broken(Doc.Empty, broken, ctx.config.callSite.groupsSeparator, indent)
       Some(if layout.open then layout.doc ++ Doc.Line ++ Doc.text(")") else layout.doc)
 

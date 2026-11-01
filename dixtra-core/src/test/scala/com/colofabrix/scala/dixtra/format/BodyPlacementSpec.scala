@@ -112,13 +112,13 @@ class BodyPlacementSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "a newline before =" should {
 
     "not be an author signal after the annotation of a def" in {
-      val input = "@tailrec\ndef f(x: Int): Int = xs.map(f).sum\n"
+      val input    = "@tailrec\ndef f(x: Int): Int = xs.map(f).sum\n"
       val expected = input
       input should formatTo(expected)
     }
 
     "not be an author signal after the annotation of a val" in {
-      val input = "@nowarn\nval x = xs.map(f).sum\n"
+      val input    = "@nowarn\nval x = xs.map(f).sum\n"
       val expected = input
       input should formatTo(expected)
     }

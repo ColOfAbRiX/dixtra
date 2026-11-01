@@ -140,9 +140,9 @@ object Dixtra {
                      .map(UnsafeOutputError(_))
       verified  <- verify(lf, tree, restored, dialect)
     yield
-      if eol == "\n" then 
+      if eol == "\n" then
         verified
-      else 
+      else
         verified.replace("\n", eol)
 
   // Parse the source as written: a Scala 2 source is reported as such, so that it is skipped. It either parses only as

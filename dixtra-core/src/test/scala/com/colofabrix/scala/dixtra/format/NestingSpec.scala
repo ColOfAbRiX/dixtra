@@ -32,7 +32,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "a def inside a def body" should {
@@ -78,7 +78,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "a val inside a lambda body" should {
@@ -107,7 +107,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "a case body" should {
@@ -217,7 +217,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "a match with comments between its cases" should {
@@ -242,7 +242,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "a named argument" should {
@@ -272,7 +272,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "a named argument with an application that fits only at the argument's indent" should {
@@ -299,7 +299,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatStablyTo(expected, config)
     }
-    
+
   }
 
   "a named argument with a multi-line application" should {
@@ -382,7 +382,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, 30)
     }
-    
+
   }
 
   "an infix application" should {
@@ -447,7 +447,7 @@ class NestingSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
 }

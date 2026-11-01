@@ -189,7 +189,7 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
               }
           }
     val pads = Alignment.columnTargets(ctx, stats, Alignment.Grouping.Lines)(eligible, segments, fitsAt)
-    
+
     stats
       .zip(pads)
       .map { (stat, pad) =>

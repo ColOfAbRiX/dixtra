@@ -29,7 +29,7 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, Config.withMaxColumn(50))
     }
-    
+
   }
 
   "an explicit else ()" should {
@@ -54,11 +54,11 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "not be added to a bare if" in {
-      val input = "def f =\n  if enabled then\n    run()\n"
+      val input    = "def f =\n  if enabled then\n    run()\n"
       val expected = input
       input should formatTo(expected)
     }
-    
+
   }
 
   "an if/else with a multiline branch" should {
@@ -77,7 +77,7 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
-    
+
   }
 
   "an else-if chain" should {
@@ -118,11 +118,11 @@ class IfElseSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "stay on one line when it fits" in {
-      val input = "val s = if x == 0 then \"zero\" else if x == 1 then \"one\" else \"many\"\n"
+      val input    = "val s = if x == 0 then \"zero\" else if x == 1 then \"one\" else \"many\"\n"
       val expected = input
       input should formatTo(expected)
     }
-    
+
   }
 
 }

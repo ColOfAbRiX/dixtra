@@ -84,7 +84,7 @@ class ScalaReleasesSpec extends AnyWordSpec with Matchers with FormatMatchers {
     )
 
   "the syntax of a Scala 3 release" should {
-    
+
     releases.foreach { (release, source) =>
       s"be formatted and stable for Scala $release" in {
         val expected = source
@@ -96,7 +96,7 @@ class ScalaReleasesSpec extends AnyWordSpec with Matchers with FormatMatchers {
     // it is. This test fails once it does: move the source to the 3.9 fixture then.
     "fail on the into modifier of a type (Scala 3.9), until Scalameta parses it" in {
       val expected = true
-      val actual = Dixtra.format("def concat(xs: into Seq[Int]): Seq[Int] = xs\n").isLeft
+      val actual   = Dixtra.format("def concat(xs: into Seq[Int]): Seq[Int] = xs\n").isLeft
       actual shouldBe expected
     }
 

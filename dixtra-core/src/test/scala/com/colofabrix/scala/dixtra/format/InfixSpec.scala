@@ -104,7 +104,7 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "stay on one line" in {
-      val input = "def d = a ++ b ++ c\n"
+      val input    = "def d = a ++ b ++ c\n"
       val expected = input
       input should formatTo(expected)
     }
@@ -114,7 +114,7 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "an operation with several arguments" should {
 
     "stay on one line when it fits" in {
-      val input = "def t = x shouldBe (1, 2)\n"
+      val input    = "def t = x shouldBe (1, 2)\n"
       val expected = input
       input should formatTo(expected)
     }
@@ -134,7 +134,7 @@ class InfixSpec extends AnyWordSpec with Matchers with FormatMatchers {
     }
 
     "keep the author's line break after the operator" in {
-      val input = "def t =\n  result shouldBe\n  (firstValue, secondValue)\n"
+      val input    = "def t =\n  result shouldBe\n  (firstValue, secondValue)\n"
       val expected = input
       input should formatTo(expected)
     }

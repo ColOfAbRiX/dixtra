@@ -10,7 +10,7 @@ import org.scalatest.wordspec.AnyWordSpec
  */
 class NormalizeSpec extends AnyWordSpec with Matchers {
 
-  private val tripleQuote = 
+  private val tripleQuote =
     "\"\"\""
 
   // The pipeline with the default configuration.

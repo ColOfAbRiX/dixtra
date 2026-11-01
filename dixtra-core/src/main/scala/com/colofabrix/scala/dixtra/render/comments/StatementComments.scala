@@ -121,7 +121,7 @@ private[render] object StatementComments {
     val statements = items.indices.toList
     val leading    = statements.map(i => split(i)._2)
     val trailing   = statements.map(i => Doc.concat(ctx.commentDocs(split(i + 1)._1).map(Doc.text(" ") ++ _)))
-    
+
     val closing =
       split
         .lastOption
