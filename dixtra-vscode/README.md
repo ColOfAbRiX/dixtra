@@ -7,11 +7,11 @@ you run **Format Document** (`Shift+Alt+F`).
    `dixtra.executablePath` overrides the bundled executable.
 
 2. Build it with `sbt dixtraVsCode/vscodePackage` from the repository root (or run `npm install && npm run package`
-   inside the folder), then install the `.vsix` it produces. The version of the extension follows `version` in
-   `build.sbt`:
+   inside the folder), then install the `.vsix` it produces in the `dist/` folder of the repository, next to the
+   executables and the icon. The version of the extension follows `version` in `build.sbt`:
 
    ```
-   code --install-extension dixtra-vscode/dixtra-vscode-<version>.vsix
+   code --install-extension dist/dixtra-vscode-<version>.vsix
    ```
 
    For development, open `dixtra-vscode/` in VS Code and press `F5` to try it in an Extension Development Host.

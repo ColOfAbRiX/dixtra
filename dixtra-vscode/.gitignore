@@ -1,6 +1,7 @@
+*.vsix
+bin/
+icon.png
+LICENSE
 node_modules/
 out/
 target/
-bin/
-LICENSE
-*.vsix

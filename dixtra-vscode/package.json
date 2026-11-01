@@ -1,7 +1,7 @@
 {
   "name": "dixtra-vscode",
-  "displayName": "Dixtra Scala3 Formatter",
-  "description": "Opinionated visual features formatter for Scala 3.",
+  "displayName": "Dixtra",
+  "description": "Opinionated Scala3 formatter",
   "version": "1.0.0-RC1",
   "publisher": "ColOfAbRIX",
   "license": "MIT",
