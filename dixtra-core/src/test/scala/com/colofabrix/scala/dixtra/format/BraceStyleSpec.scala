@@ -22,32 +22,38 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
       (
         Construct.Class,
         ForceBraces,
-        "class A:\n  val x = 1\n", "class A {\n  val x = 1\n}\n"
+        "class A:\n  val x = 1\n",
+        "class A {\n  val x = 1\n}\n",
       ),
       (
         Construct.Class,
         ForceIndent,
-        "class A {\n  val x = 1\n}\n", "class A:\n  val x = 1\n"
+        "class A {\n  val x = 1\n}\n",
+        "class A:\n  val x = 1\n",
       ),
       (
         Construct.Class,
         ForceEnd,
-        "class A {\n  val x = 1\n}\n", "class A:\n  val x = 1\nend A\n"
+        "class A {\n  val x = 1\n}\n",
+        "class A:\n  val x = 1\nend A\n",
       ),
       (
         Construct.Class,
         Keep,
-        "class A:\n  val x = 1\n", "class A:\n  val x = 1\n"
+        "class A:\n  val x = 1\n",
+        "class A:\n  val x = 1\n",
       ),
       (
         Construct.Class,
         Keep,
-        "class A:\n  val x = 1\nend A\n", "class A:\n  val x = 1\nend A\n"
+        "class A:\n  val x = 1\nend A\n",
+        "class A:\n  val x = 1\nend A\n",
       ),
       (
         Construct.Class,
         ForceBraces,
-        "class A:\n  val x = 1\nend A\n", "class A {\n  val x = 1\n}\n"
+        "class A:\n  val x = 1\nend A\n",
+        "class A {\n  val x = 1\n}\n",
       ),
       (
         Construct.AbstractClass,
@@ -58,7 +64,8 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
       (
         Construct.CaseClass,
         ForceBraces,
-        "case class A(x: Int)\n", "case class A(x: Int)\n"
+        "case class A(x: Int)\n",
+        "case class A(x: Int)\n",
       ),
       (
         Construct.CaseClass,
@@ -69,32 +76,38 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
       (
         Construct.Object,
         ForceBraces,
-        "object A:\n  val x = 1\n", "object A {\n  val x = 1\n}\n"
+        "object A:\n  val x = 1\n",
+        "object A {\n  val x = 1\n}\n",
       ),
       (
         Construct.Object,
         ForceBraces,
-        "object A\n", "object A\n"
+        "object A\n",
+        "object A\n",
       ),
       (
         Construct.Object,
         ForceIndent,
-        "object A {\n  val x = 1\n}\n", "object A:\n  val x = 1\n"
+        "object A {\n  val x = 1\n}\n",
+        "object A:\n  val x = 1\n",
       ),
       (
         Construct.Trait,
         ForceBraces,
-        "trait A:\n  def x: Int\n", "trait A {\n  def x: Int\n}\n"
+        "trait A:\n  def x: Int\n",
+        "trait A {\n  def x: Int\n}\n",
       ),
       (
         Construct.Enum,
         ForceBraces,
-        "enum Color:\n  case Red, Green\n", "enum Color {\n  case Red, Green\n}\n"
+        "enum Color:\n  case Red, Green\n",
+        "enum Color {\n  case Red, Green\n}\n",
       ),
       (
         Construct.Enum,
         ForceIndent,
-        "enum Color {\n  case Red, Green\n}\n", "enum Color:\n  case Red, Green\n"
+        "enum Color {\n  case Red, Green\n}\n",
+        "enum Color:\n  case Red, Green\n",
       ),
       (
         Construct.GivenInstance,
@@ -123,12 +136,14 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
       (
         Construct.Package,
         ForceIndent,
-        "package a {\n  object B\n}\n", "package a\n\nobject B\n"
+        "package a {\n  object B\n}\n",
+        "package a\n\nobject B\n",
       ),
       (
         Construct.Package,
         ForceBraces,
-        "package a\n\nobject B\n", "package a {\n\n  object B\n\n}\n"
+        "package a\n\nobject B\n",
+        "package a {\n\n  object B\n\n}\n",
       ),
       (
         Construct.Package,
@@ -200,7 +215,8 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
       (
         Construct.While,
         Keep,
-        "def f =\n  while (i < 10) i += 1\n", "def f =\n  while (i < 10) i += 1\n"
+        "def f =\n  while (i < 10) i += 1\n",
+        "def f =\n  while (i < 10) i += 1\n",
       ),
       (
         Construct.If,
@@ -217,7 +233,8 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
       (
         Construct.If,
         ForceBraces,
-        "def f = if (a) b else c\n", "def f = if (a) b else c\n"
+        "def f = if (a) b else c\n",
+        "def f = if (a) b else c\n",
       ),
       (
         Construct.For,
@@ -259,37 +276,44 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
       (
         Construct.Def,
         ForceBraces,
-        noBlock, withBlock
+        noBlock,
+        withBlock,
       ),
       (
         Construct.Def,
         ForceIndent,
-        withBlock, noBlock
+        withBlock,
+        noBlock,
       ),
       (
         Construct.Def,
         Keep,
-        withBlock, withBlock
+        withBlock,
+        withBlock,
       ),
       (
         Construct.Def,
         ForceEnd,
-        withBlock, noBlock + "end f\n"
+        withBlock,
+        noBlock + "end f\n",
       ),
       (
         Construct.Def,
         ForceBraces,
-        "def f = 1\n", "def f = 1\n"
+        "def f = 1\n",
+        "def f = 1\n",
       ),
       (
         Construct.Val,
         ForceBraces,
-        "val f =\n  val a = 1\n  a + 1\n", "val f = {\n  val a = 1\n  a + 1\n}\n"
+        "val f =\n  val a = 1\n  a + 1\n",
+        "val f = {\n  val a = 1\n  a + 1\n}\n",
       ),
       (
         Construct.Val,
         ForceEnd,
-        "val f = {\n  val a = 1\n  a + 1\n}\n", "val f =\n  val a = 1\n  a + 1\nend f\n"
+        "val f = {\n  val a = 1\n  a + 1\n}\n",
+        "val f =\n  val a = 1\n  a + 1\nend f\n",
       ),
       (
         Construct.LazyVal,
@@ -300,7 +324,8 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
       (
         Construct.Var,
         ForceBraces,
-        "var f =\n  val a = 1\n  a + 1\n", "var f = {\n  val a = 1\n  a + 1\n}\n"
+        "var f =\n  val a = 1\n  a + 1\n",
+        "var f = {\n  val a = 1\n  a + 1\n}\n",
       ),
       (
         Construct.GivenAlias,
@@ -359,7 +384,8 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
       (
         Construct.LambdaArgument,
         ForceIndent,
-        "def f = xs.map { x => x + 1 }\n", "def f = xs.map { x => x + 1 }\n"
+        "def f = xs.map { x => x + 1 }\n",
+        "def f = xs.map { x => x + 1 }\n",
       ),
     )
 
@@ -379,11 +405,7 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
 
       val expected = "def f(x: Int) =\n  println(x)\n  x match\n    case 1 => a\n    case _ => b\n  end match\n"
 
-      input should formatTo(expected, withBraces(
-        Construct.Match 
-        > ForceEnd
-       
-       )
+      input should formatTo(expected, withBraces(Construct.Match -> ForceEnd))
     }
 
     "be removed for a construct set to force-indent" in {
@@ -391,11 +413,7 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
 
       val expected = "def f(x: Int) =\n  println(x)\n  x match\n    case 1 => a\n    case _ => b\n"
 
-      input should formatTo(expected, withBraces(
-        Construct.Match 
-        > ForceIndent
-       
-       )
+      input should formatTo(expected, withBraces(Construct.Match -> ForceIndent))
     }
 
     "not count as a member of a single-member extension group" in {
@@ -403,11 +421,7 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
 
       val expected = input
 
-      input should formatTo(expected, withBraces(
-        Construct.Extension 
-        > ForceIndent
-         Construct.Def -> ForceEnd
-        ))
+      input should formatTo(expected, withBraces(Construct.Extension -> ForceIndent, Construct.Def -> ForceEnd))
     }
 
     "be removed when the construct gets braces" in {
@@ -415,13 +429,9 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
 
       val expected = "def f(x: Int) =\n  println(x)\n  x match {\n    case 1 => a\n    case _ => b\n  }\n"
 
-      input should formatTo(expected, withBraces(
-        Construct.Match 
-        > ForceBraces
-       
-       )
+      input should formatTo(expected, withBraces(Construct.Match -> ForceBraces))
     }
-    
+
   }
 
 }
