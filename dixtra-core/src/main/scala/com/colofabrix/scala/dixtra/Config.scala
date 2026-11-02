@@ -1,5 +1,7 @@
 package com.colofabrix.scala.dixtra
 
+import com.colofabrix.scala.dixtra.model.*
+
 /**
  * Formatting configuration for the dixtra formatter.
  *

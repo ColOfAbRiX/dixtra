@@ -3,6 +3,7 @@ package com.colofabrix.scala.dixtra.cli
 import cats.data.*
 import cats.syntax.all.*
 import com.colofabrix.scala.dixtra.*
+import com.colofabrix.scala.dixtra.model.*
 import com.monovore.decline.Opts
 import com.typesafe.config.{Config as HoconConfig, *}
 import java.nio.file.*

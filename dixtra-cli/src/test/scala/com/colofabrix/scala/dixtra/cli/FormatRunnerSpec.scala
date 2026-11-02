@@ -2,6 +2,7 @@ package com.colofabrix.scala.dixtra.cli
 
 import cats.effect.unsafe.implicits.global
 import com.colofabrix.scala.dixtra.*
+import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.testkit.TempFiles.*
 import java.nio.file.*
 import org.scalatest.matchers.should.Matchers

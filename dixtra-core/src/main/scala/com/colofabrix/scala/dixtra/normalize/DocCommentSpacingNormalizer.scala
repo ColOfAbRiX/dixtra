@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.normalize
 
-import com.colofabrix.scala.dixtra.ScaladocSpacing
+import com.colofabrix.scala.dixtra.model.ScaladocSpacing
 
 /**
  * Blank-line-before-scaladoc normalisation, by `blank-lines.before-scaladoc`.

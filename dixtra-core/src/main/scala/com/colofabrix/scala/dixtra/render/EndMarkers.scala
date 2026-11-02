@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.render
 
-import com.colofabrix.scala.dixtra.BracePolicy
+import com.colofabrix.scala.dixtra.model.BracePolicy
 import com.colofabrix.scala.dixtra.render.context.RenderContext
 import scala.meta.*
 

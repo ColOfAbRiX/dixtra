@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.normalize
 
-import com.colofabrix.scala.dixtra.TrailingOverflow
+import com.colofabrix.scala.dixtra.model.TrailingOverflow
 import com.colofabrix.scala.dixtra.normalize.SourceEdits.Edit
 import scala.meta.*
 import scala.meta.tokens.Token

@@ -1,7 +1,8 @@
 package com.colofabrix.scala.dixtra.properties
 
 import com.colofabrix.scala.dixtra.*
-import com.colofabrix.scala.dixtra.DefinitionKind.*
+import com.colofabrix.scala.dixtra.model.*
+import com.colofabrix.scala.dixtra.model.DefinitionKind.*
 import com.colofabrix.scala.dixtra.testkit.FormatMatchers
 import com.colofabrix.scala.dixtra.verify.Equivalence
 import java.nio.charset.StandardCharsets
@@ -47,7 +48,19 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
       "class VeryLongServiceName(firstDependency: Dependency, secondDependency: Dependency) extends ServiceBase" +
       " with Logging {\n  def run() = 1\n}\n",
     ) ++
-    List("Config.scala", "ConfigTypes.scala", "Dixtra.scala").map { name =>
+    List(
+      "Config.scala",
+      "Dixtra.scala",
+      "model/Alignment.scala",
+      "model/Bodies.scala",
+      "model/BlankLines.scala",
+      "model/Braces.scala",
+      "model/Chains.scala",
+      "model/Construct.scala",
+      "model/Housekeeping.scala",
+      "model/Paths.scala",
+      "model/Sites.scala",
+    ).map { name =>
       val path = Paths.get("src", "main", "scala", "com", "colofabrix", "scala", "dixtra").resolve(name)
       new String(Files.readAllBytes(path), StandardCharsets.UTF_8)
     }

@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.render.comments
 
-import com.colofabrix.scala.dixtra.TrailingCommas
+import com.colofabrix.scala.dixtra.model.TrailingCommas
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
 import com.colofabrix.scala.dixtra.render.context.RenderContext

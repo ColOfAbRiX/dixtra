@@ -1,9 +1,10 @@
 package com.colofabrix.scala.dixtra.format
 
 import com.colofabrix.scala.dixtra.*
-import com.colofabrix.scala.dixtra.BlankLinePolicy.*
-import com.colofabrix.scala.dixtra.DefinitionKind.*
-import com.colofabrix.scala.dixtra.MultiBodyPolicy.*
+import com.colofabrix.scala.dixtra.model.*
+import com.colofabrix.scala.dixtra.model.BlankLinePolicy.*
+import com.colofabrix.scala.dixtra.model.DefinitionKind.*
+import com.colofabrix.scala.dixtra.model.MultiBodyPolicy.*
 import com.colofabrix.scala.dixtra.testkit.LayoutRows
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

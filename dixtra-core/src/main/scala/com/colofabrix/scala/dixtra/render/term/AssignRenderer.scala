@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.render.term
 
-import com.colofabrix.scala.dixtra.SingleBodyPolicy
+import com.colofabrix.scala.dixtra.model.SingleBodyPolicy
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
 import com.colofabrix.scala.dixtra.render.Alignment

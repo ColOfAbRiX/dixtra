@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.render.term
 
-import com.colofabrix.scala.dixtra.Construct
+import com.colofabrix.scala.dixtra.model.Construct
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
 import com.colofabrix.scala.dixtra.render.comments.CommentGaps

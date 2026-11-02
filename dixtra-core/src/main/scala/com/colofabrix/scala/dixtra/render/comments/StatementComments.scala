@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.render.comments
 
-import com.colofabrix.scala.dixtra.BlankLinePolicy
+import com.colofabrix.scala.dixtra.model.BlankLinePolicy
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
 import com.colofabrix.scala.dixtra.render.EdgeBlankLines

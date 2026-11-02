@@ -1,6 +1,7 @@
 package com.colofabrix.scala.dixtra.render.term
 
 import com.colofabrix.scala.dixtra.*
+import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
 import com.colofabrix.scala.dixtra.render.*
@@ -132,7 +133,7 @@ private[term] final class ApplicationRenderer(
       None
     else if ctx.config.callSite.groupsBreak == GroupsBreak.LastFirst && leadingStay(groups.dropRight(1), column) then
       None
-    else
+    else 
       val broken =
         groups.map { (clause, args, comments) =>
           ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), aligned(args, indent + 2), comments)

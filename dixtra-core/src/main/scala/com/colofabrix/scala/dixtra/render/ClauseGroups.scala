@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.render
 
-import com.colofabrix.scala.dixtra.GroupsSeparator
+import com.colofabrix.scala.dixtra.model.GroupsSeparator
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
 import com.colofabrix.scala.dixtra.render.comments.CommentedList

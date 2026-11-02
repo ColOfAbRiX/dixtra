@@ -2,7 +2,7 @@ package com.colofabrix.scala.dixtra.cli
 
 import cats.effect.IO
 import cats.syntax.all.*
-import com.colofabrix.scala.dixtra.PathsConfig
+import com.colofabrix.scala.dixtra.model.PathsConfig
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import scala.annotation.tailrec

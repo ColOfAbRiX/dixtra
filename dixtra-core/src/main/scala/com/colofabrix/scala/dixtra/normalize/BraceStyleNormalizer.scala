@@ -1,6 +1,7 @@
 package com.colofabrix.scala.dixtra.normalize
 
 import com.colofabrix.scala.dixtra.*
+import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.normalize.SourceEdits.Edit
 import com.colofabrix.scala.dixtra.verify.Equivalence
 import scala.collection.Searching.Found

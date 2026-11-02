@@ -1,6 +1,7 @@
 package com.colofabrix.scala.dixtra.render
 
 import com.colofabrix.scala.dixtra.*
+import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.normalize.SourceEdits
 import com.colofabrix.scala.dixtra.render.context.RenderContext
 

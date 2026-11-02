@@ -1,6 +1,7 @@
 package com.colofabrix.scala.dixtra.testkit
 
 import com.colofabrix.scala.dixtra.*
+import com.colofabrix.scala.dixtra.model.*
 import org.scalatest.matchers.*
 
 /**

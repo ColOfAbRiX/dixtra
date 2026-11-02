@@ -1,6 +1,7 @@
 package com.colofabrix.scala.dixtra.normalize
 
 import com.colofabrix.scala.dixtra.*
+import com.colofabrix.scala.dixtra.model.*
 import scala.meta.*
 import scala.meta.tokens.Token
 import scala.util.control.NonFatal

@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.render.definition
 
-import com.colofabrix.scala.dixtra.*
+import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
 import com.colofabrix.scala.dixtra.render.Alignment

@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.render
 
-import com.colofabrix.scala.dixtra.Construct
+import com.colofabrix.scala.dixtra.model.Construct
 import scala.meta.*
 
 /**
