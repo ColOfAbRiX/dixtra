@@ -38,8 +38,8 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
     flatten(term)._2.nonEmpty
 
   /**
-   * Render a select chain starting at `indent`; `asBody` when it is a body, after a separator, where it also breaks by
-   * `selector-chain.break-at-count`.
+   * Render a select chain starting at `indent`; Unless it is part of an expression (see `inExpression`), it also breaks
+   * by `selector-chain.break-at-count`.
    */
   def render(term: Term, indent: Int, forceExplode: Boolean, asBody: Boolean): Doc =
     val (start, all) = flatten(term)
@@ -82,13 +82,14 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
 
       val chain            = ctx.config.selectorChain
       val call             = inCall(term)
+      val statement        = asBody || !inExpression(term)
       val neverBreakInFor  = chain.inFor == NestedChainPolicy.NeverBreak && inEnumerator(term)
       val neverBreakInCall = chain.inCall == NestedChainPolicy.NeverBreak && call
       val joins            = !comments.exists(_.forcesBreak) && (neverBreakInFor || neverBreakInCall)
 
       if joins && ctx.fits(inline, indent) then
         inline
-      else if !explodes(term, base, selections, head.counted, comments, indent, forceExplode, asBody && !call) then
+      else if !explodes(term, base, selections, head.counted, comments, indent, forceExplode, statement && !call) then
         inline
       else
         val selectionDocs =
@@ -102,6 +103,36 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
             }
 
         baseDoc ++ Doc.Nest(2, Doc.concat(selectionDocs))
+
+  // Whether the term is part of an expression, where a chain does not break at `selector-chain.brak-at-count`: an
+  // operand of an operation, as argument, a tuple element, an enumerator, a condition, a scrutinee, the target of an
+  // assignment, a qualifier, or an ascribed, unary, interpolated or default value. Anywhere else, as a body or a
+  // statement of a block, at any position, it is not.
+  private def inExpression(tree: Tree): Boolean =
+    tree
+      .parent
+      .exists {
+        case _: Enumerator       => true
+        case _: Term.Annotate    => true
+        case _: Term.Apply       => true
+        case _: Term.ApplyInfix  => true
+        case _: Term.ApplyType   => true
+        case _: Term.ApplyUnary  => true
+        case _: Term.ArgClause   => true
+        case _: Term.Ascribe     => true
+        case _: Term.Eta         => true
+        case _: Term.Interpolate => true
+        case _: Term.Param       => true
+        case _: Term.Repeated    => true
+        case _: Term.Select      => true
+        case _: Term.Tuple       => true
+        case parent: Case        => parent.cond.exists(_ eq tree)
+        case parent: Term.Assign => parent.lhs eq tree
+        case parent: Term.If     => parent.cond eq tree
+        case parent: Term.Match  => parent.expr eq tree
+        case parent: Term.While  => parent.expr eq tree
+        case _                   => false
+      }
 
   // Whether the term is in the enumerators of a `for`: a generator, a guard or a value definition, at any depth.
   private def inEnumerator(tree: Tree): Boolean =
@@ -224,10 +255,9 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
 
   // The explode triggers (D2): a break before a dot or a comment that forces it; with two or more selections also an
   // overflow or any newline after the receiver (a newline inside the receiver itself, e.g. a multiline string literal,
-  // does not count); for a chain that is a body (`asBody`), with `selector-chain.break-at-count` or more selections
-  // (`counted` more from the receiver) also an author signal from the parent (a newline after `=` or
-  // `=>`), or nothing with `selector-chain.inline-chains = break-at-count`. A
-  // chain inside an operation, an argument or a condition does not count.
+  // does not count); for a chain that is a body or a statement (`asBody`), with `selector-chain.break-at-count` or more
+  // selections (`counted` more from the receiver) also an author signal from the parent (a newline after `=` or `=>`),
+  // or nothing with `selector-chain.inline-chains = break-at-count`. A chain inside an operation, an argument or a condition does not count.
   private def explodes(
     term: Term,
     base: Term,
