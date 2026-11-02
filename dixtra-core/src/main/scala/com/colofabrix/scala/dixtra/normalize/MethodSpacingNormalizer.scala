@@ -244,7 +244,7 @@ object MethodSpacingNormalizer {
             case "var"                                => DefinitionKind.Var
             case "def"                                => DefinitionKind.Def
             case "given"                              => DefinitionKind.GivenAlias
-            case _                                    => DefinitionKind.Type
+            case _                                    => DefinitionKind.TypeDef
           }
         }
 

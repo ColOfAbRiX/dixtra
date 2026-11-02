@@ -16,6 +16,8 @@ import scala.io.Source
 import scala.jdk.CollectionConverters.*
 import scala.util.*
 
+// FIMXE: Break down this file into multiple files (consider creating new package)
+
 /**
  * CLI option definitions, HOCON parsing, and pureconfig loading for [[Config]].
  *
@@ -30,7 +32,8 @@ object ConfigCli {
   /**
    * The name of the configuration file looked up from the formatted paths.
    */
-  val fileName: String = ".dixtra.conf"
+  val fileName: String = 
+    ".dixtra.conf"
 
   /**
    * The version of the configuration schema this dixtra reads.

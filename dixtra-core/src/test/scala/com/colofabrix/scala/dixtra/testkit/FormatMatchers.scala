@@ -23,7 +23,7 @@ trait FormatMatchers {
         lazyVal = policy,
         varBody = policy,
         givenAlias = policy,
-        typeBody = policy,
+        typeDef = policy,
         assignment = policy,
         namedArgument = policy,
       )

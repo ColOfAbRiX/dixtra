@@ -14,20 +14,11 @@ import org.scalatest.wordspec.AnyWordSpec
  */
 class ConfigCliSpec extends AnyWordSpec with Matchers {
 
-  private def errors(result: ValidatedNel[String, Config]): String =
-    result.fold(_.toList.mkString("\n"), _ => "")
-
-  // The warnings of loading `settings`
-  private def warnings(settings: String): ValidatedNel[String, List[String]] =
-    ConfigCli.load(settings, Paths.get("").toAbsolutePath).map(_.warnings)
-
   "the defaults" should {
 
     "be the hardcoded default configuration" in {
       val expected = Config.default
-
       val actual = ConfigCli.default
-
       actual shouldBe expected
     }
 
@@ -100,9 +91,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
 
     "change only the keys it sets" in {
       val expected = Validated.valid(Config.withMaxColumn(80))
-
       val actual = ConfigCli.fromString("max-column = 80")
-
       actual shouldBe expected
     }
 
@@ -120,10 +109,26 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
     "set the setting it names, trying every value of the settings with few values" in {
       val table: List[(String, Config => Any, Any)] =
         List(
-          ("blank-lines.body-edges.match = always", _.blankLines(Construct.Match), BlankLinePolicy.Always),
-          ("braces.style = allman", _.braces.style, BracesStyle.Allman),
-          ("alignment.scaladoc.tags = true", _.alignment.scaladoc.tags, true),
-          ("selector-chain.break-at-count = 4", _.selectorChain.breakAtCount, 4),
+          (
+            "blank-lines.body-edges.match = always",
+            _.blankLines(Construct.Match),
+            BlankLinePolicy.Always,
+          ),
+          (
+            "braces.style = allman",
+            _.braces.style,
+            BracesStyle.Allman,
+          ),
+          (
+            "alignment.scaladoc.tags = true",
+            _.alignment.scaladoc.tags,
+            true,
+          ),
+          (
+            "selector-chain.break-at-count = 4",
+            _.selectorChain.breakAtCount,
+            4,
+          ),
           (
             "blank-lines.between-alignment-groups = always",
             _.blankLines.betweenAlignmentGroups,
@@ -134,36 +139,136 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
             _.blankLines.beforeScaladoc,
             ScaladocSpacing.AlwaysMultiline,
           ),
-          ("alignment.arrows.for-enumerators = false", _.alignment.arrows.forEnumerators, false),
-          ("alignment.extends-clauses = false", _.alignment.extendsClauses, false),
-          ("alignment.extends-clauses = false", _.alignment.extendsClauses, false),
-          ("alignment.across-comments = true", _.alignment.acrossComments, true),
-          ("selector-chain.receiver-min-length = 3", _.selectorChain.receiverMinLength, 3),
-          ("selector-chain.in-call = never-break", _.selectorChain.inCall, NestedChainPolicy.NeverBreak),
-          ("selector-chain.in-call = keep", _.selectorChain.inCall, NestedChainPolicy.Keep),
-          ("selector-chain.in-for = never-break", _.selectorChain.inFor, NestedChainPolicy.NeverBreak),
-          ("selector-chain.in-for = keep", _.selectorChain.inFor, NestedChainPolicy.Keep),
-          ("selector-chain.inline-chains = keep", _.selectorChain.inlineChains, InlineChainPolicy.Keep),
-          ("selector-chain.object-member = always-join", _.selectorChain.objectMember, ChainHeadPolicy.AlwaysJoin),
+          (
+            "alignment.arrows.for-enumerators = false",
+            _.alignment.arrows.forEnumerators,
+            false,
+          ),
+          (
+            "alignment.extends-clauses = false",
+            _.alignment.extendsClauses,
+            false,
+          ),
+          (
+            "alignment.extends-clauses = false",
+            _.alignment.extendsClauses,
+            false,
+          ),
+          (
+            "alignment.across-comments = true",
+            _.alignment.acrossComments,
+            true,
+          ),
+          (
+            "selector-chain.receiver-min-length = 3",
+            _.selectorChain.receiverMinLength,
+            3,
+          ),
+          (
+            "selector-chain.in-call = never-break",
+            _.selectorChain.inCall,
+            NestedChainPolicy.NeverBreak,
+          ),
+          (
+            "selector-chain.in-call = keep",
+            _.selectorChain.inCall,
+            NestedChainPolicy.Keep,
+          ),
+          (
+            "selector-chain.in-for = never-break",
+            _.selectorChain.inFor,
+            NestedChainPolicy.NeverBreak,
+          ),
+          (
+            "selector-chain.in-for = keep",
+            _.selectorChain.inFor,
+            NestedChainPolicy.Keep,
+          ),
+          (
+            "selector-chain.inline-chains = keep",
+            _.selectorChain.inlineChains,
+            InlineChainPolicy.Keep,
+          ),
+          (
+            "selector-chain.object-member = always-join",
+            _.selectorChain.objectMember,
+            ChainHeadPolicy.AlwaysJoin,
+          ),
           (
             "definition-site.groups-separator = previous-group",
             _.definitionSite.groupsSeparator,
             GroupsSeparator.PreviousGroup,
           ),
-          ("call-site.groups-separator = next-group", _.callSite.groupsSeparator, GroupsSeparator.NextGroup),
-          ("call-site.groups-break = break-all", _.callSite.groupsBreak, GroupsBreak.BreakAll),
-          ("call-site.groups-break = last-first", _.callSite.groupsBreak, GroupsBreak.LastFirst),
-          ("call-site.groups-break = independent", _.callSite.groupsBreak, GroupsBreak.Independent),
-          ("alignment.named-arguments = true", _.alignment.namedArguments, true),
-          ("alignment.trailing-comments = true", _.alignment.trailingComments, true),
-          ("trailing-comment-overflow = keep", _.trailingCommentOverflow, TrailingOverflow.Keep),
-          ("trailing-comment-overflow = move-above", _.trailingCommentOverflow, TrailingOverflow.MoveAbove),
-          ("trailing-commas = always", _.trailingCommas, TrailingCommas.Always),
-          ("trailing-commas = never", _.trailingCommas, TrailingCommas.Never),
-          ("housekeeping.line-ending = lf", _.housekeeping.lineEnding, LineEnding.Lf),
-          ("housekeeping.line-ending = crlf", _.housekeeping.lineEnding, LineEnding.Crlf),
-          ("housekeeping.line-ending = cr", _.housekeeping.lineEnding, LineEnding.Cr),
-          ("housekeeping.line-ending = keep", _.housekeeping.lineEnding, LineEnding.Keep),
+          (
+            "call-site.groups-separator = next-group",
+            _.callSite.groupsSeparator,
+            GroupsSeparator.NextGroup,
+          ),
+          (
+            "call-site.groups-break = break-all",
+            _.callSite.groupsBreak,
+            GroupsBreak.BreakAll,
+          ),
+          (
+            "call-site.groups-break = last-first",
+            _.callSite.groupsBreak,
+            GroupsBreak.LastFirst,
+          ),
+          (
+            "call-site.groups-break = independent",
+            _.callSite.groupsBreak,
+            GroupsBreak.Independent,
+          ),
+          (
+            "alignment.named-arguments = true",
+            _.alignment.namedArguments,
+            true,
+          ),
+          (
+            "alignment.trailing-comments = true",
+            _.alignment.trailingComments,
+            true,
+          ),
+          (
+            "trailing-comment-overflow = keep",
+            _.trailingCommentOverflow,
+            TrailingOverflow.Keep,
+          ),
+          (
+            "trailing-comment-overflow = move-above",
+            _.trailingCommentOverflow,
+            TrailingOverflow.MoveAbove,
+          ),
+          (
+            "trailing-commas = always",
+            _.trailingCommas,
+            TrailingCommas.Always,
+          ),
+          (
+            "trailing-commas = never",
+            _.trailingCommas,
+            TrailingCommas.Never,
+          ),
+          (
+            "housekeeping.line-ending = lf",
+            _.housekeeping.lineEnding,
+            LineEnding.Lf,
+          ),
+          (
+            "housekeeping.line-ending = crlf",
+            _.housekeeping.lineEnding,
+            LineEnding.Crlf,
+          ),
+          (
+            "housekeeping.line-ending = cr",
+            _.housekeeping.lineEnding,
+            LineEnding.Cr,
+          ),
+          (
+            "housekeeping.line-ending = keep",
+            _.housekeeping.lineEnding,
+            LineEnding.Keep,
+          ),
         )
 
       table.foreach { (setting, read, expected) =>
@@ -177,17 +282,13 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
 
     "keep the brace styles of the constructs when setting the braces style" in {
       val expected = Validated.valid(Config.default.braces.policies)
-
       val actual = ConfigCli.fromString("braces.style = stroustrup").map(_.braces.policies)
-
       actual shouldBe expected
     }
 
     "read a construct without a setting as keep" in {
       val expected = BracePolicy.Keep
-
       val actual = ConfigCli.default.braces(Construct.GivenAlias)
-
       actual shouldBe expected
     }
 
@@ -196,13 +297,13 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
         Validated.valid(
           List(
             Set(DefinitionKind.Val, DefinitionKind.LazyVal),
-            Set(DefinitionKind.Def, DefinitionKind.GivenAlias, DefinitionKind.Type),
+            Set(DefinitionKind.Def, DefinitionKind.GivenAlias, DefinitionKind.TypeDef),
           ),
         )
 
       val actual =
         ConfigCli
-          .fromString("alignment.assignment-groups = [[val, lazy-val], [def, given-alias, type]]")
+          .fromString("alignment.assignment-groups = [[val, lazy-val], [def, given-alias, type-def]]")
           .map(_.alignment.assignmentGroups)
 
       actual shouldBe expected
@@ -237,7 +338,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
             lazyVal = SingleBodyPolicy.Keep,
             varBody = SingleBodyPolicy.AlwaysBreak,
             givenAlias = SingleBodyPolicy.AlwaysJoin,
-            typeBody = SingleBodyPolicy.AlwaysBreak,
+            typeDef = SingleBodyPolicy.AlwaysBreak,
             assignment = SingleBodyPolicy.AlwaysJoin,
             namedArgument = SingleBodyPolicy.AlwaysBreak,
             lambdaArgument = SingleBodyPolicy.AlwaysJoin,
@@ -258,7 +359,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
           .fromString(
             """body {
               |  def = always-break, val = always-join, lazy-val = keep, var = always-break, given-alias = always-join
-              |  type = always-break, assignment = always-join, named-argument = always-break
+              |  type-def = always-break, assignment = always-join, named-argument = always-break
               |  lambda-argument = always-join, lambda-body = always-break, block-argument = always-join
               |  test-block = always-break, if = join-mixed, case-body = always-join, try = always-break
               |  for = always-join, for-yield = break-complex, while = always-join
@@ -374,22 +475,18 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
 
       table.foreach { (setting, problem) =>
         val actual = errors(ConfigCli.fromString(setting))
-
         actual should include(problem)
       }
     }
 
     "reject a wrong value beside an unknown key" in {
       val message = errors(ConfigCli.fromString("max-colum = 80\nmax-column = wide"))
-
       message should include("max-column")
     }
 
     "reject malformed HOCON" in {
       val expected = true
-
       val actual = ConfigCli.fromString("braces {").isInvalid
-
       actual shouldBe expected
     }
 
@@ -422,9 +519,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
 
     "leave the known settings beside it" in {
       val expected = Validated.valid(90)
-
       val actual = ConfigCli.fromString("max-colum = 80\nmax-column = 90").map(_.maxColumn)
-
       actual shouldBe expected
     }
 
@@ -473,13 +568,18 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
     "report an invalid file with its path" in {
       withTempDir { dir =>
         val conf = write(dir.resolve(ConfigCli.fileName), "max-column = wide")
-
         val actual = errors(ConfigCli.discover(dir).map(_.base))
-
         actual should include(conf.toString)
       }
     }
 
   }
+
+  private def errors(result: ValidatedNel[String, Config]): String =
+    result.fold(_.toList.mkString("\n"), _ => "")
+
+  // The warnings of loading `settings`
+  private def warnings(settings: String): ValidatedNel[String, List[String]] =
+    ConfigCli.load(settings, Paths.get("").toAbsolutePath).map(_.warnings)
 
 }

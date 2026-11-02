@@ -142,7 +142,7 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
       case givenAlias: Defn.GivenAlias if givenAlias.paramClauseGroups.isEmpty =>
         Some(DefinitionKind.GivenAlias)
       case _: Defn.Type =>
-        Some(DefinitionKind.Type)
+        Some(DefinitionKind.TypeDef)
       case _ =>
         None
     }
@@ -162,7 +162,7 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
     }
 
   // A one-line type alias, its `=` padded to `padTo` when aligned and its body
-  // below the `=` when `below` or with `body.type = always-break`.
+  // below the `=` when `below` or with `body.type-def = always-break`.
   private def typeAlias(t: Defn.Type, padTo: Option[Int], below: Boolean): Option[Doc] =
     if ctx.slice(t.pos.start, t.pos.end).contains('\n') then
       None
@@ -170,7 +170,7 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
       typeAliasName(t).map { name =>
         val body = ctx.trimmedSourceDoc(t.body.pos.start, t.pos.end)
         val lead = name ++ Alignment.padding(padTo, Render.flatWidth(name)) ++ Doc.text(" =")
-        if below || ctx.config.body.typeBody == SingleBodyPolicy.AlwaysBreak then
+        if below || ctx.config.body.typeDef == SingleBodyPolicy.AlwaysBreak then
           lead ++ Doc.Nest(2, Doc.Line ++ body)
         else
           lead ++ Doc.text(" ") ++ body

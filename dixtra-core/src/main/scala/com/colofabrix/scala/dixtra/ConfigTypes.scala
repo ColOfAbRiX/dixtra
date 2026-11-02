@@ -315,7 +315,7 @@ enum InlineChainPolicy(val key: String) {
  * @param lazyVal The body after the `=` of a `lazy val`.
  * @param varBody The body after the `=` of a `var`.
  * @param givenAlias The body after the `=` of a `given` alias.
- * @param typeBody The type after the `=` of a type alias.
+ * @param typeDef The type after the `=` of a type alias.
  * @param assignment The value after the `=` of an assignment (`x = 1`).
  * @param namedArgument The value after the `=` of a named argument.
  * @param lambdaArgument The body after the `=>` of a lambda passed in braces or after a colon (`f { x => ... }`, `f:
@@ -338,7 +338,7 @@ final case class BodyConfig(
   lazyVal: SingleBodyPolicy,
   varBody: SingleBodyPolicy,
   givenAlias: SingleBodyPolicy,
-  typeBody: SingleBodyPolicy,
+  typeDef: SingleBodyPolicy,
   assignment: SingleBodyPolicy,
   namedArgument: SingleBodyPolicy,
   lambdaArgument: SingleBodyPolicy,
@@ -363,7 +363,7 @@ final case class BodyConfig(
       case DefinitionKind.Var        => varBody
       case DefinitionKind.Def        => defBody
       case DefinitionKind.GivenAlias => givenAlias
-      case DefinitionKind.Type       => typeBody
+      case DefinitionKind.TypeDef    => typeDef
     }
 
 }
@@ -540,7 +540,7 @@ enum DefinitionKind(val key: String) {
   case Var        extends DefinitionKind("var")
   case Def        extends DefinitionKind("def")
   case GivenAlias extends DefinitionKind("given-alias")
-  case Type       extends DefinitionKind("type")
+  case TypeDef    extends DefinitionKind("type-def")
 }
 
 /**

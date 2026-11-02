@@ -84,7 +84,7 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
         Vector(
           List(Set(Val, LazyVal, Var, Def)),
           List(Set(Val, LazyVal, Var), Set(Def)),
-          List(Set(Val, LazyVal, Var, Def, GivenAlias, Type)),
+          List(Set(Val, LazyVal, Var, Def, GivenAlias, TypeDef)),
           Nil,
         ).map(groups => (c: Config) => alignment(c)(_.copy(assignmentGroups = groups))),
       ),
@@ -160,7 +160,7 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
       body("lazy-val", (b, p) => b.copy(lazyVal = p)),
       body("var", (b, p) => b.copy(varBody = p)),
       body("given-alias", (b, p) => b.copy(givenAlias = p)),
-      body("type", (b, p) => b.copy(typeBody = p)),
+      body("type-def", (b, p) => b.copy(typeDef = p)),
       body("assignment", (b, p) => b.copy(assignment = p)),
       body("named-argument", (b, p) => b.copy(namedArgument = p)),
       body("lambda-argument", (b, p) => b.copy(lambdaArgument = p)),

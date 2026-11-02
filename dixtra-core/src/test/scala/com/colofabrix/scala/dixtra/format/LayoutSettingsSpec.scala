@@ -1180,10 +1180,10 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       input should formatTo(expected, groups(Set(Val)))
     }
 
-    "align type aliases when grouped" in {
+    "align type definitions when grouped" in {
       val source   = "object A {\n  type T = Int\n  type LongName = String\n}\n"
       val expected = "object A {\n  type T        = Int\n  type LongName = String\n}\n"
-      source should formatTo(expected, groups(Set(Type)))
+      source should formatTo(expected, groups(Set(TypeDef)))
     }
 
     "align given aliases when grouped" in {
@@ -1192,7 +1192,7 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       source should formatTo(expected, groups(Set(GivenAlias)))
     }
 
-    "not align type aliases when ungrouped" in {
+    "not align type definitions when ungrouped" in {
       val source   = "object A {\n  type T = Int\n  type LongName = String\n}\n"
       val expected = source
       source should formatTo(expected, groups(Set(Val)))

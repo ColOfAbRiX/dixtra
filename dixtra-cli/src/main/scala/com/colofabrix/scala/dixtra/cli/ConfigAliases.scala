@@ -26,13 +26,19 @@ object ConfigAliases {
    * Every alias, read from `aliases.conf`.
    */
   lazy val all: List[Alias] =
-    val aliases = ConfigFactory.parseResources(getClass.getClassLoader, "aliases.conf").getObject("aliases")
+    val aliases =
+      ConfigFactory
+        .parseResources(getClass.getClassLoader, "aliases.conf")
+        .getObject("aliases")
+
     aliases
       .keySet()
       .asScala
       .toList
       .sorted
-      .map(name => Alias(name, aliases.toConfig.getStringList(ConfigUtil.quoteString(name)).asScala.toList))
+      .map { name =>
+        Alias(name, aliases.toConfig.getStringList(ConfigUtil.quoteString(name)).asScala.toList)
+      }
 
  /**
   * The settings of `overrides` with its aliases replaced by their targets, or the errors of the settings given more
@@ -49,7 +55,11 @@ object ConfigAliases {
       // Every value given for each setting: (the key it was written as, its value)
       val claims =
         written
-          .flatMap(alias => alias.targets.map(target => target -> (alias.name, resolved.getValue(alias.name))))
+          .flatMap { alias =>
+            alias
+              .targets
+              .map(target => target -> (alias.name, resolved.getValue(alias.name)))
+          }
           .groupMap(_._1)(_._2)
           .map { (target, viaAliases) =>
             val direct = Option.when(present(overrides, target))((target, resolved.getValue(target))).toList
@@ -69,7 +79,11 @@ object ConfigAliases {
       if conflicts.nonEmpty then
         Left(conflicts.mkString("; "))
       else
-        val withoutAliases = written.foldLeft(overrides)((acc, alias) => without(acc, alias.name))
+        val withoutAliases =
+          written.foldLeft(overrides) { (acc, alias) =>
+            without(acc, alias.name)
+          }
+
         Right(
           claims.foldLeft(withoutAliases) { case (acc, (target, values)) =>
             values.headOption.fold(acc)((_, value) => acc.withValue(target, value))
@@ -81,15 +95,19 @@ object ConfigAliases {
   @annotation.tailrec
   private[cli] def without(config: HoconConfig, path: String): HoconConfig =
     val removed = config.withoutPath(path)
+
     val parent =
       path
         .split('.')
         .dropRight(1)
         .mkString(".")
+
     val parentKeepsSettings = Try(removed.getObject(parent).isEmpty).getOrElse(false)
 
-    if parent.isEmpty || !parentKeepsSettings then removed
-    else without(removed, parent)
+    if parent.isEmpty || !parentKeepsSettings then
+      removed
+    else
+      without(removed, parent)
 
   // Whether the user wrote a setting at `path`, null included.
   private def present(config: HoconConfig, path: String): Boolean =

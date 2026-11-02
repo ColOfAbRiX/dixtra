@@ -58,7 +58,7 @@ object Config {
           lazyVal = SingleBodyPolicy.Keep,
           varBody = SingleBodyPolicy.Keep,
           givenAlias = SingleBodyPolicy.Keep,
-          typeBody = SingleBodyPolicy.Keep,
+          typeDef = SingleBodyPolicy.Keep,
           assignment = SingleBodyPolicy.Keep,
           namedArgument = SingleBodyPolicy.Keep,
           lambdaArgument = SingleBodyPolicy.Keep,
