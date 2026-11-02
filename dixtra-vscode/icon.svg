@@ -80,7 +80,7 @@
 
     <!-- === CENTER UPPERCASE 'D' (At Y=236, optically centered between curly braces) === -->
     <text
-      x="256"
+      x="260"
       y="236"
       font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, DejaVu Sans, sans-serif"
       font-weight="900"
@@ -103,7 +103,7 @@
              C 48 412, 55 432, 80 432" 
       fill="none"
       stroke="url(#cyanAccent)"
-      stroke-width="16"
+      stroke-width="20"
       stroke-linecap="round"
       filter="url(#glow)" />
 
@@ -117,7 +117,7 @@
              C 464 412, 457 432, 432 432" 
       fill="none"
       stroke="url(#cyanAccent)"
-      stroke-width="16"
+      stroke-width="20"
       stroke-linecap="round"
       filter="url(#glow)" />
 
