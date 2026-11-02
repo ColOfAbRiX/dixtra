@@ -19,8 +19,8 @@ import scala.meta.*
  * context bounds never break; a higher-kinded one whose line does not fit breaks its own type parameters, recursively.
  * One written over several lines is joined. Across multiple clauses the `)(` join stays glued so no lonely delimiter
  * line appears, at the start of the next clause or after the last parameter of the clause before
- * (`definition-site.groups-separator`). A `using` / `implicit` clause keeps its keyword on the clause's opening line.
- * Empty parameter clauses `()` never explode.
+ * (`definition-site.groups-separator`). A `using` / `implicit` keyword is placed like a parameter (see
+ * [[ClauseGroups]]. Empty parameter clauses `()` never explode.
  *
  * Comments between parameters (or type parameters) stay attached to their parameter, and a line comment or an own-line
  * comment forces the signature to explode.
@@ -88,11 +88,11 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
 
  // The pieces of a signature as documents, before deciding its breaks.
   private final class Layout(signature: SignatureParts, baseIndent: Int) {
-    val prefix: Doc    = ctx.sourceDoc(signature.prefixStart, signature.nameEnd) // modifiers + keyword + name
-    val tclause   = signature.tparamClause
-    val tparams: List[Doc]   = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
+    val prefix: Doc              = ctx.sourceDoc(signature.prefixStart, signature.nameEnd) // modifiers + keyword + name
+    val tclause                  = signature.tparamClause
+    val tparams: List[Doc]       = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
     val tcomments: CommentedList = CommentedList.of(ctx, tclause.pos.start, tclause.values, tclause.pos.end)
-    val clauses: List[Group]   = signature.paramClauses.map(toClause)
+    val clauses: List[Group]     = signature.paramClauses.map(toClause)
     val returnPart: Doc =
       signature
         .returnType
@@ -165,9 +165,19 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
   // `definition-site.groups-separator` (see [[ClauseGroups]]).
   private def explodedClauses(lead: Doc, clauses: List[Group], trailer: Doc, baseIndent: Int): Signature =
     val trailerWidth = Render.flatWidth(trailer).getOrElse(0)
-    val layout       = ClauseGroups.broken(lead, clauses, ctx.config.definitionSite.groupsSeparator, baseIndent)
-    if layout.open then Signature(layout.doc ++ Doc.Line ++ Doc.text(")") ++ trailer, baseIndent + 1 + trailerWidth)
-    else Signature(layout.doc ++ trailer, layout.lastWidth + trailerWidth)
+
+    val separator =
+      ctx
+        .config
+        .definitionSite
+        .groupsSeparator
+    
+    val layout = ClauseGroups.broken(lead, clauses, separator, baseIndent, keywordAsParameter = true)
+
+    if layout.open then
+      Signature(layout.doc ++ Doc.Line ++ Doc.text(")") ++ trailer, baseIndent + 1 + trailerWidth)
+    else
+      Signature(layout.doc ++ trailer, layout.lastWidth + trailerWidth)
 
   // Tier 2 (delimiter gluing): type params one per line, then `](firstParam` glued so the closing `]` line never stands
   // alone.

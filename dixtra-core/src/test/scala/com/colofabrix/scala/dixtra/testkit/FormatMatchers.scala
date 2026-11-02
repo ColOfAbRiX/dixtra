@@ -61,6 +61,12 @@ trait FormatMatchers {
     base.copy(selectorChain = f(base.selectorChain))
 
   /**
+   * `base` with its `definition-site` settings changed by `f`.
+   */
+  def withDefinitionSite(f: DefinitionSiteConfig => DefinitionSiteConfig, base: Config = Config.default): Config =
+    base.copy(definitionSite = f(base.definitionSite))
+
+  /**
    * `base` with its `alignment` settings changed by `f`.
    */
   def withAlignment(f: AlignmentConfig => AlignmentConfig, base: Config = Config.default): Config =

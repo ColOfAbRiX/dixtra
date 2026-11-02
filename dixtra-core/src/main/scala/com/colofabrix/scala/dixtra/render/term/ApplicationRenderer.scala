@@ -9,6 +9,8 @@ import com.colofabrix.scala.dixtra.render.context.RenderContext
 import scala.meta.*
 import scala.meta.tokens.Token
 
+// FIXME: This file is very big, see how to break it down into multiple files, potentially on their own package.
+
 /**
  * Renders function applications and collection literals (`f(a, b)`, `List(a, b)`), their argument clauses, tuples (`(a,
  * b)`, laid out as an argument clause), and terms in operand position.
@@ -136,7 +138,13 @@ private[term] final class ApplicationRenderer(
           ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), aligned(args, indent + 2), comments)
         }
 
-      val layout = ClauseGroups.broken(Doc.Empty, broken, ctx.config.callSite.groupsSeparator, indent)
+      val separator =
+        ctx
+          .config
+          .callSite
+          .groupsSeparator
+          
+      val layout = ClauseGroups.broken(Doc.Empty, broken, separator, indent, keywordAsParameter = false)
       Some(if layout.open then layout.doc ++ Doc.Line ++ Doc.text(")") else layout.doc)
 
   /**

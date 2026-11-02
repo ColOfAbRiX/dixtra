@@ -9,7 +9,8 @@ import com.colofabrix.scala.dixtra.render.comments.CommentedList
  * The groups of parameters or arguments of a broken definition or call, `(a, b)(c)`, each element on its own line.
  * Between groups the parentheses are glued so no lonely delimiter line ever appears, by the groups separator: at the
  * start of the next group (`)(c` for a plain group, `)(using` for a `using` group) or after the last element of the
- * group before (`b)(`, unless a comment follows that element). Empty groups stay glued as `()`.
+ * group before (`b)(`, unless a comment follows that element). Empty groups stay glued as `()`. In a definition the
+ * `using` / `implicit` keyword behaves exactly like a parameter.
  */
 private[render] object ClauseGroups {
 
@@ -33,10 +34,25 @@ private[render] object ClauseGroups {
   final case class Layout(doc: Doc, open: Boolean, lastWidth: Int)
 
   /**
-   * The groups after `lead`, broken, on lines indented at `baseIndent`.
+   * The groups after `lead`, broken, on lines indented at `baseIndent`. With `keywordAsParameter` (a definition) the
+   * `using` / `implicit` keyword is placed like a parameter, else (a call) it stays after its '('.
    */
-  def broken(lead: Doc, groups: List[Group], separator: GroupsSeparator, baseIndent: Int): Layout =
+  def broken(
+    lead: Doc,
+    groups: List[Group],
+    separator: GroupsSeparator,
+    baseIndent: Int,
+    keywordAsParameter: Boolean,
+  ): Layout =
     val following = groups.drop(1).map(Option(_)) :+ None
+
+    // The content of a group opened at the end of a line: its keyword on a line of its own when it is placed like a
+    // parameter, after the `(` otherwise.
+    def opened(group: Group, closes: Boolean): Doc =
+      if keywordAsParameter then
+        keywordOnOwnLine(group, closes)
+      else
+        openContent(group, closes)
 
     // State: the document so far; when a group is still open (its `)` not yet written), whether `)(` follows its last
     // element; and the width of the current last line when no group is open.
@@ -48,8 +64,8 @@ private[render] object ClauseGroups {
           (group.elements, open) match {
             case (Nil, None)      => (acc ++ Doc.text("()"), None, width + 2)
             case (Nil, Some(_))   => (acc ++ Doc.Line ++ Doc.text(")()"), None, baseIndent + 3)
-            case (_, None)        => (acc ++ Doc.text("(") ++ openContent(group, closes), Some(closes), 0)
-            case (_, Some(true))  => (acc ++ Doc.text(")(") ++ openContent(group, closes), Some(closes), 0)
+            case (_, None)        => (acc ++ Doc.text("(") ++ opened(group, closes), Some(closes), 0)
+            case (_, Some(true))  => (acc ++ Doc.text(")(") ++ opened(group, closes), Some(closes), 0)
             case (_, Some(false)) => (acc ++ Doc.Line ++ Doc.text(")(") ++ gluedContent(group, closes), Some(closes), 0)
           }
         }
@@ -62,6 +78,16 @@ private[render] object ClauseGroups {
    */
   def openContent(group: Group, closes: Boolean): Doc =
     Doc.text(group.keyword.trim) ++ Doc.Nest(2, Doc.Line ++ lines(group, closes))
+
+  /**
+   * A broken group opened at the end of a line, its keyword (if any) on a line of its own like a first parameter, and
+   * every element nested on its own line, without the comma after teh last one when `closes`.
+   */
+  def keywordOnOwnLine(group: Group, closes: Boolean): Doc =
+    if group.keyword.isEmpty then
+      openContent(group, closes)
+    else
+      Doc.Nest(2, Doc.Line ++ Doc.text(group.keyword.trim) ++ Doc.Line ++ lines(group, closes))
 
   /**
    * The elements of a group with the first one glued to the current line and the rest one per line; nothing is glued

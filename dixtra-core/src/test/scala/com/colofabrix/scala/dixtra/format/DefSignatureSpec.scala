@@ -60,17 +60,18 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a given alias with parameters" should {
 
-    "break its using clause like a def" in {
+    "break its using clause like a def, using on a line of its own in the first clause" in {
       val input = "given showList[A](using showElement: Show[A], ordering: Ordering[A]): Show[List[A]] = ShowList()\n"
 
       val expected =
-        """given showList[A](using
+        """given showList[A](
+          |  using
           |  showElement: Show[A],
           |  ordering: Ordering[A],
           |): Show[List[A]] = ShowList()
           |""".stripMargin
 
-      input should formatTo(expected, 60)
+      input should formatStablyTo(expected, 60)
     }
 
   }
@@ -152,14 +153,15 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
       input should formatStablyTo(expected, lastParameter)
     }
 
-    "keep the using keyword on the junction line" in {
+    "put the using keyword below the junction line, like a parameter" in {
       val input =
         "def longFunctioName[TypeParam](parameter_1: String, parameter_2: Boolean)(using Numeric[TypeParam]): Int = 1\n"
 
       val expected =
         """def longFunctioName[TypeParam](
           |  parameter_1: String,
-          |  parameter_2: Boolean)(using
+          |  parameter_2: Boolean)(
+          |  using
           |  Numeric[TypeParam],
           |): Int = 1
           |""".stripMargin
@@ -176,7 +178,8 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
       val expected =
         """def someLongFunctionName(
           |  parameterOne: Int)(
-          |  parameterTwo: String)(using
+          |  parameterTwo: String)(
+          |  using
           |  contextOne: Ctx,
           |): Int = 1
           |""".stripMargin
@@ -193,6 +196,69 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "using clause" should {
+
+    "place using on a line of its own when it is the first clause, like a first parameter" in {
+      val input = "def f[A](using ordering: Ordering[A], numeric: Numeric[A]): Int = 1\n"
+
+      val expected =
+        """def f[A](
+          |  using
+          |  ordering: Ordering[A],
+          |  numeric: Numeric[A],
+          |): Int = 1
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 40)
+    }
+
+    "place implicit on a line of its own when it is the first clause" in {
+      val input = "def f(implicit ordering: Ordering[Int], numeric: Numeric[Int]): Int = 1\n"
+
+      val expected =
+        """def f(
+          |  implicit
+          |  ordering: Ordering[Int],
+          |  numeric: Numeric[Int],
+          |): Int = 1
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 40)
+    }
+
+    "keep using after )( when an empty clause comes first" in {
+      val input = "def f()(using ordering: Ordering[A], numeric: Numeric[Int]): Int = 1\n"
+
+      val expected =
+        """def f()(
+          |  using
+          |  ordering: Ordering[A],
+          |  numeric: Numeric[Int],
+          |): Int = 1
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 40)
+    }
+
+    "place using below )( with group-separator = previous-group, like the parameters of that group" in {
+      val input = "def f[A](first: String, second: Boolean)(using ord: Ordering[A]): Int = 1\n"
+
+      val config =
+        Config.default.copy(
+          maxColumn = 40,
+          definitionSite = DefinitionSiteConfig(groupsSeparator = GroupsSeparator.PreviousGroup),
+        )
+        
+      val expected =
+        """def f[A](
+          |  first: String,
+          |  second: Boolean)(
+          |  using
+          |  ord: Ordering[A],
+          |): Int = 1
+          |""".stripMargin
+
+      input should formatStablyTo(expected, config)
+    }
 
     "place using on its own line with the return type on a new line" in {
       val input =
