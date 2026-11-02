@@ -186,7 +186,10 @@ private[term] final class CaseClauseRenderer(ctx: RenderContext, terms: TermRend
         .flatten
         .getOrElse(clauses.map(caseClause(_, indent, None, true)))
 
-    StatementComments.of(ctx, start, clauses, end).withEdgeBlanks(edges).lines(docs)
+    StatementComments
+      .of(ctx, start, clauses, end)
+      .withEdgeBlanks(edges)
+      .lines(docs)
 
   // The clauses with their bodies on the lines of their `=>`, the arrows of consecutive clauses aligned; None when a
   // clause would not fit once aligned.

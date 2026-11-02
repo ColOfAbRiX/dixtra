@@ -273,6 +273,9 @@ private[render] object BodyLayout {
    */
   def arrowEnd(ctx: RenderContext, fn: Term.Function): Int =
     val bodyStart = ctx.span(fn.body)._1
-    ctx.arrowBefore(fn.pos.start, bodyStart).map(_.end).getOrElse(bodyStart)
+    ctx
+      .arrowBefore(fn.pos.start, bodyStart)
+      .map(_.end)
+      .getOrElse(bodyStart)
 
 }

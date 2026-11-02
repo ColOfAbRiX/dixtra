@@ -174,7 +174,10 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
     val column =
       Option
         .when(ctx.config.alignment.arrows.forEnumerators) {
-          enums.flatMap(header).map(_.width).maxOption
+          enums
+            .flatMap(header)
+            .map(_.width)
+            .maxOption
         }
         .flatten
 

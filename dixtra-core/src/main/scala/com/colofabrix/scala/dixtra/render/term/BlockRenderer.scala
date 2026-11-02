@@ -67,7 +67,10 @@ private[term] final class BlockRenderer(
    */
   def statementsIn(start: Int, stats: List[Stat], end: Int, indent: Int, edges: BlankLinePolicy): Doc =
     val paired = EndMarkers.pair(ctx, stats)
-    StatementComments.of(ctx, start, paired.map(_._1), end).withEdgeBlanks(edges).lines(renderStats(paired, indent))
+    StatementComments
+      .of(ctx, start, paired.map(_._1), end)
+      .withEdgeBlanks(edges)
+      .lines(renderStats(paired, indent))
 
   // The statements inside a block: a term runs through the term rules, a local definition through the definition rules;
   // anything else is copied verbatim, keeping its relative layout. Each is followed by the `end` marker its brace style
