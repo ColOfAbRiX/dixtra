@@ -45,7 +45,15 @@
   <rect width="512" height="512" rx="80" fill="url(#bgGrad)" />
 
   <!-- Outer Subtle Border Ring -->
-  <rect x="6" y="6" width="500" height="500" rx="74" fill="none" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="4" />
+  <rect x="6" 
+        y="6" 
+        width="500" 
+        height="500" 
+        rx="74" 
+        fill="none" 
+        stroke="#FFFFFF"
+        stroke-opacity="0.06"
+        stroke-width="4" />
 
   <!-- Scalable Group for Icon Content -->
   <g filter="url(#dropShadow)">
@@ -71,7 +79,18 @@
              C 320 205, 100 185, 100 160 Z" fill="url(#scalaTop)" />
 
     <!-- === CENTER UPPERCASE 'D' (At Y=236, optically centered between curly braces) === -->
-    <text x="256" y="236" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, DejaVu Sans, sans-serif" font-weight="900" font-size="280" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" filter="url(#glow)">D</text>
+    <text
+      x="256"
+      y="236"
+      font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, DejaVu Sans, sans-serif"
+      font-weight="900"
+      font-size="280"
+      fill="#FFFFFF"
+      text-anchor="middle"
+      dominant-baseline="central"
+      filter="url(#glow)">
+        D
+    </text>
 
     <!-- === FORMATTER BRACKETS ({ }) OVERLAY === -->
     <!-- Left Curly Bracket -->
@@ -81,7 +100,12 @@
              C 48 230, 32 242, 16 256 
              C 32 270, 48 282, 48 302 
              L 48 387 
-             C 48 412, 55 432, 80 432" fill="none" stroke="url(#cyanAccent)" stroke-width="16" stroke-linecap="round" filter="url(#glow)" />
+             C 48 412, 55 432, 80 432" 
+      fill="none"
+      stroke="url(#cyanAccent)"
+      stroke-width="16"
+      stroke-linecap="round"
+      filter="url(#glow)" />
 
     <!-- Right Curly Bracket -->
     <path d="M 432 80 
@@ -90,7 +114,12 @@
              C 464 230, 480 242, 496 256 
              C 480 270, 464 282, 464 302 
              L 464 387 
-             C 464 412, 457 432, 432 432" fill="none" stroke="url(#cyanAccent)" stroke-width="16" stroke-linecap="round" filter="url(#glow)" />
+             C 464 412, 457 432, 432 432" 
+      fill="none"
+      stroke="url(#cyanAccent)"
+      stroke-width="16"
+      stroke-linecap="round"
+      filter="url(#glow)" />
 
     <!-- === ALIGNMENT / OPINIONATED RULES LINES === -->
     <g stroke="#80EEFF" stroke-opacity="0.3" stroke-width="2" stroke-dasharray="6 6">
@@ -100,9 +129,15 @@
     </g>
 
     <!-- Sparkling "Auto-Format Magic" Elements (Relocated to clean corner positions) -->
-    <path d="M 475 52 L 478 61 L 487 64 L 478 67 L 475 76 L 472 67 L 463 64 L 472 61 Z" fill="#80EEFF" filter="url(#glow)" />
+    <path
+      d="M 475 52 L 478 61 L 487 64 L 478 67 L 475 76 L 472 67 L 463 64 L 472 61 Z"
+      fill="#80EEFF"
+      filter="url(#glow)" />
 
-    <path d="M 42 445 L 45 454 L 54 457 L 45 460 L 42 469 L 39 460 L 30 457 L 39 454 Z" fill="#80EEFF" filter="url(#glow)" />
+    <path
+      d="M 42 445 L 45 454 L 54 457 L 45 460 L 42 469 L 39 460 L 30 457 L 39 454 Z"
+      fill="#80EEFF"
+      filter="url(#glow)" />
 
     <circle cx="488" cy="90" r="3.5" fill="#FFFFFF" opacity="0.8" />
   </g>

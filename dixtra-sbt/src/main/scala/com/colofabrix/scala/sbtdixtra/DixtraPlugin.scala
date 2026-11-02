@@ -27,29 +27,29 @@ object DixtraPlugin extends AutoPlugin {
    * The settings and tasks of the plugin.
    */
   object autoImport {
-    val dixtraVersion =
+    val dixtraVersion: SettingKey[String] =
       settingKey[String]("The version of dixtra to format with")
-    val dixtraConfig =
+    val dixtraConfig: SettingKey[Option[File]] =
       settingKey[Option[File]]("A configuration file, instead of the nearest .dixtra.conf of each file")
-    val dixtraChangedSince =
+    val dixtraChangedSince: SettingKey[Option[String]] =
       settingKey[Option[String]]("A git ref: only the files changed since it, instead of all")
-    val dixtraOnCompile =
+    val dixtraOnCompile: SettingKey[Boolean] =
       settingKey[Boolean]("Format the sources of a configuration before compiling them")
-    val dixtraClasspath =
+    val dixtraClasspath: TaskKey[Seq[File]] =
       taskKey[Seq[File]]("The jars of dixtra and its dependencies")
-    val dixtraFormat =
+    val dixtraFormat: TaskKey[Unit] =
       taskKey[Unit]("Format the Scala sources of a configuration")
-    val dixtraCheck =
+    val dixtraCheck: TaskKey[Unit] =
       taskKey[Unit]("Fail when a Scala source of a configuration is not formatted")
-    val dixtraFormatAll =
+    val dixtraFormatAll: TaskKey[Unit] =
       taskKey[Unit]("Format the Scala sources of every configuration, and the build files")
-    val dixtraCheckAll =
+    val dixtraCheckAll: TaskKey[Unit] =
       taskKey[Unit]("Fail when a Scala source of any configuration, or a build file, is not formatted")
-    val dixtraFormatSbt =
+    val dixtraFormatSbt: TaskKey[Unit] =
       taskKey[Unit]("Format the build definition: the .sbt files, and the sources in project/")
-    val dixtraCheckSbt =
+    val dixtraCheckSbt: TaskKey[Unit] =
       taskKey[Unit]("Fail when a file of the build definition is not formatted")
-    val dixtraFormatOnly =
+    val dixtraFormatOnly: InputKey[Unit] =
       inputKey[Unit]("Format the given files")
   }
 

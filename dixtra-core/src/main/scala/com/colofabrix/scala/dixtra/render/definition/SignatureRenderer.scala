@@ -88,21 +88,21 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
 
  // The pieces of a signature as documents, before deciding its breaks.
   private final class Layout(signature: SignatureParts, baseIndent: Int) {
-    val prefix    = ctx.sourceDoc(signature.prefixStart, signature.nameEnd) // modifiers + keyword + name
+    val prefix: Doc    = ctx.sourceDoc(signature.prefixStart, signature.nameEnd) // modifiers + keyword + name
     val tclause   = signature.tparamClause
-    val tparams   = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
-    val tcomments = CommentedList.of(ctx, tclause.pos.start, tclause.values, tclause.pos.end)
-    val clauses   = signature.paramClauses.map(toClause)
-    val returnPart =
+    val tparams: List[Doc]   = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
+    val tcomments: CommentedList = CommentedList.of(ctx, tclause.pos.start, tclause.values, tclause.pos.end)
+    val clauses: List[Group]   = signature.paramClauses.map(toClause)
+    val returnPart: Doc =
       signature
         .returnType
         .map(t => Doc.text(": ") ++ ctx.sourceDoc(t))
         .getOrElse(Doc.Empty)
 
-    val tparamsInline =
+    val tparamsInline: Doc =
       if tparams.isEmpty then Doc.Empty
       else Doc.text("[") ++ tcomments.inline(tclause.values.map(oneLine)) ++ Doc.text("]")
-    val restInline = tparamsInline ++ Doc.concat(clauses.map(_.inline)) ++ returnPart
+    val restInline: Doc = tparamsInline ++ Doc.concat(clauses.map(_.inline)) ++ returnPart
   }
 
   // A type parameter on its own line at `indent`. Its bounds and context bounds never break; a higher-kinded one whose

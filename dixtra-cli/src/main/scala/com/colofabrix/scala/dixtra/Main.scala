@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra
 
-import cats.data.{Validated, ValidatedNel}
+import cats.data.*
 import cats.effect.*
 import cats.syntax.all.*
 import com.colofabrix.scala.declinio.IODeclineApp

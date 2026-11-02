@@ -4,12 +4,13 @@ import cats.data.*
 import cats.syntax.all.*
 import com.colofabrix.scala.dixtra.*
 import com.monovore.decline.Opts
-import com.typesafe.config.{Config as HoconConfig, ConfigFactory, ConfigObject, ConfigUtil}
+import com.typesafe.config.{Config as HoconConfig, *}
 import java.nio.file.*
 import pureconfig.*
 import pureconfig.error.*
 import pureconfig.generic.ProductHint
 import pureconfig.generic.scala3.HintsAwareConfigReaderDerivation.deriveReader
+import pureconfig.generic.scala3.HintsAwareConfigWriterDerivation.deriveWriter
 import scala.annotation.tailrec
 import scala.io.Source
 import scala.jdk.CollectionConverters.*
@@ -48,20 +49,23 @@ object ConfigCli {
    */
   lazy val default: Config =
     ConfigSource
-      .fromConfig(references.withoutPath(versionKey).withoutPath(overridesKey))
+      .fromConfig(declared(references).withoutPath(versionKey).withoutPath(overridesKey))
       .loadOrThrow[Config]
 
   // The defaults: `reference.conf` alone. `ConfigFactory.defaultReference` also merges the JVM system properties, which
   // would be read as unknown keys.
-  private lazy val references: HoconConfig =
+  private[cli] lazy val references: HoconConfig =
     ConfigFactory.parseResources(getClass.getClassLoader, "reference.conf").resolve()
 
-  // The settings an override can set: all but the ones that choose the files and the version
-  private lazy val overridable: HoconConfig =
-    references
-      .withoutPath(versionKey)
-      .withoutPath(overridesKey)
-      .withoutPath("paths")
+  // The defaults of the schema: `Config.default` as the settings they name. The key that neither a configuration nor
+  // `reference.conf` has is read as its value, and a setting that only the schema declares is still a known one.
+  private[cli] lazy val schemaDefaults: HoconConfig =
+    ConfigFactory
+      .parseString(ConfigWriter[Config].to(Config.default).render(ConfigRenderOptions.concise()))
+
+  // The settings dixtra declares: the ones of `refs` (normally `reference.conf`) and the ones of the schema.
+  private def declared(refs: HoconConfig): HoconConfig =
+    refs.withFallback(schemaDefaults).resolve()
 
   /**
    * A configuration given explicitly on the command line, if any. It is loaded but not validated here: an invalid one
@@ -146,18 +150,29 @@ object ConfigCli {
    * its `path-overrides` relative to `anchor`. An unknown key is not an error: it is dropped, with a warning.
    */
   def load(configString: String, anchor: Path): ValidatedNel[String, LoadedConfig] =
+    load(configString, anchor, references)
+
+  // Load a HOCON string over `refs` in place of `reference.conf`: the tests pass a partial one, to check that a key it
+  // doesn't have neither fails nor warns.
+  private[cli] def load(
+    configString: String,
+    anchor: Path,
+    refs: HoconConfig,
+  ): ValidatedNel[String, LoadedConfig] =
     Try(ConfigFactory.parseString(configString))
       .fold(
         e => Validated.invalidNel(FormatError.describe(e)),
         parsed => {
+          val defaults = declared(refs)
+
           val loaded =
             for
               (written, entries) <- splitOverrides(parsed)
-              resolved           <- ConfigAliases.resolve(written, references)
-              (settings, unknown) = knownOnly(resolved, references, "")
-              merged             <- supported(settings.withFallback(references).resolve())
+              resolved           <- ConfigAliases.resolve(written, defaults)
+              (settings, unknown) = knownOnly(resolved, defaults, "")
+              merged             <- supported(settings.withFallback(defaults).resolve())
               base               <- read(merged)
-              overrides          <- entries.traverse((glob, written) => pathOverride(glob, written, settings))
+              overrides          <- entries.traverse((glob, written) => pathOverride(glob, written, settings, defaults))
             yield
               val overrideWarnings = overrides.flatMap(_._2)
 
@@ -235,14 +250,22 @@ object ConfigCli {
     glob: String,
     written: HoconConfig,
     settings: HoconConfig,
+    defaults: HoconConfig,
   ): Either[String, (PathOverride, List[String])] =
     val name = s"$overridesKey.\"$glob\""
 
+    // The settings an override can set: all but the ones that choose the files and the version
+    val eligible =
+      defaults
+        .withoutPath(versionKey)
+        .withoutPath(overridesKey)
+        .withoutPath("paths")
+
     val loaded =
       for
-        resolved        <- ConfigAliases.resolve(written, overridable)
-        (known, unknown) = knownOnly(resolved, overridable, s"$name.")
-        _               <- read(known.withFallback(settings).withFallback(references).resolve())
+        resolved        <- ConfigAliases.resolve(written, eligible)
+        (known, unknown) = knownOnly(resolved, eligible, s"$name.")
+        _               <- read(known.withFallback(settings).withFallback(defaults).resolve())
       yield
         (PathOverride(glob, SourceFiles.globRegex(glob), known), unknown)
 
@@ -295,18 +318,21 @@ object ConfigCli {
       unknown.map(key => s"unknown setting $prefix$key${ConfigAliases.line(settings.getValue(key))}, ignored"),
     )
 
-  // The configuration `merged` holds: the settings of `reference.conf` with their values.
+  // The configuration `merged` holds: its settings with their values, a key without one read as the default of the
+  // schema.
   private def read(merged: HoconConfig): Either[String, Config] =
     ConfigSource
-      .fromConfig(merged.withoutPath(overridesKey).withoutPath(versionKey))
+      .fromConfig(merged.withoutPath(overridesKey).withoutPath(versionKey).withFallback(schemaDefaults))
       .load[Config]
       .left
       .map(_.prettyPrint())
 
   // The settings of `merged` without their version, when this dixtra reads that version. Reading an older major version
-  // would translate its settings here.
+  // would translate its settings here. One without a version is read as the current one.
   private def supported(merged: com.typesafe.config.Config): Either[String, com.typesafe.config.Config] =
-    val written = Try(merged.getString(versionKey)).getOrElse("")
+    val written =
+      if merged.hasPath(versionKey) then Try(merged.getString(versionKey)).getOrElse("")
+      else configVersion
     (semver(written), semver(configVersion)) match {
       case (None, _) =>
         Left(s"""$versionKey must be a version like "$configVersion", not "$written"""")
@@ -526,6 +552,92 @@ object ConfigCli {
 
   given ConfigReader[Config] =
     deriveReader[Config]
+
+  //  ConfigWriter Instances  //
+
+  // The settings written as the key of their case, like those read
+
+  given ConfigWriter[SingleBodyPolicy] = keyedWriter(_.key)
+
+  given ConfigWriter[YieldBodyPolicy] = keyedWriter(_.key)
+
+  given ConfigWriter[MultiBodyPolicy] = keyedWriter(_.key)
+
+  given ConfigWriter[GroupsSeparator] = keyedWriter(_.key)
+
+  given ConfigWriter[GroupsBreak] = keyedWriter(_.key)
+
+  given ConfigWriter[ChainHeadPolicy] = keyedWriter(_.key)
+
+  given ConfigWriter[InlineChainPolicy] = keyedWriter(_.key)
+
+  given ConfigWriter[NestedChainPolicy] = keyedWriter(_.key)
+
+  given ConfigWriter[BracePolicy] = keyedWriter(_.key)
+
+  given ConfigWriter[DefinitionKind] = keyedWriter(_.key)
+
+  given ConfigWriter[TrailingOverflow] = keyedWriter(_.key)
+
+  given ConfigWriter[TrailingCommas] = keyedWriter(_.key)
+
+  given ConfigWriter[LineEnding] = keyedWriter(_.key)
+
+  given ConfigWriter[ScaladocSpacing] = keyedWriter(_.key)
+
+  given ConfigWriter[BlankLinePolicy] = keyedWriter(_.key)
+
+  given ConfigWriter[BracesStyle] = keyedWriter(_.key)
+
+  given ConfigWriter[Map[Construct, BlankLinePolicy]] =
+    ConfigWriter[Map[String, BlankLinePolicy]].contramap(edges => edges.map((construct, policy) => construct.key -> policy))
+
+  // The brace settings as one section, the style beside the policy of each construct: the shape the reader expects
+  given ConfigWriter[BraceConfig] =
+    ConfigWriter.fromFunction { braces =>
+      val policies = ConfigWriter[Map[String, BracePolicy]].to(braces.policies.map((construct, policy) => construct.key -> policy))
+
+      policies match {
+        case section: ConfigObject => section.withValue("style", ConfigWriter[BracesStyle].to(braces.style))
+        case other                 => other
+      }
+    }
+
+  given ConfigWriter[SelectorChainConfig] =
+    deriveWriter[SelectorChainConfig]
+
+  given ConfigWriter[BodyConfig] =
+    deriveWriter[BodyConfig]
+
+  given ConfigWriter[DefinitionSiteConfig] =
+    deriveWriter[DefinitionSiteConfig]
+
+  given ConfigWriter[CallSiteConfig] =
+    deriveWriter[CallSiteConfig]
+
+  given ConfigWriter[AlignmentConfig] =
+    deriveWriter[AlignmentConfig]
+
+  given ConfigWriter[PathsConfig] =
+    deriveWriter[PathsConfig]
+
+  given ConfigWriter[ArrowsConfig] =
+    deriveWriter[ArrowsConfig]
+
+  given ConfigWriter[ScaladocAlignmentConfig] =
+    deriveWriter[ScaladocAlignmentConfig]
+
+  given ConfigWriter[HousekeepingConfig] =
+    deriveWriter[HousekeepingConfig]
+
+  given ConfigWriter[BlankLinesConfig] =
+    deriveWriter[BlankLinesConfig]
+
+  given ConfigWriter[Config] =
+    deriveWriter[Config]
+
+  private def keyedWriter[A](key: A => String): ConfigWriter[A] =
+    ConfigWriter[String].contramap(key)
 
   private def keyed[A](values: List[A])(key: A => String): ConfigReader[A] =
     ConfigReader[String].emap { written =>

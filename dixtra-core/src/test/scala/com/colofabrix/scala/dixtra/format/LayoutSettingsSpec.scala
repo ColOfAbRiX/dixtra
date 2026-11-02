@@ -1357,7 +1357,7 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
     )
 
   // Each row sets the edge blank lines of one construct and formats an input.
-  private val edgeRows: List[(Construct, BlankLinePolicy, String, String)] =
+  private lazy val edgeRows: List[(Construct, BlankLinePolicy, String, String)] =
     List(
       (
         Construct.Class,

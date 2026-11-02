@@ -2,7 +2,7 @@
 
 Dixtra is an opinionated formatter for Scala 3.
 
-Unlike other Scala formatters, that allow you to tune typografic formatting like parentheses,
+Unlike other Scala formatters, that allow you to tune typographic formatting like parentheses,
 indentation, commas, etc., Dixtra treats the code as having visual features that can be formatted as
 a unit.
 
@@ -13,8 +13,8 @@ For example this function definition:
 def total(xs: List[Int]) = xs.filter(_ > 0).map(_ * 2).sum
 ```
 
-has a definition with a single parameter list and a body containing a selector chain that can be
-formatted as:
+has a definition with a single parameter list and a body containing a selector chain and each of
+these parts are formatted indipendently and as a unit:
 
 ```scala
 def total(xs: List[Int]) =
@@ -26,7 +26,7 @@ def total(xs: List[Int]) =
 
 This page describes how to install and run dixtra, and how it behaves. The formatting options
 themselves are documented, with examples, in
-[`reference.conf`](dixtra-cli/src/main/resources/reference.conf), which also holds the default
+[`reference.conf`](dixtra-cli/src/main/resources/reference.conf), which also holds the default of
 every setting.
 
 ## Contents
@@ -45,7 +45,7 @@ every setting.
 - [Changelog](#changelog)
 - [License](#license)
 
-## Principles
+## Principles - TODO, rewrite section
 
 - **Whole constructs.** A construct (an argument list, a chain of calls, a signature, an if/else) is laid out either
   fully inline or fully exploded. Nothing is ever partly broken.
@@ -66,8 +66,6 @@ every setting.
   is parsed as Scala 3.
 - **Directories.** Dixtra walks them recursively, and formats their files in path order. Below the walked directory,
   it skips every hidden directory (`.git`, `.bsp`, `.metals`, ...) and every directory named `target`.
-- **Files.** A file named explicitly is always formatted, whatever its extension and the `paths` setting. A file
-  reached twice, for example named and inside a named directory, is formatted once.
 - **The `paths` setting** narrows down what a directory walk picks up, with globs relative to the walked directory (see
   `paths` in `reference.conf`). A file is picked up when it matches an `included` glob, and neither it nor a directory
   above it matches an `excluded` one:
@@ -80,9 +78,6 @@ every setting.
   ```
 
   `**/` matches any number of directories, `*` anything within one path segment, and `?` one character.
-
-- **Line endings.** The text is processed with `\n`, and written with the line endings of `housekeeping.line-ending`. By
-  default, each file keeps its own.
 
 ## The sbt plugin
 
@@ -125,8 +120,8 @@ subdirectories. `dixtraFormatOnly` formats the files it is given even when `dixt
 
 ```scala
 // build.sbt
-DixtraOnCompile    := true
-DixtraChangedSince := Some("origin/main")
+dixtraOnCompile    := true
+dixtraChangedSince := Some("origin/main")
 ```
 
 With `dixtraOnCompile`, a file that can't be formatted only logs a warning and is compiled as it is.
@@ -172,7 +167,7 @@ formatted: src/main/scala/A.scala
 unchanged: src/main/scala/B.scala
 would format: src/main/scala/C.scala        (with --check)
 skipped (scala 2): src/main/scala/Old.scala
-failed: src/main/scala/D.scala: <reason> 02F
+failed: src/main/scala/D.scala: <reason>
 ```
 
 A path under the working directory is printed relative to it, any other path in full. The `skipped` and `failed`
@@ -235,15 +230,15 @@ paths.excluded = ["**/generated/**"]
 The settings are grouped in sections. [`reference.conf`](dixtra-cli/src/main/resources/reference.conf) describes each
 setting and value with examples, and holds the defaults:
 
-| Section                     | What it decides                                                                        | 570A |
-| --------------------------- | -------------------------------------------------------------------------------------- | ---- |
-| `max-column`                | The width that makes a construct break (default 120)                                   | 16F0 |
-| `trailing-commas`           | A comma after the last element of a list laid out one element per line                 | 6280 |
+| Section                     | What it decides                                                                        |
+| --------------------------- | -------------------------------------------------------------------------------------- |
+| `max-column`                | The width that makes a construct break (default 120)                                   |
+| `trailing-commas`           | A comma after the last element of a list laid out one element per line                 |
 | `trailing-comment-overflow` | A line too long only because of its trailing comment: kept, or the comment moved above |
 | `braces`                    | Braces, `end` markers or indentation for each construct, and where braces go           |
 | `selector-chain`            | When a chain of calls `a.b(c).d` breaks, one `.member` per line                        |
 | `body`                      | Whether a body stays after its `=` / `=>` / `then` / `do`, or goes below it            |
-| `definition-site`           | How the parameter clauses of a `def` or a class break                                  | 8A08 |
+| `definition-site`           | How the parameter clauses of a `def` or a class break                                  |
 | `call-site`                 | How the argument clauses of a call break                                               |
 | `alignment`                 | What lines up in columns: `=`, operators, arrows, `extends`, comments, scaladoc tags   |
 | `blank-lines`               | Blank lines at the edges of bodies, between alignment groups, and before scaladoc      |
@@ -252,11 +247,11 @@ setting and value with examples, and holds the defaults:
 | `path-overrides`            | Other settings for some of the files (see below)                                       |
 
 With `trailing-commas = always`, the default, the last element of a list laid out one element per line is followed by
-a comma: arguments (`List(...)` included), parameters, type parameters (higher-kinded ones included), the parameters 8033
-of a class and the elements of a tuple. With `never` it isn't. A list on one line never has one, and neither does a 05D2
+a comma: arguments (`List(...)` included), parameters, type parameters (higher-kinded ones included), the parameters
+of a class and the elements of a tuple. With `never` it isn't. A list on one line never has one, and neither does a
 group glued as `b)(` by `groups-separator = previous-group`.
 
-The `housekeeping` section applies to the whole file, after the formatting. By default, the spaces and tabs at the end 0CD7
+The `housekeeping` section applies to the whole file, after the formatting. By default, the spaces and tabs at the end
 of each line are removed (`trim-trailing-whitespace`), but not those inside a string literal; the file ends with
 exactly one line break (`enforce-eof`); and each file keeps its own line endings (`line-ending = keep`, or `lf`,
 `crlf`, `cr`).
@@ -267,7 +262,7 @@ Aliases are second names for settings. Setting one setting twice with different 
 is an error:
 
 - **By construct.** Each construct gathers its settings under its own name: `<construct>.braces` sets
-  `braces.<construct>`, `<construct>.body` sets `body.<construct>`, and `<construct>.body-edges` sets E0B5
+  `braces.<construct>`, `<construct>.body` sets `body.<construct>`, and `<construct>.body-edges` sets
   `blank-lines.body-edges.<construct>`, wherever the setting exists. A few constructs also reach a shared setting,
   which changes the other constructs too:
 
@@ -338,10 +333,6 @@ Some rules have no setting:
 - **Scaladoc** gets the javadoc layout: `/**` and `*/` on lines of their own, a `*` gutter, no blank lines at its
   edges, a blank line before its first tag, and no blank line between it and its definition. A one-line scaladoc that
   fits stays on one line.
-- **Imports** are not sorted, grouped or rewritten. Dixtra only removes the blank lines between consecutive imports.
-  Pair it with scalafix `OrganizeImports` to sort them.
-- **No rewrites** beyond the brace style and the `end` markers: Dixtra never adds or removes parentheses, changes `_`
-  into `?`, or turns old syntax into new.
 
 Some code is copied exactly as written, because Dixtra has no rule for it yet:
 
@@ -350,9 +341,7 @@ Some code is copied exactly as written, because Dixtra has no rule for it yet:
   parameters, and a `given` in the syntax of Scala 3.6 (`given a: [A] => B = ...`);
 - a type alias written over several lines, and a match type;
 - a construct holding a comment Dixtra cannot re-attach.
-
-A file that Scalameta (4.17.4) cannot parse fails and is left as it is. Among the Scala 3 syntax it does not parse yet
-is `into` on a type (Scala 3.9).
+- Among the Scala 3 syntax it does not parse yet is `into` on a type (Scala 3.9).
 
 ## Leaving code as written
 
@@ -422,9 +411,9 @@ The build needs sbt 2.0 and a JDK that sbt 2 supports (17 or later). It has thre
 | `dixtra-sbt/`  | `sbt-dixtra`  | the sbt plugin                                              |
 
 ```shell
-sbt publishLocal             # publish the three artifacts to the local Ivy repository
-sbt test                     # the tests of the formatter and the command line
-sbt sbtDixtra/scripted            # the tests of the plugin
+sbt publishLocal                    # publish the three artifacts to the local Ivy repository
+sbt test                            # the tests of the formatter and the command line
+sbt sbtDixtra/scripted              # the tests of the plugin
 sbt "run --check dixtra-core/src"   # the command line from the build
 ```
 

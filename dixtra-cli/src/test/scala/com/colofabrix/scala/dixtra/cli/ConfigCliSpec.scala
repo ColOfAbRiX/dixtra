@@ -3,6 +3,7 @@ package com.colofabrix.scala.dixtra.cli
 import cats.data.*
 import com.colofabrix.scala.dixtra.*
 import com.colofabrix.scala.dixtra.testkit.TempFiles.*
+import com.typesafe.config.ConfigFactory
 import java.nio.file.Paths
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -26,6 +27,69 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
       val expected = Config.default
 
       val actual = ConfigCli.default
+
+      actual shouldBe expected
+    }
+
+    "be the default configuration when read from the schema alone" in {
+      val expected = Validated.valid((Config.default, Nil))
+
+      val actual =
+        ConfigCli
+          .load("", Paths.get("").toAbsolutePath, ConfigFactory.empty())
+          .map(loaded => (loaded.base, loaded.warnings))
+
+      actual shouldBe expected
+    }
+
+  }
+
+  "a setting missing from the defaults" should {
+
+    "be read as its default, without failing or warning" in {
+      val refs     = ConfigCli.references.withoutPath("max-column")
+      val expected = Validated.valid((Config.default, Nil))
+
+      val actual =
+        ConfigCli
+          .load("", Paths.get("").toAbsolutePath, refs)
+          .map(loaded => (loaded.base, loaded.warnings))
+
+      actual shouldBe expected
+    }
+
+    "be accepted when the configuration sets it, without warning" in {
+      val refs     = ConfigCli.references.withoutPath("max-column")
+      val expected = Validated.valid((Config.withMaxColumn(80), Nil))
+
+      val actual =
+        ConfigCli
+          .load("max-column = 80", Paths.get("").toAbsolutePath, refs)
+          .map(loaded => (loaded.base, loaded.warnings))
+
+      actual shouldBe expected
+    }
+
+    "not turn an unknown setting into a known one" in {
+      val refs     = ConfigCli.references.withoutPath("max-column")
+      val expected = Validated.valid(List("unknown setting nonsense (line 1), ignored"))
+
+      val actual =
+        ConfigCli
+          .load("nonsense = 1", Paths.get("").toAbsolutePath, refs)
+          .map(_.warnings)
+
+      actual shouldBe expected
+    }
+
+    "read a configuration with no version as the current one" in {
+      val refs     = ConfigCli.references.withoutPath("config-version")
+      val expected = Validated.valid((Config.default, Nil))
+
+      val actual =
+        ConfigCli
+          .load("", Paths.get("").toAbsolutePath, refs)
+          .map(loaded => (loaded.base, loaded.warnings))
 
       actual shouldBe expected
     }

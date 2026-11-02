@@ -78,15 +78,15 @@ lazy val dixtraCli =
       buildInfoPackage    := "com.colofabrix.scala.dixtra",
       wartremoverExcluded += (Compile / sourceManaged).value,
       libraryDependencies ++= List(
-        "com.colofabrix.scala"  %% "declinio"                      % "1.0.0",
-        "com.github.pureconfig" %% "pureconfig-core"               % "0.17.10",
-        "com.github.pureconfig" %% "pureconfig-generic-scala3"     % "0.17.10",
+        "com.colofabrix.scala"  %% "declinio"                      % "2.0.0",
+        "com.github.pureconfig" %% "pureconfig-core"               % "0.17.11",
+        "com.github.pureconfig" %% "pureconfig-generic-scala3"     % "0.17.11",
         "com.monovore"          %% "decline"                       % "2.6.2",
         "org.scalatest"         %% "scalatest-shouldmatchers"      % "3.2.20" % Test,
         "org.scalatest"         %% "scalatest-wordspec"            % "3.2.20" % Test,
         "org.typelevel"         %% "cats-core"                     % "2.13.0",
         "org.typelevel"         %% "cats-effect-testing-scalatest" % "1.8.0"  % Test,
-        "org.typelevel"         %% "cats-effect"                   % "3.7.0",
+        "org.typelevel"         %% "cats-effect"                   % "3.7.1",
       ),
     )
     .settings(
