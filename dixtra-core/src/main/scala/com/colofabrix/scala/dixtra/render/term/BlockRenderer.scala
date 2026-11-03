@@ -30,16 +30,18 @@ private[term] final class BlockRenderer(
 ) {
 
   /**
-   * Render a block in statement position.
+   * Render a block in statement position. One written on one line with `;` stays so with
+   * `body.semicolon-statements = keep`.
    */
   def render(block: Term.Block, indent: Int, forceExplode: Boolean): Doc =
     val comments = StatementComments.of(ctx, block)
     block.stats match {
-      case Nil                                     => ctx.ownSourceDoc(block)
-      case (stat: Term) :: Nil if comments.isEmpty => terms.render(stat, indent, forceExplode)
-      case (_: Term) :: Nil                        => statements(block, indent, BlankLinePolicy.Never)
-      case _ :: Nil                                => Doc.Standalone(statements(block, indent, BlankLinePolicy.Never))
-      case _                                       => statements(block, indent, BlankLinePolicy.Never)
+      case _ if SemicolonStatements.keptOnLine(ctx, block) => ctx.ownSourceDoc(block)
+      case Nil                                             => ctx.ownSourceDoc(block)
+      case (stat: Term) :: Nil if comments.isEmpty         => terms.render(stat, indent, forceExplode)
+      case (_: Term) :: Nil                                => statements(block, indent, BlankLinePolicy.Never)
+      case _ :: Nil                                        => Doc.Standalone(statements(block, indent, BlankLinePolicy.Never))
+      case _                                               => statements(block, indent, BlankLinePolicy.Never)
     }
 
   /**

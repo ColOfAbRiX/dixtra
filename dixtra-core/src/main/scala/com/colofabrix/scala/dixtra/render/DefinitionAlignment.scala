@@ -115,6 +115,7 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
       case (defn: Defn.Def, _)              => defs.render(defn, indent, padTo, below)
       case (givenAlias: Defn.GivenAlias, _) => defs.renderGiven(givenAlias, indent, below)
       case (decl: Decl.Def, _)              => defs.renderDecl(decl, indent)
+      case (ctor: Ctor.Secondary, _)        => defs.renderSecondary(ctor, indent)
       case (alias: Defn.Type, _)            => typeAlias(alias, padTo, below)
       case _                                => None
     }

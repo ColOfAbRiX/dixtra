@@ -20,7 +20,7 @@ import scala.meta.*
  * One written over several lines is joined. Across multiple clauses the `)(` join stays glued so no lonely delimiter
  * line appears, at the start of the next clause or after the last parameter of the clause before
  * (`definition-site.groups-separator`). A `using` / `implicit` keyword is placed like a parameter (see
- * [[ClauseGroups]]. Empty parameter clauses `()` never explode.
+ * [[ClauseGroups]]). Empty parameter clauses `()` never explode.
  *
  * Comments between parameters (or type parameters) stay attached to their parameter, and a line comment or an own-line
  * comment forces the signature to explode.
@@ -34,7 +34,7 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
    * parameter clause and the return type, or inside an empty clause.
    */
   def hasUnattachableComments(parts: SignatureParts, end: Int): Boolean =
-    val clauses = parts.tparamClause :: parts.paramClauses
+    val clauses = parts.tparamClause :: parts.clauseOpenings.flatten ++ parts.paramClauses
     val spans   = clauses.map(c => (c.pos.start, c.pos.end)) ++ parts.returnType.toList.map(ctx.span)
     val outside =
       ctx
@@ -74,16 +74,19 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
     val breakTparams =
       tparams.nonEmpty && (tcomments.forcesBreak || !ctx.fits(tparamsInline ++ Doc.text("("), prefixEnd))
 
+    // Tier 2 glues `](`, which a constructor modifier between them, or a type clause opening a later group, would split
+    val canTier2 = modifiers == Doc.Empty && parts.clauseOpenings.forall(_.isEmpty)
+
     if !overflow then
       Some(Signature(prefix ++ restInline, ctx.columnAfter(restInline, prefixEnd)))
     else
       clauses match {
-        case single :: Nil if breakTparams =>
+        case single :: Nil if breakTparams && canTier2 =>
           Some(tier2(prefix, tparams, tcomments, single, returnPart, baseIndent))
         case _ if tcomments.forcesBreak =>
           None // type parameters that must break need Tier 2, which needs a single clause
         case _ =>
-          Some(explodedClauses(prefix ++ tparamsInline, clauses, returnPart, baseIndent))
+          Some(explodedClauses(prefix ++ tparamsInline ++ modifiers, clauses, returnPart, baseIndent))
       }
 
  // The pieces of a signature as documents, before deciding its breaks.
@@ -92,7 +95,7 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
     val tclause                  = signature.tparamClause
     val tparams: List[Doc]       = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
     val tcomments: CommentedList = CommentedList.of(ctx, tclause.pos.start, tclause.values, tclause.pos.end)
-    val clauses: List[Group]     = signature.paramClauses.map(toClause)
+    val clauses: List[Group]     = signature.paramClauses.zip(openings(signature)).map(toClause)
     val returnPart: Doc =
       signature
         .returnType
@@ -102,7 +105,16 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
     val tparamsInline: Doc =
       if tparams.isEmpty then Doc.Empty
       else Doc.text("[") ++ tcomments.inline(tclause.values.map(oneLine)) ++ Doc.text("]")
-    val restInline: Doc = tparamsInline ++ Doc.concat(clauses.map(_.inline)) ++ returnPart
+
+    // The modifiers of a class constructor, one space on each side: `class A private (x: Int)`
+    val modifiers: Doc =
+      if signature.constructorModifiers.isEmpty then
+        Doc.Empty
+      else
+        Doc.text(signature.constructorModifiers.mkString(" ", " ", " "))
+
+    val restInline: Doc =
+      tparamsInline ++ modifiers ++ Doc.concat(clauses.map(_.inline)) ++ returnPart
   }
 
   // A type parameter on its own line at `indent`. Its bounds and context bounds never break; a higher-kinded one whose
@@ -154,8 +166,24 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
           .replaceAll("\\s*\\n\\s*", " "),
       )
 
-  private def toClause(clause: Term.ParamClause): Group =
+  // The type clause that opens each value clause, on one line: `[B]` in `def f[A](a: A)[B](b: B)`, empty for the
+  // others.
+  private def openings(signature: SignatureParts): List[String] =
+    signature
+      .paramClauses
+      .indices
+      .toList
+      .map { index =>
+        signature
+          .clauseOpenings
+          .lift(index)
+          .flatten
+          .fold("")(clause => Render.render(oneLine(clause.pos.start, clause.pos.end), 0))
+      }
+
+  private def toClause(clause: Term.ParamClause, opening: String): Group =
     Group(
+      opening,
       Syntax.clauseKeyword(clause.mod),
       clause.values.map(ctx.sourceDoc),
       CommentedList.of(ctx, clause.pos.start, clause.values, clause.pos.end),
@@ -171,7 +199,7 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
         .config
         .definitionSite
         .groupsSeparator
-    
+
     val layout = ClauseGroups.broken(lead, clauses, separator, baseIndent, keywordAsParameter = true)
 
     if layout.open then
@@ -212,7 +240,11 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
  * @param prefixStart Where the signature starts (its modifiers).
  * @param nameEnd Where the name ends: the prefix is kept as written up to there.
  * @param tparamClause The type parameters.
+ * @param constructorModifiers The modifiers and annotations of a class constructor (`private`, `@Inject()`), as
+ *                             written, between the type parameters and the value parameters.
  * @param paramClauses The value parameter clauses.
+ * @param clauseOpenings The type clause that opens each value clause, when the signature has several clause groups
+ *                       (`[B]` in `def f[A](a: A)[B](b: B)`); empty, or None for a value clause without one.
  * @param returnType The declared return type, if any.
  * @param keepBroken True when the parameters break even if they fit, because the author wrote them over several lines
  *                   (case classes).
@@ -221,7 +253,9 @@ private[render] final case class SignatureParts(
   prefixStart: Int,
   nameEnd: Int,
   tparamClause: Type.ParamClause,
+  constructorModifiers: List[String],
   paramClauses: List[Term.ParamClause],
+  clauseOpenings: List[Option[Type.ParamClause]],
   returnType: Option[Type],
   keepBroken: Boolean,
 )

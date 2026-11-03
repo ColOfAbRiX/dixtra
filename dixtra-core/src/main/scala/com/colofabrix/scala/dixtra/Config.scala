@@ -73,6 +73,7 @@ object Config {
           forBody = SingleBodyPolicy.Keep,
           forYield = YieldBodyPolicy.BreakComplex,
           whileBody = SingleBodyPolicy.Keep,
+          semicolonStatements = SemicolonPolicy.AlwaysBreak,
         ),
       definitionSite = DefinitionSiteConfig(groupsSeparator = GroupsSeparator.NextGroup),
       callSite = CallSiteConfig(groupsSeparator = GroupsSeparator.PreviousGroup, groupsBreak = GroupsBreak.LastFirst),

@@ -167,9 +167,9 @@ final class ContainerRenderer(
   private def constructorHeader(container: Tree, templ: Template, brace: Option[Token]): Option[Header] =
     val parts =
       container match {
-        case cls: Defn.Class if cls.ctor.mods.isEmpty =>
+        case cls: Defn.Class =>
           Some(constructorParts(cls, cls.name, cls.tparamClause, cls.ctor))
-        case traitDef: Defn.Trait if traitDef.ctor.mods.isEmpty =>
+        case traitDef: Defn.Trait =>
           Some(constructorParts(traitDef, traitDef.name, traitDef.tparamClause, traitDef.ctor))
         case _ =>
           None
@@ -357,7 +357,7 @@ final class ContainerRenderer(
     ctx.fitsWidth(0, width)
 
   // A case class whose parameters the author wrote over several lines keeps them one per line; a one-line one stays on
-  // one line while it fits.
+  // one line while it fits. The constructor modifiers (`private`, `@Inject()`) are kept as written, one by one.
   private def constructorParts(
     container: Tree,
     name: Name,
@@ -373,10 +373,14 @@ final class ContainerRenderer(
         case _                         => false
       }
 
+    val modifiers = ctor.mods.map(mod => ctx.slice(mod.pos.start, mod.pos.end))
+
     SignatureParts(
       prefixStart = container.pos.start,
       nameEnd = name.pos.end,
       tparamClause = tparams,
+      constructorModifiers = modifiers,
+      clauseOpenings = Nil,
       paramClauses = clauses,
       returnType = None,
       keepBroken = isCase && written,

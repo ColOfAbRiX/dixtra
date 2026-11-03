@@ -352,6 +352,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
             forBody = SingleBodyPolicy.AlwaysJoin,
             forYield = YieldBodyPolicy.BreakComplex,
             whileBody = SingleBodyPolicy.AlwaysJoin,
+            semicolonStatements = SemicolonPolicy.Keep,
           ),
         )
 
@@ -363,7 +364,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
               |  type-def = always-break, assignment = always-join, named-argument = always-break
               |  lambda-argument = always-join, lambda-body = always-break, block-argument = always-join
               |  test-block = always-break, if = join-mixed, case-body = always-join, try = always-break
-              |  for = always-join, for-yield = break-complex, while = always-join
+              |  for = always-join, for-yield = break-complex, while = always-join, semicolon-statements = keep
               |}""".stripMargin,
           )
           .map(_.body)

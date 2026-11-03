@@ -187,6 +187,10 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
       yieldBody("for-yield", (b, p) => b.copy(forYield = p)),
       body("while", (b, p) => b.copy(whileBody = p)),
       Setting(
+        "semicolon-statements",
+        SemicolonPolicy.values.toVector.map(p => (c: Config) => c.copy(body = c.body.copy(semicolonStatements = p))),
+      ),
+      Setting(
         "definition-site.groups-separator",
         GroupsSeparator.values.toVector.map(g => (c: Config) => c.copy(definitionSite = DefinitionSiteConfig(g))),
       ),

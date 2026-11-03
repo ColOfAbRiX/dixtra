@@ -15,6 +15,136 @@ import org.scalatest.wordspec.AnyWordSpec
  */
 class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
+  "a def with several clause groups" should {
+
+    "be spaced like a def when it fits" in {
+      val input    = "def pair[A]( a: A )[B](b: B): (A, B) = (a, b)\n"
+      val expected = "def pair[A](a: A)[B](b: B): (A, B) = (a, b)\n"
+      input should formatStablyTo(expected)
+    }
+
+    "break every value clause, each type clause glued to the clause it opens" in {
+      val input = "def combine[A](first: A)[B](second: B)(using ord: Ordering[A]): (A, B) = (first, second)\n"
+
+      val expected =
+        """def combine[A](
+          |  first: A,
+          |)[B](
+          |  second: B,
+          |)(using
+          |  ord: Ordering[A],
+          |): (A, B) = (first, second)
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 60)
+    }
+
+    "take any number of groups" in {
+      val input = "def triple[A](first: A)[B](second: B)[C](third: C): (A, B, C) = (first, second, third)\n"
+
+      val expected =
+        """def triple[A](
+          |  first: A,
+          |)[B](
+          |  second: B,
+          |)[C](
+          |  third: C,
+          |): (A, B, C) = (first, second, third)
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 60)
+    }
+
+    "place using on a line of its own in an extension method's first clause" in {
+      val input =
+        """extension (s: String)
+          |  def parseAs[A](using p: Parser[A])[B](fallback: B): Either[B, A] = p.parse(s).toRight(fallback)
+          |""".stripMargin
+
+      val expected =
+        """extension (s: String)
+          |  def parseAs[A](
+          |    using
+          |    p: Parser[A],
+          |  )[B](
+          |    fallback: B,
+          |  ): Either[B, A] = p.parse(s).toRight(fallback)
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 60)
+    }
+
+  }
+
+  "a secondary constructor" should {
+
+    "be spaced like a def" in {
+      val input    = "class Point(x: Int, y: Int) {\n  def this(  x: Int )   =    this(x,0)\n}\n"
+      val expected = "class Point(x: Int, y: Int) {\n  def this(x: Int) = this(x, 0)\n}\n"
+      input should formatStablyTo(expected)
+    }
+
+    "break its parameters like a def, keeping the call on the ) = line" in {
+      val input =
+        """class Point(x: Int, y: Int) {
+          |  def this(coordinates: (Int, Int), label: String, verbose: Boolean) = this(coordinates._1, coordinates._2)
+          |}
+          |""".stripMargin
+
+      val expected =
+        """class Point(x: Int, y: Int) {
+          |  def this(
+          |    coordinates: (Int, Int),
+          |    label: String,
+          |    verbose: Boolean,
+          |  ) = this(coordinates._1, coordinates._2)
+          |}
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 60)
+    }
+
+    "break a body of statements written with ; one per line below the =, by default" in {
+      val input    = "class Point(x: Int, y: Int) {\n  def this(s: String) = { this(s.toInt, 0); println(s) }\n}\n"
+      val expected = "class Point(x: Int, y: Int) {\n  def this(s: String) =\n    this(s.toInt, 0)\n    println(s)\n}\n"
+      input should formatStablyTo(expected)
+    }
+
+    "keep a body of statements written with ; on one line with body.semicolon-statements = keep" in {
+      val input  = "class Point(x: Int, y: Int) {\n  def this(s: String) = { this(s.toInt, 0); println(s) }\n}\n"
+      val config = withBody(_.copy(semicolonStatements = SemicolonPolicy.Keep))
+      input should formatStablyTo(input, config)
+    }
+
+    "keep a def body written with ; on one line with body.semicolon-statements = keep" in {
+      val input  = "def f = { log(1); compute(2) }\n"
+      val config = withBody(_.copy(semicolonStatements = SemicolonPolicy.Keep))
+      input should formatStablyTo(input, config)
+    }
+
+    "place using after an empty clause on a line of its own" in {
+      val input =
+        """class Service(db: Db)(using Log) {
+          |  def this()(using log: Log, config: Config, metrics: Metrics) = this(Db.default)
+          |}
+          |""".stripMargin
+
+      val expected =
+        """class Service(db: Db)(using Log) {
+          |  def this()(
+          |    using
+          |    log: Log,
+          |    config: Config,
+          |    metrics: Metrics,
+          |  ) = this(Db.default)
+          |}
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 60)
+    }
+
+  }
+
   "Tier 1 (value params break, type params inline)" should {
 
     "break value params but keep type params inline" in {
@@ -226,7 +356,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
       input should formatStablyTo(expected, 40)
     }
 
-    "keep using after )( when an empty clause comes first" in {
+    "place using on a line of its own after an empty clause, like a first parameter" in {
       val input = "def f()(using ordering: Ordering[A], numeric: Numeric[Int]): Int = 1\n"
 
       val expected =
@@ -248,7 +378,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
           maxColumn = 40,
           definitionSite = DefinitionSiteConfig(groupsSeparator = GroupsSeparator.PreviousGroup),
         )
-        
+
       val expected =
         """def f[A](
           |  first: String,

@@ -42,13 +42,11 @@ final class DefRenderer(
    */
   def render(defn: Defn.Def, baseIndent: Int, padTo: Option[Int], below: Boolean): Option[Doc] =
     defn.paramClauseGroups match {
-      case group :: Nil =>
-        val signature = parts(defn.pos.start, defn.name, group, defn.decltpe)
-        renderWithClauses(signature, defn.body, Construct.Def, ctx.config.body.defBody, baseIndent, padTo, below)
       case Nil =>
         assignments.render(defn, defn.body, baseIndent, padTo, below)
-      case _ =>
-        None
+      case groups =>
+        val signature = parts(defn.pos.start, defn.name, groups, defn.decltpe)
+        renderWithClauses(signature, defn.body, Construct.Def, ctx.config.body.defBody, baseIndent, padTo, below)
     }
 
   /**
@@ -61,8 +59,8 @@ final class DefRenderer(
       ctx.slice(givenAlias.name.pos.end, group.pos.start).isBlank
 
     givenAlias.paramClauseGroups match {
-      case group :: Nil if givenAlias.name.value.nonEmpty && blankBefore(group) =>
-        val signature = parts(givenAlias.pos.start, givenAlias.name, group, Some(givenAlias.decltpe))
+      case groups @ (first :: _) if givenAlias.name.value.nonEmpty && blankBefore(first) =>
+        val signature = parts(givenAlias.pos.start, givenAlias.name, groups, Some(givenAlias.decltpe))
         renderWithClauses(
           signature,
           givenAlias.body,
@@ -78,28 +76,46 @@ final class DefRenderer(
 
   /**
    * Render an abstract `def`: its signature, breaking as the signature of a `def` does. None to keep it as written: a
-   * parameterless one, one with several clause groups, or one holding comments that cannot be re-attached.
+   * parameterless one, or one holding comments that cannot be re-attached.
    */
   def renderDecl(defn: Decl.Def, baseIndent: Int): Option[Doc] =
     defn.paramClauseGroups match {
-      case group :: Nil =>
-        val signature = parts(defn.pos.start, defn.name, group, Some(defn.decltpe))
+      case Nil =>
+        None
+      case groups =>
+        val signature = parts(defn.pos.start, defn.name, groups, Some(defn.decltpe))
         if signatures.hasUnattachableComments(signature, defn.pos.end) then
           None
         else
           signatures.render(signature, baseIndent, Doc.Empty).map(_.doc)
-      case _ =>
-        None
     }
+
+  /**
+   * Render a secondary constructor (`def this(...) = this(...)`): its signature breaks as the signature of a `def`. A
+   * body that is the call alone goes on the `=` line when it fits there; a body of several statements goes below the
+   * `=`, one statement per line, or stays as written on one line by `body.semicolon-statements`. None to keep it as
+   * written: a statement that is not a term, or comments that cannot be re-attached.
+   */
+  def renderSecondary(ctor: Ctor.Secondary, baseIndent: Int): Option[Doc] =
+    for
+      nameEnd  <- thisKeywordEnd(ctor)
+      eq       <- ctx.equalsBefore(nameEnd, ctor.body.init.pos.start)
+      signature = secondaryParts(ctor, nameEnd)
+                  if !signatures.hasUnattachableComments(signature, eq.start)
+                  if ctx.commentsBetween(eq.end, ctor.pos.end).isEmpty
+      body     <- secondaryBody(ctor, eq.end, baseIndent + 2)
+      lineRest  = if Render.isFlat(body) then Doc.text(" = ") ++ body else Doc.text(" =")
+      laidOut  <- signatures.render(signature, baseIndent, lineRest)
+    yield
+      placeBody(laidOut, body)
 
   /**
    * The width of the signature before the `=`, when it is on one line.
    */
   def headerWidth(defn: Defn.Def): Option[Int] =
     defn.paramClauseGroups match {
-      case group :: Nil => signatures.inlineWidth(parts(defn.pos.start, defn.name, group, defn.decltpe))
-      case Nil          => assignments.headerWidth(defn, defn.body)
-      case _            => None
+      case Nil    => assignments.headerWidth(defn, defn.body)
+      case groups => signatures.inlineWidth(parts(defn.pos.start, defn.name, groups, defn.decltpe))
     }
 
   private def renderWithClauses(
@@ -148,12 +164,80 @@ final class DefRenderer(
         None
     }
 
-  private def parts(start: Int, name: Name, group: Member.ParamClauseGroup, returnType: Option[Type]): SignatureParts =
+  // The end of the `this` keyword of a secondary constructor, which ends the part of its signature kept as written.
+  private def thisKeywordEnd(ctor: Ctor.Secondary): Option[Int] =
+    ctx
+      .tokensBetween(ctor.pos.start, ctor.pos.end)
+      .collectFirst { case t: scala.meta.tokens.Token.KwThis => t.end }
+
+  // The body of a secondary constructor at `indent`: its call alone, the body as written on one line (with
+  // `body.semicolon-statements = keep`), or the call and the statements one per line. None when a statement is not a
+  // term.
+  private def secondaryBody(ctor: Ctor.Secondary, equalsEnd: Int, indent: Int): Option[Doc] =
+    val call       = terms.renderInit(ctor.body.init, indent)
+    val stats      = ctor.body.stats
+    val statements = stats.collect { case term: Term => term }
+    val allTerms   = statements.sizeIs == stats.size
+
+    if stats.isEmpty then
+      Some(call)
+    else if SemicolonStatements.keptOnLine(ctx, ctor) then
+      Some(Doc.text(ctx.slice(equalsEnd, ctor.pos.end).trim))
+    else
+      Option.when(allTerms) {
+        val docs = statements.map(terms.render(_, indent, forceExplode = false))
+        Doc.intercalate(Doc.Line, call :: docs)
+      }
+
+  private def secondaryParts(ctor: Ctor.Secondary, nameEnd: Int): SignatureParts =
+    SignatureParts(
+      prefixStart = ctor.pos.start,
+      nameEnd = nameEnd,
+      tparamClause = Type.ParamClause(Nil),
+      constructorModifiers = Nil,
+      paramClauses = ctor.paramClauses.toList,
+      clauseOpenings = Nil,
+      returnType = None,
+      keepBroken = false,
+    )
+
+  // The body on the `=` line of the signature when it is on one line and fits there, below the `=` otherwise.
+  private def placeBody(laidOut: Signature, body: Doc): Doc =
+    val column = laidOut.lastLineWidth + 3
+    val down   = ctx.config.body.defBody == SingleBodyPolicy.AlwaysBreak
+    val onLine = Render.isFlat(body) && ctx.fits(body, column)
+    val equals = laidOut.doc ++ Doc.text(" =")
+
+    if onLine && !down then
+      equals ++ Doc.text(" ") ++ body
+    else
+      equals ++ Doc.Nest(2, Doc.Line ++ body)
+
+  // The signature of clause groups: the type clause of the first group follows the name, and the type clause of each
+  // later group opens its first value clause (`)[B](`).
+  private def parts(
+    start: Int,
+    name: Name,
+    groups: List[Member.ParamClauseGroup],
+    returnType: Option[Type],
+  ): SignatureParts =
+    val valueClauses = groups.map(_.paramClauses.collect { case c: Term.ParamClause => c })
+    val laterTypes   = None :: groups.drop(1).map(g => Option.when(g.tparamClause.values.nonEmpty)(g.tparamClause))
+
+    val openings =
+      valueClauses
+        .zip(laterTypes)
+        .flatMap { (clauses, opening) =>
+          clauses.indices.toList.map(i => if i == 0 then opening else None)
+        }
+
     SignatureParts(
       prefixStart = start,
       nameEnd = name.pos.end,
-      tparamClause = group.tparamClause,
-      paramClauses = group.paramClauses.collect { case c: Term.ParamClause => c },
+      tparamClause = groups.headOption.fold(Type.ParamClause(Nil))(_.tparamClause),
+      constructorModifiers = Nil,
+      paramClauses = valueClauses.flatten,
+      clauseOpenings = openings,
       returnType = returnType,
       keepBroken = false,
     )

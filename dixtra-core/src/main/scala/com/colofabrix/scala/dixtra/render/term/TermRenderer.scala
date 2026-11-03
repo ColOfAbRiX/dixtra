@@ -253,6 +253,15 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
     plain && noComments && operators(infix.op.value)
 
   /**
+   * Render a constructor call (`this(x, 0)`, `super(...)`) at the given indentation, its arguments laid out as those of
+   * any call.
+   */
+  def renderInit(init: Init, indent: Int): Doc =
+    val callee = ctx.sourceDoc(init.tpe)
+    val column = indent + Render.flatWidth(callee).getOrElse(0)
+    callee ++ applications.argumentClauses(init.argClauses.toList, indent, column)
+
+  /**
    * Render a term at the given indentation. `forceExplode` carries an author signal from the enclosing construct (a
    * newline after `=` or `=>`).
    */

@@ -26,6 +26,7 @@ package com.colofabrix.scala.dixtra.model
  * @param forBody The body after the `do` of a `for` loop.
  * @param forYield The expression after the `yield` of a for-comprehension.
  * @param whileBody The body after the `do` of a `while` loop.
+ * @param semicolonStatements The statements of a body written on one line, separated by `;`.
  */
 final case class BodyConfig(
   defBody: SingleBodyPolicy,
@@ -46,6 +47,7 @@ final case class BodyConfig(
   forBody: SingleBodyPolicy,
   forYield: YieldBodyPolicy,
   whileBody: SingleBodyPolicy,
+  semicolonStatements: SemicolonPolicy,
 ) {
 
   /**
@@ -84,6 +86,23 @@ enum SingleBodyPolicy(val key: String) {
    * Below its separator.
    */
   case AlwaysBreak extends SingleBodyPolicy("always-break")
+
+}
+
+/**
+ * The layout of the statements of a body written on one line and separated by `;` (`{ this(s.toInt, 0); println(s) }`).
+ */
+enum SemicolonPolicy(val key: String) {
+
+  /**
+   * On one line while it fits, with its braces.
+   */
+  case Keep extends SemicolonPolicy("keep")
+
+  /**
+   * One statement per line.
+   */
+  case AlwaysBreak extends SemicolonPolicy("always-break")
 
 }
 

@@ -55,6 +55,9 @@ object ConfigInstances {
   given ConfigReader[SingleBodyPolicy] =
     keyed(SingleBodyPolicy.values.toList)(_.key)
 
+  given ConfigReader[SemicolonPolicy] =
+    keyed(SemicolonPolicy.values.toList)(_.key)
+
   given ConfigReader[YieldBodyPolicy] =
     keyed(YieldBodyPolicy.values.toList)(_.key)
 
@@ -212,6 +215,8 @@ object ConfigInstances {
   given ConfigWriter[SingleBodyPolicy] = keyedWriter(_.key)
 
   given ConfigWriter[YieldBodyPolicy] = keyedWriter(_.key)
+
+  given ConfigWriter[SemicolonPolicy] = keyedWriter(_.key)
 
   given ConfigWriter[MultiBodyPolicy] = keyedWriter(_.key)
 

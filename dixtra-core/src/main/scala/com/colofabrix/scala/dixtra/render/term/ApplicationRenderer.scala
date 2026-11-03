@@ -94,7 +94,11 @@ private[term] final class ApplicationRenderer(
     val onLine =
       Doc.concat(
         leading.map { (clause, args, comments) =>
-          ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), args.map(arg => ctx.sourceDoc(arg)), comments).inline
+          ClauseGroups.Group(
+            "",
+            Syntax.clauseKeyword(clause.mod),
+            args.map(arg => ctx.sourceDoc(arg)), comments
+          ).inline
         },
       )
 
@@ -116,7 +120,7 @@ private[term] final class ApplicationRenderer(
     val inline =
       Doc.concat(
         groups.map { (clause, args, comments) =>
-          ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), args.map(arg => ctx.sourceDoc(arg)), comments).inline
+          ClauseGroups.Group("", Syntax.clauseKeyword(clause.mod), args.map(arg => ctx.sourceDoc(arg)), comments).inline
         },
       )
 
@@ -136,7 +140,8 @@ private[term] final class ApplicationRenderer(
     else
       val broken =
         groups.map { (clause, args, comments) =>
-          ClauseGroups.Group(Syntax.clauseKeyword(clause.mod), argumentAlignment.aligned(args, indent + 2), comments)
+          val keyword = Syntax.clauseKeyword(clause.mod)
+          ClauseGroups.Group("", keyword, argumentAlignment.aligned(args, indent + 2), comments)
         }
 
       val separator =

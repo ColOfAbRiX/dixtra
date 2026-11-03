@@ -177,4 +177,64 @@ class ConstructorSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   }
 
+  "a constructor with modifiers or annotations" should {
+
+    "get one space on each side of the modifier" in {
+      val input =
+        """class Account  private(  val id: Long, owner: String) {
+          |  def show = id.toString
+          |}
+          |""".stripMargin
+
+      val expected =
+        """class Account private (val id: Long, owner: String) {
+          |  def show = id.toString
+          |}
+          |""".stripMargin
+
+      input should formatStablyTo(expected)
+    }
+
+    "break its parameters after a qualified modifier" in {
+      val input = "final class Repository private[storage] (connection: Connection, cache: Cache, metrics: Metrics)\n"
+
+      val expected =
+        """final class Repository private[storage] (
+          |  connection: Connection,
+          |  cache: Cache,
+          |  metrics: Metrics,
+          |)
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 60)
+    }
+
+    "space a protected case class constructor" in {
+      val input    = "case class Email protected(value: String)\n"
+      val expected = "case class Email protected (value: String)\n"
+      input should formatStablyTo(expected)
+    }
+
+    "break its parameters after an annotation, keeping the extends list on the ) line" in {
+      val input = "class Controller @Inject()  (service: Service, repository: Repository, log: Logger) extends Base\n"
+
+      val expected =
+        """class Controller @Inject() (
+          |  service: Service,
+          |  repository: Repository,
+          |  log: Logger,
+          |) extends Base
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 60)
+    }
+
+    "keep type parameters before the modifier" in {
+      val input    = "class Box[A]  private(value: A)\n"
+      val expected = "class Box[A] private (value: A)\n"
+      input should formatStablyTo(expected)
+    }
+
+  }
+
 }
