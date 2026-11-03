@@ -189,6 +189,77 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   }
 
+  "a given alias in the syntax of Scala 3.6" should {
+
+    "be spaced around its arrows when it fits" in {
+      val input    = "given listOrd  : [A:Ord] =>Ord[List[A]] = ListOrd()\n"
+      val expected = "given listOrd: [A:Ord] => Ord[List[A]] = ListOrd()\n"
+      input should formatStablyTo(expected)
+    }
+
+    "put its body below the = first when the line does not fit" in {
+      val input = "given [A] => (ord: Ord[A]) => Ord[List[A]] = Ord.by[List[A], Int](_.size).orElse(ord.lift)\n"
+
+      val expected =
+        """given [A] => (ord: Ord[A]) => Ord[List[A]] =
+          |  Ord.by[List[A], Int](_.size).orElse(ord.lift)
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 60)
+    }
+
+    "break its value clauses when the signature does not fit, each => after its )" in {
+      val input = "given service: (config: AppConfig, database: Database, metrics: Metrics) => Service = Service.live\n"
+
+      val expected =
+        """given service: (
+          |  config: AppConfig,
+          |  database: Database,
+          |  metrics: Metrics,
+          |) => Service = Service.live
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 60)
+    }
+
+  }
+
+  "an anonymous given alias with parameters" should {
+
+    "be spaced like a named one" in {
+      val input    = "given  (using ord: Ordering[Int]): Ordering[List[Int]] = Ordering.by(_.sum)\n"
+      val expected = "given (using ord: Ordering[Int]): Ordering[List[Int]] = Ordering.by(_.sum)\n"
+      input should formatStablyTo(expected)
+    }
+
+    "break its using clause, using on a line of its own" in {
+      val input = "given [A](using show: Show[A], eq: Eq[A], ord: Ordering[A]): Show[List[A]] = Show.list(show)\n"
+
+      val expected =
+        """given [A](
+          |  using
+          |  show: Show[A],
+          |  eq: Eq[A],
+          |  ord: Ordering[A],
+          |): Show[List[A]] = Show.list(show)
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 60)
+    }
+
+    "put its body below the = when it does not fit" in {
+      val input = "given [A: Show]: Show[Option[A]] = Show.instance(_.fold(\"None\")(a => s\"Some(${a.show})\"))\n"
+
+      val expected =
+        """given [A: Show]: Show[Option[A]] =
+          |  Show.instance(_.fold("None")(a => s"Some(${a.show})"))
+          |""".stripMargin
+
+      input should formatStablyTo(expected, 60)
+    }
+
+  }
+
   "a given alias with parameters" should {
 
     "break its using clause like a def, using on a line of its own in the first clause" in {

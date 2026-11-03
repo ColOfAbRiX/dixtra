@@ -20,6 +20,8 @@ import scala.meta.*
  */
 final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRenderer, defs: DefRenderer) {
 
+  private val typeDefs = new TypeDefRenderer(ctx)
+
   /**
    * The definitions among `stats` (None for other statements), with the `=` of consecutive one-line definitions of the
    * same alignment group aligned. Each definition is laid out once unpadded: a one-line definition still fits once
@@ -116,7 +118,7 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
       case (givenAlias: Defn.GivenAlias, _) => defs.renderGiven(givenAlias, indent, below)
       case (decl: Decl.Def, _)              => defs.renderDecl(decl, indent)
       case (ctor: Ctor.Secondary, _)        => defs.renderSecondary(ctor, indent)
-      case (alias: Defn.Type, _)            => typeAlias(alias, padTo, below)
+      case (alias: Defn.Type, _)            => typeDefs.render(alias, padTo, below)
       case _                                => None
     }
 
@@ -125,7 +127,7 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
     (stat, assignmentBody(stat)) match {
       case (_, Some(body))       => assignments.headerWidth(stat, body)
       case (defn: Defn.Def, _)   => defs.headerWidth(defn)
-      case (alias: Defn.Type, _) => typeAliasName(alias).flatMap(Render.flatWidth)
+      case (alias: Defn.Type, _) => typeDefs.nameDoc(alias).flatMap(Render.flatWidth)
       case _                     => None
     }
 
@@ -161,26 +163,5 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
       case _ =>
         None
     }
-
-  // A one-line type alias, its `=` padded to `padTo` when aligned and its body
-  // below the `=` when `below` or with `body.type-def = always-break`.
-  private def typeAlias(t: Defn.Type, padTo: Option[Int], below: Boolean): Option[Doc] =
-    if ctx.slice(t.pos.start, t.pos.end).contains('\n') then
-      None
-    else
-      typeAliasName(t).map { name =>
-        val body = ctx.trimmedSourceDoc(t.body.pos.start, t.pos.end)
-        val lead = name ++ Alignment.padding(padTo, Render.flatWidth(name)) ++ Doc.text(" =")
-        if below || ctx.config.body.typeDef == SingleBodyPolicy.AlwaysBreak then
-          lead ++ Doc.Nest(2, Doc.Line ++ body)
-        else
-          lead ++ Doc.text(" ") ++ body
-      }
-
-  // The text of a type alias before its `=`.
-  private def typeAliasName(t: Defn.Type): Option[Doc] =
-    ctx
-      .equalsBefore(t.pos.start, t.body.pos.start)
-      .map(eq => ctx.trimmedSourceDoc(t.pos.start, eq.start))
 
 }

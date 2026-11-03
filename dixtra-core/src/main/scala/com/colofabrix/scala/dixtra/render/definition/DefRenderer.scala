@@ -36,6 +36,8 @@ final class DefRenderer(
   signatures: SignatureRenderer,
 ) {
 
+  private val arrowGivens = new ArrowGivenRenderer(ctx, terms)
+
   /**
    * Render a `def` with its signature padded to `padTo` columns when given and its body below the `=` when `below`, or
    * None to keep unsupported clause shapes as written.
@@ -50,17 +52,18 @@ final class DefRenderer(
     }
 
   /**
-   * Render a `given` alias with parameters, its body below the `=` when `below`, or None to keep it as written: an
-   * anonymous one, one with several clause groups, or one in the syntax of Scala 3.6 (`given a: [A] => B = ...`),
-   * whose parameters do not follow its name.
+   * Render a `given` alias with parameters, named or anonymous, its body below the `=` when `below`. One in the syntax
+   * of Scala 3.6 (`given a: [A] => B = ...`) goes to [[ArrowGivenRenderer]].
    */
   def renderGiven(givenAlias: Defn.GivenAlias, baseIndent: Int, below: Boolean): Option[Doc] =
     def blankBefore(group: Tree): Boolean =
       ctx.slice(givenAlias.name.pos.end, group.pos.start).isBlank
 
     givenAlias.paramClauseGroups match {
-      case groups @ (first :: _) if givenAlias.name.value.nonEmpty && blankBefore(first) =>
-        val signature = parts(givenAlias.pos.start, givenAlias.name, groups, Some(givenAlias.decltpe))
+      case _ :: _ if arrowGivens.isArrowSyntax(givenAlias) =>
+        arrowGivens.render(givenAlias, baseIndent, below)
+      case groups @ (first :: _) if blankBefore(first) =>
+        val signature = givenParts(givenAlias, groups)
         renderWithClauses(
           signature,
           givenAlias.body,
@@ -164,6 +167,20 @@ final class DefRenderer(
         None
     }
 
+  // The signature of a `given` alias with parameters. An anonymous one has no name: its signature keeps the `given`
+  // keyword, and one space before its parameters.
+  private def givenParts(givenAlias: Defn.GivenAlias, groups: List[Member.ParamClauseGroup]): SignatureParts =
+    val keywordEnd =
+      ctx
+        .tokensBetween(givenAlias.pos.start, givenAlias.name.pos.end + 1)
+        .collectFirst { case t: scala.meta.tokens.Token.KwGiven => t.end }
+
+    val anonymous = givenAlias.name.value.isEmpty
+    val nameEnd   = if anonymous then keywordEnd.getOrElse(givenAlias.name.pos.end) else givenAlias.name.pos.end
+    val afterName = if anonymous then " " else ""
+
+    parts(givenAlias.pos.start, nameEnd, afterName, groups, Some(givenAlias.decltpe))
+
   // The end of the `this` keyword of a secondary constructor, which ends the part of its signature kept as written.
   private def thisKeywordEnd(ctor: Ctor.Secondary): Option[Int] =
     ctx
@@ -193,6 +210,7 @@ final class DefRenderer(
     SignatureParts(
       prefixStart = ctor.pos.start,
       nameEnd = nameEnd,
+      afterName = "",
       tparamClause = Type.ParamClause(Nil),
       constructorModifiers = Nil,
       paramClauses = ctor.paramClauses.toList,
@@ -221,6 +239,15 @@ final class DefRenderer(
     groups: List[Member.ParamClauseGroup],
     returnType: Option[Type],
   ): SignatureParts =
+    parts(start, name.pos.end, "", groups, returnType)
+
+  private def parts(
+    start: Int,
+    nameEnd: Int,
+    afterName: String,
+    groups: List[Member.ParamClauseGroup],
+    returnType: Option[Type],
+  ): SignatureParts =
     val valueClauses = groups.map(_.paramClauses.collect { case c: Term.ParamClause => c })
     val laterTypes   = None :: groups.drop(1).map(g => Option.when(g.tparamClause.values.nonEmpty)(g.tparamClause))
 
@@ -233,7 +260,8 @@ final class DefRenderer(
 
     SignatureParts(
       prefixStart = start,
-      nameEnd = name.pos.end,
+      nameEnd = nameEnd,
+      afterName = afterName,
       tparamClause = groups.headOption.fold(Type.ParamClause(Nil))(_.tparamClause),
       constructorModifiers = Nil,
       paramClauses = valueClauses.flatten,

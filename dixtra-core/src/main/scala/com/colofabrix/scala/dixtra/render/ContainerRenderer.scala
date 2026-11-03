@@ -378,6 +378,7 @@ final class ContainerRenderer(
     SignatureParts(
       prefixStart = container.pos.start,
       nameEnd = name.pos.end,
+      afterName = "",
       tparamClause = tparams,
       constructorModifiers = modifiers,
       clauseOpenings = Nil,

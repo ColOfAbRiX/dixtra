@@ -91,7 +91,8 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
 
  // The pieces of a signature as documents, before deciding its breaks.
   private final class Layout(signature: SignatureParts, baseIndent: Int) {
-    val prefix: Doc              = ctx.sourceDoc(signature.prefixStart, signature.nameEnd) // modifiers + keyword + name
+    // modifiers + keyword + name, and what separates the name from the parameters
+    val prefix: Doc              = ctx.sourceDoc(signature.prefixStart, signature.nameEnd) ++ Doc.text(signature.afterName)
     val tclause                  = signature.tparamClause
     val tparams: List[Doc]       = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
     val tcomments: CommentedList = CommentedList.of(ctx, tclause.pos.start, tclause.values, tclause.pos.end)
@@ -239,6 +240,8 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
  *
  * @param prefixStart Where the signature starts (its modifiers).
  * @param nameEnd Where the name ends: the prefix is kept as written up to there.
+ * @param afterName The text between the name and the parameters: one space after the `given` keyword of an anonymous
+ *                  `given`, empty otherwise.
  * @param tparamClause The type parameters.
  * @param constructorModifiers The modifiers and annotations of a class constructor (`private`, `@Inject()`), as
  *                             written, between the type parameters and the value parameters.
@@ -252,6 +255,7 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
 private[render] final case class SignatureParts(
   prefixStart: Int,
   nameEnd: Int,
+  afterName: String,
   tparamClause: Type.ParamClause,
   constructorModifiers: List[String],
   paramClauses: List[Term.ParamClause],
