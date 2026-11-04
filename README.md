@@ -88,7 +88,7 @@ whatever sbt runs on.
 ### Tasks
 
 | Task                       | What it does                                                                            |
-|----------------------------|-----------------------------------------------------------------------------------------|
+| -------------------------- | --------------------------------------------------------------------------------------- |
 | `dixtraFormat`             | Formats the sources of a configuration (`Compile`; `Test / dixtraFormat` for the tests) |
 | `dixtraCheck`              | Fails when a source of a configuration is not formatted                                 |
 | `dixtraFormatAll`          | Formats the sources of `Compile` and `Test`, and the build files                        |
@@ -106,7 +106,7 @@ subdirectories. `dixtraFormatOnly` formats the files it is given even when `dixt
 ### Settings
 
 | Setting              | Default              | What it does                                                |
-|----------------------|----------------------|-------------------------------------------------------------|
+| -------------------- | -------------------- | ----------------------------------------------------------- |
 | `dixtraVersion`      | the plugin's version | The version of Dixtra to format with                        |
 | `dixtraConfig`       | `None`               | A configuration file, instead of the nearest `.dixtra.conf` |
 | `dixtraChangedSince` | `None`               | A git ref: format or check only the files changed since it  |
@@ -136,7 +136,7 @@ Dixtra [--config-string <hocon> | --config-path <file>] [--max-column <n>] [--ch
 ```
 
 | Option                       | What it does                                                            |
-|------------------------------|-------------------------------------------------------------------------|
+| ---------------------------- | ----------------------------------------------------------------------- |
 | `<path>...`                  | Files and directories to format. At least one is required               |
 | `--check`, `-c`              | Report the files that are not formatted, without writing them           |
 | `--max-column <n>`, `-w <n>` | The longest a line can be, over every `max-column` of the configuration |
@@ -225,7 +225,7 @@ The settings are grouped in sections. [`reference.conf`](dixtra-cli/src/main/res
 setting and value with examples, and holds the defaults:
 
 | Section           | What it decides                                                                           |
-|-------------------|-------------------------------------------------------------------------------------------|
+| ----------------- | ----------------------------------------------------------------------------------------- |
 | `max-column`      | The width that makes a construct break (default 120)                                      |
 | `overflow`        | What happens to what goes past `max-column`: a trailing comment kept, or moved above      |
 | `braces`          | Braces, `end` markers or indentation for each construct, and where braces go              |
@@ -261,7 +261,7 @@ is an error:
   which changes the other constructs too:
 
   | Alias                                           | Sets                               |
-  |-------------------------------------------------|------------------------------------|
+  | ----------------------------------------------- | ---------------------------------- |
   | `class.align-extends` (and the other templates) | `alignment.extends-clauses`        |
   | `match.align-arrows`, `case-body.align-arrows`  | `alignment.arrows.cases`           |
   | `for.align-arrows`, `for-yield.align-arrows`    | `alignment.arrows.for-enumerators` |
@@ -272,7 +272,7 @@ is an error:
 - **Comments and scaladoc:**
 
   | Alias                        | Sets                          |
-  |------------------------------|-------------------------------|
+  | ---------------------------- | ----------------------------- |
   | `comments.align-trailing`    | `alignment.trailing-comments` |
   | `comments.align-across`      | `alignment.across-comments`   |
   | `comments.trailing-overflow` | `overflow.trailing-comment`   |
@@ -411,7 +411,7 @@ own class loader.
 The build needs sbt 2.0 and a JDK that sbt 2 supports (17 or later). It has three projects:
 
 | Project        | Artifact      | Contents                                                    |
-|----------------|---------------|-------------------------------------------------------------|
+| -------------- | ------------- | ----------------------------------------------------------- |
 | `dixtra-core/` | `dixtra-core` | the formatter (Scala 3.9)                                   |
 | `dixtra-cli/`  | `dixtra-cli`  | the command line, the configuration files, `reference.conf` |
 | `dixtra-sbt/`  | `sbt-dixtra`  | the sbt plugin                                              |
