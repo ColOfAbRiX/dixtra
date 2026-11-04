@@ -450,41 +450,31 @@ class BlankLineSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
     "be removed" in {
       val input = "package a\n\nimport b.C\n\nimport d.E\n\n\nimport f.G\n\nobject H\n"
-
       val expected = "package a\n\nimport b.C\nimport d.E\nimport f.G\n\nobject H\n"
-
       input should formatStablyTo(expected)
     }
 
     "be removed around a comment, keeping the comment" in {
       val input = "import b.C\n\n// Effects\n\nimport d.E // trailing\n\nimport f.G\n"
-
       val expected = "import b.C\n// Effects\nimport d.E // trailing\nimport f.G\n"
-
       input should formatTo(expected)
     }
 
     "be removed after an import over several lines" in {
       val input = "import b.{\n  C,\n  D,\n}\n\nimport e.F\n"
-
-      val expected = "import b.{\n  C,\n  D,\n}\nimport e.F\n"
-
-      input should formatTo(expected)
+      val expected = "import b.{\n  C, D,\n}\nimport e.F\n"
+      input should formatTo(expected, 12)
     }
 
     "be removed inside a body" in {
       val input = "object A {\n  import b.C\n\n  import d.E\n\n  val x = 1\n}\n"
-
       val expected = "object A {\n  import b.C\n  import d.E\n\n  val x = 1\n}\n"
-
       input should formatTo(expected)
     }
 
     "keep a block comment over several lines between imports as it is" in {
       val input = "import b.C\n\n/* one\n\n    two */\nimport d.E\n"
-
       val expected = input
-
       input should formatTo(expected)
     }
 

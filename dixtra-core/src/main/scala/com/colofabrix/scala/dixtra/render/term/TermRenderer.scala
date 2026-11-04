@@ -261,6 +261,18 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
     val column = indent + Render.flatWidth(callee).getOrElse(0)
     callee ++ applications.argumentClauses(init.argClauses.toList, indent, column)
 
+  // Whether the only comments that a call leaves out are block comments between its function and its arguments
+  // (`compute /* heavy */ (a, b)`), which move after the arguments.
+  private def onlyCommentsBeforeArguments(call: Term.Apply): Boolean =
+    val before   = ctx.commentsBetween(call.fun.pos.end, call.argClause.pos.start).toList
+    val blocks   = before.nonEmpty && before.forall(c => !c.text.startsWith("//"))
+    val argsOnly = !ctx.hasGapComments(call.argClause)
+    blocks && argsOnly
+
+  private def commentsBeforeArguments(call: Term.Apply): Doc =
+    val comments = ctx.commentsBetween(call.fun.pos.end, call.argClause.pos.start).toList
+    Doc.concat(ctx.commentDocs(comments).map(Doc.text(" ") ++ _))
+
   /**
    * Render a term at the given indentation. `forceExplode` carries an author signal from the enclosing construct (a
    * newline after `=` or `=>`).
@@ -304,6 +316,8 @@ final class TermRenderer(ctx: RenderContext, definitions: (List[Stat], Int) => L
         caseClauses.renderMatch(matchTerm, indent)
       case pf: Term.PartialFunction =>
         applications.operand(pf, indent)
+      case call @ Term.Apply.After_4_6_0(fun: Term.Name, argClause) if onlyCommentsBeforeArguments(call) =>
+        applications.render(fun, argClause, indent) ++ commentsBeforeArguments(call)
       case _ if ctx.hasGapComments(term) =>
         ctx.ownSourceDoc(term)
       case forYield: Term.ForYield =>

@@ -12,7 +12,7 @@ import scala.meta.*
  * Renders the definitions among a run of statements (`val`, `lazy val`, `var`, `def`, `given` alias, `type` alias),
  * aligning the `=` of consecutive one-line definitions of the same alignment group (`alignment.assignment-groups`, see
  * [[Alignment]]). A definition that would not fit once aligned has its body moved below the `=`, and the definitions
- * before and after it align separately.
+ * before and after it align separately. The `import` and `export` clauses among them are rendered too, never aligned.
  *
  * @param ctx The shared render context.
  * @param assignments The renderer of `val`, `var` and `given` aliases.
@@ -21,6 +21,7 @@ import scala.meta.*
 final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRenderer, defs: DefRenderer) {
 
   private val typeDefs = new TypeDefRenderer(ctx)
+  private val imports  = new ImportRenderer(ctx)
 
   /**
    * The definitions among `stats` (None for other statements), with the `=` of consecutive one-line definitions of the
@@ -119,6 +120,8 @@ final class DefinitionAlignment(ctx: RenderContext, assignments: AssignmentRende
       case (decl: Decl.Def, _)              => defs.renderDecl(decl, indent)
       case (ctor: Ctor.Secondary, _)        => defs.renderSecondary(ctor, indent)
       case (alias: Defn.Type, _)            => typeDefs.render(alias, padTo, below)
+      case (clause: Import, _)              => imports.render(clause, indent)
+      case (clause: Export, _)              => imports.render(clause, indent)
       case _                                => None
     }
 

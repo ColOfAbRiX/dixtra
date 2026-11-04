@@ -333,6 +333,16 @@ Some rules have no setting:
 - **Scaladoc** gets the javadoc layout: `/**` and `*/` on lines of their own, a `*` gutter, no blank lines at its
   edges, a blank line before its first tag, and no blank line between it and its definition. A one-line scaladoc that
   fits stays on one line.
+- **Imports and exports** get one space inside their braces (`import a.{ B, C }`) and no blank lines between them. One
+  that does not fit packs its selectors onto as few lines as fit, below the `{`. The selectors keep their spelling
+  (`_` / `*`, `=>` / `as`) and their order; the braces around a single selector follow `braces.imports`.
+
+### Imports and Scalafix
+
+Dixtra never changes which imports a file has, only their layout. Removing unused imports, sorting, merging, grouping,
+wildcards and the Scala 3 spelling (`*`, `as`) are left to Scalafix's `OrganizeImports`. Run Scalafix first and Dixtra
+after it, since Scalafix writes every import it touches on one line. Groups are not supported: Dixtra removes the blank
+lines between them, so set `groups = ["*"]` in `OrganizeImports`.
 
 Some code is copied exactly as written, because Dixtra has no rule for it yet:
 
@@ -477,7 +487,7 @@ You can check [the changelog of Dixtra here](CHANGELOG.md)
 
 ## License
 
-Dixtra is released under a "MIT" license. See [LICENSE](LICENSE) for specifics and copyright 
+Dixtra is released under a "MIT" license. See [LICENSE](LICENSE) for specifics and copyright
 declaration.
 
 ## Author Information

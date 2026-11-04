@@ -130,14 +130,18 @@ object ConfigInstances {
   given ConfigReader[BracesStyle] =
     keyed(BracesStyle.values.toList)(_.key)
 
+  given ConfigReader[ImportBraces] =
+    keyed(ImportBraces.values.toList)(_.key)
+
   given ConfigReader[BraceConfig] =
     ConfigReader.fromCursor { cursor =>
       for
         settings <- cursor.asObjectCursor
         style    <- settings.atKey("style").flatMap(ConfigReader[BracesStyle].from)
-        policies <- bracePolicies.from(settings.withoutKey("style"))
+        imports  <- settings.atKey("imports").flatMap(ConfigReader[ImportBraces].from)
+        policies <- bracePolicies.from(settings.withoutKey("style").withoutKey("imports"))
       yield
-        BraceConfig(style, policies)
+        BraceConfig(style, imports, policies)
     }
 
   given bracePolicies: ConfigReader[Map[Construct, BracePolicy]] =
@@ -212,53 +216,77 @@ object ConfigInstances {
 
   // The settings written as the key of their case, like those read
 
-  given ConfigWriter[SingleBodyPolicy] = keyedWriter(_.key)
+  given ConfigWriter[SingleBodyPolicy] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[YieldBodyPolicy] = keyedWriter(_.key)
+  given ConfigWriter[YieldBodyPolicy] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[SemicolonPolicy] = keyedWriter(_.key)
+  given ConfigWriter[SemicolonPolicy] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[MultiBodyPolicy] = keyedWriter(_.key)
+  given ConfigWriter[MultiBodyPolicy] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[GroupsSeparator] = keyedWriter(_.key)
+  given ConfigWriter[GroupsSeparator] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[GroupsBreak] = keyedWriter(_.key)
+  given ConfigWriter[GroupsBreak] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[ChainHeadPolicy] = keyedWriter(_.key)
+  given ConfigWriter[ChainHeadPolicy] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[InlineChainPolicy] = keyedWriter(_.key)
+  given ConfigWriter[InlineChainPolicy] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[NestedChainPolicy] = keyedWriter(_.key)
+  given ConfigWriter[NestedChainPolicy] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[BracePolicy] = keyedWriter(_.key)
+  given ConfigWriter[BracePolicy] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[DefinitionKind] = keyedWriter(_.key)
+  given ConfigWriter[DefinitionKind] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[TrailingOverflow] = keyedWriter(_.key)
+  given ConfigWriter[TrailingOverflow] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[TrailingCommas] = keyedWriter(_.key)
+  given ConfigWriter[TrailingCommas] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[LineEnding] = keyedWriter(_.key)
+  given ConfigWriter[LineEnding] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[ScaladocSpacing] = keyedWriter(_.key)
+  given ConfigWriter[ScaladocSpacing] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[BlankLinePolicy] = keyedWriter(_.key)
+  given ConfigWriter[BlankLinePolicy] =
+    keyedWriter(_.key)
 
-  given ConfigWriter[BracesStyle] = keyedWriter(_.key)
+  given ConfigWriter[BracesStyle] =
+    keyedWriter(_.key)
+
+  given ConfigWriter[ImportBraces] =
+    keyedWriter(_.key)
 
   given ConfigWriter[Map[Construct, BlankLinePolicy]] =
     ConfigWriter[Map[String, BlankLinePolicy]].contramap(
       edges => edges.map((construct, policy) => construct.key -> policy),
     )
 
-  // The brace settings as one section, the style beside the policy of each construct: the shape the reader expects
+  // The brace settings as one section, the style and the import braces beside the policy of each construct: the shape
+  // the reader expects
   given ConfigWriter[BraceConfig] =
     ConfigWriter.fromFunction { braces =>
       val policies =
         ConfigWriter[Map[String, BracePolicy]].to(braces.policies.map((construct, policy) => construct.key -> policy))
 
+      val style   = ConfigWriter[BracesStyle].to(braces.style)
+      val imports = ConfigWriter[ImportBraces].to(braces.imports)
+
       policies match {
-        case section: ConfigObject => section.withValue("style", ConfigWriter[BracesStyle].to(braces.style))
+        case section: ConfigObject => section.withValue("style", style).withValue("imports", imports)
         case other                 => other
       }
     }

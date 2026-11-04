@@ -50,13 +50,36 @@ enum BracesStyle(val key: String) {
 }
 
 /**
+ * The braces around the single selector of an `import` or `export`.
+ */
+enum ImportBraces(val key: String) {
+
+  /**
+   * As the author wrote it.
+   */
+  case Keep extends ImportBraces("keep")
+
+  /**
+   * Always in braces: `import a.{ B }`.
+   */
+  case ForceBraces extends ImportBraces("force-braces")
+
+  /**
+   * Without braces where the selector can stand alone: `import a.B`.
+   */
+  case AvoidBraces extends ImportBraces("avoid-braces")
+
+}
+
+/**
  * The braces: where they go, and the brace style of each construct; a construct without a setting is
  * [[BracePolicy.Keep]].
  *
  * @param style Where the braces go relative to the code around them.
+ * @param imports The braces around the single selector of an `import` or `export`.
  * @param policies The brace policy of each construct.
  */
-final case class BraceConfig(style: BracesStyle, policies: Map[Construct, BracePolicy]) {
+final case class BraceConfig(style: BracesStyle, imports: ImportBraces, policies: Map[Construct, BracePolicy]) {
 
   /**
    * The brace style of `construct`.
@@ -73,6 +96,7 @@ object BraceConfig {
   val default: BraceConfig =
     BraceConfig(
       BracesStyle.OneTrueBrace,
+      ImportBraces.Keep,
       Map(
         Class          -> ForceBraces,
         AbstractClass  -> ForceBraces,

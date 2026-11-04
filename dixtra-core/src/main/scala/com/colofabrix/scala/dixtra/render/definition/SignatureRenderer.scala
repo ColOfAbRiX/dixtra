@@ -8,6 +8,7 @@ import com.colofabrix.scala.dixtra.render.ClauseGroups.Group
 import com.colofabrix.scala.dixtra.render.comments.CommentedList
 import com.colofabrix.scala.dixtra.render.context.RenderContext
 import scala.meta.*
+import scala.meta.tokens.Token
 
 /**
  * Lays out a signature: modifiers, name, type parameters, value parameter clauses and return type, up to (not
@@ -31,23 +32,40 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
 
   /**
    * True when the signature holds comments the layout cannot re-attach: between the name and `end`, outside every
-   * parameter clause and the return type, or inside an empty clause.
+   * parameter clause and the return type, or inside an empty clause. The comments after the last value clause, before
+   * the return type, can be re-attached: they trail its last parameter (see [[afterLastClause]]).
    */
   def hasUnattachableComments(parts: SignatureParts, end: Int): Boolean =
     val clauses = parts.tparamClause :: parts.clauseOpenings.flatten ++ parts.paramClauses
     val spans   = clauses.map(c => (c.pos.start, c.pos.end)) ++ parts.returnType.toList.map(ctx.span)
+    val moved   = afterLastClause(parts).map(c => (c.start, c.end)).toSet
     val outside =
       ctx
         .commentsBetween(parts.nameEnd, end)
         .exists { comment =>
           val insideAnySpan = spans.exists { case (from, to) => comment.start >= from && comment.end <= to }
-          !insideAnySpan
+          !insideAnySpan && !moved((comment.start, comment.end))
         }
     val inEmptyClause =
       clauses.exists { clause =>
         clause.values.isEmpty && ctx.commentsBetween(clause.pos.start, clause.pos.end).nonEmpty
       }
     outside || inEmptyClause
+
+  // The block comments between the last value clause, when it has parameters, and the return type
+  // (`def f(a: Int) /* the id */ : String`), which cannot stay there: they trail the last parameter.
+  private def afterLastClause(parts: SignatureParts): List[Token.Comment] =
+    val last = parts.paramClauses.lastOption.filter(_.values.nonEmpty)
+
+    last
+      .zip(parts.returnType)
+      .toList
+      .flatMap { (clause, returnType) =>
+        ctx
+          .commentsBetween(clause.pos.end, returnType.pos.start)
+          .toList
+          .filterNot(_.text.startsWith("//"))
+      }
 
   /**
    * The width of the signature laid out on one line, if it can be.
@@ -96,7 +114,7 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
     val tclause                  = signature.tparamClause
     val tparams: List[Doc]       = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
     val tcomments: CommentedList = CommentedList.of(ctx, tclause.pos.start, tclause.values, tclause.pos.end)
-    val clauses: List[Group]     = signature.paramClauses.zip(openings(signature)).map(toClause)
+    val clauses: List[Group]     = withMovedComments(signature, written(signature))
     val returnPart: Doc =
       signature
         .returnType
@@ -181,6 +199,40 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
           .flatten
           .fold("")(clause => Render.render(oneLine(clause.pos.start, clause.pos.end), 0))
       }
+
+  // The value clauses as written, each with the type clause that opens it.
+  private def written(signature: SignatureParts): List[Group] =
+    signature
+      .paramClauses
+      .zip(openings(signature))
+      .map(toClause)
+
+  // The clauses, the comments after the last one trailing its last parameter.
+  private def withMovedComments(signature: SignatureParts, clauses: List[Group]): List[Group] =
+    val moved = afterLastClause(signature)
+
+    if moved.isEmpty then
+      clauses
+    else
+      val trailing = Doc.concat(ctx.commentDocs(moved).map(Doc.text(" ") ++ _))
+      clauses.dropRight(1) ++ clauses.lastOption.map(withTrailing(_, trailing)).toList
+
+  // `group` with `trailing` after its last parameter, like a block comment written there: it does not force a break.
+  private def withTrailing(group: Group, trailing: Doc): Group =
+    val comments = group.comments
+    val last     = comments.trailings.lastOption.getOrElse(Doc.Empty) ++ trailing
+
+    val updated =
+      CommentedList(
+        prefixes = comments.prefixes,
+        ownLines = comments.ownLines,
+        trailings = comments.trailings.dropRight(1) :+ last,
+        closing = comments.closing,
+        forcesBreak = comments.forcesBreak,
+        trailingComma = comments.trailingComma,
+      )
+
+    Group(group.opening, group.keyword, group.elements, updated)
 
   private def toClause(clause: Term.ParamClause, opening: String): Group =
     Group(

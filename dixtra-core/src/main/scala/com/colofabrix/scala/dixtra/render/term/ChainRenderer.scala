@@ -279,8 +279,9 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
     val alwaysBreak     = forceExplode || ctx.config.selectorChain.inlineChains == InlineChainPolicy.BreakAtCount
     authorBreak || tooLong || (asBody && overBudget && alwaysBreak)
 
-  // The comments between a selection's qualifier and its dot: those on the qualifier's line trail the previous segment,
-  // the others get their own lines.
+  // The comments around a selection's dot. Those before the dot on the qualifier's line trail the previous segment,
+  // the others before the dot get their own lines. Those after the dot, before the member name, cannot stay there and
+  // move before the dot, trailing the previous segment.
   private final case class DotComments(trailing: Doc, ownLines: List[Doc], forcesBreak: Boolean)
 
   private def commentsBeforeDot(selection: Term): DotComments =
@@ -289,41 +290,45 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
         DotComments(Doc.Empty, Nil, forcesBreak = false)
       case Some(Selection(qual, name, _, _)) =>
         val qualEnd = ctx.span(qual)._2
+        val dot     = ctx.dotBefore(qualEnd, name.pos.start)
+        val dotEnd  = dot.fold(qualEnd)(_.end)
 
-        val dotStart =
-          ctx
-            .dotBefore(qualEnd, name.pos.start)
-            .map(_.start)
-            .getOrElse(name.pos.start)
+        val before      = ctx.commentsBetween(qualEnd, dot.fold(name.pos.start)(_.start)).toList
+        val afterDot    = ctx.commentsBetween(dotEnd, name.pos.start).toList
+        val (same, own) = before.partition(c => !ctx.slice(qualEnd, c.start).contains('\n'))
+        val trailing    = Doc.concat(ctx.commentDocs(same ++ afterDot).map(Doc.text(" ") ++ _))
+        val lineComment = (same ++ afterDot).exists(_.text.startsWith("//"))
 
-        val comments    = ctx.commentsBetween(qualEnd, dotStart).toList
-        val (same, own) = comments.partition(c => !ctx.slice(qualEnd, c.start).contains('\n'))
-        val trailing    = Doc.concat(ctx.commentDocs(same).map(Doc.text(" ") ++ _))
-        val lineComment = same.exists(_.text.startsWith("//"))
-
-        DotComments(trailing, ctx.commentDocs(own), lineComment || own.nonEmpty)
+        DotComments(trailing, ctx.commentDocs(own), lineComment || own.nonEmpty || afterDot.nonEmpty)
     }
 
-  // A selection whose comments cannot be re-attached: between the dot and the member name, or between a member and its
-  // argument clause.
+  // A selection whose comments cannot be re-attached: between two of its argument clauses, a line comment between its
+  // member and its first argument clause, or around a member that is not a plain selection. A comment after the dot
+  // moves before it (see [[commentsBeforeDot]]), and a block comment between the member and its first argument clause
+  // moves after the clauses (see [[memberComments]]).
   private def hasUnattachableComments(selection: Term): Boolean =
-    def afterDot(qual: Term, name: Term.Name): Boolean =
-      val qualEnd = ctx.span(qual)._2
-
-      val dotEnd =
-        ctx
-          .dotBefore(qualEnd, name.pos.start)
-          .map(_.end)
-          .getOrElse(qualEnd)
-
-      ctx.commentsBetween(dotEnd, name.pos.start).nonEmpty
-
     selection match {
-      case app @ Term.Apply.After_4_6_0(fun, _)     => ctx.hasGapComments(app) || hasUnattachableComments(fun)
-      case app @ Term.ApplyType.After_4_6_0(fun, _) => ctx.hasGapComments(app) || hasUnattachableComments(fun)
-      case Term.Select(qual, name)                  => afterDot(qual, name)
-      case other                                    => ctx.hasGapComments(other)
+      case Term.Apply.After_4_6_0(select: Term.Select, clause) => lineCommentBefore(select.pos.end, clause.pos.start)
+      case app @ Term.Apply.After_4_6_0(fun, _)                => ctx.hasGapComments(app) || hasUnattachableComments(fun)
+      case app @ Term.ApplyType.After_4_6_0(fun, _)            => ctx.hasGapComments(app) || hasUnattachableComments(fun)
+      case _: Term.Select                                      => false
+      case other                                               => ctx.hasGapComments(other)
     }
+
+  private def lineCommentBefore(start: Int, end: Int): Boolean =
+    ctx
+      .commentsBetween(start, end)
+      .exists(_.text.startsWith("//"))
+
+  // The block comments between a member and its first argument clause (`compute /* heavy */ (a, b)`), which cannot
+  // stay there: they follow the argument clauses, on the line of the last one.
+  private def memberComments(memberEnd: Int, clauses: List[Term.ArgClause]): Doc =
+    clauses
+      .headOption
+      .fold(Doc.Empty) { first =>
+        val comments = ctx.commentsBetween(memberEnd, first.pos.start).toList
+        Doc.concat(ctx.commentDocs(comments).map(Doc.text(" ") ++ _))
+      }
 
   // The source text between a selection's qualifier and its member name (the dot region). A newline here means the
   // author broke the chain before that dot.
@@ -337,7 +342,7 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
       case Some(Selection(qual, name, memberEnd, clauses)) =>
         val member     = memberDoc(qual, name, memberEnd)
         val clausesDoc = applications.argumentClauses(clauses, indent, ctx.endColumn(before ++ member, indent))
-        member ++ clausesDoc
+        member ++ clausesDoc ++ memberComments(memberEnd, clauses)
       case None =>
         terms.render(selection, indent, forceExplode = false)
     }

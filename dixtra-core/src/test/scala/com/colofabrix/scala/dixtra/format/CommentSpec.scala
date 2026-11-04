@@ -6,9 +6,44 @@ import org.scalatest.wordspec.AnyWordSpec
 
 /**
  * Comments are never lost: they stay attached to the element they belong to while the construct still follows the
- * layout rules, and a construct whose comments cannot be re-attached is kept as written.
+ * layout rules. A comment where the layout has no place for it moves to the nearest place that has one, never across a
+ * statement; a construct whose comments still cannot be re-attached is kept as written.
  */
 class CommentSpec extends AnyWordSpec with Matchers with FormatMatchers {
+
+  "a comment where the layout has no place for it" should {
+
+    "move from after a dot to before it" in {
+      val input    = "val r = xs.filter(p). /* keep evens */ map(f).sum\n"
+      val expected = "val r =\n  xs\n    .filter(p) /* keep evens */\n    .map(f)\n    .sum\n"
+      input should formatStablyTo(expected)
+    }
+
+    "move from between a function and its arguments to after the arguments" in {
+      val input    = "val s = compute /* heavy */ (a, b)\n"
+      val expected = "val s = compute(a, b) /* heavy */\n"
+      input should formatStablyTo(expected)
+    }
+
+    "move from between a selection and its arguments to after the arguments" in {
+      val input    = "val t = xs.compute /* heavy */ (a, b).sum.max\n"
+      val expected = "val t =\n  xs\n    .compute(a, b) /* heavy */\n    .sum\n    .max\n"
+      input should formatStablyTo(expected)
+    }
+
+    "move from before the return type to after the last parameter" in {
+      val input    = "def f(a: Int) /* the id */ : String = a.toString\n"
+      val expected = "def f(a: Int /* the id */): String = a.toString\n"
+      input should formatStablyTo(expected)
+    }
+
+    "trail the last parameter after its comma when the signature breaks" in {
+      val input    = "def someLongFunctionName(parameterOne: Int) /* the id */ : String = parameterOne.toString\n"
+      val expected = "def someLongFunctionName(\n  parameterOne: Int, /* the id */\n): String = parameterOne.toString\n"
+      input should formatStablyTo(expected, 60)
+    }
+
+  }
 
   "an overflowing argument list with a block comment" should {
 
