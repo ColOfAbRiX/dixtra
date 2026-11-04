@@ -111,10 +111,12 @@ private[term] final class ApplicationRenderer(
   // kept as written (an empty group holding a comment), or `call-site.groups-break` lets each group decide or only the
   // last group break.
   private def grouped(clauses: List[Term.ArgClause], indent: Int, column: Int): Option[Doc] =
+    val commas = ctx.config.callSite.trailingCommas
+
     val groups =
       clauses.map { clause =>
         val args = clause.values
-        (clause, args, CommentedList.of(ctx, clause.pos.start, args, clause.pos.end))
+        (clause, args, CommentedList.of(ctx, clause.pos.start, args, clause.pos.end, commas))
       }
 
     val inline =
@@ -212,7 +214,7 @@ private[term] final class ApplicationRenderer(
 
   // The elements `args` of `tree`, between its parentheses, after `keyword`: an argument clause or a tuple.
   private def parenthesised(tree: Tree, keyword: String, args: List[Term], indent: Int, column: Int): Doc =
-    val comments = CommentedList.of(ctx, tree.pos.start, args, tree.pos.end)
+    val comments = CommentedList.of(ctx, tree.pos.start, args, tree.pos.end, ctx.config.callSite.trailingCommas)
     val inline   = Doc.text(s"($keyword") ++ comments.inline(args.map(a => ctx.sourceDoc(a))) ++ Doc.text(")")
 
     val authorSignal =

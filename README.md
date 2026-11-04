@@ -1,26 +1,36 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/com.colofabrix.scala/dixtra-core_3.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/com.colofabrix.scala/dixtra-core_3)
+[![Tests Status](https://github.com/ColOfAbRiX/dixtra/actions/workflows/tests.yml/badge.svg)](https://github.com/ColOfAbRiX/dixtra/actions/workflows/tests.yml)
+
 # Dixtra
 
-Dixtra is an opinionated formatter for Scala 3.
+Dixtra is an opinionated formatter for Scala 3. The primary goal is visual consistency.
 
 Unlike other Scala formatters, that allow you to tune typographic formatting like parentheses,
 indentation, commas, etc., Dixtra treats the code as having visual features that can be formatted as
-a unit.
+a unit. On top of this, Dixtra doesn't give the users full control to limit potential for unwanted
+results.
 
 For example this function definition:
 
 ```scala
-// Fits on one line, and the author wrote it on one line: it stays on one line
-def total(xs: List[Int]) = xs.filter(_ > 0).map(_ * 2).sum
+def total[A](xs: List[Int], limit: Int, multiplier: Double)(using ord: Ordering[Int]): Double = xs.filter(_ > limit).map(_ * multiplier).sum
 ```
 
 has a definition with a single parameter list and a body containing a selector chain and each of
 these parts are formatted indipendently and as a unit:
 
 ```scala
-def total(xs: List[Int]) =
+def total(
+  xs: List[Int],
+  limit: Int,
+  multiplier: Double
+)(using
+  ord: Ordering[Int]
+): Double =
   xs
-    .filter(_ > 0)
-    .map(_ * 2)
+    .filter(_ > limit)
+    .map(_ * multiplier)
     .sum
 ```
 
@@ -28,22 +38,6 @@ This page describes how to install and run dixtra, and how it behaves. The forma
 themselves are documented, with examples, in
 [`reference.conf`](dixtra-cli/src/main/resources/reference.conf), which also holds the default of
 every setting.
-
-## Contents
-
-- [Principles](#principles)
-- [What gets formatted](#what-gets-formatted)
-- [The sbt plugin](#the-sbt-plugin)
-- [The command line](#the-command-line)
-- [The VS Code extension](#the-vs-code-extension)
-- [Configuration](#configuration)
-- [Fixed rules and limitations](#fixed-rules-and-limitations)
-- [Leaving code as written](#leaving-code-as-written)
-- [Using Dixtra as a library](#using-dixtra-as-a-library)
-- [Building from source](#building-from-source)
-- [Contributing](#contributing)
-- [Changelog](#changelog)
-- [License](#license)
 
 ## Principles - TODO, rewrite section
 
@@ -94,7 +88,7 @@ whatever sbt runs on.
 ### Tasks
 
 | Task                       | What it does                                                                            |
-| -------------------------- | --------------------------------------------------------------------------------------- |
+|----------------------------|-----------------------------------------------------------------------------------------|
 | `dixtraFormat`             | Formats the sources of a configuration (`Compile`; `Test / dixtraFormat` for the tests) |
 | `dixtraCheck`              | Fails when a source of a configuration is not formatted                                 |
 | `dixtraFormatAll`          | Formats the sources of `Compile` and `Test`, and the build files                        |
@@ -112,7 +106,7 @@ subdirectories. `dixtraFormatOnly` formats the files it is given even when `dixt
 ### Settings
 
 | Setting              | Default              | What it does                                                |
-| -------------------- | -------------------- | ----------------------------------------------------------- |
+|----------------------|----------------------|-------------------------------------------------------------|
 | `dixtraVersion`      | the plugin's version | The version of Dixtra to format with                        |
 | `dixtraConfig`       | `None`               | A configuration file, instead of the nearest `.dixtra.conf` |
 | `dixtraChangedSince` | `None`               | A git ref: format or check only the files changed since it  |
@@ -142,7 +136,7 @@ Dixtra [--config-string <hocon> | --config-path <file>] [--max-column <n>] [--ch
 ```
 
 | Option                       | What it does                                                            |
-| ---------------------------- | ----------------------------------------------------------------------- |
+|------------------------------|-------------------------------------------------------------------------|
 | `<path>...`                  | Files and directories to format. At least one is required               |
 | `--check`, `-c`              | Report the files that are not formatted, without writing them           |
 | `--max-column <n>`, `-w <n>` | The longest a line can be, over every `max-column` of the configuration |
@@ -230,26 +224,26 @@ paths.excluded = ["**/generated/**"]
 The settings are grouped in sections. [`reference.conf`](dixtra-cli/src/main/resources/reference.conf) describes each
 setting and value with examples, and holds the defaults:
 
-| Section                     | What it decides                                                                        |
-| --------------------------- | -------------------------------------------------------------------------------------- |
-| `max-column`                | The width that makes a construct break (default 120)                                   |
-| `trailing-commas`           | A comma after the last element of a list laid out one element per line                 |
-| `trailing-comment-overflow` | A line too long only because of its trailing comment: kept, or the comment moved above |
-| `braces`                    | Braces, `end` markers or indentation for each construct, and where braces go           |
-| `selector-chain`            | When a chain of calls `a.b(c).d` breaks, one `.member` per line                        |
-| `body`                      | Whether a body stays after its `=` / `=>` / `then` / `do`, or goes below it            |
-| `definition-site`           | How the parameter clauses of a `def` or a class break                                  |
-| `call-site`                 | How the argument clauses of a call break                                               |
-| `alignment`                 | What lines up in columns: `=`, operators, arrows, `extends`, comments, scaladoc tags   |
-| `blank-lines`               | Blank lines at the edges of bodies, between alignment groups, and before scaladoc      |
-| `housekeeping`              | Trailing whitespace, the line break at the end of the file, and line endings           |
-| `paths`                     | The files of a directory to format (see [What gets formatted](#what-gets-formatted))   |
-| `path-overrides`            | Other settings for some of the files (see below)                                       |
+| Section           | What it decides                                                                           |
+|-------------------|-------------------------------------------------------------------------------------------|
+| `max-column`      | The width that makes a construct break (default 120)                                      |
+| `overflow`        | What happens to what goes past `max-column`: a trailing comment kept, or moved above      |
+| `braces`          | Braces, `end` markers or indentation for each construct, and where braces go              |
+| `selector-chain`  | When a chain of calls `a.b(c).d` breaks, one `.member` per line                           |
+| `body`            | Whether a body stays after its `=` / `=>` / `then` / `do`, or goes below it               |
+| `definition-site` | Parameters of a `def` or a class, and import selectors: how groups break, trailing commas |
+| `call-site`       | Arguments of a call, and tuple elements: how groups break, trailing commas                |
+| `alignment`       | What lines up in columns: `=`, operators, arrows, `extends`, comments, scaladoc tags      |
+| `blank-lines`     | Blank lines at the edges of bodies, between alignment groups, and before scaladoc         |
+| `housekeeping`    | Trailing whitespace, the line break at the end of the file, and line endings              |
+| `paths`           | The files of a directory to format (see [What gets formatted](#what-gets-formatted))      |
+| `path-overrides`  | Other settings for some of the files (see below)                                          |
 
-With `trailing-commas = always`, the default, the last element of a list laid out one element per line is followed by
-a comma: arguments (`List(...)` included), parameters, type parameters (higher-kinded ones included), the parameters
-of a class and the elements of a tuple. With `never` it isn't. A list on one line never has one, and neither does a
-group glued as `b)(` by `groups-separator = previous-group`.
+With `trailing-commas = always`, the default of both sites, the last element of a list laid out one element per line
+is followed by a comma. `definition-site.trailing-commas` covers parameters, type parameters (higher-kinded ones
+included), the parameters of a class and the selectors of an import; `call-site.trailing-commas` covers arguments
+(`List(...)` included) and the elements of a tuple. With `never` there is none. A list on one line never has one, and
+neither does a group glued as `b)(` by `groups-separator = previous-group`. The alias `trailing-commas` sets both.
 
 The `housekeeping` section applies to the whole file, after the formatting. By default, the spaces and tabs at the end
 of each line are removed (`trim-trailing-whitespace`), but not those inside a string literal; the file ends with
@@ -267,7 +261,7 @@ is an error:
   which changes the other constructs too:
 
   | Alias                                           | Sets                               |
-  | ----------------------------------------------- | ---------------------------------- |
+  |-------------------------------------------------|------------------------------------|
   | `class.align-extends` (and the other templates) | `alignment.extends-clauses`        |
   | `match.align-arrows`, `case-body.align-arrows`  | `alignment.arrows.cases`           |
   | `for.align-arrows`, `for-yield.align-arrows`    | `alignment.arrows.for-enumerators` |
@@ -278,12 +272,14 @@ is an error:
 - **Comments and scaladoc:**
 
   | Alias                        | Sets                          |
-  | ---------------------------- | ----------------------------- |
+  |------------------------------|-------------------------------|
   | `comments.align-trailing`    | `alignment.trailing-comments` |
   | `comments.align-across`      | `alignment.across-comments`   |
-  | `comments.trailing-overflow` | `trailing-comment-overflow`   |
+  | `comments.trailing-overflow` | `overflow.trailing-comment`   |
   | `scaladoc.blank-line-before` | `blank-lines.before-scaladoc` |
   | `scaladoc.align-tags`        | `alignment.scaladoc.tags`     |
+
+- **Both sites:** `trailing-commas` sets `definition-site.trailing-commas` and `call-site.trailing-commas`.
 
 The constructs are those of `braces`, `body` and `blank-lines.body-edges` in `reference.conf`, as `class`, `def`, `if`,
 `match`, `for-yield` or `lambda-body`. The templates are `abstract-class`, `case-class`, `class`, `enum`, `object` and
@@ -415,7 +411,7 @@ own class loader.
 The build needs sbt 2.0 and a JDK that sbt 2 supports (17 or later). It has three projects:
 
 | Project        | Artifact      | Contents                                                    |
-| -------------- | ------------- | ----------------------------------------------------------- |
+|----------------|---------------|-------------------------------------------------------------|
 | `dixtra-core/` | `dixtra-core` | the formatter (Scala 3.9)                                   |
 | `dixtra-cli/`  | `dixtra-cli`  | the command line, the configuration files, `reference.conf` |
 | `dixtra-sbt/`  | `sbt-dixtra`  | the sbt plugin                                              |

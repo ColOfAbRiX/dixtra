@@ -77,10 +77,11 @@ final class ImportRenderer(ctx: RenderContext) {
     val (ref, selectors, inBraces) = parts
     if inBraces then ref + ".{ " + selectors.mkString(", ") + " }" else ref + "." + selectors.mkString(", ")
 
-  // `header` followed by the selectors packed onto as few lines as fit one level in, and `}` on its own line.
+  // `header` followed by the selectors packed onto as few lines as fit one level in, and `}` on its own line. The
+  // selectors are names declared into scope, so their last comma follows `definition-site.trailing-commas`.
   private def packed(header: String, selectors: List[String], indent: Int): Doc =
     val inner    = indent + 2
-    val trailing = if ctx.config.trailingCommas == TrailingCommas.Always then "," else ""
+    val trailing = if ctx.config.definitionSite.trailingCommas == TrailingCommas.Always then "," else ""
     val last     = selectors.length - 1
 
     val items =

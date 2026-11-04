@@ -109,6 +109,12 @@ object ConfigInstances {
   given ConfigReader[TrailingOverflow] =
     keyed(TrailingOverflow.values.toList)(_.key)
 
+  given ProductHint[OverflowConfig] =
+    ProductHint[OverflowConfig](allowUnknownKeys = false)
+
+  given ConfigReader[OverflowConfig] =
+    deriveReader[OverflowConfig]
+
   given ConfigReader[TrailingCommas] =
     keyed(TrailingCommas.values.toList)(_.key)
 
@@ -317,6 +323,9 @@ object ConfigInstances {
 
   given ConfigWriter[HousekeepingConfig] =
     deriveWriter[HousekeepingConfig]
+
+  given ConfigWriter[OverflowConfig] =
+    deriveWriter[OverflowConfig]
 
   given ConfigWriter[BlankLinesConfig] =
     deriveWriter[BlankLinesConfig]

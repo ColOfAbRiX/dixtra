@@ -98,6 +98,15 @@ trait FormatMatchers {
     base.copy(callSite = f(base.callSite))
 
   /**
+   * `base` with `policy` for the trailing commas of both sites, as the alias `trailing-commas`.
+   */
+  def withTrailingCommas(policy: TrailingCommas, base: Config = Config.default): Config =
+    base.copy(
+      definitionSite = base.definitionSite.copy(trailingCommas = policy),
+      callSite = base.callSite.copy(trailingCommas = policy),
+    )
+
+  /**
    * The default configuration with `always-join` for every body after a `=`: a body the author wrote below the `=`
    * moves up to it when it fits.
    */

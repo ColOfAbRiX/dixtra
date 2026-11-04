@@ -27,7 +27,8 @@ import scala.meta.tokens.Token
  * @param trailings Per element, the comments following it on its line.
  * @param closing The own-line comments after the last element.
  * @param forcesBreak True when the list cannot be laid out on a single line.
- * @param trailingComma True when the last element of the exploded list is followed by a comma (`trailing-commas`).
+ * @param trailingComma True when the last element of the exploded list is followed by a comma
+ *                      (`definition-site.trailing-commas` or `call-site.trailing-commas`).
  */
 private[render] final case class CommentedList(
   prefixes: List[Doc],
@@ -98,9 +99,9 @@ private[render] object CommentedList {
 
   /**
    * Classify the comments of a list delimited by `[open, close)` (the offsets of the whole list, delimiters included)
-   * whose elements are `elements`.
+   * whose elements are `elements`; `commas` decides the comma after its last element when exploded.
    */
-  def of(ctx: RenderContext, open: Int, elements: List[Tree], close: Int): CommentedList =
+  def of(ctx: RenderContext, open: Int, elements: List[Tree], close: Int, commas: TrailingCommas): CommentedList =
     val bounds = elements.map(ctx.span)
     val starts = bounds.map(_._1)
     val ends   = bounds.map(_._2)
@@ -155,7 +156,7 @@ private[render] object CommentedList {
       trailings,
       closing,
       forcesBreak = lineComment || ownLine,
-      trailingComma = ctx.config.trailingCommas == TrailingCommas.Always,
+      trailingComma = commas == TrailingCommas.Always,
     )
 
   private enum Kind {

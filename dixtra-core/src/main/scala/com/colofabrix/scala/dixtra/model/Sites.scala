@@ -18,12 +18,33 @@ enum GroupsSeparator(val key: String) {
 }
 
 /**
- * The layout of signatures (`def`, class constructors).
+ * Whether the last element of a list laid out one element per line is followed by a comma.
+ */
+enum TrailingCommas(val key: String) {
+
+  /**
+   * A comma after the last element too.
+   */
+  case Always extends TrailingCommas("always")
+
+  /**
+   * No comma after the last element.
+   */
+  case Never extends TrailingCommas("never")
+
+}
+
+/**
+ * The layout of signatures (`def`, class constructors) and of the other lists of names a definition declares: type
+ * parameters and import selectors.
  *
  * @param groupsSeparator Where `)(` goes between broken parameter groups.
+ * @param trailingCommas Whether the last parameter, type parameter or import selector laid out one per line is
+ *                       followed by a comma.
  */
 final case class DefinitionSiteConfig(
   groupsSeparator: GroupsSeparator,
+  trailingCommas: TrailingCommas,
 )
 
 /**
@@ -51,12 +72,14 @@ enum GroupsBreak(val key: String) {
 }
 
 /**
- * The layout of calls.
+ * The layout of calls, constructor calls and tuples.
  *
  * @param groupsSeparator Where `)(` goes between broken argument groups.
  * @param groupsBreak Which argument groups break.
+ * @param trailingCommas Whether the last argument or tuple element laid out one per line is followed by a comma.
  */
 final case class CallSiteConfig(
   groupsSeparator: GroupsSeparator,
   groupsBreak: GroupsBreak,
+  trailingCommas: TrailingCommas,
 )

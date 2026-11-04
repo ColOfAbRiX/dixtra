@@ -64,10 +64,11 @@ private[term] final class ArgumentAlignment(ctx: RenderContext, terms: TermRende
       }
 
   // An exploded argument: one that fits on its line only without its comma is laid out a column further, so that it
-  // breaks as it does not fit with the comma. Every argument has one, but the last without `trailing-commas = always`.
+  // breaks as it does not fit with the comma. Every argument has one, but the last without
+  // `call-site.trailing-commas = always`.
   private def withComma(followed: Boolean, indent: Int, render: Int => Doc): Doc =
     val doc         = render(indent)
-    val comma       = followed || ctx.config.trailingCommas == TrailingCommas.Always
+    val comma       = followed || ctx.config.callSite.trailingCommas == TrailingCommas.Always
     val exactlyFull = Render.flatWidth(doc).exists(w => indent + w == ctx.config.maxColumn)
 
     if comma && exactlyFull then

@@ -1,41 +1,6 @@
 package com.colofabrix.scala.dixtra.model
 
 /**
- * Whether the last element of a list laid out one element per line (arguments, parameters, type parameters, tuple
- * elements) is followed by a comma.
- */
-enum TrailingCommas(val key: String) {
-
-  /**
-   * A comma after the last element too.
-   */
-  case Always extends TrailingCommas("always")
-
-  /**
-   * No comma after the last element.
-   */
-  case Never extends TrailingCommas("never")
-
-}
-
-/**
- * What happens to a line of code that goes past the maximum width only because of the comment at its end.
- */
-enum TrailingOverflow(val key: String) {
-
-  /**
-   * The line stays as it is: a trailing comment does not count in the width.
-   */
-  case Keep extends TrailingOverflow("keep")
-
-  /**
-   * The comment moves to a line of its own above the code, at its indent.
-   */
-  case MoveAbove extends TrailingOverflow("move-above")
-
-}
-
-/**
  * The line break written at the end of each line.
  */
 enum LineEnding(val key: String) {

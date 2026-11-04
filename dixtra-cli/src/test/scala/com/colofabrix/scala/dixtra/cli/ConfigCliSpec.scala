@@ -231,23 +231,33 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
             true,
           ),
           (
-            "trailing-comment-overflow = keep",
-            _.trailingCommentOverflow,
+            "overflow.trailing-comment = keep",
+            _.overflow.trailingComment,
             TrailingOverflow.Keep,
           ),
           (
-            "trailing-comment-overflow = move-above",
-            _.trailingCommentOverflow,
+            "overflow.trailing-comment = move-above",
+            _.overflow.trailingComment,
             TrailingOverflow.MoveAbove,
           ),
           (
-            "trailing-commas = always",
-            _.trailingCommas,
+            "definition-site.trailing-commas = always",
+            _.definitionSite.trailingCommas,
             TrailingCommas.Always,
           ),
           (
-            "trailing-commas = never",
-            _.trailingCommas,
+            "definition-site.trailing-commas = never",
+            _.definitionSite.trailingCommas,
+            TrailingCommas.Never,
+          ),
+          (
+            "call-site.trailing-commas = always",
+            _.callSite.trailingCommas,
+            TrailingCommas.Always,
+          ),
+          (
+            "call-site.trailing-commas = never",
+            _.callSite.trailingCommas,
             TrailingCommas.Never,
           ),
           (

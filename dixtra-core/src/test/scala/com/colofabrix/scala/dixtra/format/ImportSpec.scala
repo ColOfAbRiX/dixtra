@@ -77,9 +77,9 @@ class ImportSpec extends AnyWordSpec with Matchers with FormatMatchers {
       input should formatStablyTo(expected, 50)
     }
 
-    "end without a comma with trailing-commas = never" in {
+    "end without a comma with definition-site.trailing-commas = never" in {
       val input  = "import com.example.render.context.{ RenderContext, SourceDocs, SourceTokens, SomethingElse }\n"
-      val config = Config.default.copy(maxColumn = 50, trailingCommas = TrailingCommas.Never)
+      val config = withDefinitionSite(_.copy(trailingCommas = TrailingCommas.Never), Config.withMaxColumn(50))
 
       val expected =
         """import com.example.render.context.{

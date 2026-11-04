@@ -1064,7 +1064,7 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
     // format: on
 
     def commas(policy: TrailingCommas): Config =
-      Config.withMaxColumn(30).copy(trailingCommas = policy)
+      withTrailingCommas(policy, Config.withMaxColumn(30))
 
     "add a comma after the last element with always" in {
       lists.foreach((always, never) => never should formatTo(always, commas(TrailingCommas.Always)))
@@ -1081,7 +1081,54 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
     }
   }
 
-  "trailing-comment-overflow" should {
+  "definition-site.trailing-commas and call-site.trailing-commas" should {
+
+    // A signature and a call in one file, each broken one element per line
+    val withBoth    = "def f(\n  first: Int,\n  second: Int,\n): Int =\n  compute(\n    firstArgument,\n    second,\n  )\n"
+    val withNone    = "def f(\n  first: Int,\n  second: Int\n): Int =\n  compute(\n    firstArgument,\n    second\n  )\n"
+    val definitions = "def f(\n  first: Int,\n  second: Int,\n): Int =\n  compute(\n    firstArgument,\n    second\n  )\n"
+    val calls       = "def f(\n  first: Int,\n  second: Int\n): Int =\n  compute(\n    firstArgument,\n    second,\n  )\n"
+
+    def sites(definition: TrailingCommas, call: TrailingCommas): Config =
+      Config
+        .withMaxColumn(30)
+        .copy(
+          definitionSite = Config.default.definitionSite.copy(trailingCommas = definition),
+          callSite = Config.default.callSite.copy(trailingCommas = call),
+        )
+
+    "put a comma after the last parameter only with definition-site = always and call-site = never" in {
+      withNone should formatStablyTo(definitions, sites(TrailingCommas.Always, TrailingCommas.Never))
+    }
+
+    "put a comma after the last argument only with definition-site = never and call-site = always" in {
+      withBoth should formatStablyTo(calls, sites(TrailingCommas.Never, TrailingCommas.Always))
+    }
+
+    "follow definition-site = always for the selectors of an import, whatever call-site" in {
+      val input    = "import com.example.render.context.{ RenderContext, SourceDocs, SourceTokens, SomethingElse }\n"
+      val expected = "import com.example.render.context.{\n  RenderContext, SourceDocs, SourceTokens,\n  SomethingElse,\n}\n"
+      val config   = sites(TrailingCommas.Always, TrailingCommas.Never).copy(maxColumn = 50)
+      input should formatStablyTo(expected, config)
+    }
+
+    "follow definition-site = never for the selectors of an import, whatever call-site" in {
+      val input    = "import com.example.render.context.{ RenderContext, SourceDocs, SourceTokens, SomethingElse }\n"
+      val expected = "import com.example.render.context.{\n  RenderContext, SourceDocs, SourceTokens,\n  SomethingElse\n}\n"
+      val config   = sites(TrailingCommas.Never, TrailingCommas.Always).copy(maxColumn = 50)
+      input should formatStablyTo(expected, config)
+    }
+
+    "follow call-site for the elements of a tuple" in {
+      val input    = "val t =\n  (\n    first,\n    second\n  )\n"
+      val expected = "val t =\n  (\n    first,\n    second,\n  )\n"
+      input should formatStablyTo(expected, sites(TrailingCommas.Never, TrailingCommas.Always))
+    }
+
+  }
+
+  "overflow.trailing-comment" should {
+
     val long = "def f =\n  g(1) // a comment that goes past the maximum width\n"
 
     "leave a line longer than the maximum width with allow" in {
@@ -1119,9 +1166,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = input
       input should formatTo(expected, trailingOverflow(TrailingOverflow.MoveAbove, 30))
     }
+
   }
 
   "alignment.extends-clauses" should {
+
     val enumInput =
       "enum Construct(val key: String) {\n  case Class extends Construct(\"class\")\n" +
       "  case AbstractClass extends Construct(\"abstract-class\")\n" +
@@ -1165,9 +1214,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = input
       input should formatTo(expected, extendsClauses(true))
     }
+
   }
 
   "alignment.assignment-groups" should {
+
     val input = "object A {\n  val a = 1\n  val bb = 2\n  def ccc = 3\n  def d = 4\n}\n"
 
     "align only the definitions of the same group" in {
@@ -1198,12 +1249,15 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = source
       source should formatTo(expected, groups(Set(Val)))
     }
+
   }
 
   "blank-lines.before-scaladoc" should {
+
     val config =
       (policy: ScaladocSpacing) =>
         withBlankLines(_.copy(beforeScaladoc = policy))
+
     val glued     = "object A {\n  def a = 1\n  /** Doc */\n  def b = 2\n}\n"
     val separated = "object A {\n  def a = 1\n\n  /** Doc */\n  def b = 2\n}\n"
     val opening   = "class Repository {\n  /** Description here */\n  def read(): Int = 1\n}\n"
@@ -1250,6 +1304,7 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = input
       input should formatTo(expected, config(ScaladocSpacing.Never))
     }
+
   }
 
   "blank-lines.between-alignment-groups" should {
@@ -1270,6 +1325,7 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
         input should formatTo(expected, config)
       }
     }
+
   }
 
   "the arrow alignments" should {
@@ -1289,7 +1345,7 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
         input should formatTo(input, config)
       }
     }
-    
+
   }
 
   "the leading and closing blank lines" should {
@@ -1322,7 +1378,7 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
     withAlignment(_.copy(trailingComments = on), Config.withMaxColumn(maxColumn))
 
   private def trailingOverflow(policy: TrailingOverflow, maxColumn: Int): Config =
-    Config.withMaxColumn(maxColumn).copy(trailingCommentOverflow = policy)
+    Config.withMaxColumn(maxColumn).copy(overflow = OverflowConfig(trailingComment = policy))
 
   private def chainHead(
     namespacePath: ChainHeadPolicy = ChainHeadPolicy.Keep,

@@ -30,6 +30,9 @@ import scala.meta.tokens.Token
  */
 private[render] final class SignatureRenderer(ctx: RenderContext) {
 
+  // The comma after the last parameter of a broken clause: signatures are definition sites
+  private val commas: TrailingCommas = ctx.config.definitionSite.trailingCommas
+
   /**
    * True when the signature holds comments the layout cannot re-attach: between the name and `end`, outside every
    * parameter clause and the return type, or inside an empty clause. The comments after the last value clause, before
@@ -113,7 +116,7 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
     val prefix: Doc              = ctx.sourceDoc(signature.prefixStart, signature.nameEnd) ++ Doc.text(signature.afterName)
     val tclause                  = signature.tparamClause
     val tparams: List[Doc]       = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
-    val tcomments: CommentedList = CommentedList.of(ctx, tclause.pos.start, tclause.values, tclause.pos.end)
+    val tcomments: CommentedList = CommentedList.of(ctx, tclause.pos.start, tclause.values, tclause.pos.end, commas)
     val clauses: List[Group]     = withMovedComments(signature, written(signature))
     val returnPart: Doc =
       signature
@@ -149,7 +152,7 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
     else if inner.values.isEmpty || fitsOneLine then
       oneLine(tparam)
     else
-      val comma = ctx.config.trailingCommas == TrailingCommas.Always
+      val comma = commas == TrailingCommas.Always
       val last  = inner.values.length - 1
 
       val params =
@@ -239,7 +242,7 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
       opening,
       Syntax.clauseKeyword(clause.mod),
       clause.values.map(ctx.sourceDoc),
-      CommentedList.of(ctx, clause.pos.start, clause.values, clause.pos.end),
+      CommentedList.of(ctx, clause.pos.start, clause.values, clause.pos.end, commas),
     )
 
   // Tier 1 + multi-clause: type params stay inline; value clauses explode one param per line, glued by

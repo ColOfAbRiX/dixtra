@@ -111,7 +111,8 @@ private[definition] final class ArrowGivenRenderer(ctx: RenderContext, terms: Te
     typeClause.toList ++ valueClauses
 
   private def valueClause(clause: Term.ParamClause): ArrowClause =
-    val comments = CommentedList.of(ctx, clause.pos.start, clause.values, clause.pos.end)
+    val commas   = ctx.config.definitionSite.trailingCommas
+    val comments = CommentedList.of(ctx, clause.pos.start, clause.values, clause.pos.end, commas)
     val group    = Group("", Syntax.clauseKeyword(clause.mod), clause.values.map(ctx.sourceDoc), comments)
 
     val broken =

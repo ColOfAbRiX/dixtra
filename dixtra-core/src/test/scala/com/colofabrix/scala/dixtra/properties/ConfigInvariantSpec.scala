@@ -143,12 +143,16 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
         Vector(true, false).map(b => (c: Config) => alignment(c)(_.copy(trailingComments = b))),
       ),
       Setting(
-        "trailing-commas",
-        TrailingCommas.values.toVector.map(p => (c: Config) => c.copy(trailingCommas = p)),
+        "definition-site.trailing-commas",
+        TrailingCommas.values.toVector.map(p => (c: Config) => withDefinitionSite(_.copy(trailingCommas = p), c)),
       ),
       Setting(
-        "trailing-comment-overflow",
-        TrailingOverflow.values.toVector.map(p => (c: Config) => c.copy(trailingCommentOverflow = p)),
+        "call-site.trailing-commas",
+        TrailingCommas.values.toVector.map(p => (c: Config) => withCallSite(_.copy(trailingCommas = p), c)),
+      ),
+      Setting(
+        "overflow.trailing-comment",
+        TrailingOverflow.values.toVector.map(p => (c: Config) => c.copy(overflow = OverflowConfig(p))),
       ),
       Setting(
         "trim-trailing-whitespace",
@@ -168,31 +172,85 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
         "receiver-min-length",
         Vector(1, 3).map(n => (c: Config) => withSelectorChain(_.copy(receiverMinLength = n), c)),
       ),
-      body("def", (b, p) => b.copy(defBody = p)),
-      body("val", (b, p) => b.copy(valBody = p)),
-      body("lazy-val", (b, p) => b.copy(lazyVal = p)),
-      body("var", (b, p) => b.copy(varBody = p)),
-      body("given-alias", (b, p) => b.copy(givenAlias = p)),
-      body("type-def", (b, p) => b.copy(typeDef = p)),
-      body("assignment", (b, p) => b.copy(assignment = p)),
-      body("named-argument", (b, p) => b.copy(namedArgument = p)),
-      body("lambda-argument", (b, p) => b.copy(lambdaArgument = p)),
-      body("lambda-body", (b, p) => b.copy(lambdaBody = p)),
-      body("block-argument", (b, p) => b.copy(blockArgument = p)),
-      body("test-block", (b, p) => b.copy(testBlock = p)),
-      multiBody("if", (b, p) => b.copy(ifBody = p)),
-      multiBody("case-body", (b, p) => b.copy(caseBody = p)),
-      multiBody("try", (b, p) => b.copy(tryBody = p)),
-      body("for", (b, p) => b.copy(forBody = p)),
-      yieldBody("for-yield", (b, p) => b.copy(forYield = p)),
-      body("while", (b, p) => b.copy(whileBody = p)),
+      body(
+        "def",
+        (b, p) => b.copy(defBody = p),
+      ),
+      body(
+        "val",
+        (b, p) => b.copy(valBody = p),
+      ),
+      body(
+        "lazy-val",
+        (b, p) => b.copy(lazyVal = p),
+      ),
+      body(
+        "var",
+        (b, p) => b.copy(varBody = p),
+      ),
+      body(
+        "given-alias",
+        (b, p) => b.copy(givenAlias = p),
+      ),
+      body(
+        "type-def",
+        (b, p) => b.copy(typeDef = p),
+      ),
+      body(
+        "assignment",
+        (b, p) => b.copy(assignment = p),
+      ),
+      body(
+        "named-argument",
+        (b, p) => b.copy(namedArgument = p),
+      ),
+      body(
+        "lambda-argument",
+        (b, p) => b.copy(lambdaArgument = p),
+      ),
+      body(
+        "lambda-body",
+        (b, p) => b.copy(lambdaBody = p),
+      ),
+      body(
+        "block-argument",
+        (b, p) => b.copy(blockArgument = p),
+      ),
+      body(
+        "test-block",
+        (b, p) => b.copy(testBlock = p),
+      ),
+      multiBody(
+        "if",
+        (b, p) => b.copy(ifBody = p),
+      ),
+      multiBody(
+        "case-body",
+        (b, p) => b.copy(caseBody = p),
+      ),
+      multiBody(
+        "try",
+        (b, p) => b.copy(tryBody = p),
+      ),
+      body(
+        "for",
+        (b, p) => b.copy(forBody = p),
+      ),
+      yieldBody(
+        "for-yield",
+        (b, p) => b.copy(forYield = p),
+      ),
+      body(
+        "while",
+        (b, p) => b.copy(whileBody = p),
+      ),
       Setting(
         "semicolon-statements",
         SemicolonPolicy.values.toVector.map(p => (c: Config) => c.copy(body = c.body.copy(semicolonStatements = p))),
       ),
       Setting(
         "definition-site.groups-separator",
-        GroupsSeparator.values.toVector.map(g => (c: Config) => c.copy(definitionSite = DefinitionSiteConfig(g))),
+        GroupsSeparator.values.toVector.map(g => (c: Config) => withDefinitionSite(_.copy(groupsSeparator = g), c)),
       ),
       Setting(
         "call-site.groups-separator",

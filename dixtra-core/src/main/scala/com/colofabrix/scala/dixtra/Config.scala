@@ -6,7 +6,7 @@ import com.colofabrix.scala.dixtra.model.*
  * Formatting configuration for the dixtra formatter.
  *
  * @param maxColumn The maximum allowed line width before a construct is forced to break.
- * @param trailingCommas Whether the last element of a list laid out one element per line is followed by a comma.
+ * @param overflow What happens to what goes past `maxColumn`.
  * @param braces Where the braces go, and the brace style of each construct.
  * @param selectorChain When select chains break.
  * @param body The layout of the body after `=` and `=>`.
@@ -14,13 +14,12 @@ import com.colofabrix.scala.dixtra.model.*
  * @param callSite The layout of the arguments of calls.
  * @param alignment What aligns with what.
  * @param blankLines The blank lines at the edges of bodies, between alignment groups and before scaladoc.
- * @param trailingCommentOverflow What happens to a line that goes past `maxColumn` only because of its trailing comment
  * @param housekeeping The housekeeping of a whole file.
  * @param paths The files and directories to format.
  */
 final case class Config(
   maxColumn: Int,
-  trailingCommas: TrailingCommas,
+  overflow: OverflowConfig,
   braces: BraceConfig,
   selectorChain: SelectorChainConfig,
   body: BodyConfig,
@@ -28,7 +27,6 @@ final case class Config(
   callSite: CallSiteConfig,
   alignment: AlignmentConfig,
   blankLines: BlankLinesConfig,
-  trailingCommentOverflow: TrailingOverflow,
   housekeeping: HousekeepingConfig,
   paths: PathsConfig,
 )
@@ -41,7 +39,7 @@ object Config {
   val default: Config =
     Config(
       maxColumn = 120,
-      trailingCommas = TrailingCommas.Always,
+      overflow = OverflowConfig(trailingComment = TrailingOverflow.Keep),
       braces = BraceConfig.default,
       selectorChain =
         SelectorChainConfig(
@@ -75,8 +73,17 @@ object Config {
           whileBody = SingleBodyPolicy.Keep,
           semicolonStatements = SemicolonPolicy.AlwaysBreak,
         ),
-      definitionSite = DefinitionSiteConfig(groupsSeparator = GroupsSeparator.NextGroup),
-      callSite = CallSiteConfig(groupsSeparator = GroupsSeparator.PreviousGroup, groupsBreak = GroupsBreak.LastFirst),
+      definitionSite =
+        DefinitionSiteConfig(
+          groupsSeparator = GroupsSeparator.NextGroup,
+          trailingCommas = TrailingCommas.Always,
+        ),
+      callSite =
+        CallSiteConfig(
+          groupsSeparator = GroupsSeparator.PreviousGroup,
+          groupsBreak = GroupsBreak.LastFirst,
+          trailingCommas = TrailingCommas.Always,
+        ),
       alignment =
         AlignmentConfig(
           assignmentGroups = List(
@@ -91,7 +98,6 @@ object Config {
           acrossComments = false,
         ),
       blankLines = BlankLinesConfig.default,
-      trailingCommentOverflow = TrailingOverflow.Keep,
       housekeeping = HousekeepingConfig(
         trimTrailingWhitespace = true,
         enforceEof = true,

@@ -12,32 +12,8 @@ import scala.jdk.CollectionConverters.*
  */
 class ConfigAliasesSpec extends AnyWordSpec with Matchers {
 
-  private val references = ConfigFactory.parseResources(getClass.getClassLoader, "reference.conf").resolve()
-  private val settings: Set[String] =
-    references
-      .entrySet()
-      .asScala
-      .map(_.getKey)
-      .toSet
-
-  // Values to probe what a setting accepts: every key of the enumerations of the configuration, booleans and numbers.
-  private val bodyPolicies =
-    BlankLinePolicy.values.map(_.key) ++ SingleBodyPolicy.values.map(_.key) ++ YieldBodyPolicy.values.map(_.key) ++
-    MultiBodyPolicy.values.map(_.key)
-  private val bracePolicies =
-    BracePolicy.values.map(_.key) ++ BracesStyle.values.map(_.key)
-  private val chainPolicies =
-    ChainHeadPolicy.values.map(_.key) ++ GroupsBreak.values.map(_.key) ++ GroupsSeparator.values.map(_.key) ++
-    InlineChainPolicy.values.map(_.key) ++ NestedChainPolicy.values.map(_.key)
-  private val settingValues =
-    ScaladocSpacing.values.map(_.key) ++ TrailingOverflow.values.map(_.key) ++ TrailingCommas.values.map(_.key)
-
-  private val probes: List[String] =
-    val enumerated = (bodyPolicies ++ bracePolicies ++ chainPolicies ++ settingValues).toList.distinct
-
-    enumerated ++ List("true", "false", "1", "3")
-
   "the table of aliases" should {
+
     "point every alias to settings of reference.conf" in {
       val expected = true
 
@@ -95,9 +71,11 @@ class ConfigAliasesSpec extends AnyWordSpec with Matchers {
 
       actual shouldBe expected
     }
+
   }
 
   "a configuration with an alias" should {
+
     "set the target of the alias, leaving the other settings as they are" in {
       val expected = Validated.valid((true, ScaladocSpacing.Always))
 
@@ -138,28 +116,41 @@ class ConfigAliasesSpec extends AnyWordSpec with Matchers {
 
     "reject a value its targets do not accept" in {
       val expected = true
-
       val actual = ConfigCli.fromString("scaladoc.align-tags = always").isInvalid
-
       actual shouldBe expected
     }
 
     "set its target when it lives in a section of settings, leaving that section's settings as they are" in {
-      val expected = Validated.valid((true, TrailingOverflow.Keep))
+      val expected = Validated.valid((true, TrailingOverflow.MoveAbove))
 
       val actual =
         ConfigCli
-          .fromString("comments { align-trailing = true, trailing-overflow = keep }")
-          .map(c => (c.alignment.trailingComments, c.trailingCommentOverflow))
+          .fromString("comments { align-trailing = true, trailing-overflow = move-above }")
+          .map(c => (c.alignment.trailingComments, c.overflow.trailingComment))
 
+      actual shouldBe expected
+    }
+
+    "set every one of its targets: trailing-commas sets both sites" in {
+      val expected = Validated.valid((TrailingCommas.Never, TrailingCommas.Never))
+
+      val actual =
+        ConfigCli
+          .fromString("trailing-commas = never")
+          .map(c => (c.definitionSite.trailingCommas, c.callSite.trailingCommas))
+
+      actual shouldBe expected
+    }
+
+    "reject trailing-commas beside a site set to another value" in {
+      val expected = true
+      val actual = ConfigCli.fromString("trailing-commas = never\ncall-site.trailing-commas = always").isInvalid
       actual shouldBe expected
     }
 
     "reject two construct aliases that give a shared setting different values" in {
       val expected = true
-
       val actual = ConfigCli.fromString("class.align-extends = true\ntrait.align-extends = false").isInvalid
-
       actual shouldBe expected
     }
 
@@ -167,10 +158,52 @@ class ConfigAliasesSpec extends AnyWordSpec with Matchers {
       val expected = Validated.valid(true)
 
       val actual =
-        ConfigCli.fromString("scaladoc.align-tags = ${alignment.extends-clauses}").map(_.alignment.scaladoc.tags)
+        ConfigCli
+          .fromString("scaladoc.align-tags = ${alignment.extends-clauses}")
+          .map(_.alignment.scaladoc.tags)
 
       actual shouldBe expected
     }
+
   }
+
+  private lazy val references =
+    ConfigFactory
+      .parseResources(getClass.getClassLoader, "reference.conf")
+      .resolve()
+
+  private lazy val settings: Set[String] =
+    references
+      .entrySet()
+      .asScala
+      .map(_.getKey)
+      .toSet
+
+  // Values to probe what a setting accepts: every key of the enumerations of the configuration, booleans and numbers.
+  private lazy val bodyPolicies =
+    BlankLinePolicy.values.map(_.key) ++
+    SingleBodyPolicy.values.map(_.key) ++
+    YieldBodyPolicy.values.map(_.key) ++
+    MultiBodyPolicy.values.map(_.key)
+
+  private lazy val bracePolicies =
+    BracePolicy.values.map(_.key) ++
+    BracesStyle.values.map(_.key)
+
+  private lazy val chainPolicies =
+    ChainHeadPolicy.values.map(_.key) ++
+    GroupsBreak.values.map(_.key) ++
+    GroupsSeparator.values.map(_.key) ++
+    InlineChainPolicy.values.map(_.key) ++
+    NestedChainPolicy.values.map(_.key)
+
+  private lazy val settingValues =
+    ScaladocSpacing.values.map(_.key) ++
+    TrailingOverflow.values.map(_.key) ++
+    TrailingCommas.values.map(_.key)
+
+  private lazy val probes: List[String] =
+    val enumerated = (bodyPolicies ++ bracePolicies ++ chainPolicies ++ settingValues).toList.distinct
+    enumerated ++ List("true", "false", "1", "3")
 
 }

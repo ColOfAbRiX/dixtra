@@ -337,7 +337,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
   "definition-site.groups-separator = previous-group" should {
 
     val lastParameter =
-      Config.withMaxColumn(80).copy(definitionSite = DefinitionSiteConfig(GroupsSeparator.PreviousGroup))
+      withDefinitionSite(_.copy(groupsSeparator = GroupsSeparator.PreviousGroup), Config.withMaxColumn(80))
 
     "close a broken clause on its last parameter and open the next one there" in {
       val input =
@@ -445,10 +445,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
       val input = "def f[A](first: String, second: Boolean)(using ord: Ordering[A]): Int = 1\n"
 
       val config =
-        Config.default.copy(
-          maxColumn = 40,
-          definitionSite = DefinitionSiteConfig(groupsSeparator = GroupsSeparator.PreviousGroup),
-        )
+        withDefinitionSite(_.copy(groupsSeparator = GroupsSeparator.PreviousGroup), Config.withMaxColumn(40))
 
       val expected =
         """def f[A](

@@ -25,7 +25,7 @@ object Normalize {
       BraceStyleNormalizer.normalize(rendered, config.braces.style, config.maxColumn, dialect)
 
     val moved =
-      TrailingCommentNormalizer.moveAbove(braced, config.maxColumn, config.trailingCommentOverflow)
+      TrailingCommentNormalizer.moveAbove(braced, config.maxColumn, config.overflow.trailingComment)
 
     val arrowSpaced =
       ArrowSpacingNormalizer.normalize(

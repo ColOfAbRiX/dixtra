@@ -1,351 +1,1089 @@
 {
-"reflection":[
-{"type":"boolean[]"},
-{"type":"byte[]"},
-{"type":"cats.Later","fields":[{"name":"value$lzy1"}]},
-{"type":"cats.effect.IO$","fields":[{"name":"secureRandom$lzy1"}]},
-{"type":"cats.effect.std.Console$","fields":[{"name":"cats$effect$std$ConsoleCompanionPlatform$$stdinReader$lzy1"}]},
-{"type":"cats.effect.unsafe.Head"},
-{"type":"cats.effect.unsafe.Tail"},
-{"type":"cats.effect.unsafe.metrics.ComputePoolSampler"},
-{"type":"cats.effect.unsafe.metrics.ComputePoolSamplerMBean"},
-{"type":"cats.effect.unsafe.metrics.CpuStarvation"},
-{"type":"cats.effect.unsafe.metrics.CpuStarvationMBean"},
-{"type":"cats.effect.unsafe.metrics.LiveFiberSnapshotTrigger"},
-{"type":"cats.effect.unsafe.metrics.LiveFiberSnapshotTriggerMBean"},
-{"type":"cats.effect.unsafe.metrics.LocalQueueSampler"},
-{"type":"cats.effect.unsafe.metrics.LocalQueueSamplerMBean"},
-{"type":"cats.effect.unsafe.metrics.PollerSampler"},
-{"type":"cats.effect.unsafe.metrics.PollerSamplerMBean"},
-{"type":"cats.effect.unsafe.metrics.TimerHeapSampler"},
-{"type":"cats.effect.unsafe.metrics.TimerHeapSamplerMBean"},
-{"type":"cats.effect.unsafe.metrics.WorkerThreadSampler"},
-{"type":"cats.effect.unsafe.metrics.WorkerThreadSamplerMBean"},
-{"type":"char[]"},
-{"type":"com.colofabrix.scala.dixtra.Main$","fields":[{"name":"cats$effect$IOApp$$queue$lzy1"}]},
-{"type":"com.colofabrix.scala.dixtra.cli.ConfigAliases$","fields":[{"name":"all$lzy1"}]},
-{
-"type":"com.colofabrix.scala.dixtra.cli.ConfigCli$",
-"fields":[
-{"name":"bracePolicies$lzy1"},
-{"name":"configPath$lzy1"},
-{"name":"configString$lzy1"},
-{"name":"declineOpts$lzy1"},
-{"name":"default$lzy1"},
-{"name":"given_ConfigReader_AlignmentConfig$lzy1"},
-{"name":"given_ConfigReader_ArrowsConfig$lzy1"},
-{"name":"given_ConfigReader_BlankLinePolicy$lzy1"},
-{"name":"given_ConfigReader_BlankLinesConfig$lzy1"},
-{"name":"given_ConfigReader_BodyConfig$lzy1"},
-{"name":"given_ConfigReader_BraceConfig$lzy1"},
-{"name":"given_ConfigReader_BracePolicy$lzy1"},
-{"name":"given_ConfigReader_BracesStyle$lzy1"},
-{"name":"given_ConfigReader_CallConfig$lzy1"},
-{"name":"given_ConfigReader_ChainHeadPolicy$lzy1"},
-{"name":"given_ConfigReader_CommentsConfig$lzy1"},
-{"name":"given_ConfigReader_Config$lzy1"},
-{"name":"given_ConfigReader_DefinitionKind$lzy1"},
-{"name":"given_ConfigReader_GroupsBreak$lzy1"},
-{"name":"given_ConfigReader_GroupsSeparator$lzy1"},
-{"name":"given_ConfigReader_HousekeepingConfig$lzy1"},
-{"name":"given_ConfigReader_InForPolicy$lzy1"},
-{"name":"given_ConfigReader_InlineChainPolicy$lzy1"},
-{"name":"given_ConfigReader_LineEnding$lzy1"},
-{"name":"given_ConfigReader_Map$lzy1"},
-{"name":"given_ConfigReader_MultiBodyPolicy$lzy1"},
-{"name":"given_ConfigReader_PathsConfig$lzy1"},
-{"name":"given_ConfigReader_ScaladocAlignmentConfig$lzy1"},
-{"name":"given_ConfigReader_ScaladocSpacing$lzy1"},
-{"name":"given_ConfigReader_SelectorChainConfig$lzy1"},
-{"name":"given_ConfigReader_SignatureConfig$lzy1"},
-{"name":"given_ConfigReader_SingleBodyPolicy$lzy1"},
-{"name":"given_ConfigReader_TrailingOverflow$lzy1"},
-{"name":"given_ConfigReader_YieldBodyPolicy$lzy1"},
-{"name":"given_ProductHint_AlignmentConfig$lzy1"},
-{"name":"given_ProductHint_ArrowsConfig$lzy1"},
-{"name":"given_ProductHint_BlankLinesConfig$lzy1"},
-{"name":"given_ProductHint_BodyConfig$lzy1"},
-{"name":"given_ProductHint_CallConfig$lzy1"},
-{"name":"given_ProductHint_CommentsConfig$lzy1"},
-{"name":"given_ProductHint_Config$lzy1"},
-{"name":"given_ProductHint_HousekeepingConfig$lzy1"},
-{"name":"given_ProductHint_PathsConfig$lzy1"},
-{"name":"given_ProductHint_ScaladocAlignmentConfig$lzy1"},
-{"name":"given_ProductHint_SelectorChainConfig$lzy1"},
-{"name":"given_ProductHint_SignatureConfig$lzy1"},
-{"name":"references$lzy1"}
-]
-},
-{"type":"com.colofabrix.scala.dixtra.render.term.BodyLayout","fields":[{"name":"below$lzy1"}]},
-{
-"type":"com.colofabrix.scala.dixtra.render.term.IfElseRenderer$Branches",
-"fields":[{"name":"elseDoc$lzy1"},{"name":"inline$lzy1"},{"name":"thenDoc$lzy1"}]
-},
-{"type":"com.monovore.decline.Help","fields":[{"name":"plainRendered$lzy1"},{"name":"renderedUsages$lzy1"}]},
-{"type":"com.sun.management.GarbageCollectorMXBean"},
-{"type":"com.sun.management.GcInfo"},
-{"type":"com.sun.management.HotSpotDiagnosticMXBean"},
-{"type":"com.sun.management.OperatingSystemMXBean"},
-{"type":"com.sun.management.ThreadMXBean"},
-{"type":"com.sun.management.VMOption"},
-{
-"type":"com.sun.management.internal.DiagnosticCommandArgumentInfo",
-"jniAccessible":true,
-"methods":[
-{
-"name":"<init>",
-"parameterTypes":[
-"java.lang.String",
-"java.lang.String",
-"java.lang.String",
-"java.lang.String",
-"boolean",
-"boolean",
-"boolean",
-"int"
-]
-}
-]
-},
-{"type":"com.sun.management.internal.DiagnosticCommandArgumentInfo[]"},
-{
-"type":"com.sun.management.internal.DiagnosticCommandInfo",
-"jniAccessible":true,
-"methods":[
-{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","java.lang.String","boolean","java.util.List"]}
-]
-},
-{"type":"com.sun.management.internal.DiagnosticCommandInfo[]"},
-{"type":"com.sun.management.internal.GarbageCollectorExtImpl"},
-{"type":"com.sun.management.internal.HotSpotAOTCacheImpl"},
-{"type":"com.sun.management.internal.HotSpotDiagnostic"},
-{"type":"com.sun.management.internal.HotSpotThreadImpl"},
-{"type":"com.sun.management.internal.OperatingSystemImpl"},
-{"type":"com.sun.management.internal.VirtualThreadSchedulerImpls$VirtualThreadSchedulerImpl"},
-{"type":"double[]"},
-{"type":"float[]"},
-{"type":"int[]"},
-{"type":"java.lang.Boolean","fields":[{"name":"TYPE"}]},
-{"type":"java.lang.Byte","fields":[{"name":"TYPE"}]},
-{"type":"java.lang.Character","fields":[{"name":"TYPE"}]},
-{"type":"java.lang.ClassValue"},
-{"type":"java.lang.Deprecated"},
-{"type":"java.lang.Double","fields":[{"name":"TYPE"}]},
-{"type":"java.lang.Float","fields":[{"name":"TYPE"}]},
-{"type":"java.lang.Integer","fields":[{"name":"TYPE"}]},
-{"type":"java.lang.Long","fields":[{"name":"TYPE"}]},
-{"type":"java.lang.Object[][]"},
-{"type":"java.lang.Object[][][]"},
-{"type":"java.lang.Short","fields":[{"name":"TYPE"}]},
-{"type":"java.lang.StackTraceElement"},
-{"type":"java.lang.String"},
-{"type":"java.lang.String[]"},
-{"type":"java.lang.Thread","methods":[{"name":"isVirtual","parameterTypes":[]}]},
-{"type":"java.lang.Void","fields":[{"name":"TYPE"}]},
-{"type":"java.lang.management.BufferPoolMXBean"},
-{"type":"java.lang.management.ClassLoadingMXBean"},
-{"type":"java.lang.management.CompilationMXBean"},
-{"type":"java.lang.management.LockInfo"},
-{"type":"java.lang.management.MemoryMXBean"},
-{"type":"java.lang.management.MemoryManagerMXBean"},
-{"type":"java.lang.management.MemoryPoolMXBean"},
-{"type":"java.lang.management.MemoryUsage"},
-{"type":"java.lang.management.MonitorInfo"},
-{"type":"java.lang.management.PlatformLoggingMXBean"},
-{"type":"java.lang.management.RuntimeMXBean"},
-{"type":"java.lang.management.ThreadInfo"},
-{"type":"java.math.BigDecimal"},
-{"type":"java.math.BigInteger"},
-{"type":"java.util.Arrays","jniAccessible":true,"methods":[{"name":"asList","parameterTypes":["java.lang.Object[]"]}]},
-{"type":"java.util.Date"},
-{"type":"javax.management.MBeanOperationInfo"},
-{"type":"javax.management.MBeanServerBuilder","methods":[{"name":"<init>","parameterTypes":[]}]},
-{"type":"javax.management.ObjectName"},
-{"type":"javax.management.StandardEmitterMBean"},
-{"type":"javax.management.openmbean.CompositeData"},
-{"type":"javax.management.openmbean.CompositeData[]"},
-{"type":"javax.management.openmbean.OpenMBeanOperationInfoSupport"},
-{"type":"javax.management.openmbean.TabularData"},
-{"type":"jdk.management.HotSpotAOTCacheMXBean"},
-{"type":"jdk.management.VirtualThreadSchedulerMXBean"},
-{"type":"jdk.management.jfr.ConfigurationInfo"},
-{"type":"jdk.management.jfr.EventTypeInfo"},
-{"type":"jdk.management.jfr.FlightRecorderMXBean"},
-{"type":"jdk.management.jfr.FlightRecorderMXBeanImpl"},
-{"type":"jdk.management.jfr.RecordingInfo"},
-{"type":"jdk.management.jfr.SettingDescriptorInfo"},
-{"type":"long[]"},
-{"type":"scala.collection.concurrent.CNodeBase"},
-{"type":"scala.collection.concurrent.INodeBase"},
-{"type":"scala.collection.concurrent.MainNode"},
-{"type":"scala.collection.concurrent.TrieMap"},
-{"type":"scala.collection.immutable.ArraySeq$","fields":[{"name":"emptyImpl$lzy1"}]},
-{
-"type":"scala.collection.immutable.NumericRange",
-"fields":[{"name":"hashCode$lzy1"},{"name":"isEmpty$lzy1"},{"name":"length$lzy1"}]
-},
-{"type":"scala.concurrent.ExecutionContext$","fields":[{"name":"global$lzy1"},{"name":"opportunistic$lzy1"}]},
-{"type":"scala.io.BufferedSource","fields":[{"name":"charReader$lzy1"}]},
-{"type":"scala.io.Codec$","fields":[{"name":"fallbackSystemCodec$lzy1"}]},
-{
-"type":"scala.io.Source",
-"fields":[{"name":"NoPositioner$lzy1"},{"name":"RelaxedPosition$lzy1"},{"name":"RelaxedPositioner$lzy1"}]
-},
-{"type":"scala.math.BigDecimal$","fields":[{"name":"cache$lzy1"}]},
-{
-"type":"scala.meta.internal.parsers.ScalametaParser",
-"fields":[
-{"name":"AllowedName$lzy1"},
-{"name":"AutoPos$lzy1"},
-{"name":"ExtensionSigContext$lzy1"},
-{"name":"GivenSigContext$lzy1"},
-{"name":"InfixTypeIdent$lzy1"},
-{"name":"MacroQuoted$lzy1"},
-{"name":"MacroSplicedIdent$lzy1"},
-{"name":"OwnedByCaseClass$lzy1"},
-{"name":"OwnedByClass$lzy1"},
-{"name":"OwnedByEnum$lzy1"},
-{"name":"OwnedByGiven$lzy1"},
-{"name":"OwnedByObject$lzy1"},
-{"name":"OwnedByTrait$lzy1"},
-{"name":"PatInfixContext$lzy1"},
-{"name":"PatternContext$lzy1"},
-{"name":"PatternTypeContext$lzy1"},
-{"name":"QuotedSpliceContext$lzy1"},
-{"name":"ReturnTypeContext$lzy1"},
-{"name":"TemplateOwnerContext$lzy1"},
-{"name":"TermInfixContext$lzy1"},
-{"name":"TypeBracketsContext$lzy1"},
-{"name":"TypeInfixContext$lzy1"},
-{"name":"noSeq$lzy1"},
-{"name":"noSeqWithNamed$lzy1"},
-{"name":"outPattern$lzy1"},
-{"name":"reporter$lzy1"},
-{"name":"seqOK$lzy1"},
-{"name":"seqOKWithNamed$lzy1"}
-]
-},
-{
-"type":"scala.meta.internal.parsers.ScalametaParser$AllowedName$",
-"fields":[{"name":"AllowedTermName$lzy1"},{"name":"AllowedTypeName$lzy1"}]
-},
-{
-"type":"scala.meta.internal.parsers.ScannerTokens",
-"fields":[
-{"name":"ParamsModifier$lzy1"},
-{"name":"StatSep$lzy1"},
-{"name":"StatSeqEnd$lzy1"},
-{"name":"TypeIntro$lzy1"},
-{"name":"Wildcard$lzy1"}
-]
-},
-{
-"type":"scala.meta.internal.parsers.SoftKeywords",
-"fields":[
-{"name":"KwAs$lzy1"},
-{"name":"KwDerives$lzy1"},
-{"name":"KwEnd$lzy1"},
-{"name":"KwErased$lzy1"},
-{"name":"KwExtension$lzy1"},
-{"name":"KwInfix$lzy1"},
-{"name":"KwInline$lzy1"},
-{"name":"KwInto$lzy1"},
-{"name":"KwOpaque$lzy1"},
-{"name":"KwOpen$lzy1"},
-{"name":"KwPureContextFunctionArrow$lzy1"},
-{"name":"KwPureFunctionArrow$lzy1"},
-{"name":"KwPureFunctionLikeArrow$lzy1"},
-{"name":"KwTracked$lzy1"},
-{"name":"KwTransparent$lzy1"},
-{"name":"KwUsing$lzy1"},
-{"name":"QuestionMarkAsTypeWildcard$lzy1"},
-{"name":"StarAsTypePlaceholder$lzy1"},
-{"name":"StarSplice$lzy1"}
-]
-},
-{"type":"scala.meta.internal.tokenizers.ScalametaTokenizer$AsTokenize$"},
-{
-"type":"scala.meta.package$",
-"fields":[
-{"name":"XTensionQuasiquoteCaseOrPattern$lzy1"},
-{"name":"XTensionQuasiquoteEnumerator$lzy1"},
-{"name":"XTensionQuasiquoteImportee$lzy1"},
-{"name":"XTensionQuasiquoteImporter$lzy1"},
-{"name":"XTensionQuasiquoteInit$lzy1"},
-{"name":"XTensionQuasiquoteMod$lzy1"},
-{"name":"XTensionQuasiquoteSelf$lzy1"},
-{"name":"XTensionQuasiquoteSource$lzy1"},
-{"name":"XTensionQuasiquoteStat$lzy1"},
-{"name":"XTensionQuasiquoteTemplate$lzy1"},
-{"name":"XTensionQuasiquoteTermParam$lzy1"},
-{"name":"XTensionQuasiquoteType$lzy1"},
-{"name":"XTensionQuasiquoteTypeParam$lzy1"}
-]
-},
-{
-"type":"scala.meta.parsers.Parse$",
-"fields":[
-{"name":"parseAmmonite$lzy1"},
-{"name":"parseCase$lzy1"},
-{"name":"parseCtor$lzy1"},
-{"name":"parseEnumerator$lzy1"},
-{"name":"parseImportee$lzy1"},
-{"name":"parseImporter$lzy1"},
-{"name":"parseInit$lzy1"},
-{"name":"parseMod$lzy1"},
-{"name":"parsePat$lzy1"},
-{"name":"parseSelf$lzy1"},
-{"name":"parseSource$lzy1"},
-{"name":"parseStat$lzy1"},
-{"name":"parseTemplate$lzy1"},
-{"name":"parseTerm$lzy1"},
-{"name":"parseTermParam$lzy1"},
-{"name":"parseType$lzy1"},
-{"name":"parseTypeParam$lzy1"}
-]
-},
-{"type":"scala.meta.prettyprinters.Show$Result[]"},
-{
-"type":"scala.util.matching.Regex$Match",
-"fields":[{"name":"ends$lzy1"},{"name":"scala$util$matching$Regex$MatchData$$nameToIndex$lzy1"},{"name":"starts$lzy1"}]
-},
-{"type":"short[]"},
-{"type":"sun.management.ClassLoadingImpl"},
-{"type":"sun.management.CompilationImpl"},
-{"type":"sun.management.ManagementFactoryHelper$1"},
-{"type":"sun.management.ManagementFactoryHelper$PlatformLoggingImpl"},
-{"type":"sun.management.MemoryImpl"},
-{"type":"sun.management.MemoryManagerImpl"},
-{"type":"sun.management.MemoryPoolImpl"},
-{"type":"sun.management.RuntimeImpl"},
-{
-"type":"sun.management.VMManagementImpl",
-"jniAccessible":true,
-"fields":[
-{"name":"compTimeMonitoringSupport"},
-{"name":"currentThreadCpuTimeSupport"},
-{"name":"objectMonitorUsageSupport"},
-{"name":"otherThreadCpuTimeSupport"},
-{"name":"remoteDiagnosticCommandsSupport"},
-{"name":"synchronizerUsageSupport"},
-{"name":"threadAllocatedMemorySupport"},
-{"name":"threadContentionMonitoringSupport"}
-]
-},
-{"type":"sun.misc.Unsafe","fields":[{"name":"theUnsafe"}]},
-{
-"type":"sun.security.provider.DRBG",
-"methods":[{"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"]}]
-},
-{"type":"sun.security.provider.SHA","methods":[{"name":"<init>","parameterTypes":[]}]},
-{"type":"sun.security.provider.SHA2$SHA256","methods":[{"name":"<init>","parameterTypes":[]}]}
-],
-"resources":[
-{"glob":"META-INF/services/java.nio.channels.spi.SelectorProvider"},
-{"glob":"META-INF/services/scala.meta.tokenizers.Tokenize"},
-{"glob":"aliases.conf"},
-{"glob":"reference.conf"},
-{"module":"java.base","glob":"sun/net/www/content-types.properties"},
-{"module":"jdk.jfr","glob":"jdk/jfr/internal/query/view.ini"}
-]
+  "reflection": [
+    {
+      "type": "boolean[]"
+    },
+    {
+      "type": "byte[]"
+    },
+    {
+      "type": "cats.Later",
+      "fields": [
+        {
+          "name": "value$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "cats.effect.IO$",
+      "fields": [
+        {
+          "name": "secureRandom$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "cats.effect.std.Console$",
+      "fields": [
+        {
+          "name": "cats$effect$std$ConsoleCompanionPlatform$$stdinReader$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "cats.effect.unsafe.Head"
+    },
+    {
+      "type": "cats.effect.unsafe.Tail"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.ComputePoolSampler"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.ComputePoolSamplerMBean"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.CpuStarvation"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.CpuStarvationMBean"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.LiveFiberSnapshotTrigger"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.LiveFiberSnapshotTriggerMBean"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.LocalQueueSampler"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.LocalQueueSamplerMBean"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.PollerSampler"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.PollerSamplerMBean"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.TimerHeapSampler"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.TimerHeapSamplerMBean"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.WorkerThreadSampler"
+    },
+    {
+      "type": "cats.effect.unsafe.metrics.WorkerThreadSamplerMBean"
+    },
+    {
+      "type": "char[]"
+    },
+    {
+      "type": "com.colofabrix.scala.dixtra.Main$",
+      "fields": [
+        {
+          "name": "cats$effect$IOApp$$queue$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "com.colofabrix.scala.dixtra.cli.ConfigAliases$",
+      "fields": [
+        {
+          "name": "all$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "com.colofabrix.scala.dixtra.cli.ConfigCli$",
+      "fields": [
+        {
+          "name": "bracePolicies$lzy1"
+        },
+        {
+          "name": "configPath$lzy1"
+        },
+        {
+          "name": "configString$lzy1"
+        },
+        {
+          "name": "declineOpts$lzy1"
+        },
+        {
+          "name": "default$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_AlignmentConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_ArrowsConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_BlankLinePolicy$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_BlankLinesConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_BodyConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_BraceConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_BracePolicy$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_BracesStyle$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_CallConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_ChainHeadPolicy$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_CommentsConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_Config$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_DefinitionKind$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_GroupsBreak$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_GroupsSeparator$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_HousekeepingConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_InForPolicy$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_InlineChainPolicy$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_LineEnding$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_Map$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_MultiBodyPolicy$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_OverflowConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_PathsConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_ScaladocAlignmentConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_ScaladocSpacing$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_SelectorChainConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_SignatureConfig$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_SingleBodyPolicy$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_TrailingOverflow$lzy1"
+        },
+        {
+          "name": "given_ConfigReader_YieldBodyPolicy$lzy1"
+        },
+        {
+          "name": "given_ProductHint_AlignmentConfig$lzy1"
+        },
+        {
+          "name": "given_ProductHint_ArrowsConfig$lzy1"
+        },
+        {
+          "name": "given_ProductHint_BlankLinesConfig$lzy1"
+        },
+        {
+          "name": "given_ProductHint_BodyConfig$lzy1"
+        },
+        {
+          "name": "given_ProductHint_CallConfig$lzy1"
+        },
+        {
+          "name": "given_ProductHint_CommentsConfig$lzy1"
+        },
+        {
+          "name": "given_ProductHint_Config$lzy1"
+        },
+        {
+          "name": "given_ProductHint_HousekeepingConfig$lzy1"
+        },
+        {
+          "name": "given_ProductHint_OverflowConfig$lzy1"
+        },
+        {
+          "name": "given_ProductHint_PathsConfig$lzy1"
+        },
+        {
+          "name": "given_ProductHint_ScaladocAlignmentConfig$lzy1"
+        },
+        {
+          "name": "given_ProductHint_SelectorChainConfig$lzy1"
+        },
+        {
+          "name": "given_ProductHint_SignatureConfig$lzy1"
+        },
+        {
+          "name": "references$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "com.colofabrix.scala.dixtra.render.term.BodyLayout",
+      "fields": [
+        {
+          "name": "below$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "com.colofabrix.scala.dixtra.render.term.IfElseRenderer$Branches",
+      "fields": [
+        {
+          "name": "elseDoc$lzy1"
+        },
+        {
+          "name": "inline$lzy1"
+        },
+        {
+          "name": "thenDoc$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "com.monovore.decline.Help",
+      "fields": [
+        {
+          "name": "plainRendered$lzy1"
+        },
+        {
+          "name": "renderedUsages$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "com.sun.management.GarbageCollectorMXBean"
+    },
+    {
+      "type": "com.sun.management.GcInfo"
+    },
+    {
+      "type": "com.sun.management.HotSpotDiagnosticMXBean"
+    },
+    {
+      "type": "com.sun.management.OperatingSystemMXBean"
+    },
+    {
+      "type": "com.sun.management.ThreadMXBean"
+    },
+    {
+      "type": "com.sun.management.VMOption"
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandArgumentInfo",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "boolean",
+            "boolean",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandArgumentInfo[]"
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandInfo",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandInfo[]"
+    },
+    {
+      "type": "com.sun.management.internal.GarbageCollectorExtImpl"
+    },
+    {
+      "type": "com.sun.management.internal.HotSpotAOTCacheImpl"
+    },
+    {
+      "type": "com.sun.management.internal.HotSpotDiagnostic"
+    },
+    {
+      "type": "com.sun.management.internal.HotSpotThreadImpl"
+    },
+    {
+      "type": "com.sun.management.internal.OperatingSystemImpl"
+    },
+    {
+      "type": "com.sun.management.internal.VirtualThreadSchedulerImpls$VirtualThreadSchedulerImpl"
+    },
+    {
+      "type": "double[]"
+    },
+    {
+      "type": "float[]"
+    },
+    {
+      "type": "int[]"
+    },
+    {
+      "type": "java.lang.Boolean",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Byte",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Character",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.ClassValue"
+    },
+    {
+      "type": "java.lang.Deprecated"
+    },
+    {
+      "type": "java.lang.Double",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Float",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Integer",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Long",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Object[][]"
+    },
+    {
+      "type": "java.lang.Object[][][]"
+    },
+    {
+      "type": "java.lang.Short",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.StackTraceElement"
+    },
+    {
+      "type": "java.lang.String"
+    },
+    {
+      "type": "java.lang.String[]"
+    },
+    {
+      "type": "java.lang.Thread",
+      "methods": [
+        {
+          "name": "isVirtual",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Void",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.management.BufferPoolMXBean"
+    },
+    {
+      "type": "java.lang.management.ClassLoadingMXBean"
+    },
+    {
+      "type": "java.lang.management.CompilationMXBean"
+    },
+    {
+      "type": "java.lang.management.LockInfo"
+    },
+    {
+      "type": "java.lang.management.MemoryMXBean"
+    },
+    {
+      "type": "java.lang.management.MemoryManagerMXBean"
+    },
+    {
+      "type": "java.lang.management.MemoryPoolMXBean"
+    },
+    {
+      "type": "java.lang.management.MemoryUsage"
+    },
+    {
+      "type": "java.lang.management.MonitorInfo"
+    },
+    {
+      "type": "java.lang.management.PlatformLoggingMXBean"
+    },
+    {
+      "type": "java.lang.management.RuntimeMXBean"
+    },
+    {
+      "type": "java.lang.management.ThreadInfo"
+    },
+    {
+      "type": "java.math.BigDecimal"
+    },
+    {
+      "type": "java.math.BigInteger"
+    },
+    {
+      "type": "java.util.Arrays",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "asList",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.util.Date"
+    },
+    {
+      "type": "javax.management.MBeanOperationInfo"
+    },
+    {
+      "type": "javax.management.MBeanServerBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "javax.management.ObjectName"
+    },
+    {
+      "type": "javax.management.StandardEmitterMBean"
+    },
+    {
+      "type": "javax.management.openmbean.CompositeData"
+    },
+    {
+      "type": "javax.management.openmbean.CompositeData[]"
+    },
+    {
+      "type": "javax.management.openmbean.OpenMBeanOperationInfoSupport"
+    },
+    {
+      "type": "javax.management.openmbean.TabularData"
+    },
+    {
+      "type": "jdk.management.HotSpotAOTCacheMXBean"
+    },
+    {
+      "type": "jdk.management.VirtualThreadSchedulerMXBean"
+    },
+    {
+      "type": "jdk.management.jfr.ConfigurationInfo"
+    },
+    {
+      "type": "jdk.management.jfr.EventTypeInfo"
+    },
+    {
+      "type": "jdk.management.jfr.FlightRecorderMXBean"
+    },
+    {
+      "type": "jdk.management.jfr.FlightRecorderMXBeanImpl"
+    },
+    {
+      "type": "jdk.management.jfr.RecordingInfo"
+    },
+    {
+      "type": "jdk.management.jfr.SettingDescriptorInfo"
+    },
+    {
+      "type": "long[]"
+    },
+    {
+      "type": "scala.collection.concurrent.CNodeBase"
+    },
+    {
+      "type": "scala.collection.concurrent.INodeBase"
+    },
+    {
+      "type": "scala.collection.concurrent.MainNode"
+    },
+    {
+      "type": "scala.collection.concurrent.TrieMap"
+    },
+    {
+      "type": "scala.collection.immutable.ArraySeq$",
+      "fields": [
+        {
+          "name": "emptyImpl$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.collection.immutable.NumericRange",
+      "fields": [
+        {
+          "name": "hashCode$lzy1"
+        },
+        {
+          "name": "isEmpty$lzy1"
+        },
+        {
+          "name": "length$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.concurrent.ExecutionContext$",
+      "fields": [
+        {
+          "name": "global$lzy1"
+        },
+        {
+          "name": "opportunistic$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.io.BufferedSource",
+      "fields": [
+        {
+          "name": "charReader$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.io.Codec$",
+      "fields": [
+        {
+          "name": "fallbackSystemCodec$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.io.Source",
+      "fields": [
+        {
+          "name": "NoPositioner$lzy1"
+        },
+        {
+          "name": "RelaxedPosition$lzy1"
+        },
+        {
+          "name": "RelaxedPositioner$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.math.BigDecimal$",
+      "fields": [
+        {
+          "name": "cache$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.meta.internal.parsers.ScalametaParser",
+      "fields": [
+        {
+          "name": "AllowedName$lzy1"
+        },
+        {
+          "name": "AutoPos$lzy1"
+        },
+        {
+          "name": "ExtensionSigContext$lzy1"
+        },
+        {
+          "name": "GivenSigContext$lzy1"
+        },
+        {
+          "name": "InfixTypeIdent$lzy1"
+        },
+        {
+          "name": "MacroQuoted$lzy1"
+        },
+        {
+          "name": "MacroSplicedIdent$lzy1"
+        },
+        {
+          "name": "OwnedByCaseClass$lzy1"
+        },
+        {
+          "name": "OwnedByClass$lzy1"
+        },
+        {
+          "name": "OwnedByEnum$lzy1"
+        },
+        {
+          "name": "OwnedByGiven$lzy1"
+        },
+        {
+          "name": "OwnedByObject$lzy1"
+        },
+        {
+          "name": "OwnedByTrait$lzy1"
+        },
+        {
+          "name": "PatInfixContext$lzy1"
+        },
+        {
+          "name": "PatternContext$lzy1"
+        },
+        {
+          "name": "PatternTypeContext$lzy1"
+        },
+        {
+          "name": "QuotedSpliceContext$lzy1"
+        },
+        {
+          "name": "ReturnTypeContext$lzy1"
+        },
+        {
+          "name": "TemplateOwnerContext$lzy1"
+        },
+        {
+          "name": "TermInfixContext$lzy1"
+        },
+        {
+          "name": "TypeBracketsContext$lzy1"
+        },
+        {
+          "name": "TypeInfixContext$lzy1"
+        },
+        {
+          "name": "noSeq$lzy1"
+        },
+        {
+          "name": "noSeqWithNamed$lzy1"
+        },
+        {
+          "name": "outPattern$lzy1"
+        },
+        {
+          "name": "reporter$lzy1"
+        },
+        {
+          "name": "seqOK$lzy1"
+        },
+        {
+          "name": "seqOKWithNamed$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.meta.internal.parsers.ScalametaParser$AllowedName$",
+      "fields": [
+        {
+          "name": "AllowedTermName$lzy1"
+        },
+        {
+          "name": "AllowedTypeName$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.meta.internal.parsers.ScannerTokens",
+      "fields": [
+        {
+          "name": "ParamsModifier$lzy1"
+        },
+        {
+          "name": "StatSep$lzy1"
+        },
+        {
+          "name": "StatSeqEnd$lzy1"
+        },
+        {
+          "name": "TypeIntro$lzy1"
+        },
+        {
+          "name": "Wildcard$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.meta.internal.parsers.SoftKeywords",
+      "fields": [
+        {
+          "name": "KwAs$lzy1"
+        },
+        {
+          "name": "KwDerives$lzy1"
+        },
+        {
+          "name": "KwEnd$lzy1"
+        },
+        {
+          "name": "KwErased$lzy1"
+        },
+        {
+          "name": "KwExtension$lzy1"
+        },
+        {
+          "name": "KwInfix$lzy1"
+        },
+        {
+          "name": "KwInline$lzy1"
+        },
+        {
+          "name": "KwInto$lzy1"
+        },
+        {
+          "name": "KwOpaque$lzy1"
+        },
+        {
+          "name": "KwOpen$lzy1"
+        },
+        {
+          "name": "KwPureContextFunctionArrow$lzy1"
+        },
+        {
+          "name": "KwPureFunctionArrow$lzy1"
+        },
+        {
+          "name": "KwPureFunctionLikeArrow$lzy1"
+        },
+        {
+          "name": "KwTracked$lzy1"
+        },
+        {
+          "name": "KwTransparent$lzy1"
+        },
+        {
+          "name": "KwUsing$lzy1"
+        },
+        {
+          "name": "QuestionMarkAsTypeWildcard$lzy1"
+        },
+        {
+          "name": "StarAsTypePlaceholder$lzy1"
+        },
+        {
+          "name": "StarSplice$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.meta.internal.tokenizers.ScalametaTokenizer$AsTokenize$"
+    },
+    {
+      "type": "scala.meta.package$",
+      "fields": [
+        {
+          "name": "XTensionQuasiquoteCaseOrPattern$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteEnumerator$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteImportee$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteImporter$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteInit$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteMod$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteSelf$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteSource$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteStat$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteTemplate$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteTermParam$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteType$lzy1"
+        },
+        {
+          "name": "XTensionQuasiquoteTypeParam$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.meta.parsers.Parse$",
+      "fields": [
+        {
+          "name": "parseAmmonite$lzy1"
+        },
+        {
+          "name": "parseCase$lzy1"
+        },
+        {
+          "name": "parseCtor$lzy1"
+        },
+        {
+          "name": "parseEnumerator$lzy1"
+        },
+        {
+          "name": "parseImportee$lzy1"
+        },
+        {
+          "name": "parseImporter$lzy1"
+        },
+        {
+          "name": "parseInit$lzy1"
+        },
+        {
+          "name": "parseMod$lzy1"
+        },
+        {
+          "name": "parsePat$lzy1"
+        },
+        {
+          "name": "parseSelf$lzy1"
+        },
+        {
+          "name": "parseSource$lzy1"
+        },
+        {
+          "name": "parseStat$lzy1"
+        },
+        {
+          "name": "parseTemplate$lzy1"
+        },
+        {
+          "name": "parseTerm$lzy1"
+        },
+        {
+          "name": "parseTermParam$lzy1"
+        },
+        {
+          "name": "parseType$lzy1"
+        },
+        {
+          "name": "parseTypeParam$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "scala.meta.prettyprinters.Show$Result[]"
+    },
+    {
+      "type": "scala.util.matching.Regex$Match",
+      "fields": [
+        {
+          "name": "ends$lzy1"
+        },
+        {
+          "name": "scala$util$matching$Regex$MatchData$$nameToIndex$lzy1"
+        },
+        {
+          "name": "starts$lzy1"
+        }
+      ]
+    },
+    {
+      "type": "short[]"
+    },
+    {
+      "type": "sun.management.ClassLoadingImpl"
+    },
+    {
+      "type": "sun.management.CompilationImpl"
+    },
+    {
+      "type": "sun.management.ManagementFactoryHelper$1"
+    },
+    {
+      "type": "sun.management.ManagementFactoryHelper$PlatformLoggingImpl"
+    },
+    {
+      "type": "sun.management.MemoryImpl"
+    },
+    {
+      "type": "sun.management.MemoryManagerImpl"
+    },
+    {
+      "type": "sun.management.MemoryPoolImpl"
+    },
+    {
+      "type": "sun.management.RuntimeImpl"
+    },
+    {
+      "type": "sun.management.VMManagementImpl",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "compTimeMonitoringSupport"
+        },
+        {
+          "name": "currentThreadCpuTimeSupport"
+        },
+        {
+          "name": "objectMonitorUsageSupport"
+        },
+        {
+          "name": "otherThreadCpuTimeSupport"
+        },
+        {
+          "name": "remoteDiagnosticCommandsSupport"
+        },
+        {
+          "name": "synchronizerUsageSupport"
+        },
+        {
+          "name": "threadAllocatedMemorySupport"
+        },
+        {
+          "name": "threadContentionMonitoringSupport"
+        }
+      ]
+    },
+    {
+      "type": "sun.misc.Unsafe",
+      "fields": [
+        {
+          "name": "theUnsafe"
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.DRBG",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.SecureRandomParameters"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA2$SHA256",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "glob": "META-INF/services/java.nio.channels.spi.SelectorProvider"
+    },
+    {
+      "glob": "META-INF/services/scala.meta.tokenizers.Tokenize"
+    },
+    {
+      "glob": "aliases.conf"
+    },
+    {
+      "glob": "reference.conf"
+    },
+    {
+      "module": "java.base",
+      "glob": "sun/net/www/content-types.properties"
+    },
+    {
+      "module": "jdk.jfr",
+      "glob": "jdk/jfr/internal/query/view.ini"
+    }
+  ]
 }

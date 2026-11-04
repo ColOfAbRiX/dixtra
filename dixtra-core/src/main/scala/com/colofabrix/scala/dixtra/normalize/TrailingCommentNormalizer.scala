@@ -12,7 +12,7 @@ import scala.util.control.NonFatal
  * A trailing comment never counts in the width of its line, so the code before it never breaks because of it. Two
  * passes change where it goes:
  *
- *   - [[moveAbove]], with `trailing-comment-overflow = move-above`: a line that goes past the maximum width with its
+ *   - [[moveAbove]], with `overflow.trailing-comment = move-above`: a line that goes past the maximum width with its
  *     trailing comment gets the comment on a line of its own above, at the indent of the line. When the line above is a
  *     `//` comment, an empty `//` line keeps the two comments apart, so that the comment reflow does not join them.
  *   - [[align]], with `alignment.trailing-comments`: the trailing comments of consecutive lines start on one column,
