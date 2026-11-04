@@ -19,7 +19,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
 
     "be the hardcoded default configuration" in {
       val expected = Config.default
-      val actual = ConfigCli.default
+      val actual   = ConfigCli.default
       actual shouldBe expected
     }
 
@@ -92,7 +92,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
 
     "change only the keys it sets" in {
       val expected = Validated.valid(Config.withMaxColumn(80))
-      val actual = ConfigCli.fromString("max-column = 80")
+      val actual   = ConfigCli.fromString("max-column = 80")
       actual shouldBe expected
     }
 
@@ -293,13 +293,13 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
 
     "keep the brace styles of the constructs when setting the braces style" in {
       val expected = Validated.valid(Config.default.braces.policies)
-      val actual = ConfigCli.fromString("braces.style = stroustrup").map(_.braces.policies)
+      val actual   = ConfigCli.fromString("braces.style = stroustrup").map(_.braces.policies)
       actual shouldBe expected
     }
 
     "read a construct without a setting as keep" in {
       val expected = BracePolicy.Keep
-      val actual = ConfigCli.default.braces(Construct.GivenAlias)
+      val actual   = ConfigCli.default.braces(Construct.GivenAlias)
       actual shouldBe expected
     }
 
@@ -498,7 +498,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
 
     "reject malformed HOCON" in {
       val expected = true
-      val actual = ConfigCli.fromString("braces {").isInvalid
+      val actual   = ConfigCli.fromString("braces {").isInvalid
       actual shouldBe expected
     }
 
@@ -531,7 +531,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
 
     "leave the known settings beside it" in {
       val expected = Validated.valid(90)
-      val actual = ConfigCli.fromString("max-colum = 80\nmax-column = 90").map(_.maxColumn)
+      val actual   = ConfigCli.fromString("max-colum = 80\nmax-column = 90").map(_.maxColumn)
       actual shouldBe expected
     }
 
@@ -579,7 +579,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
 
     "report an invalid file with its path" in {
       withTempDir { dir =>
-        val conf = write(dir.resolve(ConfigCli.fileName), "max-column = wide")
+        val conf   = write(dir.resolve(ConfigCli.fileName), "max-column = wide")
         val actual = errors(ConfigCli.discover(dir).map(_.base))
         actual should include(conf.toString)
       }

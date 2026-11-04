@@ -25,8 +25,10 @@ private[normalize] object BlockComments {
       .toList
       .filter { comment => comment.text.startsWith("/*") && text.ownLine(comment) }
       .flatMap { comment =>
-        if SourceEdits.isScaladoc(comment.text) then scaladoc(text, comment, maxColumn, alignTags)
-        else plainBlock(text, comment, maxColumn)
+        if SourceEdits.isScaladoc(comment.text) then 
+          scaladoc(text, comment, maxColumn, alignTags)
+        else 
+          plainBlock(text, comment, maxColumn)
       }
 
   private def scaladoc(text: CommentSource, comment: Token.Comment, maxColumn: Int, alignTags: Boolean): Option[Edit] =
@@ -176,10 +178,14 @@ private[normalize] object BlockComments {
 
     // The output line of the `index`-th rendered text line.
     def line(text: String, index: Int): String =
-      if joinsOpener && index == 0 then "/* " + text
-      else if text.isEmpty then (if gutter then prefix else "")
-      else if gutter then prefix + " " + text
-      else prefix + text
+      if joinsOpener && index == 0 then
+        "/* " + text
+      else if text.isEmpty then
+        (if gutter then prefix else "")
+      else if gutter then
+        prefix + " " + text
+      else
+        prefix + text
 
   }
 

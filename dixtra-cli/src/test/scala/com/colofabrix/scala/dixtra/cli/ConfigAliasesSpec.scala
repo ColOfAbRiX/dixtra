@@ -116,7 +116,7 @@ class ConfigAliasesSpec extends AnyWordSpec with Matchers {
 
     "reject a value its targets do not accept" in {
       val expected = true
-      val actual = ConfigCli.fromString("scaladoc.align-tags = always").isInvalid
+      val actual   = ConfigCli.fromString("scaladoc.align-tags = always").isInvalid
       actual shouldBe expected
     }
 
@@ -144,13 +144,13 @@ class ConfigAliasesSpec extends AnyWordSpec with Matchers {
 
     "reject trailing-commas beside a site set to another value" in {
       val expected = true
-      val actual = ConfigCli.fromString("trailing-commas = never\ncall-site.trailing-commas = always").isInvalid
+      val actual   = ConfigCli.fromString("trailing-commas = never\ncall-site.trailing-commas = always").isInvalid
       actual shouldBe expected
     }
 
     "reject two construct aliases that give a shared setting different values" in {
       val expected = true
-      val actual = ConfigCli.fromString("class.align-extends = true\ntrait.align-extends = false").isInvalid
+      val actual   = ConfigCli.fromString("class.align-extends = true\ntrait.align-extends = false").isInvalid
       actual shouldBe expected
     }
 

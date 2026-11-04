@@ -53,7 +53,12 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
   private def listDir(dir: Path): List[String] =
     val stream = Files.list(dir)
     try {
-      stream.iterator().asScala.map(_.getFileName.toString).toList.sorted
+      stream
+        .iterator()
+        .asScala
+        .map(_.getFileName.toString)
+        .toList
+        .sorted
     } finally {
       stream.close()
     }

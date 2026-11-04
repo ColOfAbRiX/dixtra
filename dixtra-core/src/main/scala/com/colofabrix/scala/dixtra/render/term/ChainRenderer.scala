@@ -1,9 +1,9 @@
 package com.colofabrix.scala.dixtra.render.term
 
 import com.colofabrix.scala.dixtra.*
-import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
+import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.render.context.RenderContext
 import scala.meta.*
 
@@ -279,9 +279,9 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
     val alwaysBreak     = forceExplode || ctx.config.selectorChain.inlineChains == InlineChainPolicy.BreakAtCount
     authorBreak || tooLong || (asBody && overBudget && alwaysBreak)
 
-  // The comments around a selection's dot. Those before the dot on the qualifier's line trail the previous segment,
-  // the others before the dot get their own lines. Those after the dot, before the member name, cannot stay there and
-  // move before the dot, trailing the previous segment.
+  // The comments around a selection's dot. Those before the dot on the qualifier's line trail the previous segment, the
+  // others before the dot get their own lines. Those after the dot, before the member name, cannot stay there and move
+  // before the dot, trailing the previous segment.
   private final case class DotComments(trailing: Doc, ownLines: List[Doc], forcesBreak: Boolean)
 
   private def commentsBeforeDot(selection: Term): DotComments =
@@ -308,11 +308,16 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
   // moves after the clauses (see [[memberComments]]).
   private def hasUnattachableComments(selection: Term): Boolean =
     selection match {
-      case Term.Apply.After_4_6_0(select: Term.Select, clause) => lineCommentBefore(select.pos.end, clause.pos.start)
-      case app @ Term.Apply.After_4_6_0(fun, _)                => ctx.hasGapComments(app) || hasUnattachableComments(fun)
-      case app @ Term.ApplyType.After_4_6_0(fun, _)            => ctx.hasGapComments(app) || hasUnattachableComments(fun)
-      case _: Term.Select                                      => false
-      case other                                               => ctx.hasGapComments(other)
+      case Term.Apply.After_4_6_0(select: Term.Select, clause) =>
+        lineCommentBefore(select.pos.end, clause.pos.start)
+      case app @ Term.Apply.After_4_6_0(fun, _) =>
+        ctx.hasGapComments(app) || hasUnattachableComments(fun)
+      case app @ Term.ApplyType.After_4_6_0(fun, _) =>
+        ctx.hasGapComments(app) || hasUnattachableComments(fun)
+      case _: Term.Select =>
+        false
+      case other =>
+        ctx.hasGapComments(other)
     }
 
   private def lineCommentBefore(start: Int, end: Int): Boolean =
@@ -320,8 +325,8 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
       .commentsBetween(start, end)
       .exists(_.text.startsWith("//"))
 
-  // The block comments between a member and its first argument clause (`compute /* heavy */ (a, b)`), which cannot
-  // stay there: they follow the argument clauses, on the line of the last one.
+  // The block comments between a member and its first argument clause (`compute /* heavy */ (a, b)`), which cannot stay
+  // there: they follow the argument clauses, on the line of the last one.
   private def memberComments(memberEnd: Int, clauses: List[Term.ArgClause]): Doc =
     clauses
       .headOption

@@ -5,8 +5,8 @@ import scala.meta.tokens.Token
 
 /**
  * The `//` comments: consecutive own-line `//` comments at one column are one comment, reflowed to the width, with at
- * least one space after `//`. A trailing comment only gets that space. Directives (`///`, `//>`, `//noinspection`,
- * ...) are left alone.
+ * least one space after `//`. A trailing comment only gets that space. Directives (`///`, `//>`, `//noinspection`, ...)
+ * are left alone.
  */
 private[normalize] object LineComments {
 

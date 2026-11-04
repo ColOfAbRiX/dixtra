@@ -16,7 +16,7 @@ class ReferenceAliasesSpec extends AnyWordSpec with Matchers {
   private val text =
     Using.resource(Source.fromResource("references.aliases.conf", getClass.getClassLoader))(_.mkString)
 
-  private val file = 
+  private val file =
     ConfigFactory.parseString(text)
 
   private val references =
@@ -29,13 +29,13 @@ class ReferenceAliasesSpec extends AnyWordSpec with Matchers {
 
     "load to the defaults" in {
       val expected = Validated.valid(ConfigCli.default)
-      val actual = ConfigCli.fromString(text)
+      val actual   = ConfigCli.fromString(text)
       actual shouldBe expected
     }
 
     "hold the settings of reference.conf with their default values, once its aliases are resolved" in {
       val expected = Right(references.root.unwrapped)
-      val actual = ConfigAliases.resolve(file, ConfigFactory.empty()).map(_.root.unwrapped)
+      val actual   = ConfigAliases.resolve(file, ConfigFactory.empty()).map(_.root.unwrapped)
       actual shouldBe expected
     }
 
@@ -60,7 +60,7 @@ class ReferenceAliasesSpec extends AnyWordSpec with Matchers {
           .toList
           .map(_.getKey)
           .sorted
-          
+
       val (throughAliases, direct) = keys.partition(aliases.contains)
       val written                  = direct ++ throughAliases.flatMap(aliases)
 
@@ -75,6 +75,7 @@ class ReferenceAliasesSpec extends AnyWordSpec with Matchers {
 
       actual shouldBe expected
     }
+
   }
 
 }

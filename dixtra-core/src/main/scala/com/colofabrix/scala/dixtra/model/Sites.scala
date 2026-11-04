@@ -39,8 +39,8 @@ enum TrailingCommas(val key: String) {
  * parameters and import selectors.
  *
  * @param groupsSeparator Where `)(` goes between broken parameter groups.
- * @param trailingCommas Whether the last parameter, type parameter or import selector laid out one per line is
- *                       followed by a comma.
+ * @param trailingCommas Whether the last parameter, type parameter or import selector laid out one per line is followed
+ *                       by a comma.
  */
 final case class DefinitionSiteConfig(
   groupsSeparator: GroupsSeparator,

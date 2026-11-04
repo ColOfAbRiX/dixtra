@@ -50,7 +50,9 @@ class PathOverridesSpec extends AnyWordSpec with Matchers {
         val actual =
           (
             loaded.map(_.configFor(dir.resolve("legacy").resolve("A.scala")).map(_.callSite.trailingCommas)),
-            loaded.map(_.configFor(dir.resolve("src").resolve("legacy").resolve("A.scala")).map(_.callSite.trailingCommas)),
+            loaded.map(
+              _.configFor(dir.resolve("src").resolve("legacy").resolve("A.scala")).map(_.callSite.trailingCommas),
+            ),
           )
 
         actual shouldBe expected
@@ -76,7 +78,9 @@ class PathOverridesSpec extends AnyWordSpec with Matchers {
         val expected = List(Validated.valid((90, TrailingCommas.Never)))
 
         val actual =
-          configs(dir, settings, "legacy/A.scala").map(_.map(config => (config.maxColumn, config.callSite.trailingCommas)))
+          configs(dir, settings, "legacy/A.scala").map(
+            _.map(config => (config.maxColumn, config.callSite.trailingCommas)),
+          )
 
         actual shouldBe expected
       }

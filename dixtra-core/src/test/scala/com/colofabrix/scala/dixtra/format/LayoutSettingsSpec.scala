@@ -1084,10 +1084,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
   "definition-site.trailing-commas and call-site.trailing-commas" should {
 
     // A signature and a call in one file, each broken one element per line
-    val withBoth    = "def f(\n  first: Int,\n  second: Int,\n): Int =\n  compute(\n    firstArgument,\n    second,\n  )\n"
-    val withNone    = "def f(\n  first: Int,\n  second: Int\n): Int =\n  compute(\n    firstArgument,\n    second\n  )\n"
-    val definitions = "def f(\n  first: Int,\n  second: Int,\n): Int =\n  compute(\n    firstArgument,\n    second\n  )\n"
-    val calls       = "def f(\n  first: Int,\n  second: Int\n): Int =\n  compute(\n    firstArgument,\n    second,\n  )\n"
+    val withBoth = "def f(\n  first: Int,\n  second: Int,\n): Int =\n  compute(\n    firstArgument,\n    second,\n  )\n"
+    val withNone = "def f(\n  first: Int,\n  second: Int\n): Int =\n  compute(\n    firstArgument,\n    second\n  )\n"
+    val definitions =
+      "def f(\n  first: Int,\n  second: Int,\n): Int =\n  compute(\n    firstArgument,\n    second\n  )\n"
+    val calls = "def f(\n  first: Int,\n  second: Int\n): Int =\n  compute(\n    firstArgument,\n    second,\n  )\n"
 
     def sites(definition: TrailingCommas, call: TrailingCommas): Config =
       Config
@@ -1106,16 +1107,18 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
     }
 
     "follow definition-site = always for the selectors of an import, whatever call-site" in {
-      val input    = "import com.example.render.context.{ RenderContext, SourceDocs, SourceTokens, SomethingElse }\n"
-      val expected = "import com.example.render.context.{\n  RenderContext, SourceDocs, SourceTokens,\n  SomethingElse,\n}\n"
-      val config   = sites(TrailingCommas.Always, TrailingCommas.Never).copy(maxColumn = 50)
+      val input = "import com.example.render.context.{ RenderContext, SourceDocs, SourceTokens, SomethingElse }\n"
+      val expected =
+        "import com.example.render.context.{\n  RenderContext, SourceDocs, SourceTokens,\n  SomethingElse,\n}\n"
+      val config = sites(TrailingCommas.Always, TrailingCommas.Never).copy(maxColumn = 50)
       input should formatStablyTo(expected, config)
     }
 
     "follow definition-site = never for the selectors of an import, whatever call-site" in {
-      val input    = "import com.example.render.context.{ RenderContext, SourceDocs, SourceTokens, SomethingElse }\n"
-      val expected = "import com.example.render.context.{\n  RenderContext, SourceDocs, SourceTokens,\n  SomethingElse\n}\n"
-      val config   = sites(TrailingCommas.Never, TrailingCommas.Always).copy(maxColumn = 50)
+      val input = "import com.example.render.context.{ RenderContext, SourceDocs, SourceTokens, SomethingElse }\n"
+      val expected =
+        "import com.example.render.context.{\n  RenderContext, SourceDocs, SourceTokens,\n  SomethingElse\n}\n"
+      val config = sites(TrailingCommas.Never, TrailingCommas.Always).copy(maxColumn = 50)
       input should formatStablyTo(expected, config)
     }
 
@@ -1308,6 +1311,7 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
   }
 
   "blank-lines.between-alignment-groups" should {
+
     val adjacent  = "object A {\n  val a = 1\n  def b = 2\n}\n"
     val separated = "object A {\n  val a = 1\n\n  def b = 2\n}\n"
 

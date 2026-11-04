@@ -379,7 +379,10 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
     import scala.meta.*
 
     given Dialect = dialects.Scala3
-    original.parse[Source].toOption.exists(Equivalence.isEquivalentSource(_, original, formatted))
+    original
+      .parse[Source]
+      .toOption
+      .exists(Equivalence.isEquivalentSource(_, original, formatted))
 
   private def configOf(row: Vector[Int]): Config =
     settings.zip(row).foldLeft(Config.default) { case (c, (setting, value)) => setting.values(value)(c) }

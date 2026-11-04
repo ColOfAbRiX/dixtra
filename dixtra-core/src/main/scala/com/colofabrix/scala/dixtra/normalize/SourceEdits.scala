@@ -58,7 +58,10 @@ private[dixtra] object SourceEdits {
   def tokens(source: String): Option[Vector[Token]] =
     given Dialect = SourceDialect.scala
     try {
-      source.tokenize.toOption.map(_.toVector)
+      source
+        .tokenize
+        .toOption
+        .map(_.toVector)
     } catch {
       case NonFatal(_) => None
     }

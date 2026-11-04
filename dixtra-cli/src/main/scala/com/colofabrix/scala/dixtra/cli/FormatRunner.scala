@@ -22,9 +22,9 @@ import java.nio.file.Path
  * @param paths The files and directories to format inside the directories given (see [[SourceFiles]]).
  */
 final class FormatRunner private (
-    check: Boolean,
-    format: Path => Either[String, String => Either[FormatError, String]],
-    paths: PathsConfig,
+  check: Boolean,
+  format: Path => Either[String, String => Either[FormatError, String]],
+  paths: PathsConfig,
 ) {
 
   /**

@@ -1,9 +1,9 @@
 package com.colofabrix.scala.dixtra.render.term
 
 import com.colofabrix.scala.dixtra.*
-import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
+import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.render.Alignment
 import com.colofabrix.scala.dixtra.render.context.RenderContext
 import scala.meta.*

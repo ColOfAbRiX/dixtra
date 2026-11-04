@@ -69,7 +69,11 @@ object DocCommentSpacingNormalizer {
         }
         .toSet
 
-    lines.indices.filterNot(removed).map(lines).mkString("\n")
+    lines
+      .indices
+      .filterNot(removed)
+      .map(lines)
+      .mkString("\n")
 
   private def isDoc(layout: LineLayout, i: Int): Boolean =
     !layout.insideToken(i) && SourceEdits.isScaladoc(layout.lines(i).trim)

@@ -1,8 +1,8 @@
 package com.colofabrix.scala.dixtra.render.term
 
-import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
+import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.render.*
 import com.colofabrix.scala.dixtra.render.comments.CommentedList
 import com.colofabrix.scala.dixtra.render.context.RenderContext
@@ -94,11 +94,14 @@ private[term] final class ApplicationRenderer(
     val onLine =
       Doc.concat(
         leading.map { (clause, args, comments) =>
-          ClauseGroups.Group(
-            "",
-            Syntax.clauseKeyword(clause.mod),
-            args.map(arg => ctx.sourceDoc(arg)), comments
-          ).inline
+          ClauseGroups
+            .Group(
+              "",
+              Syntax.clauseKeyword(clause.mod),
+              args.map(arg => ctx.sourceDoc(arg)),
+              comments,
+            )
+            .inline
         },
       )
 
@@ -111,7 +114,11 @@ private[term] final class ApplicationRenderer(
   // kept as written (an empty group holding a comment), or `call-site.groups-break` lets each group decide or only the
   // last group break.
   private def grouped(clauses: List[Term.ArgClause], indent: Int, column: Int): Option[Doc] =
-    val commas = ctx.config.callSite.trailingCommas
+    val commas =
+      ctx
+        .config
+        .callSite
+        .trailingCommas
 
     val groups =
       clauses.map { clause =>

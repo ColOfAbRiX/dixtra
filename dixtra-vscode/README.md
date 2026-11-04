@@ -1,8 +1,33 @@
-[Dixtra](https://github.com/ColOfAbRiX/dixtra) is an opinionated formatter for Scala 3.
+[Dixtra](https://github.com/ColOfAbRiX/dixtra) is an opinionated formatter for Scala 3. The primary
+goal is visual consistency.
 
-Unlike other Scala formatters, that allow you to tune typografic formatting like parentheses,
+Unlike other Scala formatters, that allow you to tune typographic formatting like parentheses,
 indentation, commas, etc., Dixtra treats the code as having visual features that can be formatted as
-a unit.
+a unit. On top of this, Dixtra doesn't give the users full control to limit potential for unwanted
+results.
+
+For example this function definition:
+
+```scala
+def total[A](xs: List[Int], limit: Int, multiplier: Double)(using ord: Ordering[Int]): Double = xs.filter(_ > limit).map(_ * multiplier).sum
+```
+
+has a definition with a single parameter list and a body containing a selector chain and each of
+these parts are formatted indipendently and as a unit:
+
+```scala
+def total(
+  xs: List[Int],
+  limit: Int,
+  multiplier: Double
+)(using
+  ord: Ordering[Int]
+): Double =
+  xs
+    .filter(_ > limit)
+    .map(_ * multiplier)
+    .sum
+```
 
 ## Setup
 
@@ -11,7 +36,7 @@ a unit.
 
 2. Build it with `sbt dixtraVsCode/vscodePackage` from the repository root (or run 
    `npm install && npm run package` inside the folder), then install the `.vsix` it produces in the
-   `dist/` folder of the repository, next to the executables and the icon. The version of the
+   `dist/` folder of the repository, next to the executables. The version of the
    extension follows `version` in `build.sbt`:
 
    ```

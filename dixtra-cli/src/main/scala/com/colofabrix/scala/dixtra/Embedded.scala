@@ -28,7 +28,10 @@ object Embedded {
         2
       case Right(cliOptions) =>
         val printer = CliReport.Printer(line => IO(out.accept(line)), line => IO(err.accept(line)))
-        Main.program(cliOptions, printer).unsafeRunSync().code
+        Main
+          .program(cliOptions, printer)
+          .unsafeRunSync()
+          .code
     }
 
 }

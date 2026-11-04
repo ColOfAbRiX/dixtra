@@ -32,8 +32,7 @@ private[render] final class TypeDefRenderer(ctx: RenderContext) {
               if ctx.commentsBetween(t.pos.start, t.pos.end).isEmpty
       lead  = name ++ Alignment.padding(padTo, Render.flatWidth(name)) ++ Doc.text(" =")
       doc  <- bodyDoc(t, lead, indent, below)
-    yield
-      doc
+    yield doc
 
   // The type after `lead` (the name and its `=`): a match type always below the `=`, any other placed by
   // `body.type-def`.
@@ -142,12 +141,17 @@ private[render] final class TypeDefRenderer(ctx: RenderContext) {
       .trim
       .startsWith("{")
 
-  // The cases one per line, `case pattern => type`, the arrows padded to one column when `alignment.arrows.cases` is
-  // on and every case fits once padded.
+  // The cases one per line, `case pattern => type`, the arrows padded to one column when `alignment.arrows.cases` is on
+  // and every case fits once padded.
   private def caseLines(cases: List[TypeCase], indent: Int): List[Doc] =
     val heads  = cases.map(c => "case " + oneLine(ctx.slice(c.pat.pos.start, c.pat.pos.end)))
     val bodies = cases.map(c => oneLine(ctx.slice(c.body.pos.start, c.body.pos.end)))
-    val target = heads.map(_.length).maxOption.getOrElse(0)
+
+    val target =
+      heads
+        .map(_.length)
+        .maxOption
+        .getOrElse(0)
 
     val padded =
       heads
@@ -161,6 +165,7 @@ private[render] final class TypeDefRenderer(ctx: RenderContext) {
       else heads.zip(bodies).map((head, body) => head + " => " + body)
 
     lines.map(Doc.text)
+
   private def writtenBelow(t: Defn.Type): Boolean =
     val keep = ctx.config.body.typeDef == SingleBodyPolicy.Keep
 
@@ -174,7 +179,12 @@ private[render] final class TypeDefRenderer(ctx: RenderContext) {
   // The type after `lead` (the name and its `=`): on its line when it fits there on one line; else below it, on one
   // line when it fits there and the author did not break it, broken otherwise.
   private def placed(lead: Doc, body: TypeBody, indent: Int, below: Boolean): Doc =
-    val policy     = ctx.config.body.typeDef
+    val policy =
+      ctx
+        .config
+        .body
+        .typeDef
+        
     val column     = ctx.endColumn(lead, indent) + 1
     val down       = below || policy == SingleBodyPolicy.AlwaysBreak
     val fitsOnLine = !body.authorBroke && ctx.fits(body.oneLine, column)

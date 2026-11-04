@@ -7,8 +7,8 @@ import scala.sys.process.*
  *
  * The extension formats the document of the editor with dixtra on Format Document, and npm builds it in the folder of
  * the project. `vscodePackage` installs the npm dependencies, compiles the extension and packages it into a `.vsix`,
- * again when its sources change, and copies it into the `dist/` folder of the build, next to the executables and the
- * icon it bundles.
+ * again when its sources change, and copies it into the `dist/` folder of the build, next to the executables it
+ * bundles.
  */
 object VsCodeExtension {
 
@@ -41,7 +41,7 @@ object VsCodeExtension {
         if !copy.exists() || IO.read(copy) != IO.read(license) then
           IO.copyFile(license, copy)
 
-        // The outputs of the extension, all in `dist/`: the executables bundled with it and its icon. The native builds
+        // The outputs of the build in `dist/`: the executables bundled with the extension. The native builds
         // of `dixtraCli` write into the shared drive: the one of the current platform first and the ones of the other
         // platforms alongside, in the per-platform layouts of sbt, so the extension moves every executable it finds
         // into `dist/` and warns about the ones missing from both the build and the output.
@@ -79,12 +79,13 @@ object VsCodeExtension {
         moveExecutable("Linux", "dixtra", dist / "linux-x64" / "dixtra")
         moveExecutable("Windows", "dixtra.exe", dist / "win32-x64" / "dixtra.exe")
 
-        // The icon of the extension, rendered from the SVG source: the first renderer that works wins. Without a
-        // renderer a previously rendered icon is reused, and with none at all the packaging fails.
-        val icon = dist / "icon.png"
+        // The icon of the extension, rendered from the SVG source straight into `bin`, where `vsce` picks it up: the
+        // first renderer that works wins. Without a renderer a previously rendered icon is reused, and with none at
+        // all the packaging fails. No icon is written to `dist/`.
+        val icon = folder / "bin" / "icon.png"
 
         def renderIcon: Boolean =
-          IO.createDirectory(dist)
+          IO.createDirectory(icon.getParentFile)
           val commands =
             Seq(
               Seq(
@@ -129,8 +130,9 @@ object VsCodeExtension {
             "The icon of the extension could not be rendered: no renderer among rsvg-convert, convert and resvg, and no previously rendered one",
           )
 
-        // What `vsce` packages must live inside the extension folder: the Windows executable and the icon of `dist` are
-        // staged into `bin` before packaging (nothing from `dist` reaches the repository, it is ignored).
+        // What `vsce` packages must live inside the extension folder: the Windows executable of `dist` is staged into
+        // `bin` before packaging (nothing from `dist` reaches the repository, it is ignored), next to the icon
+        // rendered above.
         val payload = folder / "bin"
         val windows = dist / "win32-x64" / "dixtra.exe"
 
@@ -138,13 +140,8 @@ object VsCodeExtension {
           IO.createDirectory(payload / "win32-x64")
           IO.copyFile(windows, payload / "win32-x64" / "dixtra.exe")
 
-        if icon.exists() then
-          IO.createDirectory(payload)
-          IO.copyFile(icon, payload / "icon.png")
-
         // The inputs of the build: the sources of the extension, its manifest and configuration, the icon source, and
-        // the executables and icon bundled above. `icon.png` is an output, not an input: it changes only when
-        // `icon.svg` does.
+        // the executables and the icon staged above. The icon changes only when `icon.svg` does.
         val sources =
           ((folder / "src") ** "*.ts").get() ++
           Seq(folder / "package.json", folder / "tsconfig.json", folder / "icon.svg") ++
@@ -167,7 +164,7 @@ object VsCodeExtension {
 
         val vsix = produced.getOrElse(throw new MessageOnlyException("The build of the extension produced no .vsix"))
 
-        // The `.vsix` is copied into `dist/` alongside the executables and the icon: the task returns the copy, while
+        // The `.vsix` is copied into `dist/` alongside the executables: the task returns the copy, while
         // the folder one stays as the raw output of vsce.
         val packaged = dist / vsix.getName
 

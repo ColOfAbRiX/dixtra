@@ -1,8 +1,8 @@
 package com.colofabrix.scala.dixtra.render.term
 
-import com.colofabrix.scala.dixtra.model.BlankLinePolicy
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
+import com.colofabrix.scala.dixtra.model.BlankLinePolicy
 import com.colofabrix.scala.dixtra.render.EndMarkers
 import com.colofabrix.scala.dixtra.render.comments.StatementComments
 import com.colofabrix.scala.dixtra.render.context.RenderContext
@@ -36,12 +36,18 @@ private[term] final class BlockRenderer(
   def render(block: Term.Block, indent: Int, forceExplode: Boolean): Doc =
     val comments = StatementComments.of(ctx, block)
     block.stats match {
-      case _ if SemicolonStatements.keptOnLine(ctx, block) => ctx.ownSourceDoc(block)
-      case Nil                                             => ctx.ownSourceDoc(block)
-      case (stat: Term) :: Nil if comments.isEmpty         => terms.render(stat, indent, forceExplode)
-      case (_: Term) :: Nil                                => statements(block, indent, BlankLinePolicy.Never)
-      case _ :: Nil                                        => Doc.Standalone(statements(block, indent, BlankLinePolicy.Never))
-      case _                                               => statements(block, indent, BlankLinePolicy.Never)
+      case _ if SemicolonStatements.keptOnLine(ctx, block) =>
+        ctx.ownSourceDoc(block)
+      case Nil =>
+        ctx.ownSourceDoc(block)
+      case (stat: Term) :: Nil if comments.isEmpty =>
+        terms.render(stat, indent, forceExplode)
+      case (_: Term) :: Nil =>
+        statements(block, indent, BlankLinePolicy.Never)
+      case _ :: Nil =>
+        Doc.Standalone(statements(block, indent, BlankLinePolicy.Never))
+      case _ =>
+        statements(block, indent, BlankLinePolicy.Never)
     }
 
   /**

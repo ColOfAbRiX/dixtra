@@ -10,8 +10,8 @@ import scala.meta.*
  * Renders `import` and `export` clauses.
  *
  * The selectors keep their spelling (`_` / `*`, `=>` / `as`): only the spaces inside the braces, the braces around a
- * single selector (`braces.imports`) and the line breaks change. A clause with a single importer that does not fit packs
- * its selectors onto as few lines as fit; a clause with several importers, or with a comment, is never broken.
+ * single selector (`braces.imports`) and the line breaks change. A clause with a single importer that does not fit
+ * packs its selectors onto as few lines as fit; a clause with several importers, or with a comment, is never broken.
  *
  * @param ctx The shared render context.
  */
@@ -50,7 +50,8 @@ final class ImportRenderer(ctx: RenderContext) {
 
     (ref, selectors, braced(importer.importees, written))
 
-  // Whether the selectors go in braces, by `braces.imports`: only a single selector that can stand without them changes.
+  // Whether the selectors go in braces, by `braces.imports`: only a single selector that can stand without them
+  // changes.
   private def braced(importees: List[Importee], written: Boolean): Boolean =
     importees match {
       case single :: Nil =>
@@ -63,8 +64,8 @@ final class ImportRenderer(ctx: RenderContext) {
         true
     }
 
-  // A selector that is valid without braces in every dialect that accepts it. A rename keeps its braces: `B => C`
-  // needs them, and `B as C` without them may not be accepted by Scala 2 with `-Xsource:3`.
+  // A selector that is valid without braces in every dialect that accepts it. A rename keeps its braces: `B => C` needs
+  // them, and `B as C` without them may not be accepted by Scala 2 with `-Xsource:3`.
   private def standsWithoutBraces(importee: Importee): Boolean =
     importee match {
       case _: Importee.Name     => true

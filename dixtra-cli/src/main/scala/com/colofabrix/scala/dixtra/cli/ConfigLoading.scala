@@ -2,15 +2,14 @@ package com.colofabrix.scala.dixtra.cli
 
 import cats.data.*
 import cats.syntax.all.*
-import com.colofabrix.scala.dixtra.Config
-import com.colofabrix.scala.dixtra.FormatError
-import com.typesafe.config.{Config as HoconConfig, ConfigFactory, ConfigObject, ConfigUtil}
+import com.colofabrix.scala.dixtra.*
+import com.colofabrix.scala.dixtra.cli.ConfigInstances.given
+import com.typesafe.config.{ Config as HoconConfig, * }
 import java.nio.file.*
 import pureconfig.ConfigSource
 import scala.io.Source
 import scala.jdk.CollectionConverters.*
 import scala.util.*
-import ConfigInstances.given
 
 /**
  * Loading a configuration: HOCON parsing, alias resolution, unknown-key warnings, `path-overrides` and the version

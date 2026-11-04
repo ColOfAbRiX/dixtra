@@ -1,9 +1,9 @@
 package com.colofabrix.scala.dixtra.cli
 
 import com.colofabrix.scala.dixtra.Config
-import com.typesafe.config.{Config as HoconConfig, ConfigFactory, ConfigRenderOptions}
-import pureconfig.{ConfigSource, ConfigWriter}
-import ConfigInstances.given
+import com.colofabrix.scala.dixtra.cli.ConfigInstances.given
+import com.typesafe.config.{ Config as HoconConfig, * }
+import pureconfig.*
 
 /**
  * The settings dixtra declares: `reference.conf` completed with the defaults of the schema, the defaults of a

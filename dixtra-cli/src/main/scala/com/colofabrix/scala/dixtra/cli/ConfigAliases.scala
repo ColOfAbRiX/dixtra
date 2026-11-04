@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.cli
 
-import com.typesafe.config.{Config as HoconConfig, *}
+import com.typesafe.config.{ Config as HoconConfig, * }
 import scala.jdk.CollectionConverters.*
 import scala.util.Try
 

@@ -1,8 +1,8 @@
 package com.colofabrix.scala.dixtra.render.comments
 
-import com.colofabrix.scala.dixtra.model.TrailingCommas
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
+import com.colofabrix.scala.dixtra.model.TrailingCommas
 import com.colofabrix.scala.dixtra.render.context.RenderContext
 import scala.meta.*
 import scala.meta.tokens.Token
@@ -113,7 +113,10 @@ private[render] object CommentedList {
         .map { case ((gapStart, gapEnd), i) =>
           val prevEnd   = if i == 0 then None else Some(gapStart)
           val nextStart = if i < elements.length then Some(gapEnd) else None
-          ctx.commentsBetween(gapStart, gapEnd).toList.map(c => (c, classify(ctx, c, prevEnd, nextStart)))
+          ctx
+            .commentsBetween(gapStart, gapEnd)
+            .toList
+            .map(c => (c, classify(ctx, c, prevEnd, nextStart)))
         }
 
     def docs(comments: List[(Token.Comment, Kind)], kind: Kind): List[Doc] =

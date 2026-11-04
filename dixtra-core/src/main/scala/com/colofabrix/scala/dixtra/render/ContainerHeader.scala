@@ -1,7 +1,7 @@
 package com.colofabrix.scala.dixtra.render
 
-import com.colofabrix.scala.dixtra.model.Construct
 import com.colofabrix.scala.dixtra.doc.*
+import com.colofabrix.scala.dixtra.model.Construct
 import com.colofabrix.scala.dixtra.render.context.RenderContext
 import com.colofabrix.scala.dixtra.render.definition.*
 import scala.meta.*
@@ -32,7 +32,7 @@ final class ContainerHeader(ctx: RenderContext, signatures: SignatureRenderer) {
           None
       }
 
-    val indent  = ctx.lineIndentOf(container.pos.start)
+    val indent = ctx.lineIndentOf(container.pos.start)
 
     val restEnd =
       brace

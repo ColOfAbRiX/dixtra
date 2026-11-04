@@ -1,8 +1,8 @@
 package com.colofabrix.scala.dixtra.render.context
 
 import com.colofabrix.scala.dixtra.*
-import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.doc.*
+import com.colofabrix.scala.dixtra.model.*
 import scala.meta.*
 
 /**

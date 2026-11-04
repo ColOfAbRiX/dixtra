@@ -111,7 +111,12 @@ private[definition] final class ArrowGivenRenderer(ctx: RenderContext, terms: Te
     typeClause.toList ++ valueClauses
 
   private def valueClause(clause: Term.ParamClause): ArrowClause =
-    val commas   = ctx.config.definitionSite.trailingCommas
+    val commas =
+      ctx
+        .config
+        .definitionSite
+        .trailingCommas
+
     val comments = CommentedList.of(ctx, clause.pos.start, clause.values, clause.pos.end, commas)
     val group    = Group("", Syntax.clauseKeyword(clause.mod), clause.values.map(ctx.sourceDoc), comments)
 
@@ -123,7 +128,12 @@ private[definition] final class ArrowGivenRenderer(ctx: RenderContext, terms: Te
 
   // The body after `lead` (the signature and its `=`), on its line or below it by `body.given-alias`.
   private def placed(lead: Doc, body: BodyLayout, indent: Int, below: Boolean): Doc =
-    val policy = ctx.config.body.givenAlias
+    val policy =
+      ctx
+        .config
+        .body
+        .givenAlias
+        
     val down   = below || policy == SingleBodyPolicy.AlwaysBreak
     val column = ctx.endColumn(lead, indent) + 1
 

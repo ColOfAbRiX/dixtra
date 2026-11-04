@@ -7,9 +7,9 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 /**
- * The `import` and `export` clauses: one space inside the braces of the selectors, the selectors packed onto as few lines
- * as fit when the clause does not fit, and the braces around a single selector by `braces.imports`. The spelling of the
- * selectors (`_` / `*`, `=>` / `as`) never changes.
+ * The `import` and `export` clauses: one space inside the braces of the selectors, the selectors packed onto as few
+ * lines as fit when the clause does not fit, and the braces around a single selector by `braces.imports`. The spelling
+ * of the selectors (`_` / `*`, `=>` / `as`) never changes.
  */
 class ImportSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
@@ -21,14 +21,14 @@ class ImportSpec extends AnyWordSpec with Matchers with FormatMatchers {
     "have one space inside the braces and after each comma" in {
       val table =
         List(
-          "import a.{B,C}\n"         -> "import a.{ B, C }\n",
-          "import a.{ B ,  C }\n"    -> "import a.{ B, C }\n",
-          "import a.{  B, C  }\n"    -> "import a.{ B, C }\n",
-          "import a.{ B, C }\n"      -> "import a.{ B, C }\n",
-          "import a.B\n"             -> "import a.B\n",
-          "import a.{B => C, _}\n"   -> "import a.{ B => C, _ }\n",
-          "import a.{B as C, *}\n"   -> "import a.{ B as C, * }\n",
-          "import a.{given, *}\n"    -> "import a.{ given, * }\n",
+          "import a.{B,C}\n"          -> "import a.{ B, C }\n",
+          "import a.{ B ,  C }\n"     -> "import a.{ B, C }\n",
+          "import a.{  B, C  }\n"     -> "import a.{ B, C }\n",
+          "import a.{ B, C }\n"       -> "import a.{ B, C }\n",
+          "import a.B\n"              -> "import a.B\n",
+          "import a.{B => C, _}\n"    -> "import a.{ B => C, _ }\n",
+          "import a.{B as C, *}\n"    -> "import a.{ B as C, * }\n",
+          "import a.{given, *}\n"     -> "import a.{ given, * }\n",
           "import a.{given Ord[?]}\n" -> "import a.{ given Ord[?] }\n",
         )
 

@@ -1,8 +1,8 @@
 package com.colofabrix.scala.dixtra.render.definition
 
-import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
+import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.render.Alignment
 import com.colofabrix.scala.dixtra.render.context.RenderContext
 import com.colofabrix.scala.dixtra.render.term.*
@@ -175,8 +175,21 @@ final class DefRenderer(
         .tokensBetween(givenAlias.pos.start, givenAlias.name.pos.end + 1)
         .collectFirst { case t: scala.meta.tokens.Token.KwGiven => t.end }
 
-    val anonymous = givenAlias.name.value.isEmpty
-    val nameEnd   = if anonymous then keywordEnd.getOrElse(givenAlias.name.pos.end) else givenAlias.name.pos.end
+    val anonymous =
+      givenAlias
+        .name
+        .value
+        .isEmpty
+
+    val nameEnd =
+      if anonymous then
+        keywordEnd.getOrElse(givenAlias.name.pos.end)
+      else
+        givenAlias
+          .name
+          .pos
+          .end
+          
     val afterName = if anonymous then " " else ""
 
     parts(givenAlias.pos.start, nameEnd, afterName, groups, Some(givenAlias.decltpe))
@@ -255,7 +268,10 @@ final class DefRenderer(
       valueClauses
         .zip(laterTypes)
         .flatMap { (clauses, opening) =>
-          clauses.indices.toList.map(i => if i == 0 then opening else None)
+          clauses
+            .indices
+            .toList
+            .map(i => if i == 0 then opening else None)
         }
 
     SignatureParts(

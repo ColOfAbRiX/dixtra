@@ -50,7 +50,10 @@ final class PackageRenderer(ctx: RenderContext, renderRegion: (Int, Int, List[St
 
             Option
               .when(body.headOption.exists(_.isBlank) && body.lastOption.exists(_.trim == "}")) {
-                body.drop(1).dropRight(1).mkString("\n")
+                body
+                  .drop(1)
+                  .dropRight(1)
+                  .mkString("\n")
               }
               .flatMap(shifted(_, -2))
               .map(members => (head + "\n" + members).stripTrailing)

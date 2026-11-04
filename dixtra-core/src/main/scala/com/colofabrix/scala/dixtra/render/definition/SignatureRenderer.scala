@@ -1,8 +1,8 @@
 package com.colofabrix.scala.dixtra.render.definition
 
-import com.colofabrix.scala.dixtra.model.TrailingCommas
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
+import com.colofabrix.scala.dixtra.model.TrailingCommas
 import com.colofabrix.scala.dixtra.render.*
 import com.colofabrix.scala.dixtra.render.ClauseGroups.Group
 import com.colofabrix.scala.dixtra.render.comments.CommentedList
@@ -31,7 +31,11 @@ import scala.meta.tokens.Token
 private[render] final class SignatureRenderer(ctx: RenderContext) {
 
   // The comma after the last parameter of a broken clause: signatures are definition sites
-  private val commas: TrailingCommas = ctx.config.definitionSite.trailingCommas
+  private val commas: TrailingCommas =
+    ctx
+      .config
+      .definitionSite
+      .trailingCommas
 
   /**
    * True when the signature holds comments the layout cannot re-attach: between the name and `end`, outside every
@@ -55,10 +59,14 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
       }
     outside || inEmptyClause
 
-  // The block comments between the last value clause, when it has parameters, and the return type
-  // (`def f(a: Int) /* the id */ : String`), which cannot stay there: they trail the last parameter.
+  // The block comments between the last value clause, when it has parameters, and the return type (`def f(a: Int) /*
+  // the id */ : String`), which cannot stay there: they trail the last parameter.
   private def afterLastClause(parts: SignatureParts): List[Token.Comment] =
-    val last = parts.paramClauses.lastOption.filter(_.values.nonEmpty)
+    val last =
+      parts
+        .paramClauses
+        .lastOption
+        .filter(_.values.nonEmpty)
 
     last
       .zip(parts.returnType)
@@ -113,11 +121,15 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
  // The pieces of a signature as documents, before deciding its breaks.
   private final class Layout(signature: SignatureParts, baseIndent: Int) {
     // modifiers + keyword + name, and what separates the name from the parameters
-    val prefix: Doc              = ctx.sourceDoc(signature.prefixStart, signature.nameEnd) ++ Doc.text(signature.afterName)
+    val prefix: Doc =
+      ctx.sourceDoc(signature.prefixStart, signature.nameEnd) ++ 
+      Doc.text(signature.afterName)
+
     val tclause                  = signature.tparamClause
     val tparams: List[Doc]       = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
     val tcomments: CommentedList = CommentedList.of(ctx, tclause.pos.start, tclause.values, tclause.pos.end, commas)
     val clauses: List[Group]     = withMovedComments(signature, written(signature))
+    
     val returnPart: Doc =
       signature
         .returnType

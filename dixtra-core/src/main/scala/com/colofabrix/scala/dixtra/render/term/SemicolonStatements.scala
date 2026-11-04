@@ -14,8 +14,14 @@ private[render] object SemicolonStatements {
    * `;` and has no comment.
    */
   def keptOnLine(ctx: RenderContext, body: Tree): Boolean =
-    val text     = ctx.slice(body.pos.start, body.pos.end)
-    val policy   = ctx.config.body.semicolonStatements
+    val text = ctx.slice(body.pos.start, body.pos.end)
+
+    val policy =
+      ctx
+        .config
+        .body
+        .semicolonStatements
+        
     val keep     = policy == SemicolonPolicy.Keep
     val oneLine  = !text.contains('\n') && text.contains(';')
     val noRemark = ctx.commentsBetween(body.pos.start, body.pos.end).isEmpty
