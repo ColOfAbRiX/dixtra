@@ -1,7 +1,6 @@
 package com.colofabrix.scala.dixtra.render
 
 import com.colofabrix.scala.dixtra.*
-import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.normalize.SourceEdits
 import com.colofabrix.scala.dixtra.render.context.RenderContext
@@ -36,6 +35,8 @@ final class TreeRenderer(original: String, config: Config) {
   private val defs        = new DefRenderer(ctx, terms, assignments, signatures)
   private val definitions = new DefinitionAlignment(ctx, assignments, defs)
   private val containers  = new ContainerRenderer(ctx, signatures, renderRegion)
+  private val packages    = new PackageRenderer(ctx, renderRegion)
+  private val extensions  = new ExtensionGroupRenderer(ctx, renderRegion)
 
   /**
    * Render a whole compilation unit by splicing its top-level statements.
@@ -43,7 +44,7 @@ final class TreeRenderer(original: String, config: Config) {
   def renderSource(source: Source): String =
     source.stats match {
       case (pkg: Pkg) :: Nil =>
-        original.take(pkg.pos.start) + singlePackage(pkg) + original.drop(pkg.pos.end)
+        original.take(pkg.pos.start) + packages.render(pkg) + original.drop(pkg.pos.end)
       case stats =>
         renderRegion(0, original.length, stats)
     }
@@ -55,22 +56,10 @@ final class TreeRenderer(original: String, config: Config) {
   def restylesPackage(source: Source): Boolean =
     source.stats match {
       case (pkg: Pkg) :: Nil =>
-        packageBraces(pkg).exists(braced => ctx.usesBraces(Construct.Package, braced) != braced)
+        packages.restyles(pkg)
       case _ =>
         false
     }
-
-  // Whether the single package clause `pkg` is written with braces, when it can change style: it has members and no
-  // nested package.
-  private def packageBraces(pkg: Pkg): Option[Boolean] =
-    pkg
-      .body
-      .stats
-      .headOption
-      .filterNot(_ => pkg.body.stats.exists(_.is[Pkg]))
-      .flatMap { first =>
-        ctx.previousSignificant(first.pos.start).map(_.is[Token.LeftBrace])
-      }
 
   /**
    * Render the statements found in `[start, end)` in place, aligning the consecutive one-line definitions among them.
@@ -149,7 +138,7 @@ final class TreeRenderer(original: String, config: Config) {
       case e: Defn.Enum =>
         containers.render(e, e.templ)
       case e: Defn.ExtensionGroup =>
-        extensionGroup(e)
+        extensions.render(e)
       case t: Term =>
         verified(t, definition.getOrElse(terms.render(t, baseIndent, forceExplode = false)), baseIndent)
           .fold(SafetyNet.verbatim(tree))(Render.render(_, baseIndent))
@@ -224,172 +213,6 @@ final class TreeRenderer(original: String, config: Config) {
       val before = line.take(at).stripTrailing
       before + " " * (math.max(0, target - before.length) + 1) + line.drop(at)
     }
-
-  // The methods of an `extension` group: a single one or a block of them.
-  private def extensionMembers(e: Defn.ExtensionGroup): List[Stat] =
-    e.body match {
-      case block: Term.Block => block.stats
-      case single            => List(single)
-    }
-
-  // The single package clause of a file, without nested ones, with its members formatted in place, changing between
-  // `package a { ... }` and `package a` (members one level out) by the brace style.
-  private def singlePackage(pkg: Pkg): String =
-    val rendered = renderRegion(pkg.pos.start, pkg.pos.end, pkg.body.stats)
-
-    val opener =
-      pkg
-        .body
-        .stats
-        .headOption
-        .flatMap(first => ctx.previousSignificant(first.pos.start))
-
-    val braced = opener.exists(_.is[Token.LeftBrace])
-
-    val noNestedPkg  = !pkg.body.stats.exists(_.is[Pkg])
-    val wantsRestyle = ctx.usesBraces(Construct.Package, braced) != braced
-
-    val restyled =
-      (opener, pkg.body.stats.headOption) match {
-        case (Some(open), Some(_)) if noNestedPkg && wantsRestyle =>
-          val head = ctx.slice(pkg.pos.start, if braced then open.start else open.end).stripTrailing
-
-          if braced then
-            val body =
-              rendered
-                .drop(open.end - pkg.pos.start)
-                .split("\n", -1)
-                .toList
-
-            Option
-              .when(body.headOption.exists(_.isBlank) && body.lastOption.exists(_.trim == "}")) {
-                body.drop(1).dropRight(1).mkString("\n")
-              }
-              .flatMap(shifted(_, -2))
-              .map(members => (head + "\n" + members).stripTrailing)
-          else
-            val rest = rendered.drop(head.length).stripTrailing
-            Option
-              .when(rest.takeWhile(_ != '\n').isBlank && rest.contains('\n'))(rest)
-              .flatMap(shifted(_, 2))
-              .map(members => head + " {" + members + "\n}")
-        case _ =>
-          None
-      }
-
-    val result = restyled.filter(Equivalence.isEquivalentPackage(pkg, _)).getOrElse(rendered)
-
-    def membersOnNextLine(open: Token): Boolean =
-      pkg
-        .body
-        .stats
-        .headOption
-        .exists { first =>
-          !first.is[Pkg] && ctx.slice(open.end, first.pos.start).contains('\n')
-        }
-
-    opener
-      .filter(membersOnNextLine)
-      .map { open =>
-        EdgeBlankLines(result, ctx.slice(pkg.pos.start, open.start).count(_ == '\n'), Construct.Package, ctx)
-      }
-      .getOrElse(result)
-
-  // The lines of `text` indented by `delta` columns (dedented when negative, by at most the spaces a line has), or None
-  // when `text` cannot be tokenised. Blank lines become empty, and a line starting inside a multi-line token other than
-  // a comment (a string literal) is kept as is: its text is content.
-  private def shifted(text: String, delta: Int): Option[String] =
-    SourceEdits
-      .tokens(text)
-      .map { tokens =>
-        val literals = tokens.filter(t => !t.is[Token.Comment] && t.text.contains('\n')).toList
-
-        val starts =
-          text
-            .split("\n", -1)
-            .toList
-            .scanLeft(0)(_ + _.length + 1)
-
-        text
-          .split("\n", -1)
-          .toList
-          .zip(starts)
-          .map { (line, start) =>
-            if literals.exists(t => t.start < start && start < t.end) then
-              line
-            else if line.isBlank then
-              ""
-            else if delta >= 0 then
-              " " * delta + line
-            else
-              line.drop(math.min(-delta, line.takeWhile(_ == ' ').length))
-          }
-          .mkString("\n")
-      }
-
-  // An `extension` group with its members formatted in place, in braces or braceless by the brace style. Only a group
-  // of several members on their own lines, whose `{` ends the header line and whose `}` stands on its own line, changes
-  // style; an `end` marker is not a member.
-  private def extensionGroup(e: Defn.ExtensionGroup): String =
-    val members  = extensionMembers(e)
-    val rendered = renderRegion(e.pos.start, e.pos.end, members)
-
-    val restyled =
-      (e.body, members.headOption) match {
-        case (block: Term.Block, Some(first)) if members.count(!_.is[Term.EndMarker]) > 1 =>
-          val braced = ctx.writtenWithBraces(block)
-          if ctx.usesBraces(Construct.Extension, braced) == braced then
-            None
-          else if braced then
-            val at = block.pos.start - e.pos.start
-
-            val lines =
-              rendered
-                .drop(at + 1)
-                .split("\n", -1)
-                .toList
-
-            val bracedBlock = rendered.lift(at).contains('{') && lines.lastOption.exists(_.trim == "}")
-            val blankFirst  = lines.headOption.exists(_.isBlank)
-            val noComments  = ctx.commentsBetween(block.pos.start, first.pos.start).isEmpty
-
-            val unwrappable = bracedBlock && blankFirst && noComments
-
-            Option.when(unwrappable) {
-              rendered.take(at).stripTrailing + lines.dropRight(1).mkString("\n").stripTrailing
-            }
-          else
-            val at     = first.pos.start - e.pos.start
-            val header = rendered.take(at)
-            val end    = header.stripTrailing.length
-
-            val brokenHeader = header.drop(end).contains('\n')
-            val noComments   = ctx.commentsBetween(e.pos.start, first.pos.start).isEmpty
-            val indent       = " " * ctx.lineIndentOf(e.pos.start)
-
-            Option.when(brokenHeader && noComments) {
-              header.take(end) +
-              " {" +
-              header.drop(end) +
-              rendered.drop(at) +
-              "\n" +
-              indent + "}"
-            }
-        case _ =>
-          None
-      }
-
-    val result = restyled.filter(Equivalence.isEquivalentStat(e, _)).getOrElse(rendered)
-
-    members
-      .headOption
-      .flatMap { first =>
-        ctx.previousSignificant(first.pos.start).filter(o => ctx.slice(o.end, first.pos.start).contains('\n'))
-      }
-      .map { open =>
-        EdgeBlankLines(result, ctx.slice(e.pos.start, open.start).count(_ == '\n'), Construct.Extension, ctx)
-      }
-      .getOrElse(result)
 
   // Accept a rendered definition or statement only if it is equivalent to the original. Containers and packages are not
   // checked here: their members are verified individually and the whole file is verified by [[Dixtra.format]].
