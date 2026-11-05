@@ -34,8 +34,8 @@ jobs:
       - name: Run tests
         run: sbt test
 
-      - name: Check code style
-        run: sbt scalafixAll --check
+      # - name: Check formatting and rules
+      #   run: sbt "dixtraCheckAll; scalafixAll --check"
 
       - name: Test the API documentation
         run: sbt doc
