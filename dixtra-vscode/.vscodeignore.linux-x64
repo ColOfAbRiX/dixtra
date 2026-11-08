@@ -1,0 +1,10 @@
+src/**
+node_modules/**
+.gitignore
+tsconfig.json
+**/*.map
+icon.png
+.vscodeignore*
+
+bin/win32-x64/**
+bin/darwin-arm64/**

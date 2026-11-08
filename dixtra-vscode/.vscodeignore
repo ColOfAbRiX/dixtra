@@ -4,4 +4,4 @@ node_modules/**
 tsconfig.json
 **/*.map
 icon.png
-bin/linux-x64/**
+.vscodeignore*

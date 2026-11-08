@@ -1,0 +1,198 @@
+name: Release dixtra
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check that the tag is the version of the build
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          versions="$(grep -E '^[[:space:]]*version[[:space:]]*:=' build.sbt | grep -o '"[^"]*"' | tr -d '"' | sort -u)"
+          if [ -z "$versions" ] || [ "$(printf '%s\n' "$versions" | grep -c .)" -ne 1 ] || [ "$versions" != "$tag" ]; then
+            echo "the tag $tag does not match the version(s) of build.sbt: $versions"
+            exit 1
+          fi
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'sbt'
+
+      - name: Set up sbt
+        uses: sbt/setup-sbt@v1
+
+      - name: Run tests
+        run: sbt test
+
+      - name: Test the API documentation
+        run: sbt doc
+
+  executables:
+    name: Executable (${{ matrix.platform }})
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            platform: linux-x64
+          - os: windows-latest
+            platform: win32-x64
+          - os: macos-latest
+            platform: darwin-arm64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+
+      - name: Set up sbt
+        uses: sbt/setup-sbt@v1
+
+      - name: Build the native executable
+        run: sbt dixtraCli/nativeImage
+
+      - name: Collect and check the executable
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          mkdir -p "dist/${{ matrix.platform }}"
+          executable="$(find . -type f -path '*/native/dixtra' ! -path './dixtra-vscode/*' | head -n 1)"
+          if [ -z "$executable" ]; then echo "native executable not found"; exit 1; fi
+          cp "$executable" "dist/${{ matrix.platform }}/dixtra"
+          "./dist/${{ matrix.platform }}/dixtra" --version
+
+      - name: Collect and check the executable
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "dist/${{ matrix.platform }}" | Out-Null
+          $executable = Get-ChildItem -Path . -Recurse -Filter dixtra.exe -File |
+            Where-Object { $_.Directory.Name -eq 'native' } | Select-Object -First 1
+          if (-not $executable) { Write-Error "native executable not found"; exit 1 }
+          Copy-Item $executable.FullName "dist/${{ matrix.platform }}/dixtra.exe"
+          & "dist/${{ matrix.platform }}/dixtra.exe" --version
+
+      - name: Upload the executable
+        uses: actions/upload-artifact@v5
+        with:
+          name: executable-${{ matrix.platform }}
+          path: dist/
+          if-no-files-found: error
+
+  extension:
+    name: VS Code extension
+    needs: [test, executables]
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download the Linux executable
+        uses: actions/download-artifact@v5
+        with:
+          name: executable-linux-x64
+          path: dist/
+
+      - name: Download the Windows executable
+        uses: actions/download-artifact@v5
+        with:
+          name: executable-win32-x64
+          path: dist/
+
+      - name: Download the macOS executable
+        uses: actions/download-artifact@v5
+        with:
+          name: executable-darwin-arm64
+          path: dist/
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up sbt
+        uses: sbt/setup-sbt@v1
+
+      - name: Package the extension for every platform
+        run: sbt ";dixtraVsCode/vscodePackageLinux;dixtraVsCode/vscodePackageWin;dixtraVsCode/vscodePackageMac"
+
+      - name: Upload the .vsix files
+        uses: actions/upload-artifact@v5
+        with:
+          name: vscode-extension
+          path: dist/*.vsix
+          if-no-files-found: error
+
+  release:
+    name: GitHub release
+    needs: [executables, extension]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download the Linux executable
+        uses: actions/download-artifact@v5
+        with:
+          name: executable-linux-x64
+          path: dist/
+
+      - name: Download the Windows executable
+        uses: actions/download-artifact@v5
+        with:
+          name: executable-win32-x64
+          path: dist/
+
+      - name: Download the macOS executable
+        uses: actions/download-artifact@v5
+        with:
+          name: executable-darwin-arm64
+          path: dist/
+
+      - name: Download the .vsix files
+        uses: actions/download-artifact@v5
+        with:
+          name: vscode-extension
+          path: dist/
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          chmod +x dist/linux-x64/dixtra dist/darwin-arm64/dixtra
+          assets=(
+            dist/linux-x64/dixtra
+            dist/win32-x64/dixtra.exe
+            dist/darwin-arm64/dixtra
+            dist/*.vsix
+          )
+          if ! gh release create "$GITHUB_REF_NAME" "${assets[@]}" \
+            --title "$GITHUB_REF_NAME" --generate-notes; then
+            gh release upload "$GITHUB_REF_NAME" "${assets[@]}" --clobber
+          fi

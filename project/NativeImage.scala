@@ -32,19 +32,24 @@ object NativeImage {
         val directory = target.value / "native"
         val output    = directory / executable
 
+        // The lazy vals of the Scala runtime use sun.misc.Unsafe: on JDK 24 and later every run warns about it and
+        // this option silences it. Before 24 the option does not exist and native-image fails on it, so it is only
+        // passed when the JVM running sbt, the same one native-image is hosted on, is new enough to know it.
+        val unsafeMemoryAccess =
+          if javaMajor >= 24 then List("-J--sun-misc-unsafe-memory-access=allow") else Nil
+
         // The arguments go through a file: on Windows the classpath is too long for a command line
         val arguments =
-          List(
-            "-march=compatibility",
-            // The lazy vals of the Scala runtime use sun.misc.Unsafe: without this, every run warns about it
-            "-J--sun-misc-unsafe-memory-access=allow",
-            "-H:+ReportExceptionStackTraces",
-            "-cp",
-            classpath.map(path).mkString(java.io.File.pathSeparator),
-            "-o",
-            path(output),
-            mainClass,
-          )
+          List("-march=compatibility") ++
+            unsafeMemoryAccess ++
+            List(
+              "-H:+ReportExceptionStackTraces",
+              "-cp",
+              classpath.map(path).mkString(java.io.File.pathSeparator),
+              "-o",
+              path(output),
+              mainClass,
+            )
 
         IO.createDirectory(directory)
 
@@ -98,6 +103,10 @@ object NativeImage {
       .props("os.name")
       .toLowerCase
       .contains("windows")
+
+  // The major version of the JVM running sbt: "21", or the old scheme "1.8"
+  private def javaMajor: Int =
+    sys.props.getOrElse("java.specification.version", "21").split('.').last.toIntOption.getOrElse(21)
 
   private def tool(name: String): File =
     file(graalVmHome) / "bin" / name

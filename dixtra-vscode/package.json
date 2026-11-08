@@ -42,7 +42,10 @@
   },
   "scripts": {
     "compile": "tsc -p ./",
-    "package": "tsc -p ./ && vsce package"
+    "package": "tsc -p ./ && vsce package",
+    "package:linux": "tsc -p ./ && vsce package --target linux-x64 --ignoreFile .vscodeignore.linux-x64",
+    "package:win": "tsc -p ./ && vsce package --target win32-x64 --ignoreFile .vscodeignore.win32-x64",
+    "package:mac": "tsc -p ./ && vsce package --target darwin-arm64 --ignoreFile .vscodeignore.darwin-arm64"
   },
   "devDependencies": {
     "@vscode/vsce": "^3.0.0",

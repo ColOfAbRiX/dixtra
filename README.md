@@ -21,10 +21,10 @@ def total[A](xs: List[Int], limit: Int, multiplier: Double)(using ord: Ordering[
 
 is composed of:
 
-1. a function definition
-2. one type parameter list
-3. one parameter list
-4. a body containing a selector chain
+* a function definition
+* one type parameter list
+* one parameter list
+* a body containing a selector chain
 
 each of these parts are formatted indipendently and as a unit:
 
@@ -50,7 +50,7 @@ The plugin requires sbt 2. Add this line to `project/plugins.sbt`:
 addSbtPlugin("com.colofabrix.scala" % "sbt-dixtra" % "1.0.0-RC1")
 ```
 
-Dixtra gets its configration from `.dixtra.conf` filesl. The formatting options are documented, with examples,
+Dixtra gets its configuration from `.dixtra.conf` files. The formatting options are documented, with examples,
 in [`reference.conf`](dixtra-cli/src/main/resources/reference.conf), which also holds the default of every setting.
 
 ## Principles (WIP)
