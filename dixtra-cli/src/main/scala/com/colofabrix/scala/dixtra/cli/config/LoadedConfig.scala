@@ -1,4 +1,4 @@
-package com.colofabrix.scala.dixtra.cli
+package com.colofabrix.scala.dixtra.cli.config
 
 import cats.data.*
 import com.colofabrix.scala.dixtra.Config

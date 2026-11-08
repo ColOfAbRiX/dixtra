@@ -1,7 +1,8 @@
-package com.colofabrix.scala.dixtra.cli
+package com.colofabrix.scala.dixtra.cli.config
 
 import cats.data.*
 import com.colofabrix.scala.dixtra.Config
+import com.colofabrix.scala.dixtra.cli.files.SourceFiles
 import com.monovore.decline.Opts
 import com.typesafe.config.Config as HoconConfig
 import java.nio.file.*

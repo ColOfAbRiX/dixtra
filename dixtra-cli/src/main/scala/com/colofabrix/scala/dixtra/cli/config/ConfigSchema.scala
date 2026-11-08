@@ -1,7 +1,7 @@
-package com.colofabrix.scala.dixtra.cli
+package com.colofabrix.scala.dixtra.cli.config
 
 import com.colofabrix.scala.dixtra.Config
-import com.colofabrix.scala.dixtra.cli.ConfigInstances.given
+import com.colofabrix.scala.dixtra.cli.config.ConfigInstances.given
 import com.typesafe.config.{ Config as HoconConfig, * }
 import pureconfig.*
 

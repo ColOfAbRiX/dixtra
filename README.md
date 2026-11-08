@@ -4,24 +4,32 @@
 
 # Dixtra
 
-Dixtra is an opinionated formatter for Scala 3. The primary goal is visual consistency.
+Dixtra is an opinionated formatter for Scala 3. Its primary goal is visual consistency across constructs.
 
 Unlike other Scala formatters, that allow you to tune typographic formatting like parentheses,
 indentation, commas, etc., Dixtra treats the code as having visual features that can be formatted as
-a unit. On top of this, Dixtra doesn't give the users full control to limit potential for unwanted
-results.
+a unit. On top of this, Dixtra doesn't give the users full control of everything to limit the potential
+for inconsistent results.
 
-For example this function definition:
+## Example 
+
+This function definition:
 
 ```scala
 def total[A](xs: List[Int], limit: Int, multiplier: Double)(using ord: Ordering[Int]): Double = xs.filter(_ > limit).map(_ * multiplier).sum
 ```
 
-has a definition with a single parameter list and a body containing a selector chain and each of
-these parts are formatted indipendently and as a unit:
+is composed of:
+
+1. a function definition
+2. one type parameter list
+3. one parameter list
+4. a body containing a selector chain
+
+each of these parts are formatted indipendently and as a unit:
 
 ```scala
-def total(
+def total[A](
   xs: List[Int],
   limit: Int,
   multiplier: Double

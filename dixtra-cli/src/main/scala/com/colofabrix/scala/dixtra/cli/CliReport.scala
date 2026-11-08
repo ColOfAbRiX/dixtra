@@ -3,6 +3,7 @@ package com.colofabrix.scala.dixtra.cli
 import cats.effect.*
 import cats.effect.std.Console
 import cats.syntax.all.*
+import com.colofabrix.scala.dixtra.cli.files.FileResult
 import java.nio.file.Path
 
 /**

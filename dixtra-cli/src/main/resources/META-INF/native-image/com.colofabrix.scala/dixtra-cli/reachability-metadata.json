@@ -90,7 +90,7 @@
       ]
     },
     {
-      "type": "com.colofabrix.scala.dixtra.cli.ConfigAliases$",
+      "type": "com.colofabrix.scala.dixtra.cli.config.ConfigAliases$",
       "fields": [
         {
           "name": "all$lzy1"
@@ -98,7 +98,7 @@
       ]
     },
     {
-      "type": "com.colofabrix.scala.dixtra.cli.ConfigCli$",
+      "type": "com.colofabrix.scala.dixtra.cli.config.ConfigCli$",
       "fields": [
         {
           "name": "bracePolicies$lzy1"

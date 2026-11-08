@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra.properties
 
-import com.colofabrix.scala.dixtra.cli.ConfigCli
+import com.colofabrix.scala.dixtra.cli.config.ConfigCli
 import com.colofabrix.scala.dixtra.testkit.FormatMatchers
 import java.nio.charset.StandardCharsets
 import java.nio.file.*

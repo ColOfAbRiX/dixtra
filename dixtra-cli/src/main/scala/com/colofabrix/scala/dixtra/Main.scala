@@ -5,6 +5,9 @@ import cats.effect.*
 import cats.syntax.all.*
 import com.colofabrix.scala.declinio.IODeclineApp
 import com.colofabrix.scala.dixtra.cli.*
+import com.colofabrix.scala.dixtra.cli.config.*
+import com.colofabrix.scala.dixtra.cli.engine.FormatRunner
+import com.colofabrix.scala.dixtra.cli.files.*
 import com.monovore.decline.Opts
 import java.nio.file.Path
 
@@ -63,10 +66,12 @@ object Main extends IODeclineApp[CliOptions] {
       case Validated.Invalid(errors) =>
         IO.pure(List(FileResult.Failed(path, errors.toList.mkString("; "))))
       case Validated.Valid(config) =>
-        val runner = FormatRunner(config, cliOptions.maxColumn, cliOptions.check)
         selection(cliOptions, path).flatMap {
-          case Left(error)   => IO.pure(List(FileResult.Failed(path, error)))
-          case Right(select) => runner.run(List(path), select)
+          case Left(error)   => 
+            IO.pure(List(FileResult.Failed(path, error)))
+          case Right(select) => 
+            FormatRunner(config, cliOptions.maxColumn, cliOptions.check)
+            .run(List(path), select)
         }
     }
 

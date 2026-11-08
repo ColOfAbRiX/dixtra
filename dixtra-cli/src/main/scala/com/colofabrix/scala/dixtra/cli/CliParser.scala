@@ -2,13 +2,15 @@ package com.colofabrix.scala.dixtra.cli
 
 import cats.data.NonEmptyList
 import cats.syntax.all.*
+import com.colofabrix.scala.dixtra.cli.config.ConfigCli
 import com.monovore.decline.Opts
 import java.nio.file.Path
 
 /**
  * Decline option definitions for the dixtra CLI.
  *
- * Accepts one or more file or directory paths as positional arguments, an optional configuration (see [[ConfigCli]]),
+ * Accepts one or more file or directory paths as positional arguments, an optional configuration (see
+ * [[com.colofabrix.scala.dixtra.cli.config.ConfigCli]]),
  * an optional `--max-column` width (which must be a positive integer) overriding the configured one, a `--check` flag
  * that switches the tool into verification mode, a `--changed-since` git ref that limits it to the files changed since
  * then, and a `--quiet` flag that leaves the unchanged files out of the report.

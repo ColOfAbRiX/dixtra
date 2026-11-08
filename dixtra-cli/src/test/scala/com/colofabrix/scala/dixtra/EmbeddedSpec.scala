@@ -1,6 +1,6 @@
 package com.colofabrix.scala.dixtra
 
-import com.colofabrix.scala.dixtra.cli.ConfigCli
+import com.colofabrix.scala.dixtra.cli.config.ConfigCli
 import com.colofabrix.scala.dixtra.testkit.TempFiles.*
 import java.nio.file.Path
 import java.util.function.Consumer

@@ -1,9 +1,10 @@
-package com.colofabrix.scala.dixtra.cli
+package com.colofabrix.scala.dixtra.cli.config
 
 import cats.data.*
 import cats.syntax.all.*
 import com.colofabrix.scala.dixtra.*
-import com.colofabrix.scala.dixtra.cli.ConfigInstances.given
+import com.colofabrix.scala.dixtra.cli.config.ConfigInstances.given
+import com.colofabrix.scala.dixtra.cli.files.SourceFiles
 import com.typesafe.config.{ Config as HoconConfig, * }
 import java.nio.file.*
 import pureconfig.ConfigSource

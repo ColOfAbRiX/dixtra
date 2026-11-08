@@ -1,4 +1,4 @@
-package com.colofabrix.scala.dixtra.cli
+package com.colofabrix.scala.dixtra.cli.files
 
 import cats.effect.*
 import java.nio.charset.StandardCharsets

@@ -1,6 +1,7 @@
 package com.colofabrix.scala.dixtra.cli
 
 import cats.data.ValidatedNel
+import com.colofabrix.scala.dixtra.cli.config.LoadedConfig
 import java.nio.file.Path
 
 /**
@@ -12,7 +13,8 @@ import java.nio.file.Path
  * @param maxColumn The maximum line width, overriding the configuration.
  * @param check When true, do not modify files: only report whether each file is already formatted, exiting non-zero if
  *              any would change.
- * @param changedSince A git ref: when given, only the files changed since it (see [[GitChanges]]) are processed.
+ * @param changedSince A git ref: when given, only the files changed since it (see
+ *                     [[com.colofabrix.scala.dixtra.cli.files.GitChanges]]) are processed.
  * @param quiet When true, the unchanged files are not listed.
  */
 final case class CliOptions(

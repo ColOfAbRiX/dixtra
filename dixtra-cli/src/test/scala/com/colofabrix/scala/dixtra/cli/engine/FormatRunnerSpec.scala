@@ -1,7 +1,8 @@
-package com.colofabrix.scala.dixtra.cli
+package com.colofabrix.scala.dixtra.cli.engine
 
 import cats.effect.unsafe.implicits.global
 import com.colofabrix.scala.dixtra.*
+import com.colofabrix.scala.dixtra.cli.files.FileResult
 import com.colofabrix.scala.dixtra.model.*
 import com.colofabrix.scala.dixtra.testkit.TempFiles.*
 import java.nio.file.*

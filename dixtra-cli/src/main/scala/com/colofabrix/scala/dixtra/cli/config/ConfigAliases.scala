@@ -1,4 +1,4 @@
-package com.colofabrix.scala.dixtra.cli
+package com.colofabrix.scala.dixtra.cli.config
 
 import com.typesafe.config.{ Config as HoconConfig, * }
 import scala.jdk.CollectionConverters.*

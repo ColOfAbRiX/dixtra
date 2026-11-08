@@ -2,6 +2,7 @@ package com.colofabrix.scala.dixtra.cli
 
 import cats.effect.*
 import cats.effect.unsafe.implicits.global
+import com.colofabrix.scala.dixtra.cli.files.FileResult
 import java.nio.file.Paths
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

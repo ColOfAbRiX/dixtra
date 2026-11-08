@@ -1,4 +1,4 @@
-package com.colofabrix.scala.dixtra.cli
+package com.colofabrix.scala.dixtra.cli.files
 
 import com.colofabrix.scala.dixtra.FormatError
 import java.nio.file.Path
