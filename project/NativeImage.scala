@@ -43,6 +43,8 @@ object NativeImage {
           List("-march=compatibility") ++
             unsafeMemoryAccess ++
             List(
+              // A fallback image silently needs a JDK to run: fail the build instead when metadata is missing
+              "--no-fallback",
               "-H:+ReportExceptionStackTraces",
               "-cp",
               classpath.map(path).mkString(java.io.File.pathSeparator),

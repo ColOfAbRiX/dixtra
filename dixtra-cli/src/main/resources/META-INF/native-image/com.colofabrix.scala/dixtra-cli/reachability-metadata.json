@@ -1,6 +1,21 @@
 {
   "reflection": [
     {
+      "type": "scala.meta.internal.parsers.InfixMode$",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "scala.meta.internal.parsers.InfixMode",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "com.typesafe.config.DefaultConfigLoadingStrategy",
+      "allDeclaredConstructors": true
+    },
+    {
       "type": "boolean[]"
     },
     {
