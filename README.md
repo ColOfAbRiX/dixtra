@@ -4,47 +4,18 @@
 
 # Dixtra
 
-Dixtra is an opinionated formatter for Scala 3. Its primary goal is visual consistency across constructs.
+Dixtra is an opinionated formatter for Scala 3. Its primary goal is visual consistency and clarity across constructs.
 
-Unlike other Scala formatters, that allow you to tune typographic formatting like parentheses,
-indentation, commas, etc., Dixtra treats the code as having visual features that can be formatted as
+Unlike other Scala formatters that allow you to fine tune typographic formatting like parentheses,
+indentation, commas, etc., Dixtra treats the code as having visual features that must be formatted as
 a unit. On top of this, Dixtra doesn't give the users full control of everything to limit the potential
 for inconsistent results.
 
-## Example 
-
-This function definition:
-
-```scala
-def total[A](xs: List[Int], limit: Int, multiplier: Double)(using ord: Ordering[Int]): Double = xs.filter(_ > limit).map(_ * multiplier).sum
-```
-
-is composed of:
-
-* a function definition
-* one type parameter list
-* one parameter list
-* a body containing a selector chain
-
-each of these parts are formatted indipendently and as a unit:
-
-```scala
-def total[A](
-  xs: List[Int],
-  limit: Int,
-  multiplier: Double
-)(using
-  ord: Ordering[Int]
-): Double =
-  xs
-    .filter(_ > limit)
-    .map(_ * multiplier)
-    .sum
-```
-
 ## Installation and configuration
 
-The plugin requires sbt 2. Add this line to `project/plugins.sbt`:
+Dixtra runs against Scala 3 code and the sbt plugin requires SBT 2
+
+To include Dixtra in your SBT project, add this line to `project/plugins.sbt`:
 
 ```scala
 addSbtPlugin("com.colofabrix.scala" % "sbt-dixtra" % "1.0.0-RC1")
@@ -73,11 +44,13 @@ overflow
 
 ### One operation per line
 
-## The sbt plugin
+## Bundles
+
+### The sbt plugin
 
 Once installed (see above) it is enabled automatically in every project.
 
-### Tasks
+#### Tasks
 
 | Task                       | What it does                                                                            |
 | -------------------------- | --------------------------------------------------------------------------------------- |
@@ -92,7 +65,7 @@ Once installed (see above) it is enabled automatically in every project.
 
 The tasks cover the unmanaged source directories of a configuration, so generated sources are left alone.
 
-### Settings
+#### Settings
 
 | Setting              | Default              | What it does                                                |
 | -------------------- | -------------------- | ----------------------------------------------------------- |
@@ -107,7 +80,7 @@ dixtraOnCompile    := true
 dixtraChangedSince := Some("origin/main")
 ```
 
-## The command line
+### The command line tool
 
 The command line is `dixtra-cli`. From a clone of this repository, run it with `sbt "run <options> <paths>"`, or
 build it as a native executable that starts instantly (see [Building from source](#building-from-source)).
@@ -132,7 +105,7 @@ Dixtra [--config-string <hocon> | --config-path <file>] [--max-column <n>] [--ch
 With `--changed-since`, a file counts as changed when it was committed since the ref, has uncommitted changes, or is new
 and not ignored by git. With `HEAD`, only the uncommitted changes count.
 
-## The VS Code extension
+### The VS Code extension
 
 The `dixtra-vscode/` folder holds an extension that formats the document of the editor with Dixtra when you run
 **Format Document** (`Shift+Alt+F`). 
@@ -195,11 +168,13 @@ Some rules have no setting on purpose:
 - **Comments** on lines of their own are reflowed to `max-column.
 - **Scaladoc** gets the javadoc layout.
 
-Some code is copied exactly as written, because Dixtra has no rule for it yet:
+When Dixtra has no rule for a specific code snippet, the code is copied exactly as written.
+
+Known limitations:
 
 - Among the Scala 3 syntax it does not parse yet is `into` on a type (Scala 3.9).
 
-## Ignoring formatting for snippets of code
+## Ignoring formatting
 
 The code between a `dixtra: off` comment and a `dixtra: on` comment stays exactly as written:
 
@@ -209,9 +184,8 @@ object Matrices {
 
   // dixtra: off
   val identity = Array(
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1,
+    1, 0,
+    0, 1,
   )
   // dixtra: on
 }
@@ -245,8 +219,6 @@ Dixtra.format(source, Config.default, SourceDialect.sbt)    // an sbt 2 build fi
 - `UnsafeOutputError`: the output would not be equivalent to the input. This signals a formatter bug, not a problem
   with the source.
 
-Reading `.dixtra.conf` files is part of `dixtra-cli` (`ConfigCli`), not of the core, and so are the aliases.
-
 `Embedded.run` in `dixtra-cli` runs the command line without exiting the JVM, with Java types only: it hands each
 report line to a callback, one for the standard output and one for the standard error, and returns the exit code,
 2 for invalid options. The sbt plugin calls it from its own class loader.
@@ -279,12 +251,12 @@ sbt publishLocal
 
 and the artifacts will be published under `<local_ivy2>/local/com.colofabrix.scala`
 
-### The native CLI executable
+### The command line tool
 
 `sbt dixtraCli/nativeImage` builds the command line with GraalVM `native-image`, into
 `target/out/jvm/scala-3.9.0/dixtra-cli/native/dixtra` (`dixtra.exe` on Windows).
 
-It needs:
+Requirements:
 
 - `GRAALVM_HOME` pointing to a GraalVM installation (GraalVM Community 25 or later);
 - on Windows, the Visual Studio C++ build tools (the "Desktop development with C++" workload). If `native-image`
@@ -295,7 +267,7 @@ It needs:
 `sbt dixtraVsCode/vscodePackage` builds the extension of `dixtra-vscode/` (see
 [The VS Code extension](#the-vs-code-extension) for what it does).
 
-It needs:
+Requirements:
 
 - `GRAALVM_HOME` pointing to a GraalVM installation (GraalVM Community 25 or later);
 - on Windows, the Visual Studio C++ build tools (the "Desktop development with C++" workload). If `native-image`
