@@ -96,6 +96,20 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
       actual shouldBe expected
     }
 
+    "set the braces around a single-expression body of a construct, keeping the others" in {
+      val expected = Validated.valid((BracePolicy.Keep, BracePolicy.ForceIndent, BracePolicy.ForceIndent))
+
+      val actual =
+        ConfigCli
+          .fromString("braces.single-expr.def = keep")
+          .map { config =>
+            val braces = config.braces
+            (braces.singleExpr(Construct.Def), braces.singleExpr(Construct.Val), braces(Construct.Def))
+          }
+
+      actual shouldBe expected
+    }
+
     "set the brace style of a construct, keeping the others" in {
       val expected = Validated.valid((BracePolicy.ForceBraces, BracePolicy.ForceBraces))
 
@@ -479,6 +493,8 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
           "braces.style = gnu"                                -> "allman",
           "braces.if = sometimes"                             -> "force-braces",
           "braces.case-body = force-end"                      -> "no end marker",
+          "braces.single-expr.def = force-end"                -> "no end marker",
+          "braces.single-expr.def = sometimes"                -> "force-braces",
           "alignment.assignment-groups = [[val], [val, def]]" -> "only one alignment group",
           """alignment.operators = ["=", " "]"""              -> "cannot be empty",
           "selector-chain.break-at-count = 1"                 -> "at least 2",
@@ -511,6 +527,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
         List(
           "max-colum = 80"                       -> "max-colum (line 1)",
           "braces.klass = force-indent"          -> "braces.klass (line 1)",
+          "braces.single-expr.match = keep"      -> "braces.single-expr.match (line 1)",
           "blank-lines.body-edges.klass = never" -> "blank-lines.body-edges.klass (line 1)",
           "alignment.case-arrows = false"        -> "alignment.case-arrows (line 1)",
           "alignment.scaladoc.params = true"     -> "alignment.scaladoc.params (line 1)",

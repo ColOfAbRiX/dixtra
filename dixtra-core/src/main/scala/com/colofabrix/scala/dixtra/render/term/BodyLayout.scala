@@ -236,6 +236,8 @@ private[render] object BodyLayout {
            Some(terms.render(pf, indent - 2, forceExplode = false))
          case block: Term.Block if comments.isEmpty && construct.exists(bracesBlock(ctx, _, block)) =>
            construct.map(terms.bracedBlock(block, indent, _))
+         case _ if comments.isEmpty =>
+           construct.flatMap(singleExprBraced(ctx, terms, _, body, indent))
          case _ =>
            None
        }
@@ -252,6 +254,42 @@ private[render] object BodyLayout {
        renderBelow = () => if authorBreak then onLine else terms.renderBody(body, indent, forceExplode = true),
        simple = isSimple(ctx, body),
      )
+
+   // A body that is a single expression in braces by `braces.single-expr`: with keep when the author wrote the braces,
+   // with force-braces when it renders over several lines. The braces open on the separator line, the expression one
+   // level in.
+   private def singleExprBraced(
+     ctx: RenderContext,
+     terms: TermRenderer,
+     construct: Construct,
+     body: Term,
+     indent: Int,
+   ): Option[Doc] =
+     val expression = singleExpression(ctx, body)
+     val inBraces   = (term: Term) => Doc.braced(terms.renderBody(term, indent, forceExplode = false))
+
+     expression.flatMap { term =>
+       ctx.config.braces.singleExpr(construct) match {
+         case BracePolicy.Keep if body.is[Term.Block] =>
+           Some(inBraces(term))
+         case BracePolicy.ForceBraces if !Render.isFlat(terms.renderBody(term, indent, forceExplode = false)) =>
+           Some(inBraces(term))
+         case _ =>
+           None
+       }
+     }
+
+   // The expression of a body that is a single expression: the only statement of a block in braces, written by the
+   // author without parentheses around it, or the body itself when it is not a block.
+   private def singleExpression(ctx: RenderContext, body: Term): Option[Term] =
+     body match {
+       case block @ Term.Block((stat: Term) :: Nil) if ctx.writtenWithBraces(block) && !ctx.isParenthesized(block) =>
+         Some(stat).filterNot(_.is[Term.Block])
+       case _: Term.Block =>
+         None
+       case term =>
+         Some(term)
+     }
 
    // A block of several statements (or of a single definition) written with braces keeps them, and one without gets
    // them, when the brace style uses braces.

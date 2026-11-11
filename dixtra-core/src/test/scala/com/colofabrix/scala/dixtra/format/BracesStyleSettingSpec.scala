@@ -16,7 +16,7 @@ class BracesStyleSettingSpec extends AnyWordSpec with Matchers with LayoutRows {
 
   // The braces `style`, with every construct keeping its braces as written so only the style changes them.
   private def styled(style: BracesStyle): Config =
-    Config.default.copy(braces = BraceConfig(style, ImportBraces.Keep, Map.empty))
+    Config.default.copy(braces = BraceConfig(style, ImportBraces.Keep, Map.empty, Map.empty))
 
   private val ifBody =
     "def f =\n  if (c) {\n    g()\n  } else if (d) {\n    h()\n  } else {\n    k()\n  }\n"

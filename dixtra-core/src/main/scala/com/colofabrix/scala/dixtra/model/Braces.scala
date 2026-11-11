@@ -78,8 +78,16 @@ enum ImportBraces(val key: String) {
  * @param style Where the braces go relative to the code around them.
  * @param imports The braces around the single selector of an `import` or `export`.
  * @param policies The brace policy of each construct.
+ * @param singleExpressions The braces around a body that is a single expression, for the constructs of
+ *                          [[BraceConfig.singleExprConstructs]]; a construct without a setting is
+ *                          [[BracePolicy.ForceIndent]].
  */
-final case class BraceConfig(style: BracesStyle, imports: ImportBraces, policies: Map[Construct, BracePolicy]) {
+final case class BraceConfig(
+  style: BracesStyle,
+  imports: ImportBraces,
+  policies: Map[Construct, BracePolicy],
+  singleExpressions: Map[Construct, BracePolicy],
+) {
 
   /**
    * The brace style of `construct`.
@@ -87,11 +95,23 @@ final case class BraceConfig(style: BracesStyle, imports: ImportBraces, policies
   def apply(construct: Construct): BracePolicy =
     policies.getOrElse(construct, BracePolicy.Keep)
 
+  /**
+   * The braces around a body of `construct` that is a single expression.
+   */
+  def singleExpr(construct: Construct): BracePolicy =
+    singleExpressions.getOrElse(construct, BracePolicy.ForceIndent)
+
 }
 
 object BraceConfig {
   import BracePolicy.*
   import Construct.*
+
+  /**
+   * The constructs whose body after a separator (`=`, `=>`) can be a single expression in braces.
+   */
+  val singleExprConstructs: List[Construct] =
+    List(Def, Val, LazyVal, Var, GivenAlias, LambdaBody, CaseBody)
 
   val default: BraceConfig =
     BraceConfig(
@@ -126,5 +146,8 @@ object BraceConfig {
         GivenAlias     -> Keep,
         PackageObject  -> Keep,
       ),
+      singleExprConstructs
+        .map(_ -> ForceIndent)
+        .toMap,
     )
 }

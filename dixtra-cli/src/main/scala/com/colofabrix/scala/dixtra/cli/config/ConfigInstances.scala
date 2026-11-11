@@ -142,12 +142,32 @@ object ConfigInstances {
   given ConfigReader[BraceConfig] =
     ConfigReader.fromCursor { cursor =>
       for
-        settings <- cursor.asObjectCursor
-        style    <- settings.atKey("style").flatMap(ConfigReader[BracesStyle].from)
-        imports  <- settings.atKey("imports").flatMap(ConfigReader[ImportBraces].from)
-        policies <- bracePolicies.from(settings.withoutKey("style").withoutKey("imports"))
+        settings   <- cursor.asObjectCursor
+        style      <- settings.atKey("style").flatMap(ConfigReader[BracesStyle].from)
+        imports    <- settings.atKey("imports").flatMap(ConfigReader[ImportBraces].from)
+        singleExpr <- settings.atKey(singleExprKey).flatMap(singleExprPolicies.from)
+        constructs  = settings.withoutKey("style").withoutKey("imports").withoutKey(singleExprKey)
+        policies   <- bracePolicies.from(constructs)
       yield
-        BraceConfig(style, imports, policies)
+        BraceConfig(style, imports, policies, singleExpr)
+    }
+
+  // The section of `braces` with the braces around a single-expression body of each construct
+  private val singleExprKey =
+    "single-expr"
+
+  private val singleExprPolicies: ConfigReader[Map[Construct, BracePolicy]] =
+    bracePolicies.emap { policies =>
+      val unsupported = policies.keys.filterNot(BraceConfig.singleExprConstructs.contains)
+      val endMarkers  = policies.collect { case (construct, BracePolicy.ForceEnd) => construct.key }
+
+      if unsupported.nonEmpty then
+        val expected = BraceConfig.singleExprConstructs.map(_.key).mkString(", ")
+        Left(cannotConvert(unsupported.map(_.key).mkString(", "), s"unknown construct, expected one of $expected"))
+      else if endMarkers.nonEmpty then
+        Left(cannotConvert(endMarkers.mkString(", "), "a single expression has no end marker, so it cannot be force-end"))
+      else
+        Right(policies)
     }
 
   given bracePolicies: ConfigReader[Map[Construct, BracePolicy]] =
@@ -281,19 +301,25 @@ object ConfigInstances {
       edges => edges.map((construct, policy) => construct.key -> policy),
     )
 
-  // The brace settings as one section, the style and the import braces beside the policy of each construct: the shape
-  // the reader expects
+  // The brace settings as one section, the style, the import braces and the single-expression braces beside the policy
+  // of each construct: the shape the reader expects
   given ConfigWriter[BraceConfig] =
     ConfigWriter.fromFunction { braces =>
-      val policies =
-        ConfigWriter[Map[String, BracePolicy]].to(braces.policies.map((construct, policy) => construct.key -> policy))
+      def section(policies: Map[Construct, BracePolicy]) =
+        ConfigWriter[Map[String, BracePolicy]].to(policies.map((construct, policy) => construct.key -> policy))
 
-      val style   = ConfigWriter[BracesStyle].to(braces.style)
-      val imports = ConfigWriter[ImportBraces].to(braces.imports)
+      val style      = ConfigWriter[BracesStyle].to(braces.style)
+      val imports    = ConfigWriter[ImportBraces].to(braces.imports)
+      val singleExpr = section(braces.singleExpressions)
 
-      policies match {
-        case section: ConfigObject => section.withValue("style", style).withValue("imports", imports)
-        case other                 => other
+      section(braces.policies) match {
+        case written: ConfigObject =>
+          written
+            .withValue("style", style)
+            .withValue("imports", imports)
+            .withValue(singleExprKey, singleExpr)
+        case other =>
+          other
       }
     }
 

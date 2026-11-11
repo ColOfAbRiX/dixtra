@@ -435,4 +435,88 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
 
   }
 
+  "the braces around a single-expression body (braces.single-expr)" should {
+
+    // A lambda with statements as the only expression of a braced body: Scala 2 needs the braces (tapir
+    // core/internal/package.scala, recoverErrors2)
+    val bracedLambda =
+      """def f: Int => Int = {
+        |  x =>
+        |    val y = x
+        |    y + 1
+        |}
+        |""".stripMargin
+
+    val bracelessLambda =
+      """def f: Int => Int =
+        |  x =>
+        |    val y = x
+        |    y + 1
+        |""".stripMargin
+
+    "be removed by default, as before the setting" in {
+      bracedLambda should formatTo(bracelessLambda)
+    }
+
+    "be kept as written with keep" in {
+      bracedLambda should formatStablyTo(bracedLambda, withSingleExpr(Construct.Def -> Keep))
+    }
+
+    "not be added with keep" in {
+      bracelessLambda should formatTo(bracelessLambda, withSingleExpr(Construct.Def -> Keep))
+    }
+
+    "be added to a body over several lines with force-braces" in {
+      bracelessLambda should formatStablyTo(bracedLambda, withSingleExpr(Construct.Def -> ForceBraces))
+    }
+
+    "not be added to a body on one line with force-braces" in {
+      val input = "def f = compute(x)\n"
+      input should formatTo(input, withSingleExpr(Construct.Def -> ForceBraces))
+    }
+
+    "be removed with force-indent" in {
+      bracedLambda should formatTo(bracelessLambda, withSingleExpr(Construct.Def -> ForceIndent))
+    }
+
+    "keep the curried header of the tapir case, and its braces, with keep" in {
+      val input =
+        """def recover(f: Int => Int): Int => Int => Int = {
+          |  implicit monad => t =>
+          |    val y = f(t)
+          |    y + monad
+          |}
+          |""".stripMargin
+
+      val expected = Right((Some("def recover(f: Int => Int): Int => Int => Int = {"), Some("}")))
+
+      val actual =
+        Dixtra
+          .format(input, withSingleExpr(Construct.Def -> Keep))
+          .map(_.linesIterator.toList)
+          .map(lines => (lines.headOption, lines.lastOption))
+
+      actual shouldBe expected
+    }
+
+    "follow the setting of a val" in {
+      val input =
+        """val f: Int => Int = {
+          |  x =>
+          |    val y = x
+          |    y + 1
+          |}
+          |""".stripMargin
+
+      input should formatStablyTo(input, withSingleExpr(Construct.Val -> Keep))
+    }
+
+    "not change a body of several statements, which follows its construct" in {
+      val input    = "def f = {\n  val a = 1\n  a + 1\n}\n"
+      val expected = "def f =\n  val a = 1\n  a + 1\n"
+      input should formatTo(expected, withSingleExpr(Construct.Def -> Keep))
+    }
+
+  }
+
 }

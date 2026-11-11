@@ -56,6 +56,14 @@ trait FormatMatchers {
     Config.default.copy(braces = Config.default.braces.copy(policies = Config.default.braces.policies ++ settings))
 
   /**
+   * The default configuration with the braces around a single-expression body of some constructs set to another style
+   * (`braces.single-expr`).
+   */
+  def withSingleExpr(settings: (Construct, BracePolicy)*): Config =
+    val braces = Config.default.braces
+    Config.default.copy(braces = braces.copy(singleExpressions = braces.singleExpressions ++ settings))
+
+  /**
    * `base` with its `selector-chain` settings changed by `f`.
    */
   def withSelectorChain(f: SelectorChainConfig => SelectorChainConfig, base: Config = Config.default): Config =
