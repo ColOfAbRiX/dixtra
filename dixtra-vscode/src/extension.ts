@@ -1,25 +1,45 @@
 import * as vscode from "vscode";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
+import * as os from "node:os";
 import { spawn } from "node:child_process";
 
-// The languages the formatter is offered on: `Shift+Alt+F` (Format Document) only — the extension never formats on
-// save and never formats by itself.
 const LANGUAGES = ["scala"];
 
-// The folder the extension is installed in and the log of its runs: both are set on activation.
 let extensionPath = "";
-let channel: vscode.OutputChannel;
+let channel: vscode.LogOutputChannel;
+let binaryVersion: string | null = null;
 
 export function activate(context: vscode.ExtensionContext): void {
   extensionPath = context.extensionPath;
-  channel = vscode.window.createOutputChannel("dixtra");
+  channel = vscode.window.createOutputChannel("dixtra", { log: true });
   context.subscriptions.push(channel);
+
+  const version = (context.extension.packageJSON as { version?: string }).version ?? "unknown";
+
+  channel.info(`dixtra ${version} starting on VS Code ${vscode.version}`);
+  channel.info(`platform ${process.platform}-${process.arch}, extension at ${extensionPath}`);
+  channel.debug(
+    `node ${process.version}, ${os.type()} ${os.release()}, locale ${process.env.LANG ?? "unknown"}, ` +
+      `workspace ${vscode.workspace.workspaceFolders?.map(folder => folder.uri.fsPath).join(", ") || "none"}`,
+  );
+
+  logConfiguration();
+
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration(event => {
+      if (event.affectsConfiguration("dixtra")) {
+        logConfiguration();
+      }
+    }),
+  );
 
   const provider = new DixtraFormatter();
   context.subscriptions.push(
     vscode.languages.registerDocumentFormattingEditProvider(LANGUAGES, provider),
   );
+
+  channel.debug(`registered a formatting provider for ${LANGUAGES.join(", ")}`);
 }
 
 type FormatResult =
@@ -30,18 +50,26 @@ class DixtraFormatter implements vscode.DocumentFormattingEditProvider {
   async provideDocumentFormattingEdits(
     document: vscode.TextDocument,
   ): Promise<vscode.TextEdit[]> {
+    channel.debug(
+      `format requested on ${document.uri.toString()}, scheme ${document.uri.scheme}, ` +
+        `language ${document.languageId}, dirty ${document.isDirty}, ${document.getText().length} chars`,
+    );
+
     if (document.uri.scheme !== "file") {
+      channel.info(`not formatting ${document.uri.toString()}: it is not a file on disk`);
       void vscode.window.showInformationMessage("dixtra formats files on disk: save this document first.");
       return [];
     }
 
     if (document.isDirty && !(await document.save())) {
+      channel.error(`could not save ${document.uri.fsPath}`);
       void vscode.window.showErrorMessage("dixtra: the document could not be saved.");
       return [];
     }
 
     const result = await formatFile(document.uri.fsPath);
     if (result.kind === "failed") {
+      channel.error(`formatting ${document.uri.fsPath} failed: ${result.message}`);
       void vscode.window.showErrorMessage(`dixtra: ${result.message}`);
       return [];
     }
@@ -49,27 +77,33 @@ class DixtraFormatter implements vscode.DocumentFormattingEditProvider {
     const before = document.getText();
     const after = await fs.readFile(document.uri.fsPath, "utf8");
     if (after === before) {
-      channel.appendLine(`dixtra: no edits for ${document.uri.fsPath}`);
+      channel.info(`no edits for ${document.uri.fsPath}`);
       return [];
     }
 
-    channel.appendLine(`dixtra: edits produced for ${document.uri.fsPath}`);
+    channel.info(`edits produced for ${document.uri.fsPath}`);
 
     const whole = new vscode.Range(document.positionAt(0), document.positionAt(before.length));
     return [vscode.TextEdit.replace(whole, after)];
   }
 }
 
-// The seam: the only place a dixtra process is spawned, so a long-lived `dixtra --loop` child can replace it without
-// touching the provider above. The candidates are tried in order of preference and the first one that starts is the
-// one used: the configured executable, the bundled one for the platform, then `dixtra` from the `PATH`.
+function logConfiguration(): void {
+  const configuration = vscode.workspace.getConfiguration("dixtra");
+  const configuredPath = configuration.get<string>("executablePath", "");
+  const extraArguments = configuration.get<string[]>("arguments", []);
+
+  channel.info(
+    `configuration: executablePath ${configuredPath === "" ? "(none)" : configuredPath}, ` +
+      `arguments ${JSON.stringify(extraArguments)}`,
+  );
+}
+
 async function formatFile(file: string): Promise<FormatResult> {
   const configuration = vscode.workspace.getConfiguration("dixtra");
   const configuredPath = configuration.get<string>("executablePath", "");
   const extraArguments = configuration.get<string[]>("arguments", []);
 
-  // The platform folder of the bundled binary: on macOS the architecture decides it, and a machine with no bundled
-  // binary for its platform (e.g. Intel macOS, which ships no package yet) simply falls back to `dixtra` on the PATH.
   const platform =
     process.platform === "win32"
       ? "win32-x64"
@@ -90,22 +124,29 @@ async function formatFile(file: string): Promise<FormatResult> {
   }
   candidates.push("dixtra");
 
+  channel.debug(
+    `bundled ${bundled} ${(await exists(bundled)) ? "exists" : "is missing"}, ` +
+      `candidates ${JSON.stringify(candidates)}`,
+  );
+
   let resolved: string | null = null;
   let exitCode: number | null = null;
   let failures = "";
 
   for (const candidate of candidates) {
-    channel.appendLine(`dixtra: formatting ${file} with ${candidate}`);
+    const args = [...extraArguments, file];
+    channel.debug(`running ${candidate} ${JSON.stringify(args)}`);
 
-    const outcome = await run(candidate, [...extraArguments, file]);
+    const outcome = await run(candidate, args);
 
     if (outcome.error && outcome.error.code !== "ENOENT") {
       const message = `could not start ${candidate}: ${outcome.error.message}`;
-      channel.appendLine(message);
+      channel.error(message);
       return { kind: "failed", message };
     }
 
     if (outcome.error) {
+      channel.debug(`${candidate} not found, trying the next candidate`);
       continue;
     }
 
@@ -117,11 +158,14 @@ async function formatFile(file: string): Promise<FormatResult> {
 
   if (resolved === null) {
     const message = "dixtra executable not found (install the extension's binaries or set dixtra.executablePath)";
-    channel.appendLine(message);
+    channel.error(message);
     return { kind: "failed", message };
   }
 
-  channel.appendLine(`dixtra: ${resolved} on ${file} exited with code ${exitCode}`);
+  channel.info(`using ${resolved}${await versionOf(resolved)}`);
+  channel.debug(
+    `exit code ${exitCode}${failures === "" ? "" : `, stderr ${JSON.stringify(failures)}`}`,
+  );
 
   if (exitCode === 0) {
     return { kind: "ok" };
@@ -134,24 +178,39 @@ async function formatFile(file: string): Promise<FormatResult> {
   return { kind: "failed", message: failures || `exit code ${exitCode}` };
 }
 
-// One run of dixtra: the error of the spawn itself, or the exit code and the stderr of the process
+async function versionOf(executable: string): Promise<string> {
+  if (binaryVersion === null) {
+    const outcome = await run(executable, ["--version"]);
+    const version = outcome.stdout.split("\n")[0]?.trim() ?? "";
+    binaryVersion = version === "" ? "" : ` ${version}`;
+    channel.debug(`version probe of ${executable}: ${JSON.stringify(outcome)}`);
+  }
+  return binaryVersion;
+}
+
 async function run(
   executablePath: string,
   args: string[],
-): Promise<{ code: number | null; error?: NodeJS.ErrnoException; stderr: string }> {
+): Promise<{ code: number | null; error?: NodeJS.ErrnoException; stdout: string; stderr: string }> {
   const child = spawn(executablePath, args, {
-    stdio: ["ignore", "ignore", "pipe"],
+    stdio: ["ignore", "pipe", "pipe"],
   });
 
-  const chunks: Buffer[] = [];
-  child.stderr.on("data", chunk => chunks.push(chunk));
+  const out: Buffer[] = [];
+  const err: Buffer[] = [];
+  child.stdout.on("data", chunk => out.push(chunk));
+  child.stderr.on("data", chunk => err.push(chunk));
 
   const outcome = await new Promise<{ code: number | null; error?: NodeJS.ErrnoException }>(resolve => {
     child.on("error", error => resolve({ code: null, error }));
     child.on("close", code => resolve({ code }));
   });
 
-  return { ...outcome, stderr: Buffer.concat(chunks).toString().trim() };
+  return {
+    ...outcome,
+    stdout: Buffer.concat(out).toString().trim(),
+    stderr: Buffer.concat(err).toString().trim(),
+  };
 }
 
 async function exists(file: string): Promise<boolean> {
