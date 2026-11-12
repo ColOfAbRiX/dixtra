@@ -152,7 +152,7 @@ object DixtraPlugin extends AutoPlugin {
               .spaceDelimited("<files>")
               .parsed
               .map(name => IO.resolve(base, new File(name)))
-          val args = arguments(Mode.Format, dixtraConfig.value, None, files)
+          val args = arguments(Mode.Format, dixtraConfig.value, None, None, files)
           run(dixtraClasspath.value, args, Mode.Format, OnFailure.Fail, projectId.value, streams.value.log)
         },
       )
@@ -169,7 +169,9 @@ object DixtraPlugin extends AutoPlugin {
   ): Def.Initialize[Task[Unit]] =
     Def.task {
       Def.uncached {
-        val args = arguments(mode, dixtraConfig.value, dixtraChangedSince.value, paths.value)
+        // The files the task found formatted, in its own cache directory
+        val cacheFile = Some(streams.value.cacheDirectory / "dixtra-formatted")
+        val args      = arguments(mode, dixtraConfig.value, dixtraChangedSince.value, cacheFile, paths.value)
         run(dixtraClasspath.value, args, mode, onFailure, label.value, streams.value.log)
       }
     }
@@ -194,16 +196,23 @@ object DixtraPlugin extends AutoPlugin {
     files(base, Set(".sbt")) ++ files(base / "project", Set(".sbt", ".scala"))
 
   // The command line of dixtra for `paths`, empty when there is nothing to do.
-  private def arguments(mode: Mode, config: Option[File], changedSince: Option[String], paths: Seq[File]): Seq[String] =
+  private def arguments(
+    mode: Mode,
+    config: Option[File],
+    changedSince: Option[String],
+    cacheFile: Option[File],
+    paths: Seq[File],
+  ): Seq[String] =
     if paths.isEmpty then
       Nil
     else
       val checkFlags   = if mode == Mode.Check then Seq("--check") else Nil
       val configFlags  = config.toSeq.flatMap(file => Seq("--config-path", file.getAbsolutePath))
       val changedFlags = changedSince.toSeq.flatMap(ref => Seq("--changed-since", ref))
+      val cacheFlags   = cacheFile.toSeq.flatMap(file => Seq("--cache-file", file.getAbsolutePath))
       val pathFlags    = paths.map(_.getAbsolutePath)
 
-      checkFlags ++ configFlags ++ changedFlags ++ pathFlags
+      checkFlags ++ configFlags ++ changedFlags ++ cacheFlags ++ pathFlags
 
   // Run dixtra with `args` on behalf of `label`, failing the task or only logging a warning when the run fails. The
   // failure is a message only: the files at fault are already logged.

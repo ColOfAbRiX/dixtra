@@ -26,7 +26,17 @@ class CliParserSpec extends AnyWordSpec with Matchers {
   "the CLI parser" should {
     "use the default max column when none is given" in {
       val expected =
-        Right(CliOptions(List(Paths.get("A.scala")), None, None, check = false, changedSince = None, quiet = false))
+        Right(
+          CliOptions(
+            List(Paths.get("A.scala")),
+            None,
+            None,
+            check = false,
+            changedSince = None,
+            quiet = false,
+            cacheFile = None,
+          ),
+        )
 
       val actual = parse("A.scala")
 
@@ -35,7 +45,17 @@ class CliParserSpec extends AnyWordSpec with Matchers {
 
     "accept a positive max column and the check flag" in {
       val expected =
-        Right(CliOptions(List(Paths.get("A.scala")), None, Some(100), check = true, changedSince = None, quiet = false))
+        Right(
+          CliOptions(
+            List(Paths.get("A.scala")),
+            None,
+            Some(100),
+            check = true,
+            changedSince = None,
+            quiet = false,
+            cacheFile = None,
+          ),
+        )
 
       val actual = parse("--max-column", "100", "--check", "A.scala")
 
@@ -54,6 +74,14 @@ class CliParserSpec extends AnyWordSpec with Matchers {
       val expected = Right(Some("main"))
 
       val actual = parse("--changed-since", "main", "A.scala").map(_.changedSince)
+
+      actual shouldBe expected
+    }
+
+    "accept a cache file" in {
+      val expected = Right(Some(Paths.get("target/results")))
+
+      val actual = parse("--cache-file", "target/results", "A.scala").map(_.cacheFile)
 
       actual shouldBe expected
     }

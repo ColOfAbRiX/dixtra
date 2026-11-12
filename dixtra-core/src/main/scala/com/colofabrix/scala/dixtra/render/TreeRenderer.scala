@@ -217,7 +217,6 @@ final class TreeRenderer(original: String, config: Config) {
   // Accept a rendered definition or statement only if it is equivalent to the original. Containers and packages are not
   // checked here: their members are verified individually and the whole file is verified by [[Dixtra.format]].
   private def verified(tree: Tree, doc: Doc, indent: Int): Option[Doc] =
-    val rendered = Render.render(doc, indent)
-    Option.when(rendered == SafetyNet.verbatim(tree) || Equivalence.isEquivalentStat(tree, rendered))(doc)
+    Option.when(Equivalence.isEquivalentStat(tree, Render.render(doc, indent)))(doc)
 
 }

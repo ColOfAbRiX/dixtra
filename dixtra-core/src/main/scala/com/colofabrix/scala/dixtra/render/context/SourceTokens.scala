@@ -18,10 +18,20 @@ final class SourceTokens(original: String) {
   private val tokens: Vector[Token] =
     SourceEdits.tokens(original).getOrElse(Vector.empty)
 
+  // The offsets of the tokens, searched without going through the tokens themselves
+  private val starts: Array[Int] =
+    tokens.iterator.map(_.start).toArray
+
+  private val ends: Array[Int] =
+    tokens.iterator.map(_.end).toArray
+
   // The comments alone, in source order: the renderers ask for the comments of a range far more often than for its
   // tokens
   private val comments: Vector[Token.Comment] =
     tokens.collect { case c: Token.Comment => c }
+
+  private val commentStarts: Array[Int] =
+    comments.iterator.map(_.start).toArray
 
   // The span of each tree already asked for: the renderers ask again for the same trees, and a span is computed by
   // walking the tokens around the tree. Keyed by identity, as a tree is a position in this source.
@@ -33,22 +43,16 @@ final class SourceTokens(original: String) {
    */
   def tokensBetween(start: Int, end: Int): Vector[Token] =
     tokens
-      .iterator
-      .drop(firstTokenAtOrAfter(start))
-      .takeWhile(_.start < end)
+      .slice(firstAtOrAfter(starts, start), firstAtOrAfter(starts, end))
       .filter(t => t.end <= end && t.end > t.start)
-      .toVector
 
   /**
    * The comment tokens lying entirely within `[start, end)`.
    */
   def commentsBetween(start: Int, end: Int): Vector[Token.Comment] =
     comments
-      .iterator
-      .drop(firstAtOrAfter(comments, start))
-      .takeWhile(_.start < end)
+      .slice(firstAtOrAfter(commentStarts, start), firstAtOrAfter(commentStarts, end))
       .filter(_.end <= end)
-      .toVector
 
   /**
    * True when the source text of `tree` contains a comment that sits in a gap between its direct children, i.e. text
@@ -122,30 +126,36 @@ final class SourceTokens(original: String) {
    * The last token that is not whitespace or a comment ending before `offset`.
    */
   def previousSignificant(offset: Int): Option[Token] =
-    (firstTokenAtOrAfter(offset) - 1 to 0 by -1)
-      .iterator
-      .map(tokens)
-      .find(t => t.end <= offset && !isTrivia(t))
+    @annotation.tailrec
+    def loop(i: Int): Option[Token] =
+      if i < 0 then
+        None
+      else if ends(i) <= offset && !isTrivia(tokens(i)) then
+        Some(tokens(i))
+      else
+        loop(i - 1)
+    loop(firstAtOrAfter(starts, offset) - 1)
 
   private def nextSignificant(offset: Int): Option[Token] =
-    tokens
-      .iterator
-      .drop(firstTokenAtOrAfter(offset))
-      .find(t => !isTrivia(t))
+    @annotation.tailrec
+    def loop(i: Int): Option[Token] =
+      if i >= tokens.length then
+        None
+      else if !isTrivia(tokens(i)) then
+        Some(tokens(i))
+      else
+        loop(i + 1)
+    loop(firstAtOrAfter(starts, offset))
 
-  // Index of the first token starting at or after `offset` (binary search).
-  private def firstTokenAtOrAfter(offset: Int): Int =
-    firstAtOrAfter(tokens, offset)
-
-  // Index of the first of `sorted` (tokens in source order) starting at or after `offset` (binary search).
-  private def firstAtOrAfter(sorted: Vector[Token], offset: Int): Int =
+  // Index of the first of the `sorted` offsets (of tokens in source order) at or after `offset` (binary search).
+  private def firstAtOrAfter(sorted: Array[Int], offset: Int): Int =
     @annotation.tailrec
     def search(lo: Int, hi: Int): Int =
       if lo >= hi then
         lo
       else
-        val mid = (lo + hi) / 2
-        if sorted(mid).start < offset then search(mid + 1, hi) else search(lo, mid)
+        val mid = (lo + hi) >>> 1
+        if sorted(mid) < offset then search(mid + 1, hi) else search(lo, mid)
 
     search(0, sorted.length)
 
@@ -157,21 +167,16 @@ final class SourceTokens(original: String) {
 
   // The closing parenthesis matching an opening one, found by depth counting, stopping at it.
   private def matchingParen(open: Token.LeftParen): Option[Token] =
-    tokens
-      .iterator
-      .drop(firstTokenAtOrAfter(open.end))
-      .scanLeft((1, Option.empty[Token])) { case ((depth, _), t) =>
-        t match {
-          case _: Token.LeftParen =>
-            (depth + 1, None)
-          case _: Token.RightParen =>
-            if depth == 1 then (0, Some(t)) else (depth - 1, None)
-          case _ =>
-            (depth, None)
+    @annotation.tailrec
+    def loop(i: Int, depth: Int): Option[Token] =
+      if i >= tokens.length then
+        None
+      else
+        tokens(i) match {
+          case _: Token.LeftParen      => loop(i + 1, depth + 1)
+          case close: Token.RightParen => if depth == 1 then Some(close) else loop(i + 1, depth - 1)
+          case _                       => loop(i + 1, depth)
         }
-      }
-      .collectFirst { case (_, Some(close)) =>
-        close
-      }
+    loop(firstAtOrAfter(starts, open.end), 1)
 
 }

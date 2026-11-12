@@ -6,7 +6,7 @@ import cats.syntax.all.*
 import com.colofabrix.scala.declinio.IODeclineApp
 import com.colofabrix.scala.dixtra.cli.*
 import com.colofabrix.scala.dixtra.cli.config.*
-import com.colofabrix.scala.dixtra.cli.engine.FormatRunner
+import com.colofabrix.scala.dixtra.cli.engine.{FormatRunner, ResultCache}
 import com.colofabrix.scala.dixtra.cli.files.*
 import com.monovore.decline.Opts
 import java.nio.file.Path
@@ -23,7 +23,7 @@ object Main extends IODeclineApp[CliOptions] {
     "dixtra"
 
   override def header: String =
-    "Opinionated visual features formatter for Scala 3."
+    "Opinionated formatter for Scala 3."
 
   override def version: String =
     BuildInfo.version
@@ -50,10 +50,20 @@ object Main extends IODeclineApp[CliOptions] {
         .flatMap((_, loaded) => loaded.toList.flatMap(_.warnings))
         .distinct
 
-    warnings.traverse_(warning => printer.err(s"warning: $warning")) >>
-    configs
-      .flatTraverse((path, loaded) => formatPath(cliOptions, path, loaded))
-      .flatMap(results => CliReport.emit(results, cliOptions.check, cliOptions.quiet, printer))
+    for
+      _       <- warnings.traverse_(warning => printer.err(s"warning: $warning"))
+      cache   <- cliOptions.cacheFile.fold(IO.pure(ResultCache.disabled))(file => ResultCache.load(file))
+      results <- configs.flatTraverse((path, loaded) => formatPath(cliOptions, path, loaded, cache))
+      _       <- cliOptions.cacheFile.traverse_(file => saveCache(cache, file, printer))
+      code    <- CliReport.emit(results, cliOptions.check, cliOptions.quiet, printer)
+    yield
+      code
+
+  // A cache that cannot be written only costs the next run its time: it is a warning.
+  private def saveCache(cache: ResultCache, file: Path, printer: CliReport.Printer): IO[Unit] =
+    cache
+      .save(file)
+      .handleErrorWith(e => printer.err(s"warning: the cache file ${file.toString} cannot be written: ${e.getMessage}"))
 
   // Each path is formatted with the configuration given on the command line, or else with the nearest `.dixtra.conf`
   // above it; with `--changed-since`, only its files changed in git are.
@@ -61,6 +71,7 @@ object Main extends IODeclineApp[CliOptions] {
     cliOptions: CliOptions,
     path: Path,
     loaded: ValidatedNel[String, LoadedConfig],
+    cache: ResultCache,
   ): IO[List[FileResult]] =
     loaded match {
       case Validated.Invalid(errors) =>
@@ -70,7 +81,7 @@ object Main extends IODeclineApp[CliOptions] {
           case Left(error)   => 
             IO.pure(List(FileResult.Failed(path, error)))
           case Right(select) => 
-            FormatRunner(config, cliOptions.maxColumn, cliOptions.check)
+            FormatRunner(config, cliOptions.maxColumn, cliOptions.check, cache)
             .run(List(path), select)
         }
     }

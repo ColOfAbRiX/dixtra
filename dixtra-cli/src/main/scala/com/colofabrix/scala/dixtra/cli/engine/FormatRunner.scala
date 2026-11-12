@@ -17,18 +17,23 @@ import java.nio.file.Path
  * without writing (check mode), one after the other in the order they arrived. Every file is processed in isolation:
  * any error while reading, formatting or writing it becomes a
  * [[com.colofabrix.scala.dixtra.cli.files.FileResult.Failed]] and the remaining files are still processed. A Scala 2
- * file is not formatted and becomes a [[com.colofabrix.scala.dixtra.cli.files.FileResult.Skipped]].
+ * file is not formatted and becomes a [[com.colofabrix.scala.dixtra.cli.files.FileResult.Skipped]]. A file that `cache`
+ * knows as formatted is not formatted again.
  *
  * @param check When true, run in verification mode and never write to disk.
  * @param format The formatting function of each file, applied to its contents, or why the file cannot be formatted (an
  *               invalid configuration for it).
  * @param paths The files and directories to format inside the directories given (see
  *               [[com.colofabrix.scala.dixtra.cli.files.SourceFiles]]).
+ * @param settings The configuration of each file as text, for `cache`, or None for a file that is never cached.
+ * @param cache The files that earlier runs found formatted.
  */
 final class FormatRunner private (
   check: Boolean,
   format: Path => Either[String, String => Either[FormatError, String]],
   paths: PathsConfig,
+  settings: Path => Option[String],
+  cache: ResultCache,
 ) {
 
   /**
@@ -69,7 +74,11 @@ final class FormatRunner private (
       case Right(formatter) =>
         AtomicFiles
           .read(path)
-          .flatMap(source => applyFormat(path, source, formatter))
+          .flatMap { source =>
+            cache
+              .isFormatted(path, settings(path), source)
+              .ifM(IO.pure(IO.pure(FileResult.Unchanged(path))), applyFormat(path, source, formatter))
+          }
           .handleError(e => IO.pure(FileResult.failed(path, e)))
     }
 
@@ -84,7 +93,7 @@ final class FormatRunner private (
       case Left(error) =>
         IO.pure(FileResult.failed(path, error))
       case Right(formatted) if formatted == source =>
-        IO.pure(FileResult.Unchanged(path))
+        cache.formatted(path, settings(path), source).as(FileResult.Unchanged(path))
       case Right(_) if check =>
         IO.pure(FileResult.WouldFormat(path))
       case Right(formatted) =>
@@ -121,7 +130,7 @@ object FormatRunner {
    * @param check When true, run in verification mode and never write to disk.
    */
   def apply(config: Config, check: Boolean): FormatRunner =
-    new FormatRunner(check, path => Right(dixtra(config, path)), config.paths)
+    new FormatRunner(check, path => Right(dixtra(config, path)), config.paths, _ => None, ResultCache.disabled)
 
   /**
    * A runner that formats each file with [[Dixtra.format]] in its dialect, with its configuration of `loaded` (see
@@ -131,21 +140,31 @@ object FormatRunner {
    * @param loaded The configuration, with its overrides for some files.
    * @param maxColumn The maximum width given on the command line, over the one of every configuration.
    * @param check When true, run in verification mode and never write to disk.
+   * @param cache The files that earlier runs found formatted.
    */
-  def apply(loaded: LoadedConfig, maxColumn: Option[Int], check: Boolean): FormatRunner =
-    def runPath(path: Path): Either[String, String => Either[FormatError, String]] =
+  def apply(loaded: LoadedConfig, maxColumn: Option[Int], check: Boolean, cache: ResultCache): FormatRunner =
+    def effective(path: Path): Either[String, Config] =
       loaded
         .configFor(path)
         .toEither
         .bimap(
           _.toList.mkString("; "),
-          config => {
-            val effective = maxColumn.fold(config)(column => config.copy(maxColumn = column))
-            dixtra(effective, path)
-          },
+          config => maxColumn.fold(config)(column => config.copy(maxColumn = column)),
         )
 
-    new FormatRunner(check, runPath, loaded.base.paths)
+    new FormatRunner(
+      check,
+      path => effective(path).map(dixtra(_, path)),
+      loaded.base.paths,
+      path => effective(path).toOption.map(_.toString),
+      cache,
+    )
+
+  /**
+   * Like the other `apply`, without a cache.
+   */
+  def apply(loaded: LoadedConfig, maxColumn: Option[Int], check: Boolean): FormatRunner =
+    apply(loaded, maxColumn, check, ResultCache.disabled)
 
   // Dixtra with `config`, in the dialect of `path`.
   private def dixtra(config: Config, path: Path): String => Either[FormatError, String] =
@@ -158,7 +177,24 @@ object FormatRunner {
    * @param format The formatting function applied to the contents of each file.
    */
   def withFormat(check: Boolean, format: String => Either[FormatError, String]): FormatRunner =
-    new FormatRunner(check, _ => Right(format), PathsConfig.everything)
+    new FormatRunner(check, _ => Right(format), PathsConfig.everything, _ => None, ResultCache.disabled)
+
+  /**
+   * A runner that formats every file found with `format`, except the ones that `cache` knows as formatted with the
+   * configuration `settings`.
+   *
+   * @param check When true, run in verification mode and never write to disk.
+   * @param format The formatting function applied to the contents of each file.
+   * @param cache The files that earlier runs found formatted.
+   * @param settings The configuration of every file as text.
+   */
+  def withFormat(
+    check: Boolean,
+    format: String => Either[FormatError, String],
+    cache: ResultCache,
+    settings: String,
+  ): FormatRunner =
+    new FormatRunner(check, _ => Right(format), PathsConfig.everything, _ => Some(settings), cache)
 
   /**
    * A runner that formats the files selected by `paths` with `format`.
@@ -173,6 +209,6 @@ object FormatRunner {
     format: (Path, String) => Either[FormatError, String],
     paths: PathsConfig,
   ): FormatRunner =
-    new FormatRunner(check, path => Right(format(path, _)), paths)
+    new FormatRunner(check, path => Right(format(path, _)), paths, _ => None, ResultCache.disabled)
 
 }

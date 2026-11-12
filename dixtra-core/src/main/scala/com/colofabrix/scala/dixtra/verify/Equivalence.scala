@@ -1,7 +1,7 @@
 package com.colofabrix.scala.dixtra.verify
 
 import com.colofabrix.scala.dixtra.SourceDialect
-import com.colofabrix.scala.dixtra.normalize.SourceEdits
+import com.colofabrix.scala.dixtra.normalize.{SourceEdits, WhitespaceNormalizer}
 import scala.annotation.tailrec
 import scala.meta.*
 import scala.meta.tokens.Token
@@ -18,25 +18,32 @@ object Equivalence {
 
   /**
    * True when `rendered` is a faithful rendering of the statement `original`: it parses as a statement with an
-   * equivalent structure and preserves the comments of the original source slice.
+   * equivalent structure and preserves the comments of the original source slice. A rendering that only realigns the
+   * original source is not parsed.
    */
   def isEquivalentStat(original: Tree, rendered: String): Boolean =
-    parse[Stat](rendered).exists { after =>
-      val sameStructure = equivalent(original, after)
-      val sameComments  = comments(original.pos.text) == comments(rendered)
-      sameStructure && sameComments
-    }
+    def reparses =
+      parse[Stat](rendered).exists { after =>
+        val sameStructure = equivalent(original, after)
+        val sameComments  = comments(original.pos.text) == comments(rendered)
+        sameStructure && sameComments
+      }
+
+    onlyRealigned(original.pos.text, rendered) || reparses
 
   /**
    * True when `rendered` is a faithful rendering of the package clause `original` as a whole compilation unit (a
    * package clause does not parse as a statement on its own).
    */
   def isEquivalentPackage(original: Pkg, rendered: String): Boolean =
-    parse[Source](rendered).exists { after =>
-      val samePackage  = after.stats.forall(equivalent(original, _))
-      val sameComments = comments(original.pos.text) == comments(rendered)
-      after.stats.sizeIs == 1 && samePackage && sameComments
-    }
+    def reparses =
+      parse[Source](rendered).exists { after =>
+        val samePackage  = after.stats.forall(equivalent(original, _))
+        val sameComments = comments(original.pos.text) == comments(rendered)
+        after.stats.sizeIs == 1 && samePackage && sameComments
+      }
+
+    onlyRealigned(original.pos.text, rendered) || reparses
 
   /**
    * True when the formatted text of a whole compilation unit is equivalent to the parsed original: same structure and
@@ -57,6 +64,16 @@ object Equivalence {
       }
 
     unchanged || reparses
+
+  // True when `rendered` is `source` with, at most, wider runs of spaces between the tokens of a line: the alignment the
+  // renderers add to a source whose runs were collapsed before parsing. Its tokens, line breaks and indentation are those
+  // of the source, so it has the same tree and the same comments. The texts without their spaces are compared first, as
+  // tokenising is the cost.
+  private def onlyRealigned(source: String, rendered: String): Boolean =
+    def sameWithoutSpaces = rendered.iterator.filter(_ != ' ').sameElements(source.iterator.filter(_ != ' '))
+    def collapsesToSource = WhitespaceNormalizer.normalize(rendered) == source
+
+    rendered == source || (sameWithoutSpaces && collapsesToSource)
 
   private def parse[T <: Tree](text: String)(using parser: scala.meta.parsers.Parse[T]): Option[T] =
     parse[T](text, SourceDialect.scala)
