@@ -40,15 +40,15 @@ class ResultCacheSpec extends AnyWordSpec with Matchers {
     code: Option[String] = Some("code"),
   ): (List[FileResult], Int) =
     val counting = new Counting
+    
     val results =
-      (for
+      for
         cache   <- ResultCache.load(cacheFile, code)
         results <- FormatRunner.withFormat(check, counting.format, cache, settings).run(List(file))
         _       <- cache.save(cacheFile)
-      yield
-        results).unsafeRunSync()
+      yield results
 
-    (results, counting.calls.get)
+    (results.unsafeRunSync(), counting.calls.get)
 
   "a run with the cache of the last run" should {
     "not format a file that the last run found formatted" in {
@@ -137,7 +137,7 @@ class ResultCacheSpec extends AnyWordSpec with Matchers {
       }
     }
 
-    "format every file when the code of dixtra is not known" in {
+    "format every file when the code of dixtra is not known, without writing the cache" in {
       withTempDir { dir =>
         val file      = write(dir.resolve("A.scala"), formatted)
         val cacheFile = dir.resolve("results")
@@ -145,7 +145,7 @@ class ResultCacheSpec extends AnyWordSpec with Matchers {
         val expected = ((List(FileResult.Unchanged(file)), 1), false)
 
         val _      = run(file, cacheFile, code = None)
-        val actual = (run(file, cacheFile, code = None), Files.readAllLines(cacheFile).asScala.exists(_.nonEmpty))
+        val actual = (run(file, cacheFile, code = None), Files.exists(cacheFile))
 
         actual shouldBe expected
       }
@@ -158,10 +158,14 @@ class ResultCacheSpec extends AnyWordSpec with Matchers {
 
         val expected = 0
 
-        val _      = run(file, cacheFile)
-        val _      = write(file, unformatted)
-        val _      = run(file, cacheFile)
-        val actual = Files.readAllLines(cacheFile).asScala.count(_.nonEmpty)
+        val _ = run(file, cacheFile)
+        val _ = write(file, unformatted)
+        val _ = run(file, cacheFile)
+        val actual =
+          Files
+            .readAllLines(cacheFile)
+            .asScala
+            .count(_.nonEmpty)
 
         actual shouldBe expected
       }
@@ -177,6 +181,25 @@ class ResultCacheSpec extends AnyWordSpec with Matchers {
 
         actual shouldBe expected
       }
+    }
+  }
+
+  "the cache file of the command line" should {
+    "be in the dixtra cache directory of the user, one for each set of paths" in {
+      val first = ResultCache.userFile(List(Paths.get("a"), Paths.get("b")))
+      val same  = ResultCache.userFile(List(Paths.get("b"), Paths.get("a")))
+      val other = ResultCache.userFile(List(Paths.get("c")))
+
+      val expected = (true, true, true)
+
+      val actual =
+        (
+          first.exists(_.getParent.getFileName.toString == "dixtra"),
+          first == same,
+          first != other,
+        )
+
+      actual shouldBe expected
     }
   }
 

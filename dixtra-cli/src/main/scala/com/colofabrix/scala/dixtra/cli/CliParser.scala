@@ -13,8 +13,7 @@ import java.nio.file.Path
  * [[com.colofabrix.scala.dixtra.cli.config.ConfigCli]]),
  * an optional `--max-column` width (which must be a positive integer) overriding the configured one, a `--check` flag
  * that switches the tool into verification mode, a `--changed-since` git ref that limits it to the files changed since
- * then, a `--quiet` flag that leaves the unchanged files out of the report, and a `--cache-file` that remembers the files
- * found formatted, so that later runs skip them.
+ * then, and a `--quiet` flag that leaves the unchanged files out of the report.
  */
 object CliParser {
 
@@ -50,21 +49,10 @@ object CliParser {
       .flag("quiet", "List only the files that change or fail, not the unchanged ones.", "q")
       .orFalse
 
-  private val cacheFile: Opts[Option[Path]] =
-    Opts
-      .option[Path](
-        "cache-file",
-        "Remember the files found formatted in this file, and skip them while they, their configuration and dixtra " +
-        "stay the same.",
-        metavar = "file",
-      )
-      .orNone
-
   /**
    * The combined CLI options.
    */
   val options: Opts[CliOptions] =
-    (paths.map(_.toList), ConfigCli.declineOpts, maxColumn, check, changedSince, quiet, cacheFile)
-      .mapN(CliOptions.apply)
+    (paths.map(_.toList), ConfigCli.declineOpts, maxColumn, check, changedSince, quiet).mapN(CliOptions.apply)
 
 }

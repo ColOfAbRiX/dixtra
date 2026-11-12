@@ -32,12 +32,14 @@ object Main extends IODeclineApp[CliOptions] {
     CliParser.options
 
   override def runWithConfig(cliOptions: CliOptions): IO[ExitCode] =
-    program(cliOptions, CliReport.Printer.console)
+    program(cliOptions, CliReport.Printer.console, ResultCache.userFile(cliOptions.paths))
 
   /**
-   * Format or check the paths of `cliOptions`, reporting each file with `printer`, and return the exit code.
+   * Format or check the paths of `cliOptions`, reporting each file with `printer`, and return the exit code. The files
+   * found formatted are remembered in `cacheFile`, and the next runs with it do not format them again (see
+   * [[com.colofabrix.scala.dixtra.cli.engine.ResultCache]]).
    */
-  def program(cliOptions: CliOptions, printer: CliReport.Printer): IO[ExitCode] =
+  def program(cliOptions: CliOptions, printer: CliReport.Printer, cacheFile: Option[Path]): IO[ExitCode] =
     val configs =
       cliOptions
         .paths
@@ -52,9 +54,9 @@ object Main extends IODeclineApp[CliOptions] {
 
     for
       _       <- warnings.traverse_(warning => printer.err(s"warning: $warning"))
-      cache   <- cliOptions.cacheFile.fold(IO.pure(ResultCache.disabled))(file => ResultCache.load(file))
+      cache   <- cacheFile.fold(IO.pure(ResultCache.disabled))(file => ResultCache.load(file))
       results <- configs.flatTraverse((path, loaded) => formatPath(cliOptions, path, loaded, cache))
-      _       <- cliOptions.cacheFile.traverse_(file => saveCache(cache, file, printer))
+      _       <- cacheFile.traverse_(file => saveCache(cache, file, printer))
       code    <- CliReport.emit(results, cliOptions.check, cliOptions.quiet, printer)
     yield
       code

@@ -24,19 +24,10 @@ class CliParserSpec extends AnyWordSpec with Matchers {
       .flatMap(_.errors)
 
   "the CLI parser" should {
+
     "use the default max column when none is given" in {
       val expected =
-        Right(
-          CliOptions(
-            List(Paths.get("A.scala")),
-            None,
-            None,
-            check = false,
-            changedSince = None,
-            quiet = false,
-            cacheFile = None,
-          ),
-        )
+        Right(CliOptions(List(Paths.get("A.scala")), None, None, check = false, changedSince = None, quiet = false))
 
       val actual = parse("A.scala")
 
@@ -45,17 +36,7 @@ class CliParserSpec extends AnyWordSpec with Matchers {
 
     "accept a positive max column and the check flag" in {
       val expected =
-        Right(
-          CliOptions(
-            List(Paths.get("A.scala")),
-            None,
-            Some(100),
-            check = true,
-            changedSince = None,
-            quiet = false,
-            cacheFile = None,
-          ),
-        )
+        Right(CliOptions(List(Paths.get("A.scala")), None, Some(100), check = true, changedSince = None, quiet = false))
 
       val actual = parse("--max-column", "100", "--check", "A.scala")
 
@@ -64,33 +45,19 @@ class CliParserSpec extends AnyWordSpec with Matchers {
 
     "accept the quiet flag" in {
       val expected = Right(true)
-
-      val actual = parse("-q", "A.scala").map(_.quiet)
-
+      val actual   = parse("-q", "A.scala").map(_.quiet)
       actual shouldBe expected
     }
 
     "accept a git ref to limit the files to" in {
       val expected = Right(Some("main"))
-
-      val actual = parse("--changed-since", "main", "A.scala").map(_.changedSince)
-
-      actual shouldBe expected
-    }
-
-    "accept a cache file" in {
-      val expected = Right(Some(Paths.get("target/results")))
-
-      val actual = parse("--cache-file", "target/results", "A.scala").map(_.cacheFile)
-
+      val actual   = parse("--changed-since", "main", "A.scala").map(_.changedSince)
       actual shouldBe expected
     }
 
     "accept an invalid configuration, leaving its errors to the paths that use it" in {
       val expected = Right(true)
-
-      val actual = parse("--config-string", "max-column = wide", "A.scala").map(_.config.exists(_.isInvalid))
-
+      val actual   = parse("--config-string", "max-column = wide", "A.scala").map(_.config.exists(_.isInvalid))
       actual shouldBe expected
     }
 
@@ -99,12 +66,11 @@ class CliParserSpec extends AnyWordSpec with Matchers {
 
       table.foreach { (flags, value) =>
         val expected = List(s"--max-column must be a positive integer, got $value")
-
-        val actual = errorsOf((flags :+ "A.scala")*)
-
+        val actual   = errorsOf((flags :+ "A.scala")*)
         actual shouldBe expected
       }
     }
+
   }
 
 }

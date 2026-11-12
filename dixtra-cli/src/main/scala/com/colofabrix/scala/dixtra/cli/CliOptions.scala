@@ -16,9 +16,6 @@ import java.nio.file.Path
  * @param changedSince A git ref: when given, only the files changed since it (see
  *                     [[com.colofabrix.scala.dixtra.cli.files.GitChanges]]) are processed.
  * @param quiet When true, the unchanged files are not listed.
- * @param cacheFile A file that remembers the files found formatted, which later runs do not format again while they,
- *                  their configuration and dixtra stay the same (see
- *                  [[com.colofabrix.scala.dixtra.cli.engine.ResultCache]]).
  */
 final case class CliOptions(
   paths: List[Path],
@@ -27,5 +24,4 @@ final case class CliOptions(
   check: Boolean,
   changedSince: Option[String],
   quiet: Boolean,
-  cacheFile: Option[Path],
 )

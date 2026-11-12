@@ -152,8 +152,9 @@ object DixtraPlugin extends AutoPlugin {
               .spaceDelimited("<files>")
               .parsed
               .map(name => IO.resolve(base, new File(name)))
-          val args = arguments(Mode.Format, dixtraConfig.value, None, None, files)
-          run(dixtraClasspath.value, args, Mode.Format, OnFailure.Fail, projectId.value, streams.value.log)
+          val args = arguments(Mode.Format, dixtraConfig.value, None, files)
+          val log  = streams.value.log
+          run(dixtraClasspath.value, args, cacheFile(streams.value), Mode.Format, OnFailure.Fail, projectId.value, log)
         },
       )
     val perConfiguration = inConfig(Compile)(configSettings) ++ inConfig(Test)(configSettings)
@@ -169,10 +170,8 @@ object DixtraPlugin extends AutoPlugin {
   ): Def.Initialize[Task[Unit]] =
     Def.task {
       Def.uncached {
-        // The files the task found formatted, in its own cache directory
-        val cacheFile = Some(streams.value.cacheDirectory / "dixtra-formatted")
-        val args      = arguments(mode, dixtraConfig.value, dixtraChangedSince.value, cacheFile, paths.value)
-        run(dixtraClasspath.value, args, mode, onFailure, label.value, streams.value.log)
+        val args = arguments(mode, dixtraConfig.value, dixtraChangedSince.value, paths.value)
+        run(dixtraClasspath.value, args, cacheFile(streams.value), mode, onFailure, label.value, streams.value.log)
       }
     }
 
@@ -196,37 +195,36 @@ object DixtraPlugin extends AutoPlugin {
     files(base, Set(".sbt")) ++ files(base / "project", Set(".sbt", ".scala"))
 
   // The command line of dixtra for `paths`, empty when there is nothing to do.
-  private def arguments(
-    mode: Mode,
-    config: Option[File],
-    changedSince: Option[String],
-    cacheFile: Option[File],
-    paths: Seq[File],
-  ): Seq[String] =
+  private def arguments(mode: Mode, config: Option[File], changedSince: Option[String], paths: Seq[File]): Seq[String] =
     if paths.isEmpty then
       Nil
     else
       val checkFlags   = if mode == Mode.Check then Seq("--check") else Nil
       val configFlags  = config.toSeq.flatMap(file => Seq("--config-path", file.getAbsolutePath))
       val changedFlags = changedSince.toSeq.flatMap(ref => Seq("--changed-since", ref))
-      val cacheFlags   = cacheFile.toSeq.flatMap(file => Seq("--cache-file", file.getAbsolutePath))
       val pathFlags    = paths.map(_.getAbsolutePath)
 
-      checkFlags ++ configFlags ++ changedFlags ++ cacheFlags ++ pathFlags
+      checkFlags ++ configFlags ++ changedFlags ++ pathFlags
 
-  // Run dixtra with `args` on behalf of `label`, failing the task or only logging a warning when the run fails. The
-  // failure is a message only: the files at fault are already logged.
+  // The files a task found formatted, in its own cache directory inside the target directory of the project: dixtra
+  // does not format them again until they, their configuration or dixtra change.
+  private def cacheFile(streams: TaskStreams): File =
+    streams.cacheDirectory / "dixtra-formatted"
+
+  // Run dixtra with `args` on behalf of `label`, remembering the files found formatted in `cacheFile`, failing the task
+  // or only logging a warning when the run fails. The failure is a message only: the files at fault are already logged.
   @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   private def run(
     classpath: Seq[File],
     args: Seq[String],
+    cacheFile: File,
     mode: Mode,
     onFailure: OnFailure,
     label: String,
     log: Logger,
   ): Unit =
     if args.nonEmpty then
-      val code = invoke(classpath, args, label, log)
+      val code = invoke(classpath, args, cacheFile, label, log)
       (code, onFailure, mode) match {
         case (0, _, _) =>
           ()
@@ -241,7 +239,7 @@ object DixtraPlugin extends AutoPlugin {
   // Call `Embedded.run` of dixtra in its own class loader, whose parent is the platform class loader so that nothing of
   // sbt (its Scala library first) is visible to dixtra.
   @SuppressWarnings(Array("org.wartremover.warts.Null"))
-  private def invoke(classpath: Seq[File], args: Seq[String], label: String, log: Logger): Int =
+  private def invoke(classpath: Seq[File], args: Seq[String], cacheFile: File, label: String, log: Logger): Int =
     val loader =
       loaders.getOrElseUpdate(
         classpath,
@@ -251,7 +249,7 @@ object DixtraPlugin extends AutoPlugin {
     val entry =
       loader
         .loadClass("com.colofabrix.scala.dixtra.Embedded")
-        .getMethod("run", classOf[Array[String]], classOf[Consumer[String]], classOf[Consumer[String]])
+        .getMethod("run", classOf[Array[String]], classOf[Consumer[String]], classOf[Consumer[String]], classOf[String])
 
     // The level of each line by its prefix, as `CliReport` of dixtra writes it: the summary of the run is prefixed with
     // `label`, the files that are unchanged are logged at debug.
@@ -269,7 +267,7 @@ object DixtraPlugin extends AutoPlugin {
     thread.setContextClassLoader(loader)
 
     try {
-      entry.invoke(null, args.toArray, out, err) match {
+      entry.invoke(null, args.toArray, out, err, cacheFile.getAbsolutePath) match {
         case code: Integer => code.intValue
         case other         => sys.error(s"dixtra: unexpected result ${String.valueOf(other)}")
       }
