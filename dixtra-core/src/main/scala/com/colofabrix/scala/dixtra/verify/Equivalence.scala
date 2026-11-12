@@ -51,11 +51,9 @@ object Equivalence {
    */
   def isEquivalentSource(original: Source, originalText: String, formatted: String, dialect: Dialect): Boolean =
     val unchanged = formatted == originalText
-    val reparses =
+    def reparses =
       parse[Source](formatted, dialect).exists { after =>
-        val sameStructure = equivalent(original, after)
-        val sameComments  = comments(originalText) == comments(formatted)
-        sameStructure && sameComments
+        equivalent(original, after) && comments(originalText) == comments(formatted)
       }
 
     unchanged || reparses
@@ -91,7 +89,7 @@ object Equivalence {
   // structure, which is printed only for leaves that differ.
   private def sameLeaf(x: Tree, y: Tree): Boolean =
     val sameValues    = x.productPrefix == y.productPrefix && x.productIterator.sameElements[Any](y.productIterator)
-    val sameStructure = x.structure == y.structure
+    def sameStructure = x.structure == y.structure
 
     sameValues || sameStructure
 

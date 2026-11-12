@@ -22,7 +22,11 @@ object ArrowSpacingNormalizer {
    * Insert a single space around each `=>` where one is missing.
    */
   def normalize(formatted: String): String =
-    SourceEdits.tokens(formatted).fold(formatted)(space)
+    // Without an arrow there is no `RightArrow` token, and the text is rebuilt as it was: skip tokenising it
+    if !formatted.contains("=>") && !formatted.contains('⇒') then
+      formatted
+    else
+      SourceEdits.tokens(formatted).fold(formatted)(space)
 
   private def space(tokens: Vector[Token]): String =
     tokens

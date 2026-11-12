@@ -21,9 +21,17 @@ object WhitespaceNormalizer {
    * Collapse redundant intra-line whitespace runs to a single space.
    */
   def normalize(formatted: String): String =
-    SourceEdits
-      .tokens(formatted)
-      .fold(formatted)(collapse)
+    if !mayCollapse(formatted) then
+      formatted
+    else
+      SourceEdits
+        .tokens(formatted)
+        .fold(formatted)(collapse)
+
+  // False when the text has nothing `collapse` would change: no run of two horizontal spaces and no horizontal space
+  // other than ' '. The renderers normalise many short slices, most of them already clean, and tokenising is the cost.
+  private def mayCollapse(text: String): Boolean =
+    text.contains("  ") || text.exists(c => c != ' ' && c != '\n' && c != '\r' && (c.isWhitespace || c.isSpaceChar))
 
   // Scalameta emits each horizontal-space character as its own HSpace token, so a
   // run like `   ` is several consecutive HSpace tokens. We collapse *inter-token*

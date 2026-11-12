@@ -11,9 +11,10 @@ import scala.meta.*
 /**
  * The code that profiling found the most expensive inside the stages of [[PipelineBench]], each on its own:
  *   - `sourceTokens`: building the token index of the source (one tokenization).
- *   - `spans`: `SourceTokens.span` of every tree of the file, which the renderers ask for each node they render.
+ *   - `spans`: `SourceTokens.span` of every tree of the file, which the renderers ask for each node they render, on a
+ *     new token index (so that spans are not served from the index's cache), its building included.
  *   - `sourceDocs`: `SourceDocs.sourceDoc` of every tree, the verbatim documents of the renderers (spans, plus the
- *     re-normalisation of single-line slices).
+ *     re-normalisation of single-line slices), on a new token index too.
  *   - `braceStyle`: the brace-style normalizer on the rendered text (it parses it again and checks its output).
  *   - `statementChecks`: `Equivalence.isEquivalentStat` of every definition and declaration against its own source
  *     text, the renderer's self-check.
@@ -31,19 +32,21 @@ class HotspotBench {
     new SourceTokens(c.source)
 
   @Benchmark
-  def spans(c: Corpus, state: HotspotBench.Tokens, bh: Blackhole): Unit =
-    c.trees.foreach(t => bh.consume(state.tokens.span(t)))
+  def spans(c: Corpus, bh: Blackhole): Unit =
+    val tokens = new SourceTokens(c.source)
+    c.trees.foreach(t => bh.consume(tokens.span(t)))
 
   @Benchmark
-  def sourceDocs(c: Corpus, state: HotspotBench.Tokens, bh: Blackhole): Unit =
-    c.trees.foreach(t => bh.consume(state.docs.sourceDoc(t)))
+  def sourceDocs(c: Corpus, bh: Blackhole): Unit =
+    val docs = new SourceDocs(c.source, new SourceTokens(c.source))
+    c.trees.foreach(t => bh.consume(docs.sourceDoc(t)))
 
   @Benchmark
   def braceStyle(c: Corpus): String =
     BraceStyleNormalizer.normalize(c.rendered, c.config.braces.style, c.config.maxColumn, c.dialect)
 
   @Benchmark
-  def statementChecks(state: HotspotBench.Tokens, bh: Blackhole): Unit =
+  def statementChecks(state: HotspotBench.Statements, bh: Blackhole): Unit =
     state.statements.foreach { case (stat, text) => bh.consume(Equivalence.isEquivalentStat(stat, text)) }
 
   @Benchmark
@@ -54,18 +57,14 @@ class HotspotBench {
 
 object HotspotBench {
 
-  /** The token index and documents of the source, built once, and the statements of the file with their source text. */
+  /** The definitions and declarations of the file, each with its source text. */
   @State(Scope.Benchmark)
-  class Tokens {
+  class Statements {
 
-    var tokens: SourceTokens            = new SourceTokens("")
-    var docs: SourceDocs                = new SourceDocs("", tokens)
     var statements: Vector[(Tree, String)] = Vector.empty
 
     @Setup(Level.Trial)
     def setup(c: Corpus): Unit =
-      tokens = new SourceTokens(c.source)
-      docs = new SourceDocs(c.source, tokens)
       statements = c.trees.collect { case s: (Defn | Decl) => (s, s.pos.text) }
 
   }

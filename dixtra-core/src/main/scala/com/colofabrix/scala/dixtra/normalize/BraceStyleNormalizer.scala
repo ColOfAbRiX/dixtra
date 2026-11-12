@@ -43,14 +43,21 @@ object BraceStyleNormalizer {
    * `maxColumn`.
    */
   def normalize(source: String, style: BracesStyle, maxColumn: Int, dialect: Dialect): String =
+    normalize(source, style, maxColumn, dialect, None)
+
+  /**
+   * Apply the brace indentation `style` to `source`, a whole file of `dialect`, keeping joined lines within
+   * `maxColumn`, with `parsed` as the tree of `source` when the caller already has it.
+   */
+  def normalize(source: String, style: BracesStyle, maxColumn: Int, dialect: Dialect, parsed: Option[Source]): String =
     try {
-      parse(source, dialect).fold(source) { tree =>
+      parsed.orElse(parse(source, dialect)).fold(source) { tree =>
         val text  = new Text(source, tree.tokens.filter(t => t.end > t.start).toVector)
         val edits = continuations(text, tree, style, maxColumn) ++ openings(text, tree, style, maxColumn)
         val out   = SourceEdits.applyEdits(source, edits)
 
         val noEdits       = edits.isEmpty
-        val notEquivalent = !Equivalence.isEquivalentSource(tree, source, out, dialect)
+        def notEquivalent = !Equivalence.isEquivalentSource(tree, source, out, dialect)
 
         if noEdits || notEquivalent then
           source

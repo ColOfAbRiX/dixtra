@@ -18,6 +18,16 @@ final class SourceTokens(original: String) {
   private val tokens: Vector[Token] =
     SourceEdits.tokens(original).getOrElse(Vector.empty)
 
+  // The comments alone, in source order: the renderers ask for the comments of a range far more often than for its
+  // tokens
+  private val comments: Vector[Token.Comment] =
+    tokens.collect { case c: Token.Comment => c }
+
+  // The span of each tree already asked for: the renderers ask again for the same trees, and a span is computed by
+  // walking the tokens around the tree. Keyed by identity, as a tree is a position in this source.
+  private val spans =
+    new java.util.IdentityHashMap[Tree, (Int, Int)]
+
   /**
    * The tokens lying entirely within `[start, end)`, in source order.
    */
@@ -33,7 +43,12 @@ final class SourceTokens(original: String) {
    * The comment tokens lying entirely within `[start, end)`.
    */
   def commentsBetween(start: Int, end: Int): Vector[Token.Comment] =
-    tokensBetween(start, end).collect { case c: Token.Comment => c }
+    comments
+      .iterator
+      .drop(firstAtOrAfter(comments, start))
+      .takeWhile(_.start < end)
+      .filter(_.end <= end)
+      .toVector
 
   /**
    * True when the source text of `tree` contains a comment that sits in a gap between its direct children, i.e. text
@@ -71,6 +86,13 @@ final class SourceTokens(original: String) {
    * clause) are not included.
    */
   def span(tree: Tree): (Int, Int) =
+    Option(spans.get(tree)).getOrElse {
+      val computed = spanOf(tree)
+      spans.put(tree, computed)
+      computed
+    }
+
+  private def spanOf(tree: Tree): (Int, Int) =
     val parentSpan = tree.parent.map(p => (p.pos.start, p.pos.end))
 
     def loop(start: Int, end: Int): (Int, Int) =
@@ -113,14 +135,19 @@ final class SourceTokens(original: String) {
 
   // Index of the first token starting at or after `offset` (binary search).
   private def firstTokenAtOrAfter(offset: Int): Int =
+    firstAtOrAfter(tokens, offset)
+
+  // Index of the first of `sorted` (tokens in source order) starting at or after `offset` (binary search).
+  private def firstAtOrAfter(sorted: Vector[Token], offset: Int): Int =
     @annotation.tailrec
     def search(lo: Int, hi: Int): Int =
       if lo >= hi then
         lo
       else
         val mid = (lo + hi) / 2
-        if tokens(mid).start < offset then search(mid + 1, hi) else search(lo, mid)
-    search(0, tokens.length)
+        if sorted(mid).start < offset then search(mid + 1, hi) else search(lo, mid)
+
+    search(0, sorted.length)
 
   private def isTrivia(t: Token): Boolean =
     t match {
@@ -128,23 +155,23 @@ final class SourceTokens(original: String) {
       case _                                      => false
     }
 
-  // The closing parenthesis matching an opening one, found by depth counting.
+  // The closing parenthesis matching an opening one, found by depth counting, stopping at it.
   private def matchingParen(open: Token.LeftParen): Option[Token] =
-    val after = tokens.iterator.drop(firstTokenAtOrAfter(open.end))
-    val (_, found) =
-      after.foldLeft((1, Option.empty[Token])) { case ((depth, result), t) =>
-        if result.isDefined then
-          (depth, result)
-        else
-          t match {
-            case _: Token.LeftParen =>
-              (depth + 1, None)
-            case _: Token.RightParen =>
-              if depth == 1 then (0, Some(t)) else (depth - 1, None)
-            case _ =>
-              (depth, None)
-          }
+    tokens
+      .iterator
+      .drop(firstTokenAtOrAfter(open.end))
+      .scanLeft((1, Option.empty[Token])) { case ((depth, _), t) =>
+        t match {
+          case _: Token.LeftParen =>
+            (depth + 1, None)
+          case _: Token.RightParen =>
+            if depth == 1 then (0, Some(t)) else (depth - 1, None)
+          case _ =>
+            (depth, None)
+        }
       }
-    found
+      .collectFirst { case (_, Some(close)) =>
+        close
+      }
 
 }

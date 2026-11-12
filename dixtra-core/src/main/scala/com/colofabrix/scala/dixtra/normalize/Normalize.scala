@@ -1,7 +1,7 @@
 package com.colofabrix.scala.dixtra.normalize
 
 import com.colofabrix.scala.dixtra.Config
-import scala.meta.Dialect
+import scala.meta.{Dialect, Source}
 
 /**
  * The text-normalisation pipeline applied after tree rendering.
@@ -21,8 +21,15 @@ object Normalize {
    * Apply every text post-pass, in order, to the rendered source of a file of the given dialect.
    */
   def apply(rendered: String, config: Config, dialect: Dialect): String =
+    apply(rendered, config, dialect, None)
+
+  /**
+   * Apply every text post-pass, in order, to the rendered source of a file of the given dialect, with `parsed` as the
+   * tree of `rendered` when the caller already has it (the rendering left the source as it was).
+   */
+  def apply(rendered: String, config: Config, dialect: Dialect, parsed: Option[Source]): String =
     val braced =
-      BraceStyleNormalizer.normalize(rendered, config.braces.style, config.maxColumn, dialect)
+      BraceStyleNormalizer.normalize(rendered, config.braces.style, config.maxColumn, dialect, parsed)
 
     val moved =
       TrailingCommentNormalizer.moveAbove(braced, config.maxColumn, config.overflow.trailingComment)
