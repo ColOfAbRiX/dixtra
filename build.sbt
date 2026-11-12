@@ -39,7 +39,7 @@ lazy val scala3Settings =
 lazy val dixtra =
   project
     .in(file("."))
-    .aggregate(dixtraCore, dixtraCli, sbtDixtra, dixtraVsCode)
+    .aggregate(dixtraCore, dixtraCli, dixtraBench, sbtDixtra, dixtraVsCode)
     .settings(
       name                      := "dixtra",
       scalaVersion              := scala3Version,
@@ -121,6 +121,22 @@ lazy val dixtraCli =
           )
         }
       },
+    )
+
+// The JMH benchmarks of the formatter and of its hotspots, on a frozen corpus. Not published. Run them, with the bytes
+// allocated per operation, saving the results:
+//   sbt "dixtraBench/Jmh/run -prof gc -rf json -rff <results.json> [benchmark regex]"
+lazy val dixtraBench =
+  project
+    .in(file("dixtra-bench"))
+    .dependsOn(dixtraCore)
+    .enablePlugins(JmhPlugin)
+    .settings(scala3Settings)
+    .settings(
+      name                        := "dixtra-bench",
+      publish / skip              := true,
+      Compile / wartremoverErrors := Nil,
+      Compile / scalacOptions ~= (_.filterNot(_.startsWith("-P:wartremover:"))),
     )
 
 // The sbt plugin. It does not depend on dixtra at build time: it resolves dixtra when it runs and loads it in a class

@@ -1,29 +1,23 @@
-# sbt specific
+.bloop/
 .bsp/
+.DS_Store
+.history/
+.idea
+.idea_modules
+.metals/
 .sbt-scripted/
+.vscode/
+/.worksheet/
+dist/
 dist/*
+IDEA
 local.sbt
+macOS
+metals.sbt
+plans/
+Project
 project/boot/
 project/local-plugins.sbt
 project/plugins/project/
+sbt specific
 target/
-
-# VS Code
-.history/
-.vscode/
-.bloop/
-.metals/
-metals.sbt
-
-# IDEA
-.idea
-.idea_modules
-/.worksheet/
-
-# Project
-plans/
-dist/
-TODO.md
-
-# macOS
-.DS_Store
