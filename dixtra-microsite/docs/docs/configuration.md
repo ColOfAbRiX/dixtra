@@ -23,7 +23,29 @@ A project overrides only the settings it changes. Every setting that is not writ
 | Setting          | Default | What it does                                                                                                                                                                                                           |
 | ---------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `config-version` | `1.0.0` | The version of the schema of the configuration. A configuration without it is read as the current version; one written for a later version, or for another major version, is rejected instead of being half understood |
+| `compat213`      | `false` | Whether the output must also be valid Scala 2.13, for the sources of a project cross-compiled for Scala 2.13 and Scala 3                                                                                              |
 | `max-column`     | `120`   | The longest a line can be. A construct whose one-line form does not fit within this width breaks                                                                                                                       |
+
+## Scala 2.13 compatibility
+
+`compat213` keeps the output valid Scala 2.13 too, for the sources of a project cross-compiled for Scala 2.13 and Scala 3. When it is `true`, Dixtra enforces the settings that would otherwise write Scala 3 syntax, whatever the rest of the configuration says:
+
+| Setting                          | Value                                              |
+| -------------------------------- | -------------------------------------------------- |
+| `braces.<construct>`             | `keep`, except `package` and `try`: `force-braces` |
+| `braces.single-expr.<construct>` | `keep`                                             |
+| `body.semicolon-statements`      | `keep`                                             |
+
+`braces.style`, `braces.imports` and the other body settings keep their values. A source that is valid Scala 2.13 too keeps the braces of the Scala 2 form, and a `package` clause and a `try` written without braces get them:
+
+```scala
+def f = {
+  a()
+  b()
+}
+```
+
+A source that is valid only in Scala 3 is still formatted, but the setting does not make it valid Scala 2.13. A source that is Scala 2 is still rejected. The setting can be set in a [`path-overrides`](reference/path-overrides.md) entry, so only some files are formatted in compatibility mode.
 
 ## The settings reference
 

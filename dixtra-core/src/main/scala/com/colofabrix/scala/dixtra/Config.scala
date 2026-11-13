@@ -16,6 +16,7 @@ import com.colofabrix.scala.dixtra.model.*
  * @param blankLines The blank lines at the edges of bodies, between alignment groups and before scaladoc.
  * @param housekeeping The housekeeping of a whole file.
  * @param paths The files and directories to format.
+ * @param compat213 Whether the output must also be valid Scala 2.13.
  */
 final case class Config(
   maxColumn: Int,
@@ -29,7 +30,48 @@ final case class Config(
   blankLines: BlankLinesConfig,
   housekeeping: HousekeepingConfig,
   paths: PathsConfig,
-)
+  compat213: Boolean,
+) {
+
+  /**
+   * The configuration dixtra formats with: with `compat213`, the settings that keep the output valid Scala 2.13 too,
+   * whatever the other settings of this configuration say.
+   */
+  def effective: Config =
+    if !compat213 then
+      this
+    else
+      val effectivePolicies =
+        Construct
+          .values
+          .map(construct => construct -> compatBracePolicy(construct))
+          .toMap
+
+      val effectiveSingleExpressions =
+        BraceConfig
+          .singleExprConstructs
+          .map(_ -> BracePolicy.Keep)
+          .toMap
+
+      val effectiveBody = body.copy(semicolonStatements = SemicolonPolicy.Keep)
+
+      copy(
+        braces = braces.copy(
+          policies = effectivePolicies,
+          singleExpressions = effectiveSingleExpressions,
+        ),
+        body = effectiveBody,
+      )
+
+  // `keep` preserves the braces of the Scala 2 form of a construct; `package` and `try` are written without braces in
+  // that form, so `keep` would render them braceless, as Scala 3.
+  private def compatBracePolicy(construct: Construct): BracePolicy =
+    construct match {
+      case Construct.Package | Construct.Try => BracePolicy.ForceBraces
+      case _                                 => BracePolicy.Keep
+    }
+
+}
 
 object Config {
 
@@ -105,6 +147,7 @@ object Config {
         lineEnding = LineEnding.Keep,
       ),
       paths = PathsConfig.everything,
+      compat213 = false,
     )
 
   /**

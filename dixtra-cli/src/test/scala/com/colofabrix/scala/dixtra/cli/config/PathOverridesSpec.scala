@@ -102,6 +102,18 @@ class PathOverridesSpec extends AnyWordSpec with Matchers {
       }
     }
 
+    "set compat213 only for the files its glob matches" in {
+      withTempDir { dir =>
+        val settings = """path-overrides { "shared/**" { compat213 = true } }"""
+
+        val expected = List(Validated.valid(true), Validated.valid(false))
+
+        val actual = configs(dir, settings, "shared/A.scala", "scala3/B.scala").map(_.map(_.compat213))
+
+        actual shouldBe expected
+      }
+    }
+
     "match a quoted glob holding a dot as one file" in {
       withTempDir { dir =>
         val expected = List(Validated.valid(50), Validated.valid(120))

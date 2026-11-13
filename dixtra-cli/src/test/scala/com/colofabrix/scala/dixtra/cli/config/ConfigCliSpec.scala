@@ -23,6 +23,12 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
       actual shouldBe expected
     }
 
+    "not enable Scala 2.13 compatibility" in {
+      val expected = false
+      val actual   = ConfigCli.default.compat213
+      actual shouldBe expected
+    }
+
     "be the default configuration when read from the schema alone" in {
       val expected = Validated.valid((Config.default, Nil))
 
@@ -105,6 +111,43 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
           .map { config =>
             val braces = config.braces
             (braces.singleExpr(Construct.Def), braces.singleExpr(Construct.Val), braces(Construct.Def))
+          }
+
+      actual shouldBe expected
+    }
+
+    "read compat213, enforcing the settings that keep the output valid Scala 2.13" in {
+      val settings =
+        """compat213 = true
+          |braces {
+          |  style = allman
+          |  imports = force-braces
+          |  def = force-indent
+          |  package = keep
+          |  try = keep
+          |  single-expr.def = force-indent
+          |}
+          |body.semicolon-statements = always-break
+          |""".stripMargin
+
+      val expected =
+        Validated.valid(
+          (true, BracesStyle.Allman, BracePolicy.Keep, BracePolicy.ForceBraces, BracePolicy.Keep, SemicolonPolicy.Keep),
+        )
+
+      val actual =
+        ConfigCli
+          .fromString(settings)
+          .map { config =>
+            val effective = config.effective
+            (
+              config.compat213,
+              effective.braces.style,
+              effective.braces(Construct.Def),
+              effective.braces(Construct.Try),
+              effective.braces.singleExpr(Construct.Def),
+              effective.body.semicolonStatements,
+            )
           }
 
       actual shouldBe expected

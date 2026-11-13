@@ -16,8 +16,12 @@ object ConfigInstances {
 
   //  ConfigReader Instances  //
 
+  // `compat213` would be read as `compat-213`, since the field mapping splits at the digits: keep the name as written.
   given ProductHint[Config] =
-    ProductHint[Config](allowUnknownKeys = false)
+    ProductHint[Config](
+      ConfigFieldMapping(CamelCase, KebabCase).withOverrides("compat213" -> "compat213"),
+      allowUnknownKeys = false,
+    )
 
   given ProductHint[SelectorChainConfig] =
     ProductHint[SelectorChainConfig](allowUnknownKeys = false)
