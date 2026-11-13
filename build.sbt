@@ -179,3 +179,14 @@ lazy val dixtraVsCode =
       publish / skip := true,
     )
     .settings(VsCodeExtension.settings)
+
+// Stages the API documentation produced by this build for the standalone microsite project (dixtra-microsite/, an
+// independent sbt 1.x build): CI copies it into the site before pushing
+lazy val copyApiDocsToSite = taskKey[Unit]("Stage API docs into dixtra-microsite/api-docs")
+copyApiDocsToSite := {
+  val coreDoc    = (dixtraCore / Compile / doc).value
+  val cliDoc     = (dixtraCli / Compile / doc).value
+  val stagingDir = (ThisBuild / baseDirectory).value / "dixtra-microsite" / "api-docs"
+  IO.copyDirectory(coreDoc, stagingDir / "core", overwrite = true)
+  IO.copyDirectory(cliDoc, stagingDir / "cli", overwrite = true)
+}

@@ -9,9 +9,6 @@
 
 ## Next
 
-* [MED][TASK] Add a microsite for the documentation: pick a tool (sbt-typelevel/Laika, mdoc +
-  GitHub Pages, or Docusaurus), move the README content and the reference.conf settings guide
-  there, link it from the README
 * [LOW][TASK] Test the project OS properties (atomic move, work on links, permissions, UTF, ...)
   across multiple OSes
 * [MED][BUG] Remove formatter exception in comments where it tries to detect a code in the comment.

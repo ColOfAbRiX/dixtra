@@ -1,0 +1,56 @@
+options:
+  - title: Introduction
+    url: docs/index.html
+
+  - title: Setup
+    url: docs/setup.html
+
+  - title: Using Dixtra
+    url: docs/usage.html
+
+  - title: Configuration
+    url: docs/configuration.html
+    nested_options:
+      - title: Braces
+        url: docs/reference/braces.html
+      - title: Bodies
+        url: docs/reference/body.html
+      - title: Selector chains
+        url: docs/reference/selector-chain.html
+      - title: Alignment
+        url: docs/reference/alignment.html
+      - title: Blank lines
+        url: docs/reference/blank-lines.html
+      - title: Call sites
+        url: docs/reference/call-site.html
+      - title: Definition sites
+        url: docs/reference/definition-site.html
+      - title: Overflow
+        url: docs/reference/overflow.html
+      - title: Housekeeping
+        url: docs/reference/housekeeping.html
+      - title: Paths
+        url: docs/reference/paths.html
+      - title: Path overrides
+        url: docs/reference/path-overrides.html
+
+  - title: The sbt plugin
+    url: docs/sbt-plugin.html
+
+  - title: The command line
+    url: docs/command-line.html
+
+  - title: The VS Code extension
+    url: docs/vscode.html
+
+  - title: Rules and limitations
+    url: docs/rules.html
+
+  - title: Using Dixtra as a library
+    url: docs/library.html
+
+  - title: API documentation
+    url: docs/api.html
+
+  - title: Glossary
+    url: docs/glossary.html

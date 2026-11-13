@@ -21,3 +21,4 @@ project/local-plugins.sbt
 project/plugins/project/
 sbt specific
 target/
+dixtra-microsite/api-docs/

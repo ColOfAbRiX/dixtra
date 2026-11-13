@@ -8,3 +8,4 @@ Initial release.
 * Dixtra as a library
 * SBT 2 plugin
 * VSCode extension
+* Documentation microsite

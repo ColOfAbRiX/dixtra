@@ -1,0 +1,61 @@
+name: Build and publish the documentation microsite
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "dixtra-microsite/**"
+      - "project/**"
+      - "build.sbt"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "dixtra-microsite/**"
+      - "project/**"
+      - "build.sbt"
+
+jobs:
+  publish_microsite:
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "sbt"
+
+      - name: Set up sbt
+        uses: sbt/setup-sbt@v1
+
+      - name: Install Jekyll
+        run: |
+          sudo apt-get install -y ruby-dev && sudo gem install bundler "jekyll:~>4.0.0" jekyll-relative-links webrick
+          echo "$HOME/gems/bin" >> $GITHUB_PATH
+          echo "GEM_HOME=$HOME/gems" >> $GITHUB_ENV
+
+      - name: Stage the API documentation
+        run: sbt copyApiDocsToSite
+
+      - name: Publish the microsite
+        if: github.event_name != "pull_request"
+        run: |
+          cd dixtra-microsite
+          sbt publishMicrosite
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Build the microsite (pull request)
+        if: github.event_name == "pull_request"
+        run: |
+          cd dixtra-microsite
+          sbt makeMicrosite

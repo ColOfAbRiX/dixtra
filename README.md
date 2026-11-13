@@ -11,6 +11,9 @@ indentation, commas, etc., Dixtra treats the code as having visual features that
 a unit. On top of this, Dixtra doesn't give the users full control of everything to limit the potential
 for inconsistent results.
 
+The full documentation is published at [colofabrix.github.io/dixtra](https://colofabrix.github.io/dixtra/): start with
+[the setup](https://colofabrix.github.io/dixtra/docs/setup.html) and the [settings reference](https://colofabrix.github.io/dixtra/docs/configuration.html).
+
 ## Installation and configuration
 
 Dixtra runs against Scala 3 code and the sbt plugin requires SBT 2
@@ -26,23 +29,37 @@ in [`reference.conf`](dixtra-cli/src/main/resources/reference.conf), which also 
 
 ## Principles (WIP)
 
+These are the principles that Dixtra follows:
+
 ### Format visual features
 
-alignment
-blank-lines
-body
-braces
-call-site
-definition-site
-selector-chain
-housekeeping
-paths
-path-overrides
-overflow
+The targets of formatting are visual features:
+
+* alignment blocks
+* blank lines
+* bodies
+* braces
+* call site
+* definition site
+* selector chain
+
+and as such they are formatted as a unit. For example, a definition site with multiple parameter groups
+will uniformly format the parameters.
 
 ### Consistency across formattings
 
-### One operation per line
+The same visual feature must format the same, everywhere in the code. For example, if a selector chain
+breaks after 3 selectors, it always does so.
+
+### One concept per line
+
+Strongly favour having one "concept" per line. This can be a selector chain, the name of a function, a
+member, a parameter and more. Scala allows so much flexibility that the code can become easily unreadable.
+
+### Optinionated
+
+Ultimately, this is a personal project aimed at solving long standing frustrations with the existing formatters
+and, as such, it strongly favours my views on stlyling.
 
 ## Bundles
 
