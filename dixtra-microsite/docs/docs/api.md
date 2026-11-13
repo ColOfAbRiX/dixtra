@@ -2,6 +2,7 @@
 layout: docs
 title: API documentation
 ---
+
 # API documentation
 
 The scaladoc of the two artifacts is published with the site:

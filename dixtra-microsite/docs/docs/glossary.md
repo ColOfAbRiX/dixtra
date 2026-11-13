@@ -2,6 +2,7 @@
 layout: docs
 title: Glossary
 ---
+
 # Glossary
 
 **Alignment group.** A group of adjacent one-line items that Dixtra aligns together, for example the `=` of a run of `val` definitions. A blank line, an item over several lines, or any other statement ends the group.

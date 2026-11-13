@@ -38,8 +38,8 @@ The line break written at the end of each line, string literals over several lin
 
 ## The settings
 
-| Setting | Default | Values |
-| --- | --- | --- |
-| `trim-trailing-whitespace` | `true` | `true`, `false` |
-| `enforce-eof` | `true` | `true`, `false` |
-| `line-ending` | `keep` | `lf`, `crlf`, `cr`, `keep` |
+| Setting                    | Default | Values                     |
+| -------------------------- | ------- | -------------------------- |
+| `trim-trailing-whitespace` | `true`  | `true`, `false`            |
+| `enforce-eof`              | `true`  | `true`, `false`            |
+| `line-ending`              | `keep`  | `lf`, `crlf`, `cr`, `keep` |

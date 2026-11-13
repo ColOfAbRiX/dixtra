@@ -32,6 +32,7 @@ class CliReportSpec extends AnyWordSpec with Matchers {
     lines.toList
 
   "the report" should {
+
     "start the lines with the prefixes the sbt plugin logs them by, and end with a summary" in {
       val expected =
         List("out unchanged: A.scala", "err skipped (scala 2): A.scala", "out 2 files: 1 unchanged, 1 skipped")
@@ -43,22 +44,20 @@ class CliReportSpec extends AnyWordSpec with Matchers {
 
     "leave the unchanged files out when quiet, but count them" in {
       val expected = List("out formatted: A.scala", "out 2 files: 1 formatted, 1 unchanged")
-
       val actual = report(List(unchanged, formatted), quiet = true)
-
       actual shouldBe expected
     }
 
     "sum up a run without files" in {
       val expected = "0 files"
-
       val actual = CliReport.summary(Nil)
-
       actual shouldBe expected
     }
+
   }
 
   "the path of a file" should {
+
     // The lines `results` print on the standard output, without the summary.
     def printed(results: List[FileResult]): List[String] =
       val lines = ListBuffer.empty[String]
@@ -80,9 +79,7 @@ class CliReportSpec extends AnyWordSpec with Matchers {
 
     "lose a leading ./" in {
       val expected = List("formatted: A.scala")
-
       val actual = printed(List(FileResult.Formatted(Paths.get(".", "A.scala"))))
-
       actual shouldBe expected
     }
 
@@ -101,50 +98,45 @@ class CliReportSpec extends AnyWordSpec with Matchers {
 
       actual shouldBe expected
     }
+
   }
 
   "a run in format mode" should {
+
     "succeed when files are unchanged, formatted or skipped" in {
       val expected = ExitCode.Success
-
       val actual = exitCode(List(unchanged, formatted, skipped), check = false)
-
       actual shouldBe expected
     }
 
     "fail when a file failed" in {
       val expected = ExitCode.Error
-
       val actual = exitCode(List(formatted, failed), check = false)
-
       actual shouldBe expected
     }
+
   }
 
   "a run in check mode" should {
+
     "succeed when files are unchanged or skipped" in {
       val expected = ExitCode.Success
-
       val actual = exitCode(List(unchanged, skipped), check = true)
-
       actual shouldBe expected
     }
 
     "fail when a file would change" in {
       val expected = ExitCode.Error
-
       val actual = exitCode(List(unchanged, wouldFormat), check = true)
-
       actual shouldBe expected
     }
 
     "fail when a file failed" in {
       val expected = ExitCode.Error
-
       val actual = exitCode(List(unchanged, failed), check = true)
-
       actual shouldBe expected
     }
+
   }
 
 }

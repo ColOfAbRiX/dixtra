@@ -25,11 +25,10 @@ class GoldenSpec extends AnyWordSpec with Matchers with FormatMatchers {
     new String(Files.readAllBytes(path), StandardCharsets.UTF_8)
 
   "the golden fixtures" should {
+
     "exist" in {
       val expected = true
-
       val actual = cases.nonEmpty
-
       actual shouldBe expected
     }
 
@@ -52,6 +51,7 @@ class GoldenSpec extends AnyWordSpec with Matchers with FormatMatchers {
         expected should formatTo(expected, config)
       }
     }
+
   }
 
 }

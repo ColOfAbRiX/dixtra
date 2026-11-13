@@ -184,7 +184,7 @@ private[render] final class TypeDefRenderer(ctx: RenderContext) {
         .config
         .body
         .typeDef
-        
+
     val column     = ctx.endColumn(lead, indent) + 1
     val down       = below || policy == SingleBodyPolicy.AlwaysBreak
     val fitsOnLine = !body.authorBroke && ctx.fits(body.oneLine, column)

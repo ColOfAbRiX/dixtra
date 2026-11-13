@@ -28,6 +28,6 @@ A trailing comment never counts in the width, so the code before it never breaks
 
 ## The settings
 
-| Setting | Default | Values |
-| --- | --- | --- |
-| `trailing-comment` | `keep` | `keep`, `move-above` |
+| Setting            | Default | Values               |
+| ------------------ | ------- | -------------------- |
+| `trailing-comment` | `keep`  | `keep`, `move-above` |

@@ -162,10 +162,25 @@ object ConfigInstances {
       val endMarkers  = policies.collect { case (construct, BracePolicy.ForceEnd) => construct.key }
 
       if unsupported.nonEmpty then
-        val expected = BraceConfig.singleExprConstructs.map(_.key).mkString(", ")
-        Left(cannotConvert(unsupported.map(_.key).mkString(", "), s"unknown construct, expected one of $expected"))
+        val expected =
+          BraceConfig
+            .singleExprConstructs
+            .map(_.key)
+            .mkString(", ")
+
+        Left(
+          cannotConvert(
+            unsupported.map(_.key).mkString(", "),
+            s"unknown construct, expected one of $expected",
+          ),
+        )
       else if endMarkers.nonEmpty then
-        Left(cannotConvert(endMarkers.mkString(", "), "a single expression has no end marker, so it cannot be force-end"))
+        Left(
+          cannotConvert(
+            endMarkers.mkString(", "),
+            "a single expression has no end marker, so it cannot be force-end",
+          ),
+        )
       else
         Right(policies)
     }

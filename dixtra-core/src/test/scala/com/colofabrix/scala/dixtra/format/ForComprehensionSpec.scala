@@ -15,6 +15,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a braceless multiline for-yield" should {
+
     "stay braceless and keep a yield expression on the yield line with body.for-yield = keep" in {
       val input =
         """def f =
@@ -142,9 +143,11 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
 
       input should formatTo(expected)
     }
+
   }
 
   "a braced multiline for-yield with for-yield = keep" should {
+
     "be stable with a braced yield block" in {
       val input =
         """def f =
@@ -218,9 +221,11 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
 
       input should formatTo(expected, withBraces(Construct.ForYield -> BracePolicy.Keep))
     }
+
   }
 
   "a for-yield on one line" should {
+
     "stay as written" in {
       val input =
         """def f = for x <- xs yield x
@@ -231,9 +236,11 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
 
       input should formatTo(expected)
     }
+
   }
 
   "a multiline for-yield in parentheses" should {
+
     "stay as written" in {
       val input =
         """def f =
@@ -245,9 +252,11 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
 
       input should formatTo(expected)
     }
+
   }
 
   "a for loop without yield" should {
+
     "stay as written" in {
       val input =
         """def f =
@@ -261,6 +270,7 @@ class ForComprehensionSpec extends AnyWordSpec with Matchers with FormatMatchers
 
       input should formatTo(expected)
     }
+
   }
 
 }

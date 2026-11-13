@@ -20,28 +20,28 @@ A project overrides only the settings it changes. Every setting that is not writ
 
 ## The top-level settings
 
-| Setting | Default | What it does |
-| --- | --- | --- |
+| Setting          | Default | What it does                                                                                                                                                                                                           |
+| ---------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `config-version` | `1.0.0` | The version of the schema of the configuration. A configuration without it is read as the current version; one written for a later version, or for another major version, is rejected instead of being half understood |
-| `max-column` | `120` | The longest a line can be. A construct whose one-line form does not fit within this width breaks |
+| `max-column`     | `120`   | The longest a line can be. A construct whose one-line form does not fit within this width breaks                                                                                                                       |
 
 ## The settings reference
 
 The settings are split into one page per group. Each page lists the settings, their defaults and an example for every value they take.
 
-| Group | What it holds |
-| --- | --- |
-| [braces](reference/braces.md) | The braces, the `end` markers or the indentation of every construct, and where the braces go |
-| [body](reference/body.md) | Whether a body stays on the line of its separator, or goes below it |
-| [selector-chain](reference/selector-chain.md) | When a chain of selections breaks, and how |
-| [alignment](reference/alignment.md) | What lines up in columns |
-| [blank-lines](reference/blank-lines.md) | The blank lines at the edges of the bodies, between groups and before the scaladocs |
-| [call-site](reference/call-site.md) | The arguments of a call and the elements of a tuple: groups and commas |
-| [definition-site](reference/definition-site.md) | The parameters of a `def` or of a class, and the selectors of an import: groups and commas |
-| [overflow](reference/overflow.md) | What happens to what goes past `max-column` |
-| [housekeeping](reference/housekeeping.md) | The trailing whitespace, the line break at the end of the file, the line endings |
-| [paths](reference/paths.md) | The files of a directory to format |
-| [path-overrides](reference/path-overrides.md) | Other settings for some of the files |
+| Group                                           | What it holds                                                                                |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| [braces](reference/braces.md)                   | The braces, the `end` markers or the indentation of every construct, and where the braces go |
+| [body](reference/body.md)                       | Whether a body stays on the line of its separator, or goes below it                          |
+| [selector-chain](reference/selector-chain.md)   | When a chain of selections breaks, and how                                                   |
+| [alignment](reference/alignment.md)             | What lines up in columns                                                                     |
+| [blank-lines](reference/blank-lines.md)         | The blank lines at the edges of the bodies, between groups and before the scaladocs          |
+| [call-site](reference/call-site.md)             | The arguments of a call and the elements of a tuple: groups and commas                       |
+| [definition-site](reference/definition-site.md) | The parameters of a `def` or of a class, and the selectors of an import: groups and commas   |
+| [overflow](reference/overflow.md)               | What happens to what goes past `max-column`                                                  |
+| [housekeeping](reference/housekeeping.md)       | The trailing whitespace, the line break at the end of the file, the line endings             |
+| [paths](reference/paths.md)                     | The files of a directory to format                                                           |
+| [path-overrides](reference/path-overrides.md)   | Other settings for some of the files                                                         |
 
 ## Which file applies
 

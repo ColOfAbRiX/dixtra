@@ -2,6 +2,7 @@
 layout: docs
 title: Setup
 ---
+
 # Setup
 
 ## The sbt plugin

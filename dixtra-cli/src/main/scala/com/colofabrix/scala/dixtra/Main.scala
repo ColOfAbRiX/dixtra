@@ -6,7 +6,7 @@ import cats.syntax.all.*
 import com.colofabrix.scala.declinio.IODeclineApp
 import com.colofabrix.scala.dixtra.cli.*
 import com.colofabrix.scala.dixtra.cli.config.*
-import com.colofabrix.scala.dixtra.cli.engine.{FormatRunner, ResultCache}
+import com.colofabrix.scala.dixtra.cli.engine.*
 import com.colofabrix.scala.dixtra.cli.files.*
 import com.monovore.decline.Opts
 import java.nio.file.Path
@@ -58,8 +58,7 @@ object Main extends IODeclineApp[CliOptions] {
       results <- configs.flatTraverse((path, loaded) => formatPath(cliOptions, path, loaded, cache))
       _       <- cacheFile.traverse_(file => saveCache(cache, file, printer))
       code    <- CliReport.emit(results, cliOptions.check, cliOptions.quiet, printer)
-    yield
-      code
+    yield code
 
   // A cache that cannot be written only costs the next run its time: it is a warning.
   private def saveCache(cache: ResultCache, file: Path, printer: CliReport.Printer): IO[Unit] =
@@ -80,11 +79,11 @@ object Main extends IODeclineApp[CliOptions] {
         IO.pure(List(FileResult.Failed(path, errors.toList.mkString("; "))))
       case Validated.Valid(config) =>
         selection(cliOptions, path).flatMap {
-          case Left(error)   => 
+          case Left(error) =>
             IO.pure(List(FileResult.Failed(path, error)))
-          case Right(select) => 
+          case Right(select) =>
             FormatRunner(config, cliOptions.maxColumn, cliOptions.check, cache)
-            .run(List(path), select)
+              .run(List(path), select)
         }
     }
 

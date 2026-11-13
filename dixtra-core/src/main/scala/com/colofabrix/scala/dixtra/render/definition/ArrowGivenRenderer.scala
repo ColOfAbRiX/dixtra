@@ -133,7 +133,7 @@ private[definition] final class ArrowGivenRenderer(ctx: RenderContext, terms: Te
         .config
         .body
         .givenAlias
-        
+
     val down   = below || policy == SingleBodyPolicy.AlwaysBreak
     val column = ctx.endColumn(lead, indent) + 1
 

@@ -16,8 +16,10 @@ object NativeImage {
 
   val nativeImage =
     taskKey[File]("Build the project as a GraalVM native executable, in target/native")
+
   val nativeImageMetadata =
     taskKey[File]("Write the reachability metadata of native-image by tracing nativeImageRuns")
+
   val nativeImageRuns =
     settingKey[File => Seq[Seq[String]]]("The arguments of each traced run, given a scratch directory")
 
@@ -32,26 +34,26 @@ object NativeImage {
         val directory = target.value / "native"
         val output    = directory / executable
 
-        // The lazy vals of the Scala runtime use sun.misc.Unsafe: on JDK 24 and later every run warns about it and
-        // this option silences it. Before 24 the option does not exist and native-image fails on it, so it is only
-        // passed when the JVM running sbt, the same one native-image is hosted on, is new enough to know it.
+        // The lazy vals of the Scala runtime use sun.misc.Unsafe: on JDK 24 and later every run warns about it and this
+        // option silences it. Before 24 the option does not exist and native-image fails on it, so it is only passed
+        // when the JVM running sbt, the same one native-image is hosted on, is new enough to know it.
         val unsafeMemoryAccess =
           if javaMajor >= 24 then List("-J--sun-misc-unsafe-memory-access=allow") else Nil
 
         // The arguments go through a file: on Windows the classpath is too long for a command line
         val arguments =
           List("-march=compatibility") ++
-            unsafeMemoryAccess ++
-            List(
-              // A fallback image silently needs a JDK to run: fail the build instead when metadata is missing
-              "--no-fallback",
-              "-H:+ReportExceptionStackTraces",
-              "-cp",
-              classpath.map(path).mkString(java.io.File.pathSeparator),
-              "-o",
-              path(output),
-              mainClass,
-            )
+          unsafeMemoryAccess ++
+          List(
+            // A fallback image silently needs a JDK to run: fail the build instead when metadata is missing
+            "--no-fallback",
+            "-H:+ReportExceptionStackTraces",
+            "-cp",
+            classpath.map(path).mkString(java.io.File.pathSeparator),
+            "-o",
+            path(output),
+            mainClass,
+          )
 
         IO.createDirectory(directory)
 
@@ -108,7 +110,13 @@ object NativeImage {
 
   // The major version of the JVM running sbt: "21", or the old scheme "1.8"
   private def javaMajor: Int =
-    sys.props.getOrElse("java.specification.version", "21").split('.').last.toIntOption.getOrElse(21)
+    sys
+      .props
+      .getOrElse("java.specification.version", "21")
+      .split('.')
+      .last
+      .toIntOption
+      .getOrElse(21)
 
   private def tool(name: String): File =
     file(graalVmHome) / "bin" / name
@@ -142,9 +150,12 @@ object NativeImage {
             "no Visual Studio installation with the C++ build tools: install them or run sbt from a Native Tools prompt",
           ),
         )
+
     val vcvars = file(installation) / "VC" / "Auxiliary" / "Build" / "vcvars64.bat"
+    
     val commandLine =
       command.map(argument => if argument.contains(" ") then "\"" + argument + "\"" else argument).mkString(" ")
+    
     val script = directory / "run-native-image.cmd"
     IO.writeLines(
       script,
@@ -155,11 +166,15 @@ object NativeImage {
         commandLine,
       ),
     )
+
     List("cmd", "/c", script.getPath)
 
   private def vSWhere: File =
     val where = file("C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe")
-    if where.exists then where else sys.error("vswhere.exe not found: install the Visual Studio C++ build tools")
+    if where.exists then 
+      where 
+    else 
+      sys.error("vswhere.exe not found: install the Visual Studio C++ build tools")
 
   private def run(log: Logger, command: Seq[String]): Unit =
     val exit = Process(command).!(ProcessLogger(log.info(_), log.warn(_)))

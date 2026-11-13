@@ -30,7 +30,7 @@ With that configuration, only the files below `src` are formatted, and the direc
 
 ## The settings
 
-| Setting | Default | Values |
-| --- | --- | --- |
+| Setting    | Default  | Values          |
+| ---------- | -------- | --------------- |
 | `included` | `["**"]` | a list of globs |
-| `excluded` | `[]` | a list of globs |
+| `excluded` | `[]`     | a list of globs |

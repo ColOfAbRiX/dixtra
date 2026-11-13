@@ -5,7 +5,7 @@ import cats.effect.unsafe.implicits.global
 import com.colofabrix.scala.dixtra.cli.*
 import com.colofabrix.scala.dixtra.cli.engine.ResultCache
 import com.monovore.decline.Command
-import java.nio.file.{Path, Paths}
+import java.nio.file.*
 import java.util.function.Consumer
 
 /**

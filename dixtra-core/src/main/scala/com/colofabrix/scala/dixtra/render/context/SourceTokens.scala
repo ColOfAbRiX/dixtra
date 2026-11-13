@@ -20,10 +20,16 @@ final class SourceTokens(original: String) {
 
   // The offsets of the tokens, searched without going through the tokens themselves
   private val starts: Array[Int] =
-    tokens.iterator.map(_.start).toArray
+    tokens
+      .iterator
+      .map(_.start)
+      .toArray
 
   private val ends: Array[Int] =
-    tokens.iterator.map(_.end).toArray
+    tokens
+      .iterator
+      .map(_.end)
+      .toArray
 
   // The comments alone, in source order: the renderers ask for the comments of a range far more often than for its
   // tokens
@@ -31,7 +37,10 @@ final class SourceTokens(original: String) {
     tokens.collect { case c: Token.Comment => c }
 
   private val commentStarts: Array[Int] =
-    comments.iterator.map(_.start).toArray
+    comments
+      .iterator
+      .map(_.start)
+      .toArray
 
   // The span of each tree already asked for: the renderers ask again for the same trees, and a span is computed by
   // walking the tokens around the tree. Keyed by identity, as a tree is a position in this source.
@@ -173,10 +182,14 @@ final class SourceTokens(original: String) {
         None
       else
         tokens(i) match {
-          case _: Token.LeftParen      => loop(i + 1, depth + 1)
-          case close: Token.RightParen => if depth == 1 then Some(close) else loop(i + 1, depth - 1)
-          case _                       => loop(i + 1, depth)
+          case _: Token.LeftParen =>
+            loop(i + 1, depth + 1)
+          case close: Token.RightParen =>
+            if depth == 1 then Some(close) else loop(i + 1, depth - 1)
+          case _ =>
+            loop(i + 1, depth)
         }
+        
     loop(firstAtOrAfter(starts, open.end), 1)
 
 }

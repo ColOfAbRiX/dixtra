@@ -2,6 +2,7 @@
 layout: docs
 title: Rules and limitations
 ---
+
 # Rules and limitations
 
 ## Rules that have no setting

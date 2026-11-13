@@ -16,6 +16,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
 
   "selector-chain.break-at-count" should {
+
     val twoSelections   = "def f =\n  fa.toVector.foldLeft(b)(f)\n"
     val twoExploded     = "def f =\n  fa\n    .toVector\n    .foldLeft(b)(f)\n"
     val threeSelections = "def f =\n  fa.toVector.sorted.foldLeft(b)(f)\n"
@@ -49,15 +50,16 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = input
       input should formatTo(expected)
     }
+
   }
 
   "selector-chain.namespace-path" should {
+
     val oneLine  = "def f =\n  fs2.Stream.emits(xs).map(f).toList\n"
     val together = "def f =\n  fs2.Stream\n    .emits(xs)\n    .map(f)\n    .toList\n"
     val apart    = "def f =\n  fs2\n    .Stream\n    .emits(xs)\n    .map(f)\n    .toList\n"
 
     "place the path by the policy" in {
-
       val table =
         List(
           (ChainHeadPolicy.Keep, oneLine, together),
@@ -69,17 +71,17 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       table.foreach { (policy, input, expected) =>
         input should formatTo(expected, chainHead(namespacePath = policy))
       }
-
     }
+
   }
 
   "selector-chain.object-member" should {
+
     val oneLine  = "def f =\n  IO.pure(x).flatMap(f).map(g).void\n"
     val together = "def f =\n  IO.pure(x)\n    .flatMap(f)\n    .map(g)\n    .void\n"
     val apart    = "def f =\n  IO\n    .pure(x)\n    .flatMap(f)\n    .map(g)\n    .void\n"
 
     "place the first member by the policy" in {
-
       val table =
         List(
           (ChainHeadPolicy.AlwaysBreak, oneLine, apart),
@@ -91,7 +93,6 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       table.foreach { (policy, input, expected) =>
         input should formatTo(expected, chainHead(objectMember = policy))
       }
-
     }
 
     "join the member to a namespace path" in {
@@ -105,9 +106,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = "def f =\n  xs\n    .map(f)\n    .filter(g)\n    .toList\n"
       input should formatTo(expected, chainHead(objectMember = ChainHeadPolicy.AlwaysJoin))
     }
+
   }
 
   "selector-chain.receiver-min-length" should {
+
     val oneLine = "def f =\n  v.trim.toLowerCase.nonEmpty\n"
 
     "break after every receiver when 1" in {
@@ -148,9 +151,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = input
       input should formatTo(expected, receiverMinLength(3))
     }
+
   }
 
   "bodies after =" should {
+
     val below = "def f =\n  xs.map(_ + 1)\n"
 
     "join a fitting body written below = to the = line when always-join" in {
@@ -219,9 +224,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
 
       chain should formatTo(expected, bodies(_.withAfterEquals(SingleBodyPolicy.AlwaysJoin), 120))
     }
+
   }
 
   "body.lambda" should {
+
     val below  = "def f =\n  xs.foreach { x =>\n    println(x)\n  }\n"
     val onLine = "def f =\n  xs.foreach { x => println(x) }\n"
 
@@ -246,9 +253,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = below
       input should formatTo(expected, bodies(_.withLambda(SingleBodyPolicy.AlwaysJoin), 30))
     }
+
   }
 
   "body.if" should {
+
     val onEquals  = "def f = if c then a else b\n"
     val oneLine   = "def f =\n  if c then a else b\n"
     val elseLine  = "def f =\n  if c then a\n  else b\n"
@@ -343,9 +352,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = input
       input should formatTo(expected, withBraces(Construct.If -> BracePolicy.ForceEnd))
     }
+
   }
 
   "body.case-body" should {
+
     val mixed =
       """def f(x: Int) =
         |  x match {
@@ -449,9 +460,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = "def f(x: Int) =\n  x match {\n    case 1 =>\n      \"abcdef\"\n    case 22 =>\n      \"b\"\n  }\n"
       input should formatTo(expected, bodies(_.copy(caseBody = AlwaysJoin), 22))
     }
+
   }
 
   "body.try" should {
+
     val config =
       (policy: MultiBodyPolicy) =>
         withBraces(Construct.Try -> BracePolicy.ForceIndent).copy(body = bodies(_.copy(tryBody = policy), 120).body)
@@ -487,9 +500,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
         input should formatTo(expected, config(policy))
       }
     }
+
   }
 
   "body.for, body.for-yield and body.while" should {
+
     val forBelow    = "def f =\n  for x <- xs do\n    println(x)\n"
     val forOnLine   = "def f =\n  for x <- xs do println(x)\n"
     val whileBelow  = "def f =\n  while c do\n    step()\n"
@@ -557,7 +572,6 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
     }
 
     "write a loop with its body on its line in the syntax of the brace style" in {
-
       val table =
         List(
           (forOnLine, "def f =\n  for (x <- xs) println(x)\n", withBraces(Construct.For -> BracePolicy.ForceBraces)),
@@ -566,11 +580,12 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
         )
 
       table.foreach { (input, expected, config) => input should formatTo(expected, config) }
-
     }
+
   }
 
   "selector-chain.in-for" should {
+
     val broken = "def f =\n  for\n    x <- xs\n           .filter(p)\n           .map(g)\n  yield x\n"
     val joined = "def f =\n  for\n    x <- xs.filter(p).map(g)\n  yield x\n"
 
@@ -616,9 +631,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = input
       input should formatTo(expected, inFor(NestedChainPolicy.NeverBreak, 120))
     }
+
   }
 
   "selector-chain.in-call" should {
+
     val broken = "def f =\n  g(\n    xs\n      .filter(p)\n      .map(h),\n  )\n"
     val joined = "def f =\n  g(\n    xs.filter(p).map(h),\n  )\n"
 
@@ -833,9 +850,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
         input should formatTo(expected, config)
       }
     }
+
   }
 
   "selector-chain.inline-chains" should {
+
     val oneLine = "val y = xs.map(_ + 1).filter(_ > 0).sum\n"
 
     "keep a chain on the = line on one line when keep" in {
@@ -855,9 +874,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = input
       input should formatTo(expected, inlineChains(InlineChainPolicy.BreakAtCount, 4))
     }
+
   }
 
   "alignment.across-comments" should {
+
     "align definitions, arrows and operators across a comment line when on" in {
       val table =
         List(
@@ -886,9 +907,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = input
       input should formatTo(expected, acrossComments(true))
     }
+
   }
 
   "alignment.operators" should {
+
     "align the operators of adjacent one-line assignments" in {
       val input    = "def f =\n  total += x\n  count = 0\n  longerName -= 2\n  g()\n"
       val expected = "def f =\n  total      += x\n  count      = 0\n  longerName -= 2\n  g()\n"
@@ -1008,9 +1031,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = input
       input should formatTo(expected)
     }
+
   }
 
   "alignment.named-arguments" should {
+
     val plain =
       """val x =
         |  MyCaseClass(
@@ -1051,9 +1076,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
 
       input should formatTo(expected, namedArguments(true))
     }
+
   }
 
   "alignment.trailing-comments" should {
+
     val plain   = "def f =\n  a(1) // one\n  bbb(2) // two\n"
     val aligned = "def f =\n  a(1)   // one\n  bbb(2) // two\n"
 
@@ -1082,9 +1109,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = "def f =\n  a()        // one\n  bbbbbbbb() // two\n  c() // a longer comment\n  d() // four\n"
       input should formatStablyTo(expected, trailingComments(true, 30))
     }
+
   }
 
   "trailing-commas" should {
+
     // Each list laid out one element per line, with and without the comma after its last element
     // format: off
     val lists =
@@ -1130,6 +1159,7 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = input
       input should formatTo(expected, commas(TrailingCommas.Always))
     }
+
   }
 
   "definition-site.trailing-commas and call-site.trailing-commas" should {

@@ -189,7 +189,7 @@ final class DefRenderer(
           .name
           .pos
           .end
-          
+
     val afterName = if anonymous then " " else ""
 
     parts(givenAlias.pos.start, nameEnd, afterName, groups, Some(givenAlias.decltpe))

@@ -11,6 +11,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class InterpolationSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "an interpolated string" should {
+
     "inline a single-expression splice spread over several lines" in {
       val input    = "val s = s\"\"\"a ${\n\n\n  x\n} b\"\"\"\n"
       val expected = "val s = s\"\"\"a ${x} b\"\"\"\n"
@@ -28,6 +29,7 @@ class InterpolationSpec extends AnyWordSpec with Matchers with FormatMatchers {
       val expected = input
       input should formatTo(expected)
     }
+
   }
 
 }

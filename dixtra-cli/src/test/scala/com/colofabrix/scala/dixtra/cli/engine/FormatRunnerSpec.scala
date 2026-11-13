@@ -65,6 +65,7 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
     }
 
   "the runner in format mode" should {
+
     "rewrite a single unformatted file" in {
       withTempDir { dir =>
         val file = write(dir.resolve("A.scala"), unformatted)
@@ -120,9 +121,12 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
       withTempDir { dir =>
         // Alternate unformatted and formatted files, given in reverse name order.
         val expected = (1 to 20).toList.reverse.map { number =>
-          if number % 2 == 0 then FileResult.Unchanged(write(dir.resolve(s"F$number.scala"), formatted))
-          else FileResult.Formatted(write(dir.resolve(s"F$number.scala"), unformatted))
+          if number % 2 == 0 then 
+            FileResult.Unchanged(write(dir.resolve(s"F$number.scala"), formatted))
+          else 
+            FileResult.Formatted(write(dir.resolve(s"F$number.scala"), unformatted))
         }
+
         val files = expected.map {
           case FileResult.Unchanged(path) => path
           case FileResult.Formatted(path) => path
@@ -248,19 +252,23 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
         val expected = (List("failed"), "val x = (")
 
         val results = runner(check = false).run(List(file)).unsafeRunSync()
+        
         val outcomes =
           results.map {
             case _: FileResult.Failed => "failed"
             case _                    => "other"
           }
+
         val actual = (outcomes, read(file))
 
         actual shouldBe expected
       }
     }
+
   }
 
   "the runner isolating per-file failures" should {
+
     "keep processing other files when the formatter throws" in {
       withTempDir { dir =>
         val bad    = write(dir.resolve("A.scala"), "val boom = 1\n")
@@ -313,9 +321,11 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
         actual shouldBe expected
       }
     }
+
   }
 
   "the runner writing files" should {
+
     "Fully replace the content and leave no temporary files behind" in {
       withTempDir { dir =>
         val file = write(dir.resolve("A.scala"), "val y =      1\n")
@@ -328,9 +338,11 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
         actual shouldBe expected
       }
     }
+
   }
 
   "the runner in check mode" should {
+
     "report a would-format result without modifying the file" in {
       withTempDir { dir =>
         val file = write(dir.resolve("A.scala"), unformatted)
@@ -355,9 +367,11 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
         actual shouldBe expected
       }
     }
+
   }
 
   "the runner with a Scala 2 file" should {
+
     // Procedure syntax: Scala 2.13, dropped by Scala 3.
     val scala2 = "object A {\n  def f()   { println(1) }\n}\n"
 
@@ -387,6 +401,7 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
         actual shouldBe expected
       }
     }
+
   }
 
 }

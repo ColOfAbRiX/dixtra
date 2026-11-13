@@ -12,6 +12,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a class header with an extends list" should {
+
     "stay on one line when it fits" in {
       val input    = "class A(x: Int) extends B with C {\n  val y = 1\n}"
       val expected = input
@@ -151,6 +152,7 @@ class ExtendsSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected, 30)
     }
+
   }
 
 }

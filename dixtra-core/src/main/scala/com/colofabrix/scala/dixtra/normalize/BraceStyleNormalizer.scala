@@ -51,19 +51,21 @@ object BraceStyleNormalizer {
    */
   def normalize(source: String, style: BracesStyle, maxColumn: Int, dialect: Dialect, parsed: Option[Source]): String =
     try {
-      parsed.orElse(parse(source, dialect)).fold(source) { tree =>
-        val text  = new Text(source, tree.tokens.filter(t => t.end > t.start).toVector)
-        val edits = continuations(text, tree, style, maxColumn) ++ openings(text, tree, style, maxColumn)
-        val out   = SourceEdits.applyEdits(source, edits)
+      parsed
+        .orElse(parse(source, dialect))
+        .fold(source) { tree =>
+          val text  = new Text(source, tree.tokens.filter(t => t.end > t.start).toVector)
+          val edits = continuations(text, tree, style, maxColumn) ++ openings(text, tree, style, maxColumn)
+          val out   = SourceEdits.applyEdits(source, edits)
 
-        val noEdits       = edits.isEmpty
-        def notEquivalent = !Equivalence.isEquivalentSource(tree, source, out, dialect)
+          val noEdits       = edits.isEmpty
+          def notEquivalent = !Equivalence.isEquivalentSource(tree, source, out, dialect)
 
-        if noEdits || notEquivalent then
-          source
-        else
-          out
-      }
+          if noEdits || notEquivalent then
+            source
+          else
+            out
+        }
     } catch {
       case NonFatal(_) => source
     }

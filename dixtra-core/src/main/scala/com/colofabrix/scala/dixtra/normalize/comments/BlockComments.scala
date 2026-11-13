@@ -25,9 +25,9 @@ private[normalize] object BlockComments {
       .toList
       .filter { comment => comment.text.startsWith("/*") && text.ownLine(comment) }
       .flatMap { comment =>
-        if SourceEdits.isScaladoc(comment.text) then 
+        if SourceEdits.isScaladoc(comment.text) then
           scaladoc(text, comment, maxColumn, alignTags)
-        else 
+        else
           plainBlock(text, comment, maxColumn)
       }
 

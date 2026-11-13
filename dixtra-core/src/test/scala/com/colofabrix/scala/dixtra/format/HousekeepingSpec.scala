@@ -88,6 +88,7 @@ class HousekeepingSpec extends AnyWordSpec with Matchers {
   }
 
   "line-ending" should {
+
     val lf = "object A {\n  val x = 1\n}\n"
 
     "keep the line breaks of the file by default" in {
@@ -113,6 +114,7 @@ class HousekeepingSpec extends AnyWordSpec with Matchers {
         actual shouldBe expected
       }
     }
+
   }
 
 }

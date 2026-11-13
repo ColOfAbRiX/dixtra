@@ -32,11 +32,10 @@ class SelfFormatSpec extends AnyWordSpec with Matchers {
     }
 
   "formatting this project's sources" should {
+
     "find a corpus to format" in {
       val expected = true
-
       val actual = sources.size > 20
-
       actual shouldBe expected
     }
 
@@ -62,6 +61,7 @@ class SelfFormatSpec extends AnyWordSpec with Matchers {
 
       actual shouldBe expected
     }
+
   }
 
 }

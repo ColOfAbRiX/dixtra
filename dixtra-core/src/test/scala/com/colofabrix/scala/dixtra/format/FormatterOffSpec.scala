@@ -10,6 +10,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class FormatterOffSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a region between dixtra: off and dixtra: on" should {
+
     "stay as written while the code around it is formatted" in {
       val input =
         """object A {
@@ -75,9 +76,12 @@ class FormatterOffSpec extends AnyWordSpec with Matchers with FormatMatchers {
     "not be opened by a marker in a string or in a longer comment" in {
       val input =
         "object A {\n  val s    =    \"// dixtra: off\"\n  // dixtra: off is a marker\n  val b    =    2\n}\n"
+
       val expected = "object A {\n  val s = \"// dixtra: off\"\n  // dixtra: off is a marker\n  val b = 2\n}\n"
+      
       input should formatTo(expected)
     }
+
   }
 
 }

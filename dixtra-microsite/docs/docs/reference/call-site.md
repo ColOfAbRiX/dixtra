@@ -75,8 +75,8 @@ Resource.make(
 
 ## The settings
 
-| Setting | Default | Values |
-| --- | --- | --- |
-| `trailing-commas` | `always` | `always`, `never` |
-| `groups-separator` | `previous-group` | `previous-group`, `next-group` |
-| `groups-break` | `last-first` | `break-all`, `last-first`, `independent` |
+| Setting            | Default          | Values                                   |
+| ------------------ | ---------------- | ---------------------------------------- |
+| `trailing-commas`  | `always`         | `always`, `never`                        |
+| `groups-separator` | `previous-group` | `previous-group`, `next-group`           |
+| `groups-break`     | `last-first`     | `break-all`, `last-first`, `independent` |

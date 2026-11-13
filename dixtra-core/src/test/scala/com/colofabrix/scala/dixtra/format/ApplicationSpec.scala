@@ -123,6 +123,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "the argument groups of a call" should {
+
     val input =
       "val r = Resource.make(IO.blocking(Files.createTempFile(target.getParent, \"tmp\", \".part\")))(temp => IO.blocking(temp).void)\n"
 
@@ -194,9 +195,11 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       braced should formatStablyTo(expected, 80)
     }
+
   }
 
   "call-site.groups-break" should {
+
     val input =
       "val e = Option.when(gap.isBlank && text.startsLine(brace.start))(Edit(brace.end, keyword.start, text.indentOf(brace.start)))\n"
 
@@ -240,6 +243,7 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       mixed should formatTo(expected, keep)
     }
+
   }
 
   "a tuple" should {

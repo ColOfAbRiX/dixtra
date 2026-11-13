@@ -2,6 +2,7 @@
 layout: docs
 title: Using Dixtra as a library
 ---
+
 # Using Dixtra as a library
 
 `dixtra-core` is the formatter alone, with no dependency other than scalameta:

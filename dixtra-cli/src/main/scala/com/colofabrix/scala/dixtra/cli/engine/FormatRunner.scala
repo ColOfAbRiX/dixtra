@@ -24,7 +24,7 @@ import java.nio.file.Path
  * @param format The formatting function of each file, applied to its contents, or why the file cannot be formatted (an
  *               invalid configuration for it).
  * @param paths The files and directories to format inside the directories given (see
- *               [[com.colofabrix.scala.dixtra.cli.files.SourceFiles]]).
+ *              [[com.colofabrix.scala.dixtra.cli.files.SourceFiles]]).
  * @param settings The configuration of each file as text, for `cache`, or None for a file that is never cached.
  * @param cache The files that earlier runs found formatted.
  */
@@ -202,7 +202,7 @@ object FormatRunner {
    * @param check When true, run in verification mode and never write to disk.
    * @param format The formatting function applied to the path and the contents of each file.
    * @param paths The files to format inside the directories given (see
-   *               [[com.colofabrix.scala.dixtra.cli.files.SourceFiles]]).
+   *              [[com.colofabrix.scala.dixtra.cli.files.SourceFiles]]).
    */
   def withFormat(
     check: Boolean,

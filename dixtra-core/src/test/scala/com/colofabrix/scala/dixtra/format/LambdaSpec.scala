@@ -14,6 +14,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class LambdaSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   "a lambda with a multiline string body (roadmap)" should {
+
     // The param-on-own-line rule is implemented; what remains roadmap is the interior reindentation of a multiline
     // string literal's continuation lines (shifting `|string` to match the deeper nesting). That is a distinct
     // verbatim-reindent concern tracked separately.
@@ -37,9 +38,11 @@ class LambdaSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+
   }
 
   "a lambda body" should {
+
     "stay on the = line when written there" in {
       List("val f = x => x + 1\n", "val f = (x: Int) => x + 1\n").foreach { input =>
         val expected = input
@@ -77,6 +80,7 @@ class LambdaSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
       input should formatTo(expected)
     }
+
   }
 
 }

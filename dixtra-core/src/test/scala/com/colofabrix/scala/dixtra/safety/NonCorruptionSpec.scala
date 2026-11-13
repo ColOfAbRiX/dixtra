@@ -84,6 +84,7 @@ class NonCorruptionSpec extends AnyWordSpec with Matchers with FormatMatchers {
   }
 
   "verbatim continuation lines" should {
+
     val input =
       """def f(x: Int) = x match {
         |  case 1 =>
@@ -105,6 +106,7 @@ class NonCorruptionSpec extends AnyWordSpec with Matchers with FormatMatchers {
     "keep their relative indentation" in {
       input should formatStablyTo(expected)
     }
+
   }
 
   "grouping parentheses" should {

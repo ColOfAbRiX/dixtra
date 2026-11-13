@@ -40,7 +40,7 @@ class ResultCacheSpec extends AnyWordSpec with Matchers {
     code: Option[String] = Some("code"),
   ): (List[FileResult], Int) =
     val counting = new Counting
-    
+
     val results =
       for
         cache   <- ResultCache.load(cacheFile, code)
@@ -51,6 +51,7 @@ class ResultCacheSpec extends AnyWordSpec with Matchers {
     (results.unsafeRunSync(), counting.calls.get)
 
   "a run with the cache of the last run" should {
+
     "not format a file that the last run found formatted" in {
       withTempDir { dir =>
         val file      = write(dir.resolve("A.scala"), formatted)
@@ -182,9 +183,11 @@ class ResultCacheSpec extends AnyWordSpec with Matchers {
         actual shouldBe expected
       }
     }
+
   }
 
   "the cache file of the command line" should {
+
     "be in the dixtra cache directory of the user, one for each set of paths" in {
       val first = ResultCache.userFile(List(Paths.get("a"), Paths.get("b")))
       val same  = ResultCache.userFile(List(Paths.get("b"), Paths.get("a")))
@@ -201,6 +204,7 @@ class ResultCacheSpec extends AnyWordSpec with Matchers {
 
       actual shouldBe expected
     }
+
   }
 
 }

@@ -220,15 +220,15 @@ With `false`:
 
 ## The settings
 
-| Setting | Default | Values |
-| --- | --- | --- |
-| `assignment-groups` | `[[val, lazy-val, var, def]]` | a list of lists of keywords |
-| `operators` | `["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]` | a list of operators |
-| `arrows.cases` | `true` | `true`, `false` |
-| `arrows.pairs` | `true` | `true`, `false` |
-| `arrows.for-enumerators` | `true` | `true`, `false` |
-| `extends-clauses` | `true` | `true`, `false` |
-| `named-arguments` | `false` | `true`, `false` |
-| `trailing-comments` | `false` | `true`, `false` |
-| `across-comments` | `false` | `true`, `false` |
-| `scaladoc.tags` | `false` | `true`, `false` |
+| Setting                  | Default                                                        | Values                      |
+| ------------------------ | -------------------------------------------------------------- | --------------------------- |
+| `assignment-groups`      | `[[val, lazy-val, var, def]]`                                  | a list of lists of keywords |
+| `operators`              | `["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]` | a list of operators         |
+| `arrows.cases`           | `true`                                                         | `true`, `false`             |
+| `arrows.pairs`           | `true`                                                         | `true`, `false`             |
+| `arrows.for-enumerators` | `true`                                                         | `true`, `false`             |
+| `extends-clauses`        | `true`                                                         | `true`, `false`             |
+| `named-arguments`        | `false`                                                        | `true`, `false`             |
+| `trailing-comments`      | `false`                                                        | `true`, `false`             |
+| `across-comments`        | `false`                                                        | `true`, `false`             |
+| `scaladoc.tags`          | `false`                                                        | `true`, `false`             |

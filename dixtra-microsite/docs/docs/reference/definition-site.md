@@ -61,7 +61,7 @@ A `using` or an `implicit` keyword is placed like a parameter: on a line of its 
 
 ## The settings
 
-| Setting | Default | Values |
-| --- | --- | --- |
-| `trailing-commas` | `always` | `always`, `never` |
+| Setting            | Default      | Values                         |
+| ------------------ | ------------ | ------------------------------ |
+| `trailing-commas`  | `always`     | `always`, `never`              |
 | `groups-separator` | `next-group` | `next-group`, `previous-group` |

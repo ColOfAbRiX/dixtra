@@ -17,12 +17,15 @@ object VsCodeExtension {
   @transient
   val vscodePackage =
     taskKey[File]("Package the VS Code extension for every platform with an executable, in the output directory")
+
   @transient
   val vscodePackageLinux =
     taskKey[File]("Package the VS Code extension for linux-x64, in the output directory")
+
   @transient
   val vscodePackageWin =
     taskKey[File]("Package the VS Code extension for win32-x64, in the output directory")
+
   @transient
   val vscodePackageMac =
     taskKey[File]("Package the VS Code extension for darwin-arm64, in the output directory")
@@ -32,14 +35,14 @@ object VsCodeExtension {
   private final case class Platform(executable: String, script: String)
   private val platforms =
     Map(
-      "linux-x64"   -> Platform("dixtra", "package:linux"),
-      "win32-x64"   -> Platform("dixtra.exe", "package:win"),
+      "linux-x64"    -> Platform("dixtra", "package:linux"),
+      "win32-x64"    -> Platform("dixtra.exe", "package:win"),
       "darwin-arm64" -> Platform("dixtra", "package:mac"),
     )
 
   /**
-   * The tasks of the extension project: `vscodePackage`, `vscodePackageLinux` and `vscodePackageWin`, which package
-   * the extension of `dixtra-vscode/`.
+   * The tasks of the extension project: `vscodePackage`, `vscodePackageLinux` and `vscodePackageWin`, which package the
+   * extension of `dixtra-vscode/`.
    */
   def settings: Seq[Setting[?]] =
     Seq(
@@ -50,19 +53,20 @@ object VsCodeExtension {
     )
 
   /**
-   * The build of one `.vsix`: when the executable of every wanted platform is in `dist/`, the package is built from
-   * it straight away, otherwise the native image of the current platform is built first, as the only one this machine
-   * can build.
+   * The build of one `.vsix`: when the executable of every wanted platform is in `dist/`, the package is built from it
+   * straight away, otherwise the native image of the current platform is built first, as the only one this machine can
+   * build.
    */
   private def packageExtension(target: Option[String]): Def.Initialize[Task[File]] =
     Def.taskDyn {
-      val dist = (ThisBuild / baseDirectory).value / "dist"
+      val dist                      = (ThisBuild / baseDirectory).value / "dist"
       def present(platform: String) = (dist / platform / platforms(platform).executable).exists()
       // A package for one platform needs its executable; the package of every platform needs some executable to be
       // worth building, and warns about the platforms without one.
       val complete = target.fold(platforms.keySet.exists(present))(present)
 
-      if complete then packageBody(target)
+      if complete then
+        packageBody(target)
       else
         Def.task {
           val _ = (LocalProject("dixtraCli") / NativeImage.nativeImage).value
@@ -91,9 +95,9 @@ object VsCodeExtension {
         IO.copyFile(license, copy)
 
       // The outputs of the build: the native executables. They live in the per-platform layouts of sbt under
-      // `target/out` of the build and, historically, in `target/native` of the project, so every layout is scanned
-      // and the executable of each platform is moved into `dist/` first, in the layout the extension bundles.
-      val log              = streams.value.log
+      // `target/out` of the build and, historically, in `target/native` of the project, so every layout is scanned and
+      // the executable of each platform is moved into `dist/` first, in the layout the extension bundles.
+      val log = streams.value.log
       val nativeOutputs =
         val build = (ThisBuild / baseDirectory).value
         val out   = build / "target" / "out"
@@ -128,8 +132,8 @@ object VsCodeExtension {
       moveExecutable("Windows", "dixtra.exe", dist / "win32-x64" / "dixtra.exe")
 
       // The icon of the extension, rendered from the SVG source straight into `bin`, where `vsce` picks it up: the
-      // first renderer that works wins. Without a renderer a previously rendered icon is reused, and with none at
-      // all the packaging fails. No icon is written to `dist/`.
+      // first renderer that works wins. Without a renderer a previously rendered icon is reused, and with none at all
+      // the packaging fails. No icon is written to `dist/`.
       val icon = folder / "bin" / "icon.png"
 
       def renderIcon: Boolean =
@@ -179,14 +183,14 @@ object VsCodeExtension {
         )
 
       // What `vsce` packages must live inside the extension folder: the executables of `dist` are staged into `bin`
-      // next to the icon rendered above (nothing from `dist` reaches the repository, it is ignored). The executable
-      // of the platform being packaged is required, the others are left out of the package by its ignore file.
+      // next to the icon rendered above (nothing from `dist` reaches the repository, it is ignored). The executable of
+      // the platform being packaged is required, the others are left out of the package by its ignore file.
       val payload = folder / "bin"
 
       def stage(platform: String): Option[File] =
-        val name     = platforms(platform).executable
-        val source   = dist / platform / name
-        val staged   = payload / platform / name
+        val name   = platforms(platform).executable
+        val source = dist / platform / name
+        val staged = payload / platform / name
 
         if source.exists() then
           IO.createDirectory(staged.getParentFile)
@@ -195,9 +199,9 @@ object VsCodeExtension {
 
           staged.setExecutable(true, false)
           Some(staged)
-        else if staged.exists() then 
+        else if staged.exists() then
           Some(staged)
-        else 
+        else
           None
 
       val wanted   = target.fold(platforms.keySet.toSeq)(Seq(_))
@@ -210,22 +214,31 @@ object VsCodeExtension {
           )
       }
 
-      wanted.filter(stagedBy(_).isEmpty).foreach { platform =>
-        log.warn(s"no $platform executable ${platforms(platform).executable} in dist: the package has no bundled one")
-      }
+      wanted
+        .filter(stagedBy(_).isEmpty)
+        .foreach { platform =>
+          log.warn(s"no $platform executable ${platforms(platform).executable} in dist: the package has no bundled one")
+        }
 
-      // The file listing what the packaging leaves out: one platform of `bin` per target, none for the package of
-      // every platform, which bundles them all.
+      // The file listing what the packaging leaves out: one platform of `bin` per target, none for the package of every
+      // platform, which bundles them all.
       val ignore = folder / target.fold(".vscodeignore")(platform => s".vscodeignore.$platform")
 
       if !ignore.exists() then
         throw new MessageOnlyException(s"no ${ignore.getName} in ${folder.getName}: it lists what the packaging skips")
 
       val extensionName =
-        """"name"\s*:\s*"([^"]+)"""".r.findFirstMatchIn(current).map(_.group(1)).getOrElse("dixtra-vscode")
-      val vsix = folder / target.fold(s"$extensionName-${version.value}.vsix") { platform =>
-        s"$extensionName-$platform-${version.value}.vsix"
-      }
+        """"name"\s*:\s*"([^"]+)""""
+          .r
+          .findFirstMatchIn(current)
+          .map(_.group(1))
+          .getOrElse("dixtra-vscode")
+
+      val vsix =
+        folder / target.fold(s"$extensionName-${version.value}.vsix") { platform =>
+          s"$extensionName-$platform-${version.value}.vsix"
+        }
+
       val script = target.fold("package")(platform => platforms(platform).script)
 
       def build(): Unit =
@@ -241,21 +254,25 @@ object VsCodeExtension {
       val sources =
         ((folder / "src") ** "*.ts").get() ++
         Seq(folder / "package.json", folder / "tsconfig.json", folder / "icon.svg", ignore) ++
-        wanted.flatMap(platform => Seq(dist / platform / platforms(platform).executable, payload / platform / platforms(platform).executable)) ++
+        wanted.flatMap(
+          platform =>
+            Seq(dist / platform / platforms(platform).executable, payload / platform / platforms(platform).executable),
+        ) ++
         (if icon.exists() then Seq(icon) else Seq.empty)
 
       val cached =
-        FileFunction.cached(streams.value.cacheDirectory / s"vscode-package-${target.getOrElse("all")}", FilesInfo.hash) {
-          _ =>
-            build()
-            Set(vsix)
+        FileFunction.cached(streams.value.cacheDirectory / s"vscode-package-${target.getOrElse("all")}", FilesInfo.hash) { _ =>
+          build()
+          Set(vsix)
         }
 
       val packaged =
-        cached(sources.toSet).find(_.exists()).getOrElse {
-          build()
-          vsix
-        }
+        cached(sources.toSet)
+          .find(_.exists())
+          .getOrElse {
+            build()
+            vsix
+          }
 
       // The `.vsix` is copied into `dist/` alongside the executables: the task returns the copy, while the folder one
       // stays as the raw output of vsce.
@@ -278,6 +295,7 @@ object VsCodeExtension {
     log.info(s"npm ${arguments.mkString(" ")}")
 
     val exitCode = Process(npm, Some(folder)).!
+    
     if exitCode != 0 then
       throw new MessageOnlyException(s"npm ${arguments.mkString(" ")} failed with exit code $exitCode")
 

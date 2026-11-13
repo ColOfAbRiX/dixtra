@@ -1,7 +1,7 @@
 package com.colofabrix.scala.dixtra.verify
 
 import com.colofabrix.scala.dixtra.SourceDialect
-import com.colofabrix.scala.dixtra.normalize.{SourceEdits, WhitespaceNormalizer}
+import com.colofabrix.scala.dixtra.normalize.*
 import scala.annotation.tailrec
 import scala.meta.*
 import scala.meta.tokens.Token
@@ -58,6 +58,7 @@ object Equivalence {
    */
   def isEquivalentSource(original: Source, originalText: String, formatted: String, dialect: Dialect): Boolean =
     val unchanged = formatted == originalText
+
     def reparses =
       parse[Source](formatted, dialect).exists { after =>
         equivalent(original, after) && comments(originalText) == comments(formatted)
@@ -65,12 +66,17 @@ object Equivalence {
 
     unchanged || reparses
 
-  // True when `rendered` is `source` with, at most, wider runs of spaces between the tokens of a line: the alignment the
-  // renderers add to a source whose runs were collapsed before parsing. Its tokens, line breaks and indentation are those
-  // of the source, so it has the same tree and the same comments. The texts without their spaces are compared first, as
-  // tokenising is the cost.
+  // True when `rendered` is `source` with, at most, wider runs of spaces between the tokens of a line: the alignment
+  // the renderers add to a source whose runs were collapsed before parsing. Its tokens, line breaks and indentation are
+  // those of the source, so it has the same tree and the same comments. The texts without their spaces are compared
+  // first, as tokenising is the cost.
   private def onlyRealigned(source: String, rendered: String): Boolean =
-    def sameWithoutSpaces = rendered.iterator.filter(_ != ' ').sameElements(source.iterator.filter(_ != ' '))
+    def sameWithoutSpaces =
+      rendered
+        .iterator
+        .filter(_ != ' ')
+        .sameElements(source.iterator.filter(_ != ' '))
+
     def collapsesToSource = WhitespaceNormalizer.normalize(rendered) == source
 
     rendered == source || (sameWithoutSpaces && collapsesToSource)

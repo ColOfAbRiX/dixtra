@@ -1,7 +1,7 @@
 package com.colofabrix.scala.dixtra.normalize
 
 import com.colofabrix.scala.dixtra.Config
-import scala.meta.{Dialect, Source}
+import scala.meta.*
 
 /**
  * The text-normalisation pipeline applied after tree rendering.

@@ -35,7 +35,7 @@ def total =
   xs.sum
 ```
 
-The bodies of a construct with several of them (the branches of an if/else, the cases of a match, the bodies of a try) are treated as a group, never one by one: either every body is on the line of its separator, or every body is below it. A group where some bodies are inline and some others are on a new line is *mixed*. These constructs take:
+The bodies of a construct with several of them (the branches of an if/else, the cases of a match, the bodies of a try) are treated as a group, never one by one: either every body is on the line of its separator, or every body is below it. A group where some bodies are inline and some others are on a new line is _mixed_. These constructs take:
 
 - `join-mixed` — a mixed group is joined on the lines of the separators; a group all on its lines, or all below, stays as it is.
 - `break-mixed` — a mixed group goes below the separators; a group all on its lines, or all below, stays as it is.
@@ -79,28 +79,28 @@ A group of one body (an `if` without `else`, a match with one case) is never mix
 
 ## The settings
 
-| Setting | Default | The body after |
-| --- | --- | --- |
-| `def` | `keep` | The `=` of a `def` |
-| `val` | `keep` | The `=` of a `val` |
-| `lazy-val` | `keep` | The `=` of a `lazy val` |
-| `var` | `keep` | The `=` of a `var` |
-| `given-alias` | `keep` | The `=` of a given alias |
-| `type-def` | `keep` | The `=` of a type definition |
-| `assignment` | `keep` | The `=` of an assignment |
-| `named-argument` | `keep` | The `=` of a named argument |
-| `lambda-argument` | `keep` | The `=>` of a lambda given in braces or after a colon |
-| `lambda-body` | `keep` | The `=>` of any other lambda |
-| `block-argument` | `keep` | The `{` or the colon of a block given as an argument |
-| `test-case` | `keep` | The `{` or the colon of a test case |
-| `test-group` | `keep` | The `{` or the colon of a group of tests |
-| `if` | `break-mixed` | The `then` and the `else` of an if/else |
-| `case-body` | `break-mixed` | The `=>` of the cases of a match, of a `{ case ... }` or of a `catch` |
-| `try` | `break-mixed` | The `try` and the `finally` of a try |
-| `for` | `keep` | The `do` of a `for` loop |
-| `for-yield` | `break-complex` | The `yield` of a for-comprehension |
-| `while` | `keep` | The `do` of a `while` loop |
-| `semicolon-statements` | `always-break` | The `;` between the statements of a body written on one line |
+| Setting                | Default         | The body after                                                        |
+| ---------------------- | --------------- | --------------------------------------------------------------------- |
+| `def`                  | `keep`          | The `=` of a `def`                                                    |
+| `val`                  | `keep`          | The `=` of a `val`                                                    |
+| `lazy-val`             | `keep`          | The `=` of a `lazy val`                                               |
+| `var`                  | `keep`          | The `=` of a `var`                                                    |
+| `given-alias`          | `keep`          | The `=` of a given alias                                              |
+| `type-def`             | `keep`          | The `=` of a type definition                                          |
+| `assignment`           | `keep`          | The `=` of an assignment                                              |
+| `named-argument`       | `keep`          | The `=` of a named argument                                           |
+| `lambda-argument`      | `keep`          | The `=>` of a lambda given in braces or after a colon                 |
+| `lambda-body`          | `keep`          | The `=>` of any other lambda                                          |
+| `block-argument`       | `keep`          | The `{` or the colon of a block given as an argument                  |
+| `test-case`            | `keep`          | The `{` or the colon of a test case                                   |
+| `test-group`           | `keep`          | The `{` or the colon of a group of tests                              |
+| `if`                   | `break-mixed`   | The `then` and the `else` of an if/else                               |
+| `case-body`            | `break-mixed`   | The `=>` of the cases of a match, of a `{ case ... }` or of a `catch` |
+| `try`                  | `break-mixed`   | The `try` and the `finally` of a try                                  |
+| `for`                  | `keep`          | The `do` of a `for` loop                                              |
+| `for-yield`            | `break-complex` | The `yield` of a for-comprehension                                    |
+| `while`                | `keep`          | The `do` of a `while` loop                                            |
+| `semicolon-statements` | `always-break`  | The `;` between the statements of a body written on one line          |
 
 ## The body after `=`
 

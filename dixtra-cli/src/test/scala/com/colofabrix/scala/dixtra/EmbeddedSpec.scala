@@ -40,6 +40,7 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
     val _ = process.waitFor() shouldBe 0
 
   "the embedded command line" should {
+
     "report each file and return the exit code without exiting" in {
       withTempDir { dir =>
         val file = write(dir.resolve("A.scala"), unformatted)
@@ -60,9 +61,11 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
 
       actual shouldBe expected
     }
+
   }
 
   "a .dixtra.conf" should {
+
     "print a warning for each unknown key, once, and format with the known settings" in {
       withTempDir { dir =>
         val conf = write(dir.resolve(ConfigCli.fileName), "max-colum = 30\n")
@@ -98,9 +101,11 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
         actual shouldBe expected
       }
     }
+
   }
 
   "--changed-since" should {
+
     "process only the files changed since the ref, untracked ones included" in {
       withTempDir { dir =>
         git(dir, "init", "-q")
@@ -149,6 +154,7 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
         actual shouldBe expected
       }
     }
+
   }
 
 }

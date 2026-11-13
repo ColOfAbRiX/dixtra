@@ -172,12 +172,12 @@ values
 
 ## The settings
 
-| Setting | Default | Values |
-| --- | --- | --- |
-| `inline-chains` | `break-at-count` | `break-at-count`, `keep` |
-| `break-at-count` | `3` | a number, at least 2 |
-| `in-for` | `never-break` | `never-break`, `keep` |
-| `in-call` | `never-break` | `never-break`, `keep` |
-| `namespace-path` | `keep` | `always-join`, `keep`, `always-break` |
-| `object-member` | `always-break` | `always-join`, `keep`, `always-break` |
-| `receiver-min-length` | `1` | a number, at least 1 |
+| Setting               | Default          | Values                                |
+| --------------------- | ---------------- | ------------------------------------- |
+| `inline-chains`       | `break-at-count` | `break-at-count`, `keep`              |
+| `break-at-count`      | `3`              | a number, at least 2                  |
+| `in-for`              | `never-break`    | `never-break`, `keep`                 |
+| `in-call`             | `never-break`    | `never-break`, `keep`                 |
+| `namespace-path`      | `keep`           | `always-join`, `keep`, `always-break` |
+| `object-member`       | `always-break`   | `always-join`, `keep`, `always-break` |
+| `receiver-min-length` | `1`              | a number, at least 1                  |

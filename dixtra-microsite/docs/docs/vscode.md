@@ -2,6 +2,7 @@
 layout: docs
 title: The VS Code extension
 ---
+
 # The VS Code extension
 
 The extension formats the document of the editor with Dixtra when you run **Format Document** (`Shift+Alt+F`).
@@ -20,10 +21,10 @@ The extension bundles the Dixtra executable, so no `PATH` setup is needed. When 
 
 ## Settings
 
-| Setting | Default | What it does |
-| --- | --- | --- |
-| `dixtra.executablePath` | empty | The Dixtra executable to format with. Empty uses the bundled one, or `dixtra` from the `PATH` |
-| `dixtra.arguments` | `[]` | Extra arguments, e.g. `["--max-column", "100"]` |
+| Setting                 | Default | What it does                                                                                  |
+| ----------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| `dixtra.executablePath` | empty   | The Dixtra executable to format with. Empty uses the bundled one, or `dixtra` from the `PATH` |
+| `dixtra.arguments`      | `[]`    | Extra arguments, e.g. `["--max-column", "100"]`                                               |
 
 ```json
 {

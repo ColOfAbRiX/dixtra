@@ -2,6 +2,7 @@
 layout: docs
 title: Using Dixtra
 ---
+
 # Using Dixtra
 
 The settings that change how the code is formatted are in the [settings reference](configuration.md): a page per group, with an example for every value a setting takes.

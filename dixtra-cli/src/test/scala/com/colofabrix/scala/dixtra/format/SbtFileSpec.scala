@@ -21,6 +21,7 @@ class SbtFileSpec extends AnyWordSpec with Matchers {
     new String(Files.readAllBytes(Paths.get(path.head, path.tail*)), StandardCharsets.UTF_8)
 
   "a build definition" should {
+
     "keep fitting top-level settings as written" in {
       val input = "ThisBuild / scalaVersion := \"3.8.4\"\nThisBuild / organization := \"com.example\"\n"
 
@@ -81,6 +82,7 @@ class SbtFileSpec extends AnyWordSpec with Matchers {
 
       actual shouldBe expected
     }
+
   }
 
   "the build definitions of this project" should {

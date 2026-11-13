@@ -25,8 +25,11 @@ class PipelineBench {
 
   /** Scalameta's parse of the source. */
   @Benchmark
-  def parse(c: Corpus): Source =
-    c.dialect(c.source).parse[Source].get
+  def parse(corpus: Corpus): Source =
+    ccorpus
+      .dialect(c.source)
+      .parse[Source]
+      .get
 
   /** Rendering the parsed tree, with its self-checks. */
   @Benchmark

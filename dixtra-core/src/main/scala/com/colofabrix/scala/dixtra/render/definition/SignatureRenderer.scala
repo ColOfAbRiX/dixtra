@@ -122,14 +122,14 @@ private[render] final class SignatureRenderer(ctx: RenderContext) {
   private final class Layout(signature: SignatureParts, baseIndent: Int) {
     // modifiers + keyword + name, and what separates the name from the parameters
     val prefix: Doc =
-      ctx.sourceDoc(signature.prefixStart, signature.nameEnd) ++ 
+      ctx.sourceDoc(signature.prefixStart, signature.nameEnd) ++
       Doc.text(signature.afterName)
 
     val tclause                  = signature.tparamClause
     val tparams: List[Doc]       = tclause.values.map(typeParam(_, baseIndent + 2)) // one per line (Tier 2)
     val tcomments: CommentedList = CommentedList.of(ctx, tclause.pos.start, tclause.values, tclause.pos.end, commas)
     val clauses: List[Group]     = withMovedComments(signature, written(signature))
-    
+
     val returnPart: Doc =
       signature
         .returnType

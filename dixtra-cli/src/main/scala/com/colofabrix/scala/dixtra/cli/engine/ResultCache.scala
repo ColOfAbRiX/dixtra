@@ -121,13 +121,18 @@ object ResultCache {
 
     Option.when(jars.forall(_.exists(jar => Files.isRegularFile(jar)))) {
       val digest = MessageDigest.getInstance("SHA-256")
-      jars.flatten.distinct.foreach(jar => digest.update(Files.readAllBytes(jar)))
+
+      jars
+        .flatten
+        .distinct
+        .foreach(jar => digest.update(Files.readAllBytes(jar)))
+        
       HexFormat.of().formatHex(digest.digest())
     }
 
   private def sha256(parts: String*): String =
     val digest = MessageDigest.getInstance("SHA-256")
-    
+
     parts.foreach { part =>
       digest.update(part.getBytes(StandardCharsets.UTF_8))
       digest.update(0.toByte)

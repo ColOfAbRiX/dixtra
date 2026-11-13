@@ -8,7 +8,7 @@ class ProbeSpec extends AnyWordSpec {
   private val snippets: Vector[(String, String)] =
     Vector(
       "e1-else-block-if" ->
-        """object A {
+      """object A {
           |  def f(a: Boolean, b: Boolean) = {
           |    if (a) List.empty
           |    else {
@@ -22,7 +22,7 @@ class ProbeSpec extends AnyWordSpec {
           |}
           |""".stripMargin,
       "e2-leading-comment-blank" ->
-        """object A {
+      """object A {
           |  def f(x: Int) = {
           |    // a comment
           |    // more comment
@@ -33,7 +33,7 @@ class ProbeSpec extends AnyWordSpec {
           |}
           |""".stripMargin,
       "e3-for-new-multiline" ->
-        """object A {
+      """object A {
           |  def f =
           |    for {
           |      meter <- get("Test Meter")
@@ -46,7 +46,7 @@ class ProbeSpec extends AnyWordSpec {
           |}
           |""".stripMargin,
       "e4-for-comment-first" ->
-        """object A {
+      """object A {
           |  def f =
           |    for {
           |      // comment
@@ -56,7 +56,7 @@ class ProbeSpec extends AnyWordSpec {
           |}
           |""".stripMargin,
       "e5-case-paren-infix" ->
-        """object A {
+      """object A {
           |  def f =
           |    g(
           |      (tpe match {
@@ -68,7 +68,7 @@ class ProbeSpec extends AnyWordSpec {
           |}
           |""".stripMargin,
       "e6-defs-after-comment" ->
-        """class A {
+      """class A {
           |
           |  @volatile private var subscribed: Boolean = false
           |  def wasSubscribed: Boolean = subscribed
@@ -81,11 +81,11 @@ class ProbeSpec extends AnyWordSpec {
           |}
           |""".stripMargin,
       "e7-braceless-class-long" ->
-        """class NettySyncRequestTimeoutTests(eventLoopGroup: EventLoopGroup, backend: WebSocketStreamBackend[IO, Fs2Streams[IO]]):
+      """class NettySyncRequestTimeoutTests(eventLoopGroup: EventLoopGroup, backend: WebSocketStreamBackend[IO, Fs2Streams[IO]]):
           |  val logger = 1
           |""".stripMargin,
       "e8-if-block-pure" ->
-        """object A {
+      """object A {
           |  def f = {
           |    if (a) {
           |      // fast track: a comment
@@ -101,7 +101,7 @@ class ProbeSpec extends AnyWordSpec {
           |}
           |""".stripMargin,
       "e9-for-infix-lambda" ->
-        """object A {
+      """object A {
           |  def f =
           |    for {
           |      promise <- Promise.make[Nothing, Unit]
