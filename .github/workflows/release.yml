@@ -181,18 +181,83 @@ jobs:
           name: vscode-extension
           path: dist/
 
+      - name: Prepare the assets
+        run: |
+          set -euo pipefail
+
+          chmod +x dist/linux-x64/dixtra dist/darwin-arm64/dixtra
+
+          # The executables are copied with their platform in the name: the Linux and the macOS ones share the name
+          # `dixtra`, and the assets of a release cannot share one.
+          cp dist/linux-x64/dixtra dist/dixtra-linux-x64
+          cp dist/win32-x64/dixtra.exe dist/dixtra-win32-x64.exe
+          cp dist/darwin-arm64/dixtra dist/dixtra-darwin-arm64
+
+          assets=(
+            dist/dixtra-linux-x64
+            dist/dixtra-win32-x64.exe
+            dist/dixtra-darwin-arm64
+          )
+
+          # Every platform has its own extension: the one of a platform that is missing fails the release, rather
+          # than leaving the users of that platform without an extension.
+          for platform in linux-x64 win32-x64 darwin-arm64; do
+            found=()
+            for vsix in dist/dixtra-vscode-$platform-*.vsix; do
+              if [ -f "$vsix" ]; then found+=("$vsix"); fi
+            done
+            if [ "${#found[@]}" -ne 1 ]; then
+              echo "expected one .vsix for $platform, found ${#found[@]}"
+              exit 1
+            fi
+            assets+=("${found[0]}")
+          done
+
+          printf '%s\n' "${assets[@]}" > assets.txt
+          cat assets.txt
+
       - name: Create the release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          chmod +x dist/linux-x64/dixtra dist/darwin-arm64/dixtra
-          assets=(
-            dist/linux-x64/dixtra
-            dist/win32-x64/dixtra.exe
-            dist/darwin-arm64/dixtra
-            dist/*.vsix
-          )
+          set -euo pipefail
+
+          mapfile -t assets < assets.txt
+
           if ! gh release create "$GITHUB_REF_NAME" "${assets[@]}" \
             --title "$GITHUB_REF_NAME" --generate-notes; then
             gh release upload "$GITHUB_REF_NAME" "${assets[@]}" --clobber
           fi
+
+      - name: Check the assets of the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          attached="$(gh release view "$GITHUB_REF_NAME" --json assets --jq '.assets[].name')"
+
+          expected=(
+            dixtra-linux-x64
+            dixtra-win32-x64.exe
+            dixtra-darwin-arm64
+            dixtra-vscode-linux-x64-*.vsix
+            dixtra-vscode-win32-x64-*.vsix
+            dixtra-vscode-darwin-arm64-*.vsix
+          )
+
+          for pattern in "${expected[@]}"; do
+            found=0
+            while IFS= read -r asset; do
+              case "$asset" in
+                $pattern) found=1 ;;
+              esac
+            done <<< "$attached"
+            if [ "$found" -ne 1 ]; then
+              echo "the release has no asset matching $pattern"
+              printf '%s\n' "$attached"
+              exit 1
+            fi
+          done
+
+          printf '%s\n' "$attached"

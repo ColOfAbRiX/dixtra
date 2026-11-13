@@ -16,6 +16,9 @@ for inconsistent results.
    code --install-extension dist/dixtra-vscode-<version>.vsix
    ```
 
+   The GitHub release holds one package per platform, `dixtra-vscode-<platform>-<version>.vsix`, with `linux-x64`,
+   `win32-x64` and `darwin-arm64`.
+
 2. The extension bundles the dixtra executable for Windows, Linux and MacOS. No _PATH_ setup is needed
    but `dixtra.executablePath` can be used to override the bundled executable.
 
