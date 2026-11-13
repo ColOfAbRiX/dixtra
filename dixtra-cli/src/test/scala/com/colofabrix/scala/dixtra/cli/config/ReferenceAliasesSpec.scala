@@ -46,11 +46,13 @@ class ReferenceAliasesSpec extends AnyWordSpec with Matchers {
           .map(alias => alias.name -> alias.targets)
           .toMap
 
-      // How many aliases reach each setting
+      // How many aliases of one setting reach each setting. An alias of several settings (`trailing-commas`,
+      // `test-block.braces`) sets them together, so it leaves the alias of one of them the only way to write it alone.
       val reach =
         ConfigAliases
           .all
-          .flatMap(_.targets)
+          .map(_.targets)
+          .collect { case target :: Nil => target }
           .groupMapReduce(identity)(_ => 1)(_ + _)
 
       val keys =

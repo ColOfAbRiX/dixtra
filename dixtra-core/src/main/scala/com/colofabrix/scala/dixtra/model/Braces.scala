@@ -132,7 +132,8 @@ object BraceConfig {
         While          -> ForceBraces,
         LambdaArgument -> ForceBraces,
         BlockArgument  -> ForceBraces,
-        TestBlock      -> ForceBraces,
+        TestGroup      -> ForceBraces,
+        TestCase       -> ForceBraces,
         Package        -> ForceIndent,
         If             -> ForceIndent,
         For            -> ForceIndent,
@@ -146,8 +147,6 @@ object BraceConfig {
         GivenAlias     -> Keep,
         PackageObject  -> Keep,
       ),
-      singleExprConstructs
-        .map(_ -> ForceIndent)
-        .toMap,
+      singleExprConstructs.map(_ -> ForceIndent).toMap,
     )
 }

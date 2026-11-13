@@ -92,7 +92,8 @@ A group of one body (an `if` without `else`, a match with one case) is never mix
 | `lambda-argument` | `keep` | The `=>` of a lambda given in braces or after a colon |
 | `lambda-body` | `keep` | The `=>` of any other lambda |
 | `block-argument` | `keep` | The `{` or the colon of a block given as an argument |
-| `test-block` | `keep` | The `{` or the colon of a test block |
+| `test-case` | `keep` | The `{` or the colon of a test case |
+| `test-group` | `keep` | The `{` or the colon of a group of tests |
 | `if` | `break-mixed` | The `then` and the `else` of an if/else |
 | `case-body` | `break-mixed` | The `=>` of the cases of a match, of a `{ case ... }` or of a `catch` |
 | `try` | `break-mixed` | The `try` and the `finally` of a try |
@@ -132,7 +133,11 @@ xs.foreach { x =>
 
 ## The blocks given as arguments
 
-`block-argument` is a block of statements given as an argument, without lambda parameters, that is not a test block; `test-block` is the block of a test case, a block of statements given to a call labelled by a string. Both move their statements the same way.
+`block-argument` is a block of statements given as an argument, without lambda parameters, that is not a test block.
+
+A test block is a block of statements given to a call labelled by a string. Dixtra tells two of them apart by what they hold: a `test-case` holds no other test block, as the test cases of ScalaTest, MUnit, specs2 or utest do; a `test-group` holds other test blocks among its statements, as the groups of ScalaTest's WordSpec, FreeSpec and FunSpec, specs2 or utest do. A block given to `withClue` is not a test. All three settings move their statements the same way, and telling the cases from the groups lets a configuration lay out one and not the other.
+
+After an operator (`"a parser" in { ... }`, `"a parser" should { ... }`) the braces of a test block always stay, so only a call takes the braceless form.
 
 `always-join` — the statements on the line of the `{`, with a `;` between several of them:
 

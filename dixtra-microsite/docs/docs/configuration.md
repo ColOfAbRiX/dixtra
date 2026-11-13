@@ -91,7 +91,7 @@ path-overrides {
 }
 ```
 
-Here, `"def.braces"` sets `braces.def`, and `"def.body"` sets `body.def`. The aliases that are not about a single construct are `"trailing-commas"`, which sets the trailing commas of the call sites and of the definition sites, and `"scaladoc.align-tags"`, which sets `alignment.scaladoc.tags`.
+Here, `"def.braces"` sets `braces.def`, and `"def.body"` sets `body.def`. The aliases that are not about a single construct are `"trailing-commas"`, which sets the trailing commas of the call sites and of the definition sites, and `"scaladoc.align-tags"`, which sets `alignment.scaladoc.tags`. The aliases `"test-block.braces"`, `"test-block.body"` and `"test-block.body-edges"` set both the `test-case` and the `test-group` setting: they are the names Dixtra used before it told the tests from the groups of tests.
 
 An alias is resolved when the configuration is loaded, on the settings that were written. A setting given more than once, directly or through aliases, must get the same value every time, otherwise the configuration is rejected.
 

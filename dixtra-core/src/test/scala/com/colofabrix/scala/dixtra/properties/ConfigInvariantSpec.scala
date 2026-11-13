@@ -217,8 +217,12 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
         (b, p) => b.copy(blockArgument = p),
       ),
       body(
-        "test-block",
-        (b, p) => b.copy(testBlock = p),
+        "test-group",
+        (b, p) => b.copy(testGroup = p),
+      ),
+      body(
+        "test-case",
+        (b, p) => b.copy(testCase = p),
       ),
       multiBody(
         "if",

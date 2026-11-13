@@ -39,7 +39,7 @@ class A:
 
 `keep`: the construct stays as it is written.
 
-`block-argument`, `case-body`, `lambda-argument`, `lambda-body` and `test-block` have no `end` marker, so they reject `force-end`. A `for`, a `while` or an `if` written on one line that fits stays as it is, and a case class or an object without a body never gets braces.
+`block-argument`, `case-body`, `lambda-argument`, `lambda-body`, `test-case` and `test-group` have no `end` marker, so they reject `force-end`. A `for`, a `while` or an `if` written on one line that fits stays as it is, and a case class or an object without a body never gets braces.
 
 ## `style`
 
@@ -102,26 +102,45 @@ import a.{ B => C }
 
 ## The settings
 
-| Setting | Default | | Setting | Default |
-| --- | --- | --- | --- | --- |
-| `style` | `1tbs` | | `match` | `force-braces` |
-| `imports` | `keep` | | `new-anonymous` | `force-braces` |
-| `abstract-class` | `force-braces` | | `object` | `force-braces` |
-| `block-argument` | `force-braces` | | `package` | `force-indent` |
-| `case-body` | `force-indent` | | `package-object` | `keep` |
-| `case-class` | `force-braces` | | `test-block` | `force-braces` |
-| `class` | `force-braces` | | `trait` | `force-braces` |
-| `def` | `force-indent` | | `try` | `force-braces` |
-| `enum` | `force-braces` | | `val` | `force-indent` |
-| `extension` | `force-braces` | | `var` | `force-indent` |
-| `for` | `force-indent` | | `while` | `force-braces` |
-| `for-yield` | `force-indent` | | `single-expr.case-body` | `force-indent` |
-| `given-alias` | `keep` | | `single-expr.def` | `force-indent` |
-| `given-instance` | `force-braces` | | `single-expr.given-alias` | `force-indent` |
-| `if` | `force-indent` | | `single-expr.lambda-body` | `force-indent` |
-| `lambda-argument` | `force-braces` | | `single-expr.lazy-val` | `force-indent` |
-| `lambda-body` | `keep` | | `single-expr.val` | `force-indent` |
-| `lazy-val` | `force-indent` | | `single-expr.var` | `force-indent` |
+| Setting | Default |
+| --- | --- |
+| `style` | `1tbs` |
+| `imports` | `keep` |
+| `abstract-class` | `force-braces` |
+| `block-argument` | `force-braces` |
+| `case-body` | `force-indent` |
+| `case-class` | `force-braces` |
+| `class` | `force-braces` |
+| `def` | `force-indent` |
+| `enum` | `force-braces` |
+| `extension` | `force-braces` |
+| `for` | `force-indent` |
+| `for-yield` | `force-indent` |
+| `given-alias` | `keep` |
+| `given-instance` | `force-braces` |
+| `if` | `force-indent` |
+| `lambda-argument` | `force-braces` |
+| `lambda-body` | `keep` |
+| `lazy-val` | `force-indent` |
+| `match` | `force-braces` |
+| `new-anonymous` | `force-braces` |
+| `object` | `force-braces` |
+| `package` | `force-indent` |
+| `package-object` | `keep` |
+| `test-case` | `force-braces` |
+| `test-group` | `force-braces` |
+| `trait` | `force-braces` |
+| `try` | `force-braces` |
+| `val` | `force-indent` |
+| `var` | `force-indent` |
+| `while` | `force-braces` |
+| `single-expr.case-body` | `force-indent` |
+| `single-expr.def` | `force-indent` |
+| `single-expr.given-alias` | `force-indent` |
+| `single-expr.lambda-body` | `force-indent` |
+| `single-expr.lazy-val` | `force-indent` |
+| `single-expr.val` | `force-indent` |
+| `single-expr.var` | `force-indent` |
 
 `single-expr` holds the braces around a body that is a single expression, after the `=` of a definition or the `=>` of a lambda or of a case; a body of several statements follows the setting of its construct above. `force-braces` puts a body over several lines in braces (a body on one line never gets them), `force-indent` removes them, `keep` leaves them as written; `force-end` is rejected.
 
@@ -240,9 +259,15 @@ package object a {
   val x = 1
 }
 
-// test-block = force-indent
+// test-case = force-indent
 test("a parser"):
   parse("1")
+
+// test-group = force-indent
+describe("a parser"):
+  it("parses a number") {
+    parse("1")
+  }
 
 // trait = force-indent
 trait A:

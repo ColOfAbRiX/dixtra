@@ -681,16 +681,15 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = "def f =\n  g { x =>\n    x\n      .a\n      .b\n      .c\n  }\n"
       input should formatTo(expected, inCall(NestedChainPolicy.NeverBreak))
     }
+
   }
 
   "a test block" should {
+
     val config =
-      withBraces(Construct.TestBlock -> BracePolicy.Keep).copy(
-        blankLines =
-          Config
-            .default
-            .blankLines
-            .copy(bodyEdges = Config.default.blankLines.bodyEdges + (Construct.TestBlock -> Always)),
+      withBlankLines(
+        b => b.copy(bodyEdges = b.bodyEdges + (Construct.TestGroup -> Always) + (Construct.TestCase -> Always)),
+        withBraces(Construct.TestGroup -> BracePolicy.Keep, Construct.TestCase -> BracePolicy.Keep),
       )
 
     "be the block of a call labelled by a string" in {
@@ -721,9 +720,47 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
         input should formatTo(input, config)
       }
     }
+
   }
 
-  "braces.test-block and braces.block-argument" should {
+  "a test group" should {
+
+    // Blank lines at the edges of the groups, none at those of the test cases
+    val config =
+      withBlankLines(
+        b => b.copy(bodyEdges = b.bodyEdges + (Construct.TestGroup -> Always) + (Construct.TestCase -> Never)),
+        withBraces(Construct.TestGroup -> BracePolicy.Keep, Construct.TestCase -> BracePolicy.Keep),
+      )
+
+    "be a test block holding another test block, any other test block being a test case" in {
+      val table =
+        List(
+          "class S {\n  \"a\" should {\n    \"b\" in {\n      f()\n    }\n  }\n}\n" ->
+          "class S {\n  \"a\" should {\n\n    \"b\" in {\n      f()\n    }\n\n  }\n}\n",
+          "class S {\n  describe(\"a\") {\n    it(\"b\") {\n      f()\n    }\n  }\n}\n" ->
+          "class S {\n  describe(\"a\") {\n\n    it(\"b\") {\n      f()\n    }\n\n  }\n}\n",
+          "class S {\n  \"a\" - {\n    \"b\" - {\n      \"c\" in {\n        f()\n      }\n    }\n  }\n}\n" ->
+          "class S {\n  \"a\" - {\n\n    \"b\" - {\n\n      \"c\" in {\n        f()\n      }\n\n    }\n\n  }\n}\n",
+          "class S {\n  \"a\" should {\n    val x = 1\n    \"b\" in {\n      f(x)\n    }\n  }\n}\n" ->
+          "class S {\n  \"a\" should {\n\n    val x = 1\n    \"b\" in {\n      f(x)\n    }\n\n  }\n}\n",
+          "class S {\n  \"a\" in {\n\n    f()\n\n  }\n}\n" -> "class S {\n  \"a\" in {\n    f()\n  }\n}\n",
+        )
+
+      table.foreach { (input, expected) =>
+        input should formatTo(expected, config)
+      }
+    }
+
+    "not be a test case holding a block given to withClue" in {
+      val input    = "class S {\n  \"a\" in {\n    withClue(\"b\") {\n      f()\n    }\n  }\n}\n"
+      val expected = input
+      input should formatTo(expected, config)
+    }
+
+  }
+
+  "braces.test-group, braces.test-case and braces.block-argument" should {
+
     val braced    = "class S {\n  test(\"a\") {\n\n    f()\n    g()\n\n  }\n}\n"
     val braceless = "class S {\n  test(\"a\"):\n\n    f()\n    g()\n}\n"
 
@@ -737,7 +774,7 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
         )
 
       table.foreach { (input, expected, policy) =>
-        input should formatTo(expected, withBraces(Construct.TestBlock -> policy))
+        input should formatTo(expected, withBraces(Construct.TestCase -> policy))
       }
     }
 
@@ -746,7 +783,13 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
 
       val expected = input
 
-      input should formatTo(expected, withBraces(Construct.TestBlock -> BracePolicy.ForceIndent))
+      input should formatTo(expected, withBraces(Construct.TestCase -> BracePolicy.ForceIndent))
+    }
+
+    "write a test group by its own policy" in {
+      val input    = "class S {\n  describe(\"a\") {\n    it(\"b\") {\n      f()\n    }\n  }\n}\n"
+      val expected = "class S {\n  describe(\"a\"):\n    it(\"b\") {\n      f()\n    }\n}\n"
+      input should formatTo(expected, withBraces(Construct.TestGroup -> BracePolicy.ForceIndent))
     }
 
     "write a block argument without braces when force-indent" in {
@@ -754,9 +797,11 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       val expected = "class S {\n  make:\n    f()\n    g()\n}\n"
       input should formatTo(expected, withBraces(Construct.BlockArgument -> BracePolicy.ForceIndent))
     }
+
   }
 
-  "body.test-block and body.block-argument" should {
+  "body.test-group, body.test-case and body.block-argument" should {
+
     val below  = "class S {\n  \"a\" in {\n    f()\n  }\n}\n"
     val onLine = "class S {\n  \"a\" in { f() }\n}\n"
 
@@ -770,8 +815,14 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
         )
 
       table.foreach { (policy, input, expected) =>
-        input should formatTo(expected, bodies(_.copy(testBlock = policy), 120))
+        input should formatTo(expected, bodies(_.copy(testCase = policy), 120))
       }
+    }
+
+    "place the statements of a test group by its own policy" in {
+      val input    = "class S {\n  \"a\" should { \"b\" in { f() } }\n}\n"
+      val expected = "class S {\n  \"a\" should {\n    \"b\" in { f() }\n  }\n}\n"
+      input should formatTo(expected, bodies(_.copy(testGroup = SingleBodyPolicy.AlwaysBreak), 120))
     }
 
     "place the statements of a block argument by its own policy" in {
@@ -1505,19 +1556,19 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
         "def f =\n  xs.foreach { x =>\n\n    g(x)\n    h(x)\n\n  }\n",
       ),
       (
-        Construct.TestBlock,
+        Construct.TestCase,
         Keep,
         "class S {\n  \"a\" should {\n\n    f()\n    g()\n  }\n}\n",
         "class S {\n  \"a\" should {\n\n    f()\n    g()\n\n  }\n}\n",
       ),
       (
-        Construct.TestBlock,
+        Construct.TestCase,
         Keep,
         "class S {\n  \"a\" should {\n    f()\n    g()\n  }\n}\n",
         "class S {\n  \"a\" should {\n    f()\n    g()\n  }\n}\n",
       ),
       (
-        Construct.TestBlock,
+        Construct.TestCase,
         Keep,
         "class S {\n  \"a\" should {\n\n    xs.foreach { x =>\n\n      g(x)\n      h(x)\n    }\n    make {\n\n" +
         "        f()\n        g()\n      }\n\n  }\n}\n",
@@ -1525,16 +1576,28 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
         "      f()\n      g()\n    }\n\n  }\n}\n",
       ),
       (
-        Construct.TestBlock,
+        Construct.TestCase,
         Never,
         "class S {\n  \"a\" should {\n\n    f()\n    g()\n\n  }\n}\n",
         "class S {\n  \"a\" should {\n    f()\n    g()\n  }\n}\n",
       ),
       (
-        Construct.TestBlock,
+        Construct.TestCase,
         Always,
         "class S {\n  test(\"a\") {\n    f()\n    g()\n  }\n}\n",
         "class S {\n  test(\"a\") {\n\n    f()\n    g()\n\n  }\n}\n",
+      ),
+      (
+        Construct.TestGroup,
+        Always,
+        "class S {\n  \"a\" should {\n    \"b\" in {\n      f()\n    }\n  }\n}\n",
+        "class S {\n  \"a\" should {\n\n    \"b\" in {\n      f()\n    }\n\n  }\n}\n",
+      ),
+      (
+        Construct.TestGroup,
+        Never,
+        "class S {\n  \"a\" should {\n\n    \"b\" in {\n\n      f()\n\n    }\n\n  }\n}\n",
+        "class S {\n  \"a\" should {\n    \"b\" in {\n\n      f()\n\n    }\n  }\n}\n",
       ),
       (
         Construct.BlockArgument,

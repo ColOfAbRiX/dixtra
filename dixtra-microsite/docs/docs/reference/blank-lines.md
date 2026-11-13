@@ -47,6 +47,20 @@ class A {
 
 By default the containers and the test blocks keep the blank lines the author wrote, the package clause is followed by one, and the other bodies never have any.
 
+`test-case` and `test-group` tell the tests from the groups of tests, so a configuration can give a blank line after `"a parser" should {` and none after `"parses a number" in {`:
+
+```scala
+"a parser" should {
+
+  "parse a number" in {
+    parse("1")
+  }
+
+}
+```
+
+A test case is a test block that holds no other test block; a group is one that holds them. See [bodies](body.md) for the difference.
+
 ## The blank line between two one-line definitions
 
 `between-alignment-groups` holds the blank line between two adjacent one-line definitions of different alignment groups (see [`alignment.assignment-groups`](alignment.md)). The examples are with `[[val], [def]]`.
@@ -101,21 +115,35 @@ At the start of a body (a class, an object, a trait, an enum, an extension, a pa
 
 ## The settings
 
-| Setting | Default | | Setting | Default |
-| --- | --- | --- | --- | --- |
-| `body-edges.abstract-class` | `keep` | | `body-edges.match` | `never` |
-| `body-edges.block-argument` | `never` | | `body-edges.new-anonymous` | `never` |
-| `body-edges.case-body` | `never` | | `body-edges.object` | `keep` |
-| `body-edges.case-class` | `keep` | | `body-edges.package` | `always` |
-| `body-edges.class` | `keep` | | `body-edges.package-object` | `keep` |
-| `body-edges.def` | `never` | | `body-edges.test-block` | `keep` |
-| `body-edges.enum` | `keep` | | `body-edges.trait` | `keep` |
-| `body-edges.extension` | `keep` | | `body-edges.try` | `never` |
-| `body-edges.for` | `never` | | `body-edges.val` | `never` |
-| `body-edges.for-yield` | `never` | | `body-edges.var` | `never` |
-| `body-edges.given-alias` | `never` | | `body-edges.while` | `never` |
-| `body-edges.given-instance` | `keep` | | `between-alignment-groups` | `keep` |
-| `body-edges.if` | `never` | | `before-scaladoc` | `always` |
-| `body-edges.lambda-argument` | `never` | | | |
-| `body-edges.lambda-body` | `never` | | | |
-| `body-edges.lazy-val` | `never` | | | |
+| Setting | Default |
+| --- | --- |
+| `body-edges.abstract-class` | `keep` |
+| `body-edges.block-argument` | `never` |
+| `body-edges.case-body` | `never` |
+| `body-edges.case-class` | `keep` |
+| `body-edges.class` | `keep` |
+| `body-edges.def` | `never` |
+| `body-edges.enum` | `keep` |
+| `body-edges.extension` | `keep` |
+| `body-edges.for` | `never` |
+| `body-edges.for-yield` | `never` |
+| `body-edges.given-alias` | `never` |
+| `body-edges.given-instance` | `keep` |
+| `body-edges.if` | `never` |
+| `body-edges.lambda-argument` | `never` |
+| `body-edges.lambda-body` | `never` |
+| `body-edges.lazy-val` | `never` |
+| `body-edges.match` | `never` |
+| `body-edges.new-anonymous` | `never` |
+| `body-edges.object` | `keep` |
+| `body-edges.package` | `always` |
+| `body-edges.package-object` | `keep` |
+| `body-edges.test-case` | `keep` |
+| `body-edges.test-group` | `keep` |
+| `body-edges.trait` | `keep` |
+| `body-edges.try` | `never` |
+| `body-edges.val` | `never` |
+| `body-edges.var` | `never` |
+| `body-edges.while` | `never` |
+| `between-alignment-groups` | `keep` |
+| `before-scaladoc` | `always` |

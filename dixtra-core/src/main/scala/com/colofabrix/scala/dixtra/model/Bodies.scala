@@ -18,8 +18,10 @@ package com.colofabrix.scala.dixtra.model
  * @param lambdaBody The body after the `=>` of any other lambda.
  * @param blockArgument The statements of a block given as an argument, after its `{` or its colon (`f { ... }`, `f:
  *                      ...`).
- * @param testBlock The statements of a test block, after its `{` or its colon (`"a test" in { ... }`, `test("a test"):
- *                  ...`).
+ * @param testGroup The statements of a test block holding other test blocks, after its `{` or its colon (`"a parser"
+ *                  should { ... }`, `describe("a parser"): ...`).
+ * @param testCase The statements of any other test block, after its `{` or its colon (`"a test" in { ... }`, `test("a
+ *                 test"): ...`).
  * @param ifBody The bodies after the `then` and `else` of an if/else, an `else if` chain being one group.
  * @param caseBody The bodies after the `=>` of the cases of a match, a `{ case ... }` or a `catch`, one group.
  * @param tryBody The bodies after the `try` and the `finally` of a try.
@@ -40,7 +42,8 @@ final case class BodyConfig(
   lambdaArgument: SingleBodyPolicy,
   lambdaBody: SingleBodyPolicy,
   blockArgument: SingleBodyPolicy,
-  testBlock: SingleBodyPolicy,
+  testGroup: SingleBodyPolicy,
+  testCase: SingleBodyPolicy,
   ifBody: MultiBodyPolicy,
   caseBody: MultiBodyPolicy,
   tryBody: MultiBodyPolicy,

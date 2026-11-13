@@ -67,59 +67,35 @@ private[term] final class ArgumentBlocks(
     ctx.config.blankLines(Construct.LambdaArgument)
 
   // A block of statements given as an argument is a test block when the call it is given to is labelled by a string:
-  // `"a test" in { ... }`, `it should "work" in { ... }`, `test("a test") { ... }`.
-  private def blockConstruct(block: Term): Construct =
-    def label(term: Tree): Boolean =
-      term match {
-        case _: Lit.String | _: Term.Interpolate => true
-        case _                                   => false
-      }
-
-    def labelled(lhs: Term): Boolean =
-      lhs match {
-        case infix: Term.ApplyInfix =>
-          infix
-            .argClause
-            .values
-            .lastOption
-            .exists(label)
-        case other =>
-          label(other)
-      }
-
-    val test =
-      block
-        .parent
-        .flatMap(_.parent)
-        .exists {
-          case infix: Term.ApplyInfix =>
-            labelled(infix.lhs)
-          case Term.Apply.After_4_6_0(Term.Apply.After_4_6_0(_, args), _) =>
-            args
-              .values
-              .headOption
-              .exists(label)
-          case _ =>
-            false
-        }
-
-    if test then
-      Construct.TestBlock
-    else
+  // `"a test" in { ... }`, `it should "work" in { ... }`, `test("a test") { ... }`. A test block holding another test
+  // block among its statements is a group, `"a parser" should { "parse" in { ... } }`, and any other is a test case.
+  private def blockConstruct(block: Term.Block): Construct =
+    if !block.parent.flatMap(_.parent).exists(ArgumentBlocks.testCall) then
       Construct.BlockArgument
+    else if block.stats.exists(ArgumentBlocks.holdsTest) then
+      Construct.TestGroup
+    else
+      Construct.TestCase
 
   // The policy of the statements of a block argument or a test block.
   private def blockBody(construct: Construct): SingleBodyPolicy =
-    if construct == Construct.TestBlock then
-      ctx
-        .config
-        .body
-        .testBlock
-    else
-      ctx
-        .config
-        .body
-        .blockArgument
+    construct match {
+      case Construct.TestGroup =>
+        ctx
+          .config
+          .body
+          .testGroup
+      case Construct.TestCase =>
+        ctx
+          .config
+          .body
+          .testCase
+      case _ =>
+        ctx
+          .config
+          .body
+          .blockArgument
+    }
 
   // A brace block (D5): a lambda, a multi-statement block, or a `{ case ... }` partial function. Braces are always
   // kept; the contents follow the same layout rules and re-indent when exploded. A lambda's body follows the `=>` rules
@@ -201,6 +177,69 @@ private[term] final class ArgumentBlocks(
         Option.when(Render.render(clause, indent).contains('\n'))(Doc.text("{ ") ++ clause ++ Doc.Line ++ Doc.text("}"))
       case _ =>
         None
+    }
+
+}
+
+private[term] object ArgumentBlocks {
+
+  // The calls labelled by a string that take a block of assertions, not of tests: the block given to them is a block
+  // argument.
+  private val notTests =
+    Set("withClue")
+
+  // Whether `call` is labelled by a string, so the block given to it is a test block.
+  def testCall(call: Tree): Boolean =
+    call match {
+      case infix: Term.ApplyInfix =>
+        labelled(infix.lhs)
+      case Term.Apply.After_4_6_0(Term.Apply.After_4_6_0(fun, args), _) =>
+        !named(fun).exists(notTests.contains) && args.values.headOption.exists(label)
+      case _ =>
+        false
+    }
+
+  // Whether `stat` is a call given a test block: `"a test" in { ... }`, `test("a test") { ... }`.
+  def holdsTest(stat: Tree): Boolean =
+    stat match {
+      case infix: Term.ApplyInfix =>
+        takesBlock(infix.argClause) && testCall(infix)
+      case apply: Term.Apply =>
+        takesBlock(apply.argClause) && testCall(apply)
+      case _ =>
+        false
+    }
+
+  private def takesBlock(args: Term.ArgClause): Boolean =
+    args.values match {
+      case (_: Term.Block) :: Nil => true
+      case _                      => false
+    }
+
+  private def label(term: Tree): Boolean =
+    term match {
+      case _: Lit.String | _: Term.Interpolate => true
+      case _                                   => false
+    }
+
+  private def labelled(lhs: Term): Boolean =
+    lhs match {
+      case infix: Term.ApplyInfix =>
+        infix
+          .argClause
+          .values
+          .lastOption
+          .exists(label)
+      case other =>
+        label(other)
+    }
+
+  // The name of the method `fun` calls: `withClue` of `withClue(...)` and of `this.withClue(...)`.
+  private def named(fun: Term): Option[String] =
+    fun match {
+      case name: Term.Name     => Some(name.value)
+      case select: Term.Select => Some(select.name.value)
+      case _                   => None
     }
 
 }

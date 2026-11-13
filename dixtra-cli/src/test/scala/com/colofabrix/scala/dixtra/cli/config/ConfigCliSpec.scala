@@ -369,7 +369,8 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
             lambdaArgument = SingleBodyPolicy.AlwaysJoin,
             lambdaBody = SingleBodyPolicy.AlwaysBreak,
             blockArgument = SingleBodyPolicy.AlwaysJoin,
-            testBlock = SingleBodyPolicy.AlwaysBreak,
+            testGroup = SingleBodyPolicy.AlwaysBreak,
+            testCase = SingleBodyPolicy.AlwaysJoin,
             ifBody = MultiBodyPolicy.JoinMixed,
             caseBody = MultiBodyPolicy.AlwaysJoin,
             tryBody = MultiBodyPolicy.AlwaysBreak,
@@ -387,7 +388,8 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
               |  def = always-break, val = always-join, lazy-val = keep, var = always-break, given-alias = always-join
               |  type-def = always-break, assignment = always-join, named-argument = always-break
               |  lambda-argument = always-join, lambda-body = always-break, block-argument = always-join
-              |  test-block = always-break, if = join-mixed, case-body = always-join, try = always-break
+              |  test-group = always-break, test-case = always-join, if = join-mixed, case-body = always-join
+              |  try = always-break
               |  for = always-join, for-yield = break-complex, while = always-join, semicolon-statements = keep
               |}""".stripMargin,
           )
@@ -452,26 +454,55 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
       actual shouldBe expected
     }
 
-    "set the edge blank lines of block arguments and test blocks" in {
-      val expected = Validated.valid((BlankLinePolicy.Keep, BlankLinePolicy.Never))
+    "set the edge blank lines of block arguments, test groups and test cases" in {
+      val expected = Validated.valid((BlankLinePolicy.Keep, BlankLinePolicy.Always, BlankLinePolicy.Never))
 
       val actual =
         ConfigCli
-          .fromString("blank-lines.body-edges { block-argument = keep, test-block = never }")
+          .fromString("blank-lines.body-edges { block-argument = keep, test-group = always, test-case = never }")
           .map(_.blankLines)
-          .map(edges => (edges(Construct.BlockArgument), edges(Construct.TestBlock)))
+          .map(edges => (edges(Construct.BlockArgument), edges(Construct.TestGroup), edges(Construct.TestCase)))
 
       actual shouldBe expected
     }
 
-    "set the brace style of block arguments and test blocks, without end markers" in {
-      val expected = Validated.valid((BracePolicy.ForceIndent, BracePolicy.Keep))
+    "set the brace style of block arguments, test groups and test cases, without end markers" in {
+      val expected = Validated.valid((BracePolicy.ForceIndent, BracePolicy.Keep, BracePolicy.ForceBraces))
 
       val actual =
         ConfigCli
-          .fromString("braces { block-argument = force-indent, test-block = keep }")
+          .fromString("braces { block-argument = force-indent, test-group = keep, test-case = force-braces }")
           .map(_.braces)
-          .map(braces => (braces(Construct.BlockArgument), braces(Construct.TestBlock)))
+          .map(braces => (braces(Construct.BlockArgument), braces(Construct.TestGroup), braces(Construct.TestCase)))
+
+      actual shouldBe expected
+    }
+
+    "set both test groups and test cases through test-block, the setting before them" in {
+      val table =
+        List(
+          "blank-lines.body-edges.test-block = never",
+          "test-block.body-edges = never",
+          "braces.test-block = keep",
+          "test-block.braces = keep",
+          "body.test-block = always-break",
+          "test-block.body = always-break",
+        )
+
+      val expected =
+        List.fill(table.size)(Validated.valid(true))
+
+      val actual =
+        table.map { setting =>
+          ConfigCli
+            .fromString(setting)
+            .map { config =>
+              val edges  = config.blankLines(Construct.TestGroup) == config.blankLines(Construct.TestCase)
+              val braces = config.braces(Construct.TestGroup) == config.braces(Construct.TestCase)
+              val body   = config.body.testGroup == config.body.testCase
+              edges && braces && body && config != ConfigCli.default
+            }
+        }
 
       actual shouldBe expected
     }
@@ -489,6 +520,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
           "selector-chain.inline-chains = many"               -> "many",
           "definition-site.groups-separator = middle"         -> "previous-group",
           "braces.test-block = force-end"                     -> "no end marker",
+          "braces.test-case = force-end"                      -> "no end marker",
           "blank-lines.body-edges.if = sometimes"             -> "sometimes",
           "braces.style = gnu"                                -> "allman",
           "braces.if = sometimes"                             -> "force-braces",

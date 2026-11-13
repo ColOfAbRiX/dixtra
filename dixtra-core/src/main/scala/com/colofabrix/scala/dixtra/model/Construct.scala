@@ -41,9 +41,15 @@ enum Construct(val key: String, val allowsEnd: Boolean) {
   case BlockArgument extends Construct("block-argument", false)
 
   /**
-   * The block of a test case: a block of statements given to a call labelled by a string (`"a test" in { ... }`,
-   * `test("a test") { ... }`).
+   * The block of a group of tests: a test block holding other test blocks (`"a parser" should { ... }`, `describe("a
+   * parser") { ... }`).
    */
-  case TestBlock extends Construct("test-block", false)
+  case TestGroup extends Construct("test-group", false)
+
+  /**
+   * The block of a test case: a block of statements given to a call labelled by a string, holding no other test block
+   * (`"a test" in { ... }`, `test("a test") { ... }`).
+   */
+  case TestCase extends Construct("test-case", false)
 
 }
