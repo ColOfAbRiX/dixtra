@@ -13,14 +13,19 @@ class Compat213Spec extends AnyWordSpec with Matchers {
 
   // A configuration that would write Scala 3 syntax, to check that compat213 overrides the settings it enforces.
   private val configured: Config =
-    Config.default.copy(
-      compat213 = true,
-      braces = Config.default.braces.copy(
-        policies = Construct.values.map(_ -> BracePolicy.ForceIndent).toMap,
-        singleExpressions = BraceConfig.singleExprConstructs.map(_ -> BracePolicy.ForceIndent).toMap,
-      ),
-      body = Config.default.body.copy(semicolonStatements = SemicolonPolicy.AlwaysBreak),
-    )
+    Config
+      .default
+      .copy(
+        compat213 = true,
+        braces = Config
+          .default
+          .braces
+          .copy(
+            policies = Construct.values.map(_ -> BracePolicy.ForceIndent).toMap,
+            singleExpressions = BraceConfig.singleExprConstructs.map(_ -> BracePolicy.ForceIndent).toMap,
+          ),
+        body = Config.default.body.copy(semicolonStatements = SemicolonPolicy.AlwaysBreak),
+      )
 
   private val sources: List[String] =
     List(
@@ -58,16 +63,23 @@ class Compat213Spec extends AnyWordSpec with Matchers {
   "the compat213 setting" should {
 
     "keep the Scala 2 form of every construct, forcing braces only on package and try" in {
-      val config = Config.default.copy(compat213 = true).effective
+      val config =
+        Config
+          .default
+          .copy(compat213 = true)
+          .effective
 
       val policies =
-        Construct.values.map { construct =>
-          val policy =
-            if construct == Construct.Package || construct == Construct.Try then BracePolicy.ForceBraces
-            else BracePolicy.Keep
+        Construct
+          .values
+          .map { construct =>
+            val policy =
+              if construct == Construct.Package || construct == Construct.Try then BracePolicy.ForceBraces
+              else BracePolicy.Keep
 
-          construct -> policy
-        }.toMap
+            construct -> policy
+          }
+          .toMap
 
       val expected = (policies, BraceConfig.singleExprConstructs.map(_ -> BracePolicy.Keep).toMap, SemicolonPolicy.Keep)
 
@@ -83,16 +95,19 @@ class Compat213Spec extends AnyWordSpec with Matchers {
 
     "override the configured values, keeping the style and the import braces" in {
       val config =
-        Config.default.copy(
-          compat213 = true,
-          braces = BraceConfig(
-            BracesStyle.Allman,
-            ImportBraces.ForceBraces,
-            Construct.values.map(_ -> BracePolicy.ForceBraces).toMap,
-            BraceConfig.singleExprConstructs.map(_ -> BracePolicy.ForceBraces).toMap,
-          ),
-          body = Config.default.body.copy(semicolonStatements = SemicolonPolicy.AlwaysBreak),
-        ).effective
+        Config
+          .default
+          .copy(
+            compat213 = true,
+            braces = BraceConfig(
+              BracesStyle.Allman,
+              ImportBraces.ForceBraces,
+              Construct.values.map(_ -> BracePolicy.ForceBraces).toMap,
+              BraceConfig.singleExprConstructs.map(_ -> BracePolicy.ForceBraces).toMap,
+            ),
+            body = Config.default.body.copy(semicolonStatements = SemicolonPolicy.AlwaysBreak),
+          )
+          .effective
 
       val expected =
         (

@@ -14,16 +14,16 @@ import scala.meta.*
  * A chain stays inline unless a trigger fires, else the receiver stays on its own line with every `.member` selection
  * dropped below it, one per line (D2), one level in; a receiver ending with the closing parenthesis of an argument
  * clause the formatter expanded has its selections lined up with that parenthesis instead. Each exploded segment is
- * re-rendered through the term rules at its new indent,
- * so a fitting lambda stays inline and a multiline block re-indents (D3, D4). A chain with a single selection never
- * breaks at its dot: it stays where it was written, with a newline inside its argument block hanging off the sole
- * `.member` (D7). A path of lowercase names ending at the first capitalised one (`fs2.Stream`, `config.Defaults`) that
- * starts the chain is its receiver: it never breaks and its selections do not count, unless the author broke a line
- * inside it (D10). With `selector-chain.object-member` the first member of a capitalised receiver (`IO.pure(x)`) joins
- * it too, and so does the first member of a receiver name shorter than `selector-chain.receiver-min-length` (`v.trim`),
- * which still counts as a selection. In the enumerators of a `for` and in the arguments of a call (or the elements of a
- * tuple), a chain does not break at `selector-chain.break-at-count` selections; with `selector-chain.in-for` /
- * `selector-chain.in-call` set to `never-break`, a chain the author broke there is joined while it fits.
+ * re-rendered through the term rules at its new indent, so a fitting lambda stays inline and a multiline block
+ * re-indents (D3, D4). A chain with a single selection never breaks at its dot: it stays where it was written, with a
+ * newline inside its argument block hanging off the sole `.member` (D7). A path of lowercase names ending at the first
+ * capitalised one (`fs2.Stream`, `config.Defaults`) that starts the chain is its receiver: it never breaks and its
+ * selections do not count, unless the author broke a line inside it (D10). With `selector-chain.object-member` the
+ * first member of a capitalised receiver (`IO.pure(x)`) joins it too, and so does the first member of a receiver name
+ * shorter than `selector-chain.receiver-min-length` (`v.trim`), which still counts as a selection. In the enumerators
+ * of a `for` and in the arguments of a call (or the elements of a tuple), a chain does not break at
+ * `selector-chain.break-at-count` selections; with `selector-chain.in-for` / `selector-chain.in-call` set to
+ * `never-break`, a chain the author broke there is joined while it fits.
  *
  * Comments before a dot are re-attached (trailing the previous segment, or on their own lines); a comment after a dot
  * or between a member and its arguments keeps the chain verbatim.
@@ -95,8 +95,8 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
       else if !explodes(term, base, selections, head.counted, comments, indent, forceExplode, statement && !call) then
         inline
       else
-        // A receiver whose arguments the renderer expanded closes on a line of its own: the selections then line up with
-        // that closing parenthesis, instead of hanging one level further in from it.
+        // A receiver whose arguments the renderer expanded closes on a line of its own: the selections then line up
+        // with that closing parenthesis, instead of hanging one level further in from it.
         val offset =
           if endsWithDanglingParenthesis(baseDoc, indent) then 0 else 2
 
@@ -263,14 +263,15 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
   private def pathDoc(path: Term): Doc =
     Doc.text(ctx.slice(path.pos.start, path.pos.end).filterNot(_.isWhitespace))
 
-  // Whether a document ends with a closing parenthesis alone on its last line, as the renderer writes the argument clause
-  // of a call it had to expand. Only such a receiver aligns the selections of its chain with that parenthesis.
+  // Whether a document ends with a closing parenthesis alone on its last line, as the renderer writes the argument
+  // clause of a call it had to expand. Only such a receiver aligns the selections of its chain with that parenthesis.
   private def endsWithDanglingParenthesis(doc: Doc, indent: Int): Boolean =
     Render
       .render(doc, indent)
       .split("\n", -1)
       .lastOption
       .exists(_.trim == ")")
+
   // The explode triggers (D2): a break before a dot or a comment that forces it; with two or more selections also an
   // overflow or any newline after the receiver (a newline inside the receiver itself, e.g. a multiline string literal,
   // does not count); for a chain that is a body or a statement (`asBody`), with `selector-chain.break-at-count` or more

@@ -121,9 +121,9 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
       withTempDir { dir =>
         // Alternate unformatted and formatted files, given in reverse name order.
         val expected = (1 to 20).toList.reverse.map { number =>
-          if number % 2 == 0 then 
+          if number % 2 == 0 then
             FileResult.Unchanged(write(dir.resolve(s"F$number.scala"), formatted))
-          else 
+          else
             FileResult.Formatted(write(dir.resolve(s"F$number.scala"), unformatted))
         }
 
@@ -252,7 +252,7 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
         val expected = (List("failed"), "val x = (")
 
         val results = runner(check = false).run(List(file)).unsafeRunSync()
-        
+
         val outcomes =
           results.map {
             case _: FileResult.Failed => "failed"

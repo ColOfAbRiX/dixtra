@@ -295,7 +295,7 @@ object VsCodeExtension {
     log.info(s"npm ${arguments.mkString(" ")}")
 
     val exitCode = Process(npm, Some(folder)).!
-    
+
     if exitCode != 0 then
       throw new MessageOnlyException(s"npm ${arguments.mkString(" ")} failed with exit code $exitCode")
 

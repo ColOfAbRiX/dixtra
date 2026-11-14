@@ -204,12 +204,18 @@ final class DefRenderer(
   // `body.semicolon-statements = keep`), or the call and the statements in braces or one per line, following
   // `braces.def` as the body of a `def` does. None when a statement is not a term.
   private def secondaryBody(ctor: Ctor.Secondary, equalsEnd: Int, indent: Int): Option[Doc] =
-    val call          = terms.renderInit(ctor.body.init, indent)
-    val stats         = ctor.body.stats
-    val statements    = stats.collect { case term: Term => term }
-    val allTerms      = statements.sizeIs == stats.size
-    val writtenBraced = ctx.slice(equalsEnd, ctor.pos.end).trim.startsWith("{")
-    val braced        = ctx.braceStyle(Construct.Def, writtenBraced, ended = false) == BracePolicy.ForceBraces
+    val call       = terms.renderInit(ctor.body.init, indent)
+    val stats      = ctor.body.stats
+    val statements = stats.collect { case term: Term => term }
+    val allTerms   = statements.sizeIs == stats.size
+    
+    val writtenBraced =
+      ctx
+        .slice(equalsEnd, ctor.pos.end)
+        .trim
+        .startsWith("{")
+
+    val braced = ctx.braceStyle(Construct.Def, writtenBraced, ended = false) == BracePolicy.ForceBraces
 
     if stats.isEmpty then
       Some(call)

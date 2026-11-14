@@ -189,7 +189,7 @@ final class SourceTokens(original: String) {
           case _ =>
             loop(i + 1, depth)
         }
-        
+
     loop(firstAtOrAfter(starts, open.end), 1)
 
 }

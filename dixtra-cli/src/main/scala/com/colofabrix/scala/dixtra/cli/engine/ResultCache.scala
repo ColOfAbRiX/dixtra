@@ -126,7 +126,7 @@ object ResultCache {
         .flatten
         .distinct
         .foreach(jar => digest.update(Files.readAllBytes(jar)))
-        
+
       HexFormat.of().formatHex(digest.digest())
     }
 

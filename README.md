@@ -27,9 +27,9 @@ addSbtPlugin("com.colofabrix.scala" % "sbt-dixtra" % "1.0.0-RC1")
 Dixtra gets its configuration from `.dixtra.conf` files. The formatting options are documented, with examples,
 in [`reference.conf`](dixtra-cli/src/main/resources/reference.conf), which also holds the default of every setting.
 
-## Principles (WIP)
+## Principles
 
-These are the principles that Dixtra follows:
+These are the principles used to develop and design Dixtra:
 
 ### Format visual features
 

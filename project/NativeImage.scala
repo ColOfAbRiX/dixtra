@@ -143,13 +143,13 @@ object NativeImage {
           "installationPath",
         ),
       )
-        .lazyLines
-        .headOption
-        .getOrElse(
-          sys.error(
-            "no Visual Studio installation with the C++ build tools: install them or run sbt from a Native Tools prompt",
-          ),
-        )
+      .lazyLines
+      .headOption
+      .getOrElse(
+        sys.error(
+          "no Visual Studio installation with the C++ build tools: install them or run sbt from a Native Tools prompt",
+        ),
+      )
 
     val vcvars = file(installation) / "VC" / "Auxiliary" / "Build" / "vcvars64.bat"
 
@@ -177,10 +177,10 @@ object NativeImage {
         sys.env.get("ProgramFiles"),
         sys.env.get("LOCALAPPDATA"),
       )
-        .flatten
-        .map { home =>
-          file(home) / "Microsoft Visual Studio" / "Installer" / "vswhere.exe"
-        }
+      .flatten
+      .map { home =>
+        file(home) / "Microsoft Visual Studio" / "Installer" / "vswhere.exe"
+      }
 
     val fromEnvPath =
       sys

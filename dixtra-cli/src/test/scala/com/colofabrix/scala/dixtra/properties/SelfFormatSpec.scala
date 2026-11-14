@@ -35,7 +35,7 @@ class SelfFormatSpec extends AnyWordSpec with Matchers {
 
     "find a corpus to format" in {
       val expected = true
-      val actual = sources.size > 20
+      val actual   = sources.size > 20
       actual shouldBe expected
     }
 

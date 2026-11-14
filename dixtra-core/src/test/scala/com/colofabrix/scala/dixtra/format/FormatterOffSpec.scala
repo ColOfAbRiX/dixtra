@@ -78,7 +78,7 @@ class FormatterOffSpec extends AnyWordSpec with Matchers with FormatMatchers {
         "object A {\n  val s    =    \"// dixtra: off\"\n  // dixtra: off is a marker\n  val b    =    2\n}\n"
 
       val expected = "object A {\n  val s = \"// dixtra: off\"\n  // dixtra: off is a marker\n  val b = 2\n}\n"
-      
+
       input should formatTo(expected)
     }
 
