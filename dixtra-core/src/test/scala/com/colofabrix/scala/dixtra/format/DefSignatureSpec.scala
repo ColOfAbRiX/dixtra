@@ -116,6 +116,42 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
       input should formatStablyTo(input, config)
     }
 
+    "keep the braces of a multi-line secondary constructor body with braces.def = keep" in {
+      val input =
+        """class Point(x: Int, y: Int) {
+          |  def this(s: String) = {
+          |    this(s.toInt, 0)
+          |    println(s)
+          |  }
+          |}
+          |""".stripMargin
+
+      val config = withBraces(Construct.Def -> BracePolicy.Keep)
+      input should formatStablyTo(input, config)
+    }
+
+    "write a multi-line secondary constructor body braceless with braces.def = force-indent" in {
+      val input =
+        """class Point(x: Int, y: Int) {
+          |  def this(s: String) = {
+          |    this(s.toInt, 0)
+          |    println(s)
+          |  }
+          |}
+          |""".stripMargin
+
+      val expected =
+        """class Point(x: Int, y: Int) {
+          |  def this(s: String) =
+          |    this(s.toInt, 0)
+          |    println(s)
+          |}
+          |""".stripMargin
+
+      val config = withBraces(Construct.Def -> BracePolicy.ForceIndent)
+      input should formatStablyTo(expected, config)
+    }
+
     "keep a def body written with ; on one line with body.semicolon-statements = keep" in {
       val input  = "def f = { log(1); compute(2) }\n"
       val config = withBody(_.copy(semicolonStatements = SemicolonPolicy.Keep))

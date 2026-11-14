@@ -201,13 +201,15 @@ final class DefRenderer(
       .collectFirst { case t: scala.meta.tokens.Token.KwThis => t.end }
 
   // The body of a secondary constructor at `indent`: its call alone, the body as written on one line (with
-  // `body.semicolon-statements = keep`), or the call and the statements one per line. None when a statement is not a
-  // term.
+  // `body.semicolon-statements = keep`), or the call and the statements in braces or one per line, following
+  // `braces.def` as the body of a `def` does. None when a statement is not a term.
   private def secondaryBody(ctor: Ctor.Secondary, equalsEnd: Int, indent: Int): Option[Doc] =
-    val call       = terms.renderInit(ctor.body.init, indent)
-    val stats      = ctor.body.stats
-    val statements = stats.collect { case term: Term => term }
-    val allTerms   = statements.sizeIs == stats.size
+    val call          = terms.renderInit(ctor.body.init, indent)
+    val stats         = ctor.body.stats
+    val statements    = stats.collect { case term: Term => term }
+    val allTerms      = statements.sizeIs == stats.size
+    val writtenBraced = ctx.slice(equalsEnd, ctor.pos.end).trim.startsWith("{")
+    val braced        = ctx.braceStyle(Construct.Def, writtenBraced, ended = false) == BracePolicy.ForceBraces
 
     if stats.isEmpty then
       Some(call)
@@ -215,8 +217,8 @@ final class DefRenderer(
       Some(Doc.text(ctx.slice(equalsEnd, ctor.pos.end).trim))
     else
       Option.when(allTerms) {
-        val docs = statements.map(terms.render(_, indent, forceExplode = false))
-        Doc.intercalate(Doc.Line, call :: docs)
+        val docs = Doc.intercalate(Doc.Line, call :: statements.map(terms.render(_, indent, forceExplode = false)))
+        if braced then Doc.braced(docs) else docs
       }
 
   private def secondaryParts(ctor: Ctor.Secondary, nameEnd: Int): SignatureParts =
