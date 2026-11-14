@@ -16,6 +16,18 @@ xs
   .sum
 ```
 
+A receiver that the formatter expands over several lines ends with its closing parenthesis on a line of its own, and the selections then line up with that parenthesis instead of going one level further in:
+
+```scala
+val candidates =
+  Seq(
+    sys.env.get("ProgramFiles(x86)"),
+    sys.env.get("ProgramFiles"),
+  )
+  .flatten
+  .map(file(_) / "vswhere.exe")
+```
+
 Every setting is in [the settings table](#the-settings).
 
 ## `inline-chains`

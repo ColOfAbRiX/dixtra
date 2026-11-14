@@ -152,10 +152,10 @@ object NativeImage {
         )
 
     val vcvars = file(installation) / "VC" / "Auxiliary" / "Build" / "vcvars64.bat"
-    
+
     val commandLine =
       command.map(argument => if argument.contains(" ") then "\"" + argument + "\"" else argument).mkString(" ")
-    
+
     val script = directory / "run-native-image.cmd"
     IO.writeLines(
       script,
@@ -169,12 +169,35 @@ object NativeImage {
 
     List("cmd", "/c", script.getPath)
 
+  // The Visual Studio installer tool, found in the environment: the literal path of an installation is never assumed.
   private def vSWhere: File =
-    val where = file("C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe")
-    if where.exists then 
-      where 
-    else 
-      sys.error("vswhere.exe not found: install the Visual Studio C++ build tools")
+    val candidates =
+      Seq(
+        sys.env.get("ProgramFiles(x86)"),
+        sys.env.get("ProgramFiles"),
+        sys.env.get("LOCALAPPDATA"),
+      )
+        .flatten
+        .map { home =>
+          file(home) / "Microsoft Visual Studio" / "Installer" / "vswhere.exe"
+        }
+
+    val fromEnvPath =
+      sys
+        .env
+        .get("PATH")
+        .toSeq
+        .flatMap(_.split(java.io.File.pathSeparator).toSeq)
+        .map(entry => file(entry) / "vswhere.exe")
+
+    (candidates ++ fromEnvPath)
+      .find(_.exists)
+      .getOrElse {
+        sys.error(
+          s"vswhere.exe not found (looked in ${candidates.mkString(", ")}): " +
+          "install the Visual Studio C++ build tools, or set GRAALVM_HOME and run sbt from a Native Tools prompt",
+        )
+      }
 
   private def run(log: Logger, command: Seq[String]): Unit =
     val exit = Process(command).!(ProcessLogger(log.info(_), log.warn(_)))

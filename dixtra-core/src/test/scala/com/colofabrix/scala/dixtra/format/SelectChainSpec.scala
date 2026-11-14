@@ -1,5 +1,6 @@
 package com.colofabrix.scala.dixtra.format
 
+import com.colofabrix.scala.dixtra.Config
 import com.colofabrix.scala.dixtra.testkit.FormatMatchers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -24,6 +25,83 @@ class SelectChainSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |    .filter(_ > 0)
           |    .map(_ * 2)
           |    .headOption
+          |""".stripMargin
+
+      input should formatStablyTo(expected)
+    }
+
+  }
+
+  "a chain whose receiver has its arguments expanded" should {
+
+    "align the selections with the closing parenthesis of the receiver" in {
+      val input =
+        """val candidates =
+          |  Seq(
+          |    sys.env.get("ProgramFiles(x86)"),
+          |    sys.env.get("ProgramFiles"),
+          |  )
+          |    .flatten
+          |    .map(home => file(home) / "vswhere.exe")
+          |""".stripMargin
+
+      val expected =
+        """val candidates =
+          |  Seq(
+          |    sys.env.get("ProgramFiles(x86)"),
+          |    sys.env.get("ProgramFiles"),
+          |  )
+          |  .flatten
+          |  .map(home => file(home) / "vswhere.exe")
+          |""".stripMargin
+
+      input should formatStablyTo(expected)
+    }
+
+    "align them inside an object body, where the receiver is expanded by an overflow" in {
+      val input =
+        "object A {\n  val x = Seq(alphaValue, betaValue, gammaValue, deltaValue).flatten.map(toPath).headOption\n}\n"
+
+      val expected =
+        """object A {
+          |  val x =
+          |    Seq(
+          |      alphaValue,
+          |      betaValue,
+          |      gammaValue,
+          |      deltaValue,
+          |    )
+          |    .flatten
+          |    .map(toPath)
+          |    .headOption
+          |}
+          |""".stripMargin
+
+      input should formatStablyTo(expected, Config.withMaxColumn(44))
+    }
+
+    "align them in the arguments of a call" in {
+      val input =
+        """val w = sink(
+          |  Seq(
+          |    alphaValue,
+          |    betaValue,
+          |  )
+          |    .flatten
+          |    .map(toPath),
+          |)
+          |""".stripMargin
+
+      val expected =
+        """val w =
+          |  sink(
+          |    Seq(
+          |      alphaValue,
+          |      betaValue,
+          |    )
+          |    .flatten
+          |    .map(toPath),
+          |  )
           |""".stripMargin
 
       input should formatStablyTo(expected)

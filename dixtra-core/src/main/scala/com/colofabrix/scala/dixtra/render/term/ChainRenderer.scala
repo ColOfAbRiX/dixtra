@@ -12,7 +12,9 @@ import scala.meta.*
  * `List(args)` is not a chain.
  *
  * A chain stays inline unless a trigger fires, else the receiver stays on its own line with every `.member` selection
- * dropped below it, one per line (D2). Each exploded segment is re-rendered through the term rules at its new indent,
+ * dropped below it, one per line (D2), one level in; a receiver ending with the closing parenthesis of an argument
+ * clause the formatter expanded has its selections lined up with that parenthesis instead. Each exploded segment is
+ * re-rendered through the term rules at its new indent,
  * so a fitting lambda stays inline and a multiline block re-indents (D3, D4). A chain with a single selection never
  * breaks at its dot: it stays where it was written, with a newline inside its argument block hanging off the sole
  * `.member` (D7). A path of lowercase names ending at the first capitalised one (`fs2.Stream`, `config.Defaults`) that
@@ -93,17 +95,24 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
       else if !explodes(term, base, selections, head.counted, comments, indent, forceExplode, statement && !call) then
         inline
       else
+        // A receiver whose arguments the renderer expanded closes on a line of its own: the selections then line up with
+        // that closing parenthesis, instead of hanging one level further in from it.
+        val offset =
+          if endsWithDanglingParenthesis(baseDoc, indent) then 0 else 2
+
+        val selectionIndent = indent + offset
+
         val selectionDocs =
           selections
             .zip(comments)
             .map { (selection, comment) =>
               val leading  = comment.trailing ++ Doc.concat(comment.ownLines.map(Doc.Line ++ _))
-              val selected = Doc.Line ++ segment(selection, indent + 2, Doc.Empty)
+              val selected = Doc.Line ++ segment(selection, selectionIndent, Doc.Empty)
 
               leading ++ selected
             }
 
-        baseDoc ++ Doc.Nest(2, Doc.concat(selectionDocs))
+        baseDoc ++ Doc.Nest(offset, Doc.concat(selectionDocs))
 
   // Whether the term is part of an expression, where a chain does not break at `selector-chain.brak-at-count`: an
   // operand of an operation, as argument, a tuple element, an enumerator, a condition, a scrutinee, the target of an
@@ -254,6 +263,14 @@ private[term] final class ChainRenderer(ctx: RenderContext, terms: TermRenderer,
   private def pathDoc(path: Term): Doc =
     Doc.text(ctx.slice(path.pos.start, path.pos.end).filterNot(_.isWhitespace))
 
+  // Whether a document ends with a closing parenthesis alone on its last line, as the renderer writes the argument clause
+  // of a call it had to expand. Only such a receiver aligns the selections of its chain with that parenthesis.
+  private def endsWithDanglingParenthesis(doc: Doc, indent: Int): Boolean =
+    Render
+      .render(doc, indent)
+      .split("\n", -1)
+      .lastOption
+      .exists(_.trim == ")")
   // The explode triggers (D2): a break before a dot or a comment that forces it; with two or more selections also an
   // overflow or any newline after the receiver (a newline inside the receiver itself, e.g. a multiline string literal,
   // does not count); for a chain that is a body or a statement (`asBody`), with `selector-chain.break-at-count` or more

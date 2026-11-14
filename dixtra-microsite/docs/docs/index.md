@@ -9,7 +9,7 @@ Dixtra is an opinionated formatter for Scala 3. Its primary goal is visual consi
 
 Other Scala formatters let you tune typographic details: where the parentheses go, how the indentation works, when a comma is written. Dixtra treats the code as having _visual features_ that must be formatted as a unit, and gives you only a few settings, so that the result is consistent by construction.
 
-> **The settings.** Dixtra is configured by a `.dixtra.conf` file. Every setting, with its default and an example for every value it takes, is in the [settings reference](configuration.md), one page per group.
+**The settings.** Dixtra is configured by a `.dixtra.conf` file. Every setting, with its default and an example for every value it takes, is in the [settings reference](configuration.md), one page per group.
 
 ## The three ways to use it
 
