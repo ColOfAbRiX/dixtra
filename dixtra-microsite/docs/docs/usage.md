@@ -5,7 +5,7 @@ title: Using Dixtra
 
 # Using Dixtra
 
-The settings that change how the code is formatted are in the [settings reference](configuration.md): a page per group, with an example for every value a setting takes.
+The settings that change how the code is formatted are in the [settings reference](configuration.md).
 
 ## With the sbt plugin
 
@@ -52,7 +52,8 @@ The options are listed in [the command line](command-line.md).
 
 ## In the editor
 
-The VS Code extension formats the open document with **Format Document**. A document with unsaved changes is saved first, and Dixtra runs on the file on disk, so the nearest `.dixtra.conf` and its `path-overrides` apply as in the command line.
+The VS Code extension formats the open document with **Format Document**.
+A document with unsaved changes is saved first, and Dixtra runs on the file on disk, so the nearest `.dixtra.conf` and its `path-overrides` apply as in the command line.
 
 ## When Dixtra cannot format a file
 

@@ -37,6 +37,9 @@ options:
   - title: The sbt plugin
     url: docs/sbt-plugin.html
 
+  - title: Building from source
+    url: docs/building.html
+
   - title: The command line
     url: docs/command-line.html
 
@@ -51,6 +54,3 @@ options:
 
   - title: API documentation
     url: docs/api.html
-
-  - title: Glossary
-    url: docs/glossary.html

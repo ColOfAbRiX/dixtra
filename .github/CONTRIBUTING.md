@@ -54,10 +54,10 @@ sources.
 
 ## Requirements
 
-* JDK 21 — the version used by CI.
+* JDK 21 — the version used by CI; sbt 2 needs 17 or later.
 * sbt — the version used is pinned in [`project/build.properties`](../project/build.properties).
-* GraalVM — needed only to build the native executable (`sbt dixtraCli/nativeImage`); `GRAALVM_HOME`
-  must point to the installation. Everything else runs on a plain JDK.
+* GraalVM — needed only to build the native executable (`sbt dixtraCli/nativeImage`) and the VS Code
+  extension; `GRAALVM_HOME` must point to the installation. Everything else runs on a plain JDK.
 
 ## Building and testing
 
@@ -69,13 +69,15 @@ sbt --client --color=false --supershell=false --batch "<command>"
 
 Plain `sbt <command>` behaves the same way.
 
-| Command                       | What it does                                                                     |
-|-------------------------------|----------------------------------------------------------------------------------|
-| `sbt test`                    | All tests, for every module                                                      |
-| `sbt dixtraCheckAll`          | Fails when a source of the project is not formatted — the project formats itself  |
-| `sbt dixtraFormatAll`         | Formats the sources of the project in place                                       |
-| `sbt dixtraCli/nativeImage`   | Builds the native executable, in `dixtra-cli/target/native`                       |
-| `sbt publishLocal`            | Publishes the modules locally, to try the sbt plugin against them                 |
+| Command                          | What it does                                                                     |
+|----------------------------------|----------------------------------------------------------------------------------|
+| `sbt test`                       | All tests, for every module                                                      |
+| `sbt dixtraCheckAll`             | Fails when a source of the project is not formatted — the project formats itself  |
+| `sbt dixtraFormatAll`            | Formats the sources of the project in place                                       |
+| `sbt sbtDixtra/scripted`         | The scripted tests of the sbt plugin                                              |
+| `sbt dixtraCli/nativeImage`      | Builds the native executable, in `target/out/jvm/scala-3.9.0/dixtra-cli/native`   |
+| `sbt dixtraVsCode/vscodePackage` | Builds the VS Code extension, in `dist/`                                          |
+| `sbt publishLocal`               | Publishes the modules locally, to try the sbt plugin against them                 |
 
 ### Running a single suite
 
@@ -121,8 +123,9 @@ The better the documentation, the fewer things users will have to wonder about.
 
 Feel free do add more documentation, to make corrections and to clarify parts that you think are not
 clear enough. The formatting options are documented, with examples, in
-[`reference.conf`](../dixtra-cli/src/main/resources/reference.conf), and the user-facing behaviour in
-the [README](../README.md).
+[`reference.conf`](../dixtra-cli/src/main/resources/reference.conf), and the user-facing behaviour on
+[the documentation site](https://colofabrix.github.io/dixtra/), whose sources are in
+[`dixtra-microsite/docs`](../dixtra-microsite/docs).
 
 ## Code of conduct
 

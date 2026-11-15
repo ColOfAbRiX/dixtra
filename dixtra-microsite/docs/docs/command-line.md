@@ -8,8 +8,11 @@ title: The command line
 The command line is `dixtra`. It formats the files and the directories you give it, with the same formatter and the same configuration as the sbt plugin.
 
 ```text
-Dixtra [--config-string <hocon> | --config-path <file>] [--max-column <n>] [--check] [--changed-since <ref>]
-      [--quiet] <path>...
+dixtra [--config-string <hocon> | --config-path <file>] 
+       [--max-column <n>]
+       [--check]
+       [--changed-since <ref>]
+       [--quiet] <path>...
 ```
 
 ## Options
@@ -65,5 +68,3 @@ Format the build files of an sbt project:
 ```shell
 dixtra build.sbt project
 ```
-
-The build files of an sbt 2 project are Scala 3 with statements at the top level, and Dixtra parses them with that dialect.

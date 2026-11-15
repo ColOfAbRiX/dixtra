@@ -7,13 +7,12 @@ title: Rules and limitations
 
 ## Rules that have no setting
 
-Some rules are fixed, on purpose: they are what makes the result consistent.
+Some rules are fixed, on purpose: they are part of what makes the result consistent.
 
 - **Indentation** is 2 spaces.
 - **Spaces.** A run of spaces between two tokens on a line becomes one, except where Dixtra aligns code.
 - **Blank lines.** A run of blank lines becomes one.
-- **Comments** on lines of their own are reflowed to `max-column`.
-- **Scaladoc** gets the javadoc layout.
+- **Braces.** Only few braces styles are allowed.
 
 When Dixtra has no rule for a specific code snippet, the code is copied exactly as written.
 
@@ -21,7 +20,7 @@ When Dixtra has no rule for a specific code snippet, the code is copied exactly 
 
 - Among the Scala 3 syntax it does not parse yet is `into` on a type (Scala 3.9).
 
-## Ignoring the formatting
+# Ignoring the formatting
 
 The code between a `dixtra: off` comment and a `dixtra: on` comment stays exactly as written:
 

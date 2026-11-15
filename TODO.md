@@ -7,3 +7,4 @@
 * [LOW][TASK] Test the project OS properties (atomic move, work on links, permissions, UTF, ...)
   across multiple OSes
 * [MED][FEAT] Add a command to recursively validate all dixtra configurations in the project
+* [MED][FEAT] Support special comments tags (NOTE/FIXME/TODO) and align text in them

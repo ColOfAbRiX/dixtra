@@ -5,7 +5,7 @@ title: The sbt plugin
 
 # The sbt plugin
 
-The plugin requires sbt 2, and runs against Scala 3 code. It is enabled in every project of the build, and it does not depend on the build at compile time: it resolves Dixtra when it runs and loads it in a class loader of its own, so that Dixtra keeps its Scala version inside sbt.
+The plugin requires sbt 2, and runs against Scala 3 code.
 
 ```scala
 // project/plugins.sbt
