@@ -11,9 +11,6 @@ indentation, commas, etc., Dixtra treats the code as having visual features that
 a unit. On top of this, Dixtra doesn't give the users full control of everything to limit the potential
 for inconsistent results.
 
-The full documentation is published at [colofabrix.github.io/dixtra](https://colofabrix.github.io/dixtra/): start with
-[the setup](https://colofabrix.github.io/dixtra/docs/setup.html) and the [settings reference](https://colofabrix.github.io/dixtra/docs/configuration.html).
-
 ## Quickstart in your projects
 
 Add this line to `project/plugins.sbt`:
@@ -24,7 +21,7 @@ addSbtPlugin("com.colofabrix.scala" % "sbt-dixtra" % "1.0.0-RC1")
 
 Then run `sbt dixtraFormatAll`
 
-The rest of the documentation is at [colofabrix.github.io/dixtra](https://colofabrix.github.io/dixtra/).
+Here is the full [Dixtra Documentation](https://colofabrix.github.io/dixtra/).
 
 ## Contributing
 

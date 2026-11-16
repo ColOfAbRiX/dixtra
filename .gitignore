@@ -6,6 +6,7 @@
 .idea_modules
 .metals/
 .sbt-scripted/
+.sbtboot/
 .vscode/
 /.worksheet/
 dist/
@@ -15,7 +16,6 @@ local.sbt
 macOS
 metals.sbt
 plans/
-Project
 project/boot/
 project/local-plugins.sbt
 project/plugins/project/
