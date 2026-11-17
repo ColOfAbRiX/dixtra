@@ -397,6 +397,50 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
       actual shouldBe expected
     }
 
+    "read a configuration of a newer minor version, with a hint to update" in {
+      val List(major, minor, patch) =
+        ConfigCli
+          .configVersion
+          .split("\\.")
+          .toList
+      val newerMinor = s"$major.${minor.toInt + 1}.$patch"
+
+      val expected =
+        Validated.valid(
+          (
+            Config.default,
+            List(
+              s"config-version = $newerMinor is for a newer dixtra (this one reads ${ConfigCli.configVersion}), update dixtra to read its newest settings",
+            ),
+          ),
+        )
+
+      val actual =
+        ConfigCli
+          .load(s"config-version = \"$newerMinor\"", Paths.get("").toAbsolutePath, ConfigCli.references)
+          .map(loaded => (loaded.base, loaded.warnings))
+
+      actual shouldBe expected
+    }
+
+    "read a configuration of a newer patch version, without warning" in {
+      val List(major, minor, patch) =
+        ConfigCli
+          .configVersion
+          .split("\\.")
+          .toList
+          
+      val newerPatch = s"$major.$minor.${patch.toInt + 1}"
+      val expected   = Validated.valid((Config.default, Nil))
+
+      val actual =
+        ConfigCli
+          .load(s"config-version = \"$newerPatch\"", Paths.get("").toAbsolutePath, ConfigCli.references)
+          .map(loaded => (loaded.base, loaded.warnings))
+
+      actual shouldBe expected
+    }
+
     "set where the body of each construct goes" in {
       val expected =
         Validated.valid(
@@ -557,7 +601,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
     "be rejected with an error that names the problem" in {
       val table =
         List(
-          "config-version = \"1.1.0\""                        -> "later dixtra",
+          "config-version = \"0.9.0\""                        -> "not read by this dixtra",
           "config-version = \"2.0.0\""                        -> "not read by this dixtra",
           "config-version = 1"                                -> "must be a version like",
           "selector-chain.inline-chains = many"               -> "many",

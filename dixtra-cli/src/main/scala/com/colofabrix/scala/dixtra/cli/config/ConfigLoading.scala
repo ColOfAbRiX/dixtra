@@ -64,30 +64,26 @@ object ConfigLoading {
     Try(ConfigFactory.parseString(configString))
       .fold(
         e => Validated.invalidNel(FormatError.describe(e)),
-        parsed => {
-          val defaults = ConfigSchema.declared(refs)
+        parsed => Validated.fromEither(loadParsed(parsed, anchor, refs)).toValidatedNel,
+      )
 
-          val loaded =
-            for
-              (written, entries) <- splitOverrides(parsed)
-              resolved           <- ConfigAliases.resolve(written, defaults)
-              (settings, unknown) = knownOnly(resolved, defaults, "")
-              merged             <- supported(settings.withFallback(defaults).resolve())
-              base               <- read(merged)
-              overrides          <- entries.traverse((glob, written) => pathOverride(glob, written, settings, defaults))
-            yield
-              val overrideWarnings = overrides.flatMap(_._2)
-
-              LoadedConfig(
-                base,
-                settings.withoutPath(ConfigSchema.versionKey),
-                overrides.map(_._1),
-                unknown ++ overrideWarnings,
-                anchor,
-              )
-
-          Validated.fromEither(loaded).toValidatedNel
-        },
+  private def loadParsed(parsed: HoconConfig, anchor: Path, refs: HoconConfig): Either[String, LoadedConfig] =
+    for
+      (written, entries)        <- splitOverrides(parsed)
+      defaults                   = ConfigSchema.declared(refs)
+      resolved                  <- ConfigAliases.resolve(written, defaults)
+      (settings, unknown)        = knownOnly(resolved, defaults, "")
+      (merged, versionWarnings) <- supported(settings.withFallback(defaults).resolve())
+      base                      <- read(merged)
+      overrides                 <- entries.traverse((glob, written) => pathOverride(glob, written, settings, defaults))
+      overrideWarnings           = overrides.flatMap(_._2)
+    yield
+      LoadedConfig(
+        base,
+        settings.withoutPath(ConfigSchema.versionKey),
+        overrides.map(_._1),
+        unknown ++ versionWarnings ++ overrideWarnings,
+        anchor,
       )
 
   /**
@@ -211,7 +207,9 @@ object ConfigLoading {
 
           segments
             .indices
-            .map(i => ConfigUtil.joinPath(segments.take(i + 1).asJava))
+            .map { i =>
+              ConfigUtil.joinPath(segments.take(i + 1).asJava)
+            }
             .find { path =>
               val isKnown       = Try(known.hasPathOrNull(path)).getOrElse(false)
               val aliasPrefixed = aliasPrefixes.contains(path)
@@ -220,10 +218,14 @@ object ConfigLoading {
         }
         .distinct
 
-    (
-      unknown.foldLeft(settings)(ConfigAliases.without),
-      unknown.map(key => s"unknown setting $prefix$key${ConfigAliases.line(settings.getValue(key))}, ignored"),
-    )
+    val keptSettings = unknown.foldLeft(settings)(ConfigAliases.without)
+
+    val warnings =
+      unknown.map { key =>
+        s"unknown setting $prefix$key${ConfigAliases.line(settings.getValue(key))}, ignored"
+      }
+
+    (keptSettings, warnings)
 
   // The configuration `merged` holds: its settings with their values, a key without one read as the default of the
   // schema.
@@ -239,25 +241,31 @@ object ConfigLoading {
       .left
       .map(_.prettyPrint())
 
-  // The settings of `merged` without their version, when this dixtra reads that version. Reading an older major version
-  // would translate its settings here. One without a version is read as the current one.
-  private def supported(merged: com.typesafe.config.Config): Either[String, com.typesafe.config.Config] =
+  // The settings of `merged` without their version, when this dixtra reads that version: a different major is not read,
+  // a newer minor is read with a hint to update dixtra, a newer patch is read silently. One without a version is read
+  // as the current one.
+  private def supported(merged: HoconConfig): Either[String, (HoconConfig, List[String])] =
     val written =
-      if merged.hasPath(ConfigSchema.versionKey) then Try(merged.getString(ConfigSchema.versionKey)).getOrElse("")
-      else ConfigCli.configVersion
-    (semver(written), semver(ConfigCli.configVersion)) match {
+      if merged.hasPath(ConfigSchema.versionKey) then
+        Try(merged.getString(ConfigSchema.versionKey)).getOrElse("")
+      else
+        ConfigCli.configVersion
+
+    val writtenVersion         = semver(written)
+    val currentVersion         = semver(ConfigCli.configVersion)
+    val settingsWithoutVersion = merged.withoutPath(ConfigSchema.versionKey)
+
+    (writtenVersion, currentVersion) match {
       case (None, _) =>
-        Left(s"""${ConfigSchema.versionKey} must be a version like "${ConfigCli.configVersion}", not "$written"""")
+        s"""${ConfigSchema.versionKey} must be a version like "${ConfigCli.configVersion}", not "$written"""".asLeft
       case (Some((writtenMajor, _, _)), Some((currentMajor, _, _))) if writtenMajor != currentMajor =>
-        Left(
-          s"${ConfigSchema.versionKey} = $written is not read by this dixtra, which reads ${ConfigCli.configVersion}",
-        )
-      case (Some(version), Some(current)) if Ordering[(Int, Int, Int)].gt(version, current) =>
-        Left(
-          s"${ConfigSchema.versionKey} = $written is for a later dixtra, this one reads up to ${ConfigCli.configVersion}",
-        )
+        s"${ConfigSchema.versionKey} = $written is not read by this dixtra, which reads ${ConfigCli.configVersion}".asLeft
+      case (Some((_, writtenMinor, _)), Some((_, currentMinor, _))) if writtenMinor > currentMinor =>
+        val hint =
+          s"${ConfigSchema.versionKey} = $written is for a newer dixtra (this one reads ${ConfigCli.configVersion}), update dixtra to read its newest settings"
+        (settingsWithoutVersion, List(hint)).asRight
       case _ =>
-        Right(merged.withoutPath(ConfigSchema.versionKey))
+        (settingsWithoutVersion, Nil).asRight
     }
 
   // The major, minor and patch numbers of a version like `1.2.3`.
