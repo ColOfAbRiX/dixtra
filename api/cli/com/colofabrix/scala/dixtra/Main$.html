@@ -1,0 +1,558 @@
+<!DOCTYPE html><html data-pathToRoot="../../../../" data-rawLocation="com/colofabrix/scala/dixtra/Main$" data-dynamicSideMenu="false"><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta><title>Main</title><link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico"></link><script type="text/javascript" src="../../../../scripts/theme.js"></script><script type="text/javascript" src="../../../../scripts/searchData.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/scastieConfiguration.js" defer="true"></script><link rel="stylesheet" href="../../../../styles/theme/bundle.css"></link><link rel="stylesheet" href="../../../../styles/theme/components/bundle.css"></link><link rel="stylesheet" href="../../../../styles/theme/components/button/bundle.css"></link><link rel="stylesheet" href="../../../../styles/theme/layout/bundle.css"></link><link rel="stylesheet" href="../../../../styles/dotty-icons.css"></link><link rel="stylesheet" href="../../../../styles/filter-bar.css"></link><link rel="stylesheet" href="../../../../styles/searchbar.css"></link><link rel="stylesheet" href="../../../../styles/social-links.css"></link><link rel="stylesheet" href="../../../../styles/versions-dropdown.css"></link><link rel="stylesheet" href="../../../../styles/content-contributors.css"></link><script type="text/javascript" src="../../../../hljs/highlight.pack.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/hljs-scala3.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/ux.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/common/component.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/common/utils.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/components/FilterBar.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/components/DocumentableList.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/components/Input.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/components/FilterGroup.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/components/Filter.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/scaladoc-scalajs.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/contributors.js" defer="true"></script><script type="text/javascript" src="https://d3js.org/d3.v6.min.js" defer="true"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/graphlib-dot@0.6.2/dist/graphlib-dot.min.js" defer="true"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dagre-d3/0.6.1/dagre-d3.min.js" defer="true"></script><script type="text/javascript" src="https://scastie.scala-lang.org/embedded.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/data.js" defer="true"></script><script>var pathToRoot = "../../../../";</script></head><body><div id=""><div id="header" class="body-small"><div class="header-container-left"><a href="../../../../" class="logo-container"><span class="project-name h300">dixtra-cli</span></a><span onclick="dropdownHandler(event)" class="text-button with-arrow" id="dropdown-trigger"><a><div class="projectVersion">1.0.0-RC1</div></a></span><div id="version-dropdown" class="dropdown-menu"></div></div><div class="header-container-right"><button id="search-toggle" class="icon-button"></button><span id="theme-toggle" class="icon-button"></span><span id="mobile-menu-toggle" class="icon-button hamburger"></span></div></div><div id="mobile-menu"><div class="mobile-menu-header body-small"><span class="mobile-menu-logo"><span class="project-name h300">dixtra-cli</span></span><button id="mobile-menu-close" class="icon-button close"></button></div><div class="mobile-menu-container body-medium"><input id="mobile-scaladoc-searchbar-input" class="scaladoc-searchbar-input" type="search" placeholder="Find anything"></input><span id="mobile-theme-toggle" class="mobile-menu-item mode"></span></div></div><span id="mobile-sidebar-toggle" class="floating-button"></span><div id="leftColumn" class="body-small"><div class="switcher-container"><a id="api-nav-button" class="switcher h100 selected" href="../../../../index.html">API</a></div><nav id="api-nav" class="side-menu"><div class="ni n0 expanded"><span class="nh h100 expanded cs"><button class="ar icon-button expanded"></button><a href="../dixtra.html"><span class="micon pa"></span><span>com.colofabrix.scala.dixtra</span></a></span><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="cli.html"><span class="micon pa"></span><span>cli</span></a></span><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="cli/config.html"><span class="micon pa"></span><span>config</span></a></span><div class="ni n3"><span class="nh "><button class="ar icon-button "></button><a href="cli/config/ConfigAliases$.html"><span class="micon ob"></span><span>ConfigAliases</span></a></span><div class="ni n4 "><span class="nh "><a href="cli/config/ConfigAliases$$Alias.html"><span class="micon cl"></span><span>Alias</span></a></span></div></div><div class="ni n3 "><span class="nh "><a href="cli/config/ConfigCli$.html"><span class="micon ob"></span><span>ConfigCli</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/config/ConfigInstances$.html"><span class="micon ob"></span><span>ConfigInstances</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/config/ConfigLoading$.html"><span class="micon ob"></span><span>ConfigLoading</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/config/ConfigSchema$.html"><span class="micon ob"></span><span>ConfigSchema</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/config/LoadedConfig.html"><span class="micon cl"></span><span>LoadedConfig</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/config/LoadedConfig$.html"><span class="micon ob"></span><span>LoadedConfig</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/config/PathOverride.html"><span class="micon cl"></span><span>PathOverride</span></a></span></div></div><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="cli/engine.html"><span class="micon pa"></span><span>engine</span></a></span><div class="ni n3 "><span class="nh "><a href="cli/engine/FormatRunner$.html"><span class="micon ob"></span><span>FormatRunner</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/engine/FormatRunner.html"><span class="micon cl"></span><span>FormatRunner</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/engine/ResultCache.html"><span class="micon cl"></span><span>ResultCache</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/engine/ResultCache$.html"><span class="micon ob"></span><span>ResultCache</span></a></span></div></div><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="cli/files.html"><span class="micon pa"></span><span>files</span></a></span><div class="ni n3 "><span class="nh "><a href="cli/files/AtomicFiles$.html"><span class="micon ob"></span><span>AtomicFiles</span></a></span></div><div class="ni n3"><span class="nh "><button class="ar icon-button "></button><a href="cli/files/FileResult.html"><span class="micon en"></span><span>FileResult</span></a></span><div class="ni n4 "><span class="nh "><a href="cli/files/FileResult$$Unchanged.html"><span class="micon cl"></span><span>Unchanged</span></a></span></div><div class="ni n4 "><span class="nh "><a href="cli/files/FileResult$$Formatted.html"><span class="micon cl"></span><span>Formatted</span></a></span></div><div class="ni n4 "><span class="nh "><a href="cli/files/FileResult$$WouldFormat.html"><span class="micon cl"></span><span>WouldFormat</span></a></span></div><div class="ni n4 "><span class="nh "><a href="cli/files/FileResult$$Skipped.html"><span class="micon cl"></span><span>Skipped</span></a></span></div><div class="ni n4 "><span class="nh "><a href="cli/files/FileResult$$Failed.html"><span class="micon cl"></span><span>Failed</span></a></span></div></div><div class="ni n3 "><span class="nh "><a href="cli/files/FileResult$.html"><span class="micon ob"></span><span>FileResult</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/files/GitChanges$.html"><span class="micon ob"></span><span>GitChanges</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/files/SourceFiles$.html"><span class="micon ob"></span><span>SourceFiles</span></a></span></div></div><div class="ni n2 "><span class="nh "><a href="cli/CliOptions.html"><span class="micon cl"></span><span>CliOptions</span></a></span></div><div class="ni n2 "><span class="nh "><a href="cli/CliParser$.html"><span class="micon ob"></span><span>CliParser</span></a></span></div><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="cli/CliReport$.html"><span class="micon ob"></span><span>CliReport</span></a></span><div class="ni n3 "><span class="nh "><a href="cli/CliReport$$Printer.html"><span class="micon cl"></span><span>Printer</span></a></span></div><div class="ni n3 "><span class="nh "><a href="cli/CliReport$$Printer$.html"><span class="micon ob"></span><span>Printer</span></a></span></div></div></div><div class="ni n1 "><span class="nh "><a href="BuildInfo$.html"><span class="micon ob"></span><span>BuildInfo</span></a></span></div><div class="ni n1 "><span class="nh "><a href="Embedded$.html"><span class="micon ob"></span><span>Embedded</span></a></span></div><div class="ni n1 expanded"><span class="nh h100 selected"><a href="#"><span class="micon ob"></span><span>Main</span></a></span></div></div></nav></div><div id="footer" class="body-small"><div class="left-container">Generated with</div><div class="right-container"><div class="text"></div></div><div class="text-mobile"></div></div><div id="scaladoc-searchBar"></div><div id="main"><div class="breadcrumbs container"><a href="../../../../index.html">dixtra-cli</a>/<a href="../dixtra.html">com.colofabrix.scala.dixtra</a>/<a href="Main$.html">Main</a></div><div id="content" class="body-medium"><div><div class="cover-header">
+ <span class="icon"><span class="micon ob"></span></span>
+ <h1 class="h600 single">Main</h1>
+</div>
+<div class="fqname body-large">
+ <span>com.colofabrix.scala.dixtra.Main</span>
+</div>
+<div class="main-signature mono-small-block">
+ <div class="signature">
+  <span class="signature-short"><span class="modifiers"></span><span class="kind"><span t="k">object </span></span><a href="Main$.html" t="n" class="documentableName ">Main</a><span t="k"> extends </span><span data-unresolved-link="" t="t">IODeclineApp</span>[<a href="cli/CliOptions.html" t="t">CliOptions</a>]</span><span class="signature-long"></span>
+ </div>
+</div>
+<div class="cover">
+ <div class="doc">
+  <p>Command-line entry point for the dixtra formatter.</p>
+  <p>Formats one or more Scala files and/or whole directories in place, or verifies them without writing when <code>--check</code> is supplied. Argument parsing is provided by decline via the declinio Cats Effect integration.</p>
+ </div>
+ <section id="attributes">
+  <h2 class="h500">Attributes</h2>
+  <dl class="attributes">
+   <dt class="body-small">Graph</dt>
+   <dd class="body-medium">
+    <div id="inheritance-diagram" class="diagram-class showGraph">
+     <button type="button" class="label-only-button" onclick="zoomOut()">Reset zoom</button><button type="button" class="label-only-button" onclick="hideGraph()">Hide graph</button><button type="button" class="label-only-button" onclick="showGraph()">Show graph</button>
+     <svg id="graph"></svg>
+     <script type="text/dot" id="dot"> digraph g {
+ node0 [id=node0, label="<span style=\"color: #FFFFFF;\">object <a href=\"Main$.html\" t=\"n\">Main</a></span>", class="object vertex"];
+node1 [id=node1, label="<span style=\"color: #FFFFFF;\">class <span data-unresolved-link=\"\" t=\"n\">Object</span></span>", class="class vertex"];
+node2 [id=node2, label="<span style=\"color: #FFFFFF;\">class <span data-unresolved-link=\"\" t=\"n\">Any</span></span>", class="class vertex"];
+node3 [id=node3, label="<span style=\"color: #FFFFFF;\">trait <span data-unresolved-link=\"\" t=\"n\">Matchable</span></span>", class="trait vertex"];
+node4 [id=node4, label="<span style=\"color: #FFFFFF;\">trait <span data-unresolved-link=\"\" t=\"n\">IODeclineApp</span>[<a href=\"cli/CliOptions.html\" t=\"t\">CliOptions</a>]</span>", class="trait vertex"];
+node5 [id=node5, label="<span style=\"color: #FFFFFF;\">trait <span data-unresolved-link=\"\" t=\"n\">DeclineApp</span>[<span data-unresolved-link=\"\" t=\"t\">IO</span>, <a href=\"cli/CliOptions.html\" t=\"t\">CliOptions</a>]</span>", class="trait vertex"];
+node6 [id=node6, label="<span style=\"color: #FFFFFF;\">trait <span data-unresolved-link=\"\" t=\"n\">IOApp</span></span>", class="trait vertex"];
+node7 [id=node7, label="<span style=\"color: #FFFFFF;\">trait <span data-unresolved-link=\"\" t=\"n\">DeclineReaderApp</span>[<span data-unresolved-link=\"\" t=\"t\">IO</span>, <a href=\"cli/CliOptions.html\" t=\"t\">CliOptions</a>]</span>", class="trait vertex"];
+
+
+ node0 -> node1;
+node1 -> node2;
+node1 -> node3;
+node3 -> node2;
+node0 -> node4;
+node4 -> node1;
+node4 -> node5;
+node5 -> node1;
+node5 -> node6;
+node6 -> node1;
+node5 -> node7;
+node7 -> node1;
+node7 -> node6;
+
+}
+</script>
+    </div>
+   </dd>
+   <dt class="body-small">Supertypes</dt>
+   <dd class="body-medium">
+    <div class="mono-small-block supertypes">
+     <div>
+      trait <span data-unresolved-link="" t="n">IODeclineApp</span>[<a href="cli/CliOptions.html" t="t">CliOptions</a>]
+     </div>
+     <div>
+      trait <span data-unresolved-link="" t="n">DeclineApp</span>[<span data-unresolved-link="" t="t">IO</span>, <a href="cli/CliOptions.html" t="t">CliOptions</a>]
+     </div>
+     <div>
+      trait <span data-unresolved-link="" t="n">DeclineReaderApp</span>[<span data-unresolved-link="" t="t">IO</span>, <a href="cli/CliOptions.html" t="t">CliOptions</a>]
+     </div>
+     <div>
+      trait <span data-unresolved-link="" t="n">IOApp</span>
+     </div>
+     <div>
+      class <span data-unresolved-link="" t="n">Object</span>
+     </div>
+     <div>
+      trait <span data-unresolved-link="" t="n">Matchable</span>
+     </div>
+     <div>
+      class <span data-unresolved-link="" t="n">Any</span>
+     </div>
+     <span class="show-all-code show-content text-button h100">Show all</span>
+    </div>
+   </dd>
+   <dt class="body-small">Self type</dt>
+   <dd class="body-medium">
+    <div class="mono-small-block supertypes">
+     <span></span>
+     <div>
+      <a href="Main$.html" t="n">Main</a>.<span t="k">type</span>
+     </div>
+    </div>
+   </dd>
+  </dl>
+ </section>
+</div>
+<section id="members-list">
+ <h2 class="h500">Members list</h2>
+ <div class="documentableFilter">
+  <div class="filtersContainer"></div>
+  <input class="filterableInput" placeholder="Filter by any phrase" data-test-id="filterBarInput" type="search"><button class="clearButton label-only-button" data-test-id="filterBarClearButton">Clear all</button>
+ </div>
+ <div class="membersList expand">
+  <div class="tabs">
+   <div class="contents">
+    <section id="Value-members">
+     <div data-togglable="Value members" class="tab expand">
+      <div class="member-group-header">
+       <h3 data-togglable="Value members" class="h400">Value members</h3>
+      </div>
+      <section id="Concrete-methods">
+       <div class="documentableList expand">
+        <div class="documentableList-expander">
+         <button class="icon-button show-content expand"></button>
+         <h4 class="groupHeader h200">Concrete methods</h4>
+        </div>
+        <div class="documentableElement" id="header-0" data-f-keywords="override">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">override </span></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#header-0" t="n" class="documentableName ">header</a>: <span data-unresolved-link="" t="t">String</span>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Short description of the application</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Short description of the application</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Definition Classes</dt>
+              <dd class="body-medium">
+               <div>
+                <span data-unresolved-link="">DeclineReaderApp</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" id="name-0" data-f-keywords="override">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">override </span></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#name-0" t="n" class="documentableName ">name</a>: <span data-unresolved-link="" t="t">String</span>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Name of the application</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Name of the application</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Definition Classes</dt>
+              <dd class="body-medium">
+               <div>
+                <span data-unresolved-link="">DeclineReaderApp</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" id="options-0" data-f-keywords="override">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">override </span></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#options-0" t="n" class="documentableName ">options</a>: <span data-unresolved-link="" t="t">Opts</span>[<a href="cli/CliOptions.html" t="t">CliOptions</a>]
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Decline command line options</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Decline command line options</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Definition Classes</dt>
+              <dd class="body-medium">
+               <div>
+                <span data-unresolved-link="">DeclineReaderApp</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" id="program-81">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#program-81" t="n" class="documentableName ">program</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">cliOptions</span>: <a href="cli/CliOptions.html" t="t">CliOptions</a>, <span t="k"></span><span data-unresolved-link="" t="n">printer</span>: <a href="cli/CliReport$$Printer.html" t="t">Printer</a>, <span t="k"></span><span data-unresolved-link="" t="n">cacheFile</span>: <span data-unresolved-link="" t="t">Option</span>[<span data-unresolved-link="" t="t">Path</span>]): <span data-unresolved-link="" t="t">IO</span>[<span data-unresolved-link="" t="t">ExitCode</span>]
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Format or check the paths of <code>cliOptions</code>, reporting each file with <code>printer</code>, and return the exit code. The files found formatted are remembered in <code>cacheFile</code>, and the next runs with it do not format them again (see <a href="cli/engine/ResultCache.html">com.colofabrix.scala.dixtra.cli.engine.ResultCache</a>).</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Format or check the paths of <code>cliOptions</code>, reporting each file with <code>printer</code>, and return the exit code. The files found formatted are remembered in <code>cacheFile</code>, and the next runs with it do not format them again (see <a href="cli/engine/ResultCache.html">com.colofabrix.scala.dixtra.cli.engine.ResultCache</a>).</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small"></dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" id="runWithConfig-2bc" data-f-keywords="override">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">override </span></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#runWithConfig-2bc" t="n" class="documentableName ">runWithConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">cliOptions</span>: <a href="cli/CliOptions.html" t="t">CliOptions</a>): <span data-unresolved-link="" t="t">IO</span>[<span data-unresolved-link="" t="t">ExitCode</span>]
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Application main method that receives the compiled configuration</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Application main method that receives the compiled configuration</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Definition Classes</dt>
+              <dd class="body-medium">
+               <div>
+                <span data-unresolved-link="">DeclineApp</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" id="version-0" data-f-keywords="override">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">override </span></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#version-0" t="n" class="documentableName ">version</a>: <span data-unresolved-link="" t="t">String</span>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Version of the application</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Version of the application</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Definition Classes</dt>
+              <dd class="body-medium">
+               <div>
+                <span data-unresolved-link="">DeclineReaderApp</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </section>
+      <section id="Inherited-methods">
+       <div class="documentableList expand">
+        <div class="documentableList-expander">
+         <button class="icon-button show-content expand"></button>
+         <h4 class="groupHeader h200">Inherited methods</h4>
+        </div>
+        <div class="documentableElement" id="helpFlag-0" data-f-inherited="DeclineReaderApp">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#helpFlag-0" t="n" class="documentableName ">helpFlag</a>: <span data-unresolved-link="" t="t">Boolean</span>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>If set to true, displays a help message when the user inputs wrong arguments</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>If set to true, displays a help message when the user inputs wrong arguments</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Inherited from:</dt>
+              <dd class="body-medium">
+               <span data-unresolved-link="">DeclineReaderApp</span>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" id="main-913" data-f-keywords="final" data-f-inherited="IOApp">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final </span></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#main-913" t="n" class="documentableName ">main</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">args</span>: <span data-unresolved-link="" t="t">Array</span>[<span data-unresolved-link="" t="t">String</span>]): <span data-unresolved-link="" t="t">Unit</span>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="cover">
+             <div class="doc"></div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Inherited from:</dt>
+              <dd class="body-medium">
+               <span data-unresolved-link="">IOApp</span>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" id="run-fffffa24" data-f-keywords="final,override" data-f-inherited="DeclineReaderApp">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final override </span></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#run-fffffa24" t="n" class="documentableName ">run</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">args</span>: <span data-unresolved-link="" t="t">List</span>[<span data-unresolved-link="" t="t">String</span>]): <span data-unresolved-link="" t="t">IO</span>[<span data-unresolved-link="" t="t">ExitCode</span>]
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>The entry point for your application. Will be called by the runtime when the process is started. If the underlying runtime supports it, any arguments passed to the process will be made available in the <code>args</code> parameter. The numeric value within the resulting <span data-unresolved-link="">ExitCode</span> will be used as the exit code when the process terminates unless terminated exceptionally or by interrupt.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>The entry point for your application. Will be called by the runtime when the process is started. If the underlying runtime supports it, any arguments passed to the process will be made available in the <code>args</code> parameter. The numeric value within the resulting <span data-unresolved-link="">ExitCode</span> will be used as the exit code when the process terminates unless terminated exceptionally or by interrupt.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">args</dt>
+              <dd class="body-medium">
+               <p>The arguments passed to the process, if supported by the underlying runtime. For example, <code>java com.company.MyApp --foo --bar baz</code> or <code>node com-mycompany-fastopt.js --foo --bar baz</code> would each result in <code>List("--foo", "--bar", "baz")</code>.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">See also</dt>
+              <dd class="body-medium">
+               <div>
+                <div>
+                 <p><span data-unresolved-link="" title="Problem linking cats.effect.IOApp.Simple!.run:cats\.effect\.IO[Unit]*: Couldn't resolve a member for the given link query">cats.effect.IOApp.Simple!.run:cats\.effect\.IO[Unit]*</span></p>
+                </div>
+               </div>
+              </dd>
+              <dt class="body-small">Definition Classes</dt>
+              <dd class="body-medium">
+               <div>
+                <span data-unresolved-link="">DeclineReaderApp</span> -&gt; <span data-unresolved-link="">IOApp</span>
+               </div>
+              </dd>
+              <dt class="body-small">Inherited from:</dt>
+              <dd class="body-medium">
+               <span data-unresolved-link="">DeclineReaderApp</span>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" id="runEffectToIO-0" data-f-visibility="protected" data-f-keywords="final,override" data-f-inherited="IODeclineApp">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final override protected </span></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#runEffectToIO-0" t="n" class="documentableName ">runEffectToIO</a>: <span data-unresolved-link="" t="t">FunctionK</span>[<span data-unresolved-link="" t="t">IO</span>, <span data-unresolved-link="" t="t">IO</span>]
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Executor that transforms the application effect F[_] into IO[_]</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Executor that transforms the application effect F[_] into IO[_]</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Definition Classes</dt>
+              <dd class="body-medium">
+               <div>
+                <span data-unresolved-link="">IODeclineApp</span> -&gt; <span data-unresolved-link="">DeclineReaderApp</span>
+               </div>
+              </dd>
+              <dt class="body-small">Inherited from:</dt>
+              <dd class="body-medium">
+               <span data-unresolved-link="">IODeclineApp</span>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" id="runWithReader-0" data-f-keywords="final,override" data-f-inherited="DeclineApp">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final override </span></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#runWithReader-0" t="n" class="documentableName ">runWithReader</a>: <span data-unresolved-link="" t="t">Kleisli</span>[<span data-unresolved-link="" t="t">IO</span>, <a href="cli/CliOptions.html" t="t">CliOptions</a>, <span data-unresolved-link="" t="t">ExitCode</span>]
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Application main method that uses a ReaderT to pass the compiled configuration</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Application main method that uses a ReaderT to pass the compiled configuration</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Definition Classes</dt>
+              <dd class="body-medium">
+               <div>
+                <span data-unresolved-link="">DeclineApp</span> -&gt; <span data-unresolved-link="">DeclineReaderApp</span>
+               </div>
+              </dd>
+              <dt class="body-small">Inherited from:</dt>
+              <dd class="body-medium">
+               <span data-unresolved-link="">DeclineApp</span>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" id="warnOnNonMainThreadDetected-0" data-f-inherited="IOApp">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">def </span></span><a href="Main$.html#warnOnNonMainThreadDetected-0" t="n" class="documentableName ">warnOnNonMainThreadDetected</a>: <span data-unresolved-link="" t="t">Boolean</span>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Defines what to do when IOApp detects that <code>main</code> is being invoked on a <code>Thread</code> which isn't the main process thread. This condition can happen when we are running inside of an <code>sbt run</code> with <code>fork := false</code></p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Defines what to do when IOApp detects that <code>main</code> is being invoked on a <code>Thread</code> which isn't the main process thread. This condition can happen when we are running inside of an <code>sbt run</code> with <code>fork := false</code></p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Inherited from:</dt>
+              <dd class="body-medium">
+               <span data-unresolved-link="">IOApp</span>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </section>
+     </div>
+    </section>
+   </div>
+  </div>
+ </div>
+</section></div><div id="toc" class="body-small"><div id="toc-container"><span class="toc-title h200">In this article</span><nav class="toc-nav"><ul class="toc-list"><li><a href="#attributes">Attributes</a></li><li><a href="#members-list">Members list</a><ul><li><a href="#Value-members">Value members</a><ul><li><a href="#Concrete-methods">Concrete methods</a></li><li><a href="#Inherited-methods">Inherited methods</a></li></ul></li></ul></li></ul></nav></div></div></div><div id="footer" class="body-small mobile-footer"><div class="left-container">Generated with</div><div class="right-container"><div class="text"></div></div><div class="text-mobile"></div></div></div></div></body></html>
