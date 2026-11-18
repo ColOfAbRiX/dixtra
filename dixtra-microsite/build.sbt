@@ -44,6 +44,15 @@ lazy val dixtraMicrosite =
         val siteDir    = (makeSite / target).value
         IO.copyDirectory(stagingDir / "core", siteDir / "api" / "core", overwrite = true)
         IO.copyDirectory(stagingDir / "cli", siteDir / "api" / "cli", overwrite = true)
+        // The site is pushed through the GitHub API, one git tree per directory, each built from the files it contains:
+        // a directory with no files yields an empty tree that GitHub rejects with 422 "Invalid tree info" (github4s#259)
+        def fillFileless(dir: File): Unit = {
+          val entries = IO.listFiles(dir)
+          if (entries.isEmpty || entries.forall(_.isDirectory))
+            IO.write(dir / "README", "Placeholder: keeps this directory non-empty when the site is published through the GitHub API (github4s#259).\n")
+          entries.filter(_.isDirectory).foreach(fillFileless)
+        }
+        fillFileless(siteDir)
       },
       publishMicrosite := Def.sequential(clean, makeMicrosite, copyApiDocsToSite, pushMicrosite).value,
     )
