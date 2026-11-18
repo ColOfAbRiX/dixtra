@@ -1,0 +1,661 @@
+<!DOCTYPE html><html data-pathToRoot="../../../" data-rawLocation="com/colofabrix/scala/dixtra" data-dynamicSideMenu="false"><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta><title>com.colofabrix.scala.dixtra</title><link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico"></link><script type="text/javascript" src="../../../scripts/theme.js"></script><script type="text/javascript" src="../../../scripts/searchData.js" defer="true"></script><script type="text/javascript" src="../../../scripts/scastieConfiguration.js" defer="true"></script><link rel="stylesheet" href="../../../styles/theme/bundle.css"></link><link rel="stylesheet" href="../../../styles/theme/components/bundle.css"></link><link rel="stylesheet" href="../../../styles/theme/components/button/bundle.css"></link><link rel="stylesheet" href="../../../styles/theme/layout/bundle.css"></link><link rel="stylesheet" href="../../../styles/dotty-icons.css"></link><link rel="stylesheet" href="../../../styles/filter-bar.css"></link><link rel="stylesheet" href="../../../styles/searchbar.css"></link><link rel="stylesheet" href="../../../styles/social-links.css"></link><link rel="stylesheet" href="../../../styles/versions-dropdown.css"></link><link rel="stylesheet" href="../../../styles/content-contributors.css"></link><script type="text/javascript" src="../../../hljs/highlight.pack.js" defer="true"></script><script type="text/javascript" src="../../../scripts/hljs-scala3.js" defer="true"></script><script type="text/javascript" src="../../../scripts/ux.js" defer="true"></script><script type="text/javascript" src="../../../scripts/common/component.js" defer="true"></script><script type="text/javascript" src="../../../scripts/common/utils.js" defer="true"></script><script type="text/javascript" src="../../../scripts/components/FilterBar.js" defer="true"></script><script type="text/javascript" src="../../../scripts/components/DocumentableList.js" defer="true"></script><script type="text/javascript" src="../../../scripts/components/Input.js" defer="true"></script><script type="text/javascript" src="../../../scripts/components/FilterGroup.js" defer="true"></script><script type="text/javascript" src="../../../scripts/components/Filter.js" defer="true"></script><script type="text/javascript" src="../../../scripts/scaladoc-scalajs.js" defer="true"></script><script type="text/javascript" src="../../../scripts/contributors.js" defer="true"></script><script type="text/javascript" src="https://d3js.org/d3.v6.min.js" defer="true"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/graphlib-dot@0.6.2/dist/graphlib-dot.min.js" defer="true"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dagre-d3/0.6.1/dagre-d3.min.js" defer="true"></script><script type="text/javascript" src="https://scastie.scala-lang.org/embedded.js" defer="true"></script><script type="text/javascript" src="../../../scripts/data.js" defer="true"></script><script>var pathToRoot = "../../../";</script></head><body><div id=""><div id="header" class="body-small"><div class="header-container-left"><a href="../../../" class="logo-container"><span class="project-name h300">dixtra-core</span></a><span onclick="dropdownHandler(event)" class="text-button with-arrow" id="dropdown-trigger"><a><div class="projectVersion">1.0.0-RC1</div></a></span><div id="version-dropdown" class="dropdown-menu"></div></div><div class="header-container-right"><button id="search-toggle" class="icon-button"></button><span id="theme-toggle" class="icon-button"></span><span id="mobile-menu-toggle" class="icon-button hamburger"></span></div></div><div id="mobile-menu"><div class="mobile-menu-header body-small"><span class="mobile-menu-logo"><span class="project-name h300">dixtra-core</span></span><button id="mobile-menu-close" class="icon-button close"></button></div><div class="mobile-menu-container body-medium"><input id="mobile-scaladoc-searchbar-input" class="scaladoc-searchbar-input" type="search" placeholder="Find anything"></input><span id="mobile-theme-toggle" class="mobile-menu-item mode"></span></div></div><span id="mobile-sidebar-toggle" class="floating-button"></span><div id="leftColumn" class="body-small"><div class="switcher-container"><a id="api-nav-button" class="switcher h100 selected" href="../../../index.html">API</a></div><nav id="api-nav" class="side-menu"><div class="ni n0 expanded"><span class="nh h100 selected"><button class="ar icon-button expanded"></button><a href="#"><span class="micon pa"></span><span>com.colofabrix.scala.dixtra</span></a></span><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="dixtra/doc.html"><span class="micon pa"></span><span>doc</span></a></span><div class="ni n2 "><span class="nh "><a href="dixtra/doc/Doc$.html"><span class="micon ob"></span><span>Doc</span></a></span></div><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="dixtra/doc/Doc.html"><span class="micon en"></span><span>Doc</span></a></span><div class="ni n3 "><span class="nh "><a href="dixtra/doc/Doc$$Text.html"><span class="micon cl"></span><span>Text</span></a></span></div><div class="ni n3 "><span class="nh "><a href="dixtra/doc/Doc$$Concat.html"><span class="micon cl"></span><span>Concat</span></a></span></div><div class="ni n3 "><span class="nh "><a href="dixtra/doc/Doc$$Nest.html"><span class="micon cl"></span><span>Nest</span></a></span></div><div class="ni n3 "><span class="nh "><a href="dixtra/doc/Doc$$Standalone.html"><span class="micon cl"></span><span>Standalone</span></a></span></div><div class="ni n3 "><span class="nh "><a href="dixtra/doc/Doc$$Verbatim.html"><span class="micon cl"></span><span>Verbatim</span></a></span></div></div><div class="ni n2 "><span class="nh "><a href="dixtra/doc/Render$.html"><span class="micon ob"></span><span>Render</span></a></span></div></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="dixtra/model.html"><span class="micon pa"></span><span>model</span></a></span><div class="ni n2 "><span class="nh "><a href="dixtra/model/AlignmentConfig.html"><span class="micon cl"></span><span>AlignmentConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/ArrowsConfig.html"><span class="micon cl"></span><span>ArrowsConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/BlankLinePolicy.html"><span class="micon en"></span><span>BlankLinePolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/BlankLinesConfig$.html"><span class="micon ob"></span><span>BlankLinesConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/BlankLinesConfig.html"><span class="micon cl"></span><span>BlankLinesConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/BodyConfig.html"><span class="micon cl"></span><span>BodyConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/BraceConfig.html"><span class="micon cl"></span><span>BraceConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/BraceConfig$.html"><span class="micon ob"></span><span>BraceConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/BracePolicy.html"><span class="micon en"></span><span>BracePolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/BracesStyle.html"><span class="micon en"></span><span>BracesStyle</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/CallSiteConfig.html"><span class="micon cl"></span><span>CallSiteConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/ChainHeadPolicy.html"><span class="micon en"></span><span>ChainHeadPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/Construct.html"><span class="micon en"></span><span>Construct</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/DefinitionKind.html"><span class="micon en"></span><span>DefinitionKind</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/DefinitionSiteConfig.html"><span class="micon cl"></span><span>DefinitionSiteConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/GroupsBreak.html"><span class="micon en"></span><span>GroupsBreak</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/GroupsSeparator.html"><span class="micon en"></span><span>GroupsSeparator</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/HousekeepingConfig.html"><span class="micon cl"></span><span>HousekeepingConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/ImportBraces.html"><span class="micon en"></span><span>ImportBraces</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/InlineChainPolicy.html"><span class="micon en"></span><span>InlineChainPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/LineEnding.html"><span class="micon en"></span><span>LineEnding</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/MultiBodyPolicy.html"><span class="micon en"></span><span>MultiBodyPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/NestedChainPolicy.html"><span class="micon en"></span><span>NestedChainPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/OverflowConfig.html"><span class="micon cl"></span><span>OverflowConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/PathsConfig$.html"><span class="micon ob"></span><span>PathsConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/PathsConfig.html"><span class="micon cl"></span><span>PathsConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/ScaladocAlignmentConfig.html"><span class="micon cl"></span><span>ScaladocAlignmentConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/ScaladocSpacing.html"><span class="micon en"></span><span>ScaladocSpacing</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/SelectorChainConfig.html"><span class="micon cl"></span><span>SelectorChainConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/SemicolonPolicy.html"><span class="micon en"></span><span>SemicolonPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/SingleBodyPolicy.html"><span class="micon en"></span><span>SingleBodyPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/TrailingCommas.html"><span class="micon en"></span><span>TrailingCommas</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/TrailingOverflow.html"><span class="micon en"></span><span>TrailingOverflow</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/model/YieldBodyPolicy.html"><span class="micon en"></span><span>YieldBodyPolicy</span></a></span></div></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="dixtra/normalize.html"><span class="micon pa"></span><span>normalize</span></a></span><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/ArrowSpacingNormalizer$.html"><span class="micon ob"></span><span>ArrowSpacingNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/BlankLineNormalizer$.html"><span class="micon ob"></span><span>BlankLineNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/BraceStyleNormalizer$.html"><span class="micon ob"></span><span>BraceStyleNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/CommentNormalizer$.html"><span class="micon ob"></span><span>CommentNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/DocCommentSpacingNormalizer$.html"><span class="micon ob"></span><span>DocCommentSpacingNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/FormatterOff$.html"><span class="micon ob"></span><span>FormatterOff</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/Housekeeping$.html"><span class="micon ob"></span><span>Housekeeping</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/ImportSpacingNormalizer$.html"><span class="micon ob"></span><span>ImportSpacingNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/MethodSpacingNormalizer$.html"><span class="micon ob"></span><span>MethodSpacingNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/Normalize$.html"><span class="micon ob"></span><span>Normalize</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/TrailingCommentNormalizer$.html"><span class="micon ob"></span><span>TrailingCommentNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/normalize/WhitespaceNormalizer$.html"><span class="micon ob"></span><span>WhitespaceNormalizer</span></a></span></div></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="dixtra/render.html"><span class="micon pa"></span><span>render</span></a></span><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="dixtra/render/context.html"><span class="micon pa"></span><span>context</span></a></span><div class="ni n3 "><span class="nh "><a href="dixtra/render/context/RenderContext.html"><span class="micon cl"></span><span>RenderContext</span></a></span></div><div class="ni n3 "><span class="nh "><a href="dixtra/render/context/SourceDocs.html"><span class="micon cl"></span><span>SourceDocs</span></a></span></div><div class="ni n3 "><span class="nh "><a href="dixtra/render/context/SourceTokens.html"><span class="micon cl"></span><span>SourceTokens</span></a></span></div></div><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="dixtra/render/definition.html"><span class="micon pa"></span><span>definition</span></a></span><div class="ni n3 "><span class="nh "><a href="dixtra/render/definition/AssignmentRenderer.html"><span class="micon cl"></span><span>AssignmentRenderer</span></a></span></div><div class="ni n3 "><span class="nh "><a href="dixtra/render/definition/DefRenderer.html"><span class="micon cl"></span><span>DefRenderer</span></a></span></div><div class="ni n3 "><span class="nh "><a href="dixtra/render/definition/ImportRenderer.html"><span class="micon cl"></span><span>ImportRenderer</span></a></span></div></div><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="dixtra/render/term.html"><span class="micon pa"></span><span>term</span></a></span><div class="ni n3 "><span class="nh "><a href="dixtra/render/term/TermRenderer.html"><span class="micon cl"></span><span>TermRenderer</span></a></span></div></div><div class="ni n2 "><span class="nh "><a href="dixtra/render/ContainerHeader.html"><span class="micon cl"></span><span>ContainerHeader</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/render/ContainerRenderer.html"><span class="micon cl"></span><span>ContainerRenderer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/render/DefinitionAlignment.html"><span class="micon cl"></span><span>DefinitionAlignment</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/render/ExtensionGroupRenderer.html"><span class="micon cl"></span><span>ExtensionGroupRenderer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/render/PackageRenderer.html"><span class="micon cl"></span><span>PackageRenderer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/render/SafetyNet$.html"><span class="micon ob"></span><span>SafetyNet</span></a></span></div><div class="ni n2 "><span class="nh "><a href="dixtra/render/TreeRenderer.html"><span class="micon cl"></span><span>TreeRenderer</span></a></span></div></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="dixtra/verify.html"><span class="micon pa"></span><span>verify</span></a></span><div class="ni n2 "><span class="nh "><a href="dixtra/verify/Equivalence$.html"><span class="micon ob"></span><span>Equivalence</span></a></span></div></div><div class="ni n1 "><span class="nh "><a href="dixtra/Config$.html"><span class="micon ob"></span><span>Config</span></a></span></div><div class="ni n1 "><span class="nh "><a href="dixtra/Config.html"><span class="micon cl"></span><span>Config</span></a></span></div><div class="ni n1 "><span class="nh "><a href="dixtra/Dixtra$.html"><span class="micon ob"></span><span>Dixtra</span></a></span></div><div class="ni n1 "><span class="nh "><a href="dixtra/FormatError.html"><span class="micon cl"></span><span>FormatError</span></a></span></div><div class="ni n1 "><span class="nh "><a href="dixtra/FormatError$.html"><span class="micon ob"></span><span>FormatError</span></a></span></div><div class="ni n1 "><span class="nh "><a href="dixtra/ParseError.html"><span class="micon cl"></span><span>ParseError</span></a></span></div><div class="ni n1 "><span class="nh "><a href="dixtra/Scala2Error.html"><span class="micon cl"></span><span>Scala2Error</span></a></span></div><div class="ni n1 "><span class="nh "><a href="dixtra/SourceDialect$.html"><span class="micon ob"></span><span>SourceDialect</span></a></span></div><div class="ni n1 "><span class="nh "><a href="dixtra/UnsafeOutputError.html"><span class="micon cl"></span><span>UnsafeOutputError</span></a></span></div></div></nav></div><div id="footer" class="body-small"><div class="left-container">Generated with</div><div class="right-container"><div class="text"></div></div><div class="text-mobile"></div></div><div id="scaladoc-searchBar"></div><div id="main"><div class="breadcrumbs container"><a href="../../../index.html">dixtra-core</a>/<a href="dixtra.html">com.colofabrix.scala.dixtra</a></div><div id="content" class="body-medium"><div><div class="cover-header">
+ <span class="icon"><span class="micon pa"></span></span>
+ <h1 class="h600 single">com.colofabrix.scala.dixtra</h1>
+</div>
+<div class="fqname body-large">
+ <span></span>
+</div>
+<div class="main-signature mono-small-block">
+ <div class="signature">
+  <span class="modifiers"></span><span class="kind"><span t="k">package </span></span><a href="dixtra.html" t="n" class="documentableName ">com.colofabrix.scala.dixtra</a>
+ </div>
+</div>
+<section id="members-list">
+ <h2 class="h500">Members list</h2>
+ <div class="documentableFilter">
+  <div class="filtersContainer"></div>
+  <input class="filterableInput" placeholder="Filter by any phrase" data-test-id="filterBarInput" type="search"><button class="clearButton label-only-button" data-test-id="filterBarClearButton">Clear all</button>
+ </div>
+ <div class="membersList expand">
+  <div class="tabs">
+   <div class="contents">
+    <section id="Packages">
+     <div data-togglable="packages" class="tab expand">
+      <div class="documentableList expand">
+       <div class="documentableList-expander">
+        <button class="icon-button show-content expand"></button>
+        <h3 class="groupHeader h400">Packages</h3>
+       </div>
+       <div class="documentableElement">
+        <div class="documentableElement-expander">
+         <div class="header monospace mono-medium">
+          <div class="signature">
+           <span class="modifiers"></span><span class="kind"><span t="k">package </span></span><a href="dixtra/doc.html" t="n" class="documentableName ">com.colofabrix.scala.dixtra.doc</a>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="documentableElement">
+        <div class="documentableElement-expander">
+         <div class="header monospace mono-medium">
+          <div class="signature">
+           <span class="modifiers"></span><span class="kind"><span t="k">package </span></span><a href="dixtra/model.html" t="n" class="documentableName ">com.colofabrix.scala.dixtra.model</a>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="documentableElement">
+        <div class="documentableElement-expander">
+         <div class="header monospace mono-medium">
+          <div class="signature">
+           <span class="modifiers"></span><span class="kind"><span t="k">package </span></span><a href="dixtra/normalize.html" t="n" class="documentableName ">com.colofabrix.scala.dixtra.normalize</a>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="documentableElement">
+        <div class="documentableElement-expander">
+         <div class="header monospace mono-medium">
+          <div class="signature">
+           <span class="modifiers"></span><span class="kind"><span t="k">package </span></span><a href="dixtra/render.html" t="n" class="documentableName ">com.colofabrix.scala.dixtra.render</a>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="documentableElement">
+        <div class="documentableElement-expander">
+         <div class="header monospace mono-medium">
+          <div class="signature">
+           <span class="modifiers"></span><span class="kind"><span t="k">package </span></span><a href="dixtra/verify.html" t="n" class="documentableName ">com.colofabrix.scala.dixtra.verify</a>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section id="Type-members">
+     <div data-togglable="Type members" class="tab expand">
+      <div class="member-group-header">
+       <h3 data-togglable="Type members" class="h400">Type members</h3>
+      </div>
+      <section id="Classlikes">
+       <div class="documentableList expand">
+        <div class="documentableList-expander">
+         <button class="icon-button show-content expand"></button>
+         <h4 class="groupHeader h200">Classlikes</h4>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">object </span></span><a href="dixtra/Config$.html" t="n" class="documentableName ">Config</a>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="cover">
+             <div class="doc"></div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Companion</dt>
+              <dd class="body-medium">
+               <a href="dixtra/Config.html">class</a>
+              </dd>
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Mirror</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span></span>
+               </div>
+              </dd>
+              <dt class="body-small">Self type</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <span></span>
+                <div>
+                 <a href="dixtra/Config$.html" t="n">Config</a>.<span t="k">type</span>
+                </div>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="dixtra/Config.html" t="n" class="documentableName ">Config</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">maxColumn</span>: <span data-unresolved-link="" t="t">Int</span>, <span t="k"></span><span data-unresolved-link="" t="n">overflow</span>: <a href="dixtra/model/OverflowConfig.html" t="t">OverflowConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">braces</span>: <a href="dixtra/model/BraceConfig.html" t="t">BraceConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">selectorChain</span>: <a href="dixtra/model/SelectorChainConfig.html" t="t">SelectorChainConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">body</span>: <a href="dixtra/model/BodyConfig.html" t="t">BodyConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">definitionSite</span>: <a href="dixtra/model/DefinitionSiteConfig.html" t="t">DefinitionSiteConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">callSite</span>: <a href="dixtra/model/CallSiteConfig.html" t="t">CallSiteConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">alignment</span>: <a href="dixtra/model/AlignmentConfig.html" t="t">AlignmentConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">blankLines</span>: <a href="dixtra/model/BlankLinesConfig.html" t="t">BlankLinesConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">housekeeping</span>: <a href="dixtra/model/HousekeepingConfig.html" t="t">HousekeepingConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">paths</span>: <a href="dixtra/model/PathsConfig.html" t="t">PathsConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">compat213</span>: <span data-unresolved-link="" t="t">Boolean</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Formatting configuration for the dixtra formatter.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Formatting configuration for the dixtra formatter.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">alignment</dt>
+              <dd class="body-medium">
+               <p>What aligns with what.</p>
+              </dd>
+              <dt class="body-small">blankLines</dt>
+              <dd class="body-medium">
+               <p>The blank lines at the edges of bodies, between alignment groups and before scaladoc.</p>
+              </dd>
+              <dt class="body-small">body</dt>
+              <dd class="body-medium">
+               <p>The layout of the body after <code>=</code> and <code>=&gt;</code>.</p>
+              </dd>
+              <dt class="body-small">braces</dt>
+              <dd class="body-medium">
+               <p>Where the braces go, and the brace style of each construct.</p>
+              </dd>
+              <dt class="body-small">callSite</dt>
+              <dd class="body-medium">
+               <p>The layout of the arguments of calls.</p>
+              </dd>
+              <dt class="body-small">compat213</dt>
+              <dd class="body-medium">
+               <p>Whether the output must also be valid Scala 2.13.</p>
+              </dd>
+              <dt class="body-small">definitionSite</dt>
+              <dd class="body-medium">
+               <p>The layout of the parameters of definitions: signatures.</p>
+              </dd>
+              <dt class="body-small">housekeeping</dt>
+              <dd class="body-medium">
+               <p>The housekeeping of a whole file.</p>
+              </dd>
+              <dt class="body-small">maxColumn</dt>
+              <dd class="body-medium">
+               <p>The maximum allowed line width before a construct is forced to break.</p>
+              </dd>
+              <dt class="body-small">overflow</dt>
+              <dd class="body-medium">
+               <p>What happens to what goes past <code>maxColumn</code>.</p>
+              </dd>
+              <dt class="body-small">paths</dt>
+              <dd class="body-medium">
+               <p>The files and directories to format.</p>
+              </dd>
+              <dt class="body-small">selectorChain</dt>
+              <dd class="body-medium">
+               <p>When select chains break.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Companion</dt>
+              <dd class="body-medium">
+               <a href="dixtra/Config$.html">object</a>
+              </dd>
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">object </span></span><a href="dixtra/Dixtra$.html" t="n" class="documentableName ">Dixtra</a>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Public entry point for the Dixtra Scala 3 formatter.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Public entry point for the Dixtra Scala 3 formatter.</p>
+              <p>The formatter is a pure function from source text to formatted source text. It first collapses redundant whitespace, parses the result with Scalameta and renders the tree according to the style rules of Dixtra. Any construct not yet supported falls back to the safety net, which reproduces the source verbatim, so the tool never corrupts code.</p>
+              <p>As a final guarantee the output is re-parsed and compared with the original input: if the program structure or the comments differ, formatting fails with an <a href="dixtra/UnsafeOutputError.html">UnsafeOutputError</a> instead of returning corrupted code.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span></span>
+               </div>
+              </dd>
+              <dt class="body-small">Self type</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <span></span>
+                <div>
+                 <a href="dixtra/Dixtra$.html" t="n">Dixtra</a>.<span t="k">type</span>
+                </div>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="sealed,abstract">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="signature-short"><span class="modifiers"><span t="k">sealed abstract </span></span><span class="kind"><span t="k">class </span></span><a href="dixtra/FormatError.html" t="n" class="documentableName ">FormatError</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">message</span>: <span data-unresolved-link="" t="t">String</span>)<span t="k"> extends </span><span data-unresolved-link="" t="t">Exception</span></span><span class="signature-long"></span>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Base error type for the dixtra formatter.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Base error type for the dixtra formatter.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Companion</dt>
+              <dd class="body-medium">
+               <a href="dixtra/FormatError$.html">object</a>
+              </dd>
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 class <span data-unresolved-link="" t="n">Exception</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Throwable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+              <dt class="body-small">Known subtypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block subtypes">
+                <div>
+                 class <a href="dixtra/ParseError.html" t="n">ParseError</a>
+                </div>
+                <div>
+                 class <a href="dixtra/Scala2Error.html" t="n">Scala2Error</a>
+                </div>
+                <div>
+                 class <a href="dixtra/UnsafeOutputError.html" t="n">UnsafeOutputError</a>
+                </div>
+                <span></span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">object </span></span><a href="dixtra/FormatError$.html" t="n" class="documentableName ">FormatError</a>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="cover">
+             <div class="doc"></div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Companion</dt>
+              <dd class="body-medium">
+               <a href="dixtra/FormatError.html">class</a>
+              </dd>
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span></span>
+               </div>
+              </dd>
+              <dt class="body-small">Self type</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <span></span>
+                <div>
+                 <a href="dixtra/FormatError$.html" t="n">FormatError</a>.<span t="k">type</span>
+                </div>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="signature-short"><span class="modifiers"><span t="k">final </span></span><span class="kind"><span t="k">class </span></span><a href="dixtra/ParseError.html" t="n" class="documentableName ">ParseError</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">message</span>: <span data-unresolved-link="" t="t">String</span>)<span t="k"> extends </span><a href="dixtra/FormatError.html" t="t">FormatError</a></span><span class="signature-long"></span>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Raised when the source cannot be parsed as valid Scala 3.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Raised when the source cannot be parsed as valid Scala 3.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 class <a href="dixtra/FormatError.html" t="n">FormatError</a>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Exception</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Throwable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="signature-short"><span class="modifiers"><span t="k">final </span></span><span class="kind"><span t="k">class </span></span><a href="dixtra/Scala2Error.html" t="n" class="documentableName ">Scala2Error</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">message</span>: <span data-unresolved-link="" t="t">String</span>)<span t="k"> extends </span><a href="dixtra/FormatError.html" t="t">FormatError</a></span><span class="signature-long"></span>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Raised when the source is Scala 2: it parses only with the Scala 2 dialect of its kind of file, or it uses a construct that Scala 3 dropped. Scala 2 is not formatted, and such a file is skipped rather than failed.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Raised when the source is Scala 2: it parses only with the Scala 2 dialect of its kind of file, or it uses a construct that Scala 3 dropped. Scala 2 is not formatted, and such a file is skipped rather than failed.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 class <a href="dixtra/FormatError.html" t="n">FormatError</a>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Exception</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Throwable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">object </span></span><a href="dixtra/SourceDialect$.html" t="n" class="documentableName ">SourceDialect</a>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>The Scalameta dialect a whole source file is parsed with.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>The Scalameta dialect a whole source file is parsed with.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span></span>
+               </div>
+              </dd>
+              <dt class="body-small">Self type</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <span></span>
+                <div>
+                 <a href="dixtra/SourceDialect$.html" t="n">SourceDialect</a>.<span t="k">type</span>
+                </div>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="signature-short"><span class="modifiers"><span t="k">final </span></span><span class="kind"><span t="k">class </span></span><a href="dixtra/UnsafeOutputError.html" t="n" class="documentableName ">UnsafeOutputError</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">message</span>: <span data-unresolved-link="" t="t">String</span>)<span t="k"> extends </span><a href="dixtra/FormatError.html" t="t">FormatError</a></span><span class="signature-long"></span>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Raised when the formatted output would not be equivalent to the input (a different program structure or lost comments). The input is never rewritten in that case: this signals a formatter bug, not a problem with the source.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Raised when the formatted output would not be equivalent to the input (a different program structure or lost comments). The input is never rewritten in that case: this signals a formatter bug, not a problem with the source.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 class <a href="dixtra/FormatError.html" t="n">FormatError</a>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Exception</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Throwable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </section>
+     </div>
+    </section>
+   </div>
+  </div>
+ </div>
+</section></div><div id="toc" class="body-small"><div id="toc-container"><span class="toc-title h200">In this article</span><nav class="toc-nav"><ul class="toc-list"><li><a href="#members-list">Members list</a><ul><li><a href="#Packages">Packages</a></li><li><a href="#Type-members">Type members</a><ul><li><a href="#Classlikes">Classlikes</a></li></ul></li></ul></li></ul></nav></div></div></div><div id="footer" class="body-small mobile-footer"><div class="left-container">Generated with</div><div class="right-container"><div class="text"></div></div><div class="text-mobile"></div></div></div></div></body></html>
