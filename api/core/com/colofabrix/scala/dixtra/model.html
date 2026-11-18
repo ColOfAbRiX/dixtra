@@ -1,0 +1,2202 @@
+<!DOCTYPE html><html data-pathToRoot="../../../../" data-rawLocation="com/colofabrix/scala/dixtra/model" data-dynamicSideMenu="false"><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta><title>com.colofabrix.scala.dixtra.model</title><link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico"></link><script type="text/javascript" src="../../../../scripts/theme.js"></script><script type="text/javascript" src="../../../../scripts/searchData.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/scastieConfiguration.js" defer="true"></script><link rel="stylesheet" href="../../../../styles/theme/bundle.css"></link><link rel="stylesheet" href="../../../../styles/theme/components/bundle.css"></link><link rel="stylesheet" href="../../../../styles/theme/components/button/bundle.css"></link><link rel="stylesheet" href="../../../../styles/theme/layout/bundle.css"></link><link rel="stylesheet" href="../../../../styles/dotty-icons.css"></link><link rel="stylesheet" href="../../../../styles/filter-bar.css"></link><link rel="stylesheet" href="../../../../styles/searchbar.css"></link><link rel="stylesheet" href="../../../../styles/social-links.css"></link><link rel="stylesheet" href="../../../../styles/versions-dropdown.css"></link><link rel="stylesheet" href="../../../../styles/content-contributors.css"></link><script type="text/javascript" src="../../../../hljs/highlight.pack.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/hljs-scala3.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/ux.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/common/component.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/common/utils.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/components/FilterBar.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/components/DocumentableList.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/components/Input.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/components/FilterGroup.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/components/Filter.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/scaladoc-scalajs.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/contributors.js" defer="true"></script><script type="text/javascript" src="https://d3js.org/d3.v6.min.js" defer="true"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/graphlib-dot@0.6.2/dist/graphlib-dot.min.js" defer="true"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dagre-d3/0.6.1/dagre-d3.min.js" defer="true"></script><script type="text/javascript" src="https://scastie.scala-lang.org/embedded.js" defer="true"></script><script type="text/javascript" src="../../../../scripts/data.js" defer="true"></script><script>var pathToRoot = "../../../../";</script></head><body><div id=""><div id="header" class="body-small"><div class="header-container-left"><a href="../../../../" class="logo-container"><span class="project-name h300">dixtra-core</span></a><span onclick="dropdownHandler(event)" class="text-button with-arrow" id="dropdown-trigger"><a><div class="projectVersion">1.0.0-RC1</div></a></span><div id="version-dropdown" class="dropdown-menu"></div></div><div class="header-container-right"><button id="search-toggle" class="icon-button"></button><span id="theme-toggle" class="icon-button"></span><span id="mobile-menu-toggle" class="icon-button hamburger"></span></div></div><div id="mobile-menu"><div class="mobile-menu-header body-small"><span class="mobile-menu-logo"><span class="project-name h300">dixtra-core</span></span><button id="mobile-menu-close" class="icon-button close"></button></div><div class="mobile-menu-container body-medium"><input id="mobile-scaladoc-searchbar-input" class="scaladoc-searchbar-input" type="search" placeholder="Find anything"></input><span id="mobile-theme-toggle" class="mobile-menu-item mode"></span></div></div><span id="mobile-sidebar-toggle" class="floating-button"></span><div id="leftColumn" class="body-small"><div class="switcher-container"><a id="api-nav-button" class="switcher h100 selected" href="../../../../index.html">API</a></div><nav id="api-nav" class="side-menu"><div class="ni n0 expanded"><span class="nh h100 expanded cs"><button class="ar icon-button expanded"></button><a href="../dixtra.html"><span class="micon pa"></span><span>com.colofabrix.scala.dixtra</span></a></span><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="doc.html"><span class="micon pa"></span><span>doc</span></a></span><div class="ni n2 "><span class="nh "><a href="doc/Doc$.html"><span class="micon ob"></span><span>Doc</span></a></span></div><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="doc/Doc.html"><span class="micon en"></span><span>Doc</span></a></span><div class="ni n3 "><span class="nh "><a href="doc/Doc$$Text.html"><span class="micon cl"></span><span>Text</span></a></span></div><div class="ni n3 "><span class="nh "><a href="doc/Doc$$Concat.html"><span class="micon cl"></span><span>Concat</span></a></span></div><div class="ni n3 "><span class="nh "><a href="doc/Doc$$Nest.html"><span class="micon cl"></span><span>Nest</span></a></span></div><div class="ni n3 "><span class="nh "><a href="doc/Doc$$Standalone.html"><span class="micon cl"></span><span>Standalone</span></a></span></div><div class="ni n3 "><span class="nh "><a href="doc/Doc$$Verbatim.html"><span class="micon cl"></span><span>Verbatim</span></a></span></div></div><div class="ni n2 "><span class="nh "><a href="doc/Render$.html"><span class="micon ob"></span><span>Render</span></a></span></div></div><div class="ni n1 expanded"><span class="nh h100 selected"><button class="ar icon-button expanded"></button><a href="#"><span class="micon pa"></span><span>model</span></a></span><div class="ni n2 "><span class="nh "><a href="model/AlignmentConfig.html"><span class="micon cl"></span><span>AlignmentConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/ArrowsConfig.html"><span class="micon cl"></span><span>ArrowsConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/BlankLinePolicy.html"><span class="micon en"></span><span>BlankLinePolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/BlankLinesConfig$.html"><span class="micon ob"></span><span>BlankLinesConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/BlankLinesConfig.html"><span class="micon cl"></span><span>BlankLinesConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/BodyConfig.html"><span class="micon cl"></span><span>BodyConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/BraceConfig.html"><span class="micon cl"></span><span>BraceConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/BraceConfig$.html"><span class="micon ob"></span><span>BraceConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/BracePolicy.html"><span class="micon en"></span><span>BracePolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/BracesStyle.html"><span class="micon en"></span><span>BracesStyle</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/CallSiteConfig.html"><span class="micon cl"></span><span>CallSiteConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/ChainHeadPolicy.html"><span class="micon en"></span><span>ChainHeadPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/Construct.html"><span class="micon en"></span><span>Construct</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/DefinitionKind.html"><span class="micon en"></span><span>DefinitionKind</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/DefinitionSiteConfig.html"><span class="micon cl"></span><span>DefinitionSiteConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/GroupsBreak.html"><span class="micon en"></span><span>GroupsBreak</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/GroupsSeparator.html"><span class="micon en"></span><span>GroupsSeparator</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/HousekeepingConfig.html"><span class="micon cl"></span><span>HousekeepingConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/ImportBraces.html"><span class="micon en"></span><span>ImportBraces</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/InlineChainPolicy.html"><span class="micon en"></span><span>InlineChainPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/LineEnding.html"><span class="micon en"></span><span>LineEnding</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/MultiBodyPolicy.html"><span class="micon en"></span><span>MultiBodyPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/NestedChainPolicy.html"><span class="micon en"></span><span>NestedChainPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/OverflowConfig.html"><span class="micon cl"></span><span>OverflowConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/PathsConfig$.html"><span class="micon ob"></span><span>PathsConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/PathsConfig.html"><span class="micon cl"></span><span>PathsConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/ScaladocAlignmentConfig.html"><span class="micon cl"></span><span>ScaladocAlignmentConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/ScaladocSpacing.html"><span class="micon en"></span><span>ScaladocSpacing</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/SelectorChainConfig.html"><span class="micon cl"></span><span>SelectorChainConfig</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/SemicolonPolicy.html"><span class="micon en"></span><span>SemicolonPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/SingleBodyPolicy.html"><span class="micon en"></span><span>SingleBodyPolicy</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/TrailingCommas.html"><span class="micon en"></span><span>TrailingCommas</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/TrailingOverflow.html"><span class="micon en"></span><span>TrailingOverflow</span></a></span></div><div class="ni n2 "><span class="nh "><a href="model/YieldBodyPolicy.html"><span class="micon en"></span><span>YieldBodyPolicy</span></a></span></div></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="normalize.html"><span class="micon pa"></span><span>normalize</span></a></span><div class="ni n2 "><span class="nh "><a href="normalize/ArrowSpacingNormalizer$.html"><span class="micon ob"></span><span>ArrowSpacingNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="normalize/BlankLineNormalizer$.html"><span class="micon ob"></span><span>BlankLineNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="normalize/BraceStyleNormalizer$.html"><span class="micon ob"></span><span>BraceStyleNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="normalize/CommentNormalizer$.html"><span class="micon ob"></span><span>CommentNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="normalize/DocCommentSpacingNormalizer$.html"><span class="micon ob"></span><span>DocCommentSpacingNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="normalize/FormatterOff$.html"><span class="micon ob"></span><span>FormatterOff</span></a></span></div><div class="ni n2 "><span class="nh "><a href="normalize/Housekeeping$.html"><span class="micon ob"></span><span>Housekeeping</span></a></span></div><div class="ni n2 "><span class="nh "><a href="normalize/ImportSpacingNormalizer$.html"><span class="micon ob"></span><span>ImportSpacingNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="normalize/MethodSpacingNormalizer$.html"><span class="micon ob"></span><span>MethodSpacingNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="normalize/Normalize$.html"><span class="micon ob"></span><span>Normalize</span></a></span></div><div class="ni n2 "><span class="nh "><a href="normalize/TrailingCommentNormalizer$.html"><span class="micon ob"></span><span>TrailingCommentNormalizer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="normalize/WhitespaceNormalizer$.html"><span class="micon ob"></span><span>WhitespaceNormalizer</span></a></span></div></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="render.html"><span class="micon pa"></span><span>render</span></a></span><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="render/context.html"><span class="micon pa"></span><span>context</span></a></span><div class="ni n3 "><span class="nh "><a href="render/context/RenderContext.html"><span class="micon cl"></span><span>RenderContext</span></a></span></div><div class="ni n3 "><span class="nh "><a href="render/context/SourceDocs.html"><span class="micon cl"></span><span>SourceDocs</span></a></span></div><div class="ni n3 "><span class="nh "><a href="render/context/SourceTokens.html"><span class="micon cl"></span><span>SourceTokens</span></a></span></div></div><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="render/definition.html"><span class="micon pa"></span><span>definition</span></a></span><div class="ni n3 "><span class="nh "><a href="render/definition/AssignmentRenderer.html"><span class="micon cl"></span><span>AssignmentRenderer</span></a></span></div><div class="ni n3 "><span class="nh "><a href="render/definition/DefRenderer.html"><span class="micon cl"></span><span>DefRenderer</span></a></span></div><div class="ni n3 "><span class="nh "><a href="render/definition/ImportRenderer.html"><span class="micon cl"></span><span>ImportRenderer</span></a></span></div></div><div class="ni n2"><span class="nh "><button class="ar icon-button "></button><a href="render/term.html"><span class="micon pa"></span><span>term</span></a></span><div class="ni n3 "><span class="nh "><a href="render/term/TermRenderer.html"><span class="micon cl"></span><span>TermRenderer</span></a></span></div></div><div class="ni n2 "><span class="nh "><a href="render/ContainerHeader.html"><span class="micon cl"></span><span>ContainerHeader</span></a></span></div><div class="ni n2 "><span class="nh "><a href="render/ContainerRenderer.html"><span class="micon cl"></span><span>ContainerRenderer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="render/DefinitionAlignment.html"><span class="micon cl"></span><span>DefinitionAlignment</span></a></span></div><div class="ni n2 "><span class="nh "><a href="render/ExtensionGroupRenderer.html"><span class="micon cl"></span><span>ExtensionGroupRenderer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="render/PackageRenderer.html"><span class="micon cl"></span><span>PackageRenderer</span></a></span></div><div class="ni n2 "><span class="nh "><a href="render/SafetyNet$.html"><span class="micon ob"></span><span>SafetyNet</span></a></span></div><div class="ni n2 "><span class="nh "><a href="render/TreeRenderer.html"><span class="micon cl"></span><span>TreeRenderer</span></a></span></div></div><div class="ni n1"><span class="nh "><button class="ar icon-button "></button><a href="verify.html"><span class="micon pa"></span><span>verify</span></a></span><div class="ni n2 "><span class="nh "><a href="verify/Equivalence$.html"><span class="micon ob"></span><span>Equivalence</span></a></span></div></div><div class="ni n1 "><span class="nh "><a href="Config$.html"><span class="micon ob"></span><span>Config</span></a></span></div><div class="ni n1 "><span class="nh "><a href="Config.html"><span class="micon cl"></span><span>Config</span></a></span></div><div class="ni n1 "><span class="nh "><a href="Dixtra$.html"><span class="micon ob"></span><span>Dixtra</span></a></span></div><div class="ni n1 "><span class="nh "><a href="FormatError.html"><span class="micon cl"></span><span>FormatError</span></a></span></div><div class="ni n1 "><span class="nh "><a href="FormatError$.html"><span class="micon ob"></span><span>FormatError</span></a></span></div><div class="ni n1 "><span class="nh "><a href="ParseError.html"><span class="micon cl"></span><span>ParseError</span></a></span></div><div class="ni n1 "><span class="nh "><a href="Scala2Error.html"><span class="micon cl"></span><span>Scala2Error</span></a></span></div><div class="ni n1 "><span class="nh "><a href="SourceDialect$.html"><span class="micon ob"></span><span>SourceDialect</span></a></span></div><div class="ni n1 "><span class="nh "><a href="UnsafeOutputError.html"><span class="micon cl"></span><span>UnsafeOutputError</span></a></span></div></div></nav></div><div id="footer" class="body-small"><div class="left-container">Generated with</div><div class="right-container"><div class="text"></div></div><div class="text-mobile"></div></div><div id="scaladoc-searchBar"></div><div id="main"><div class="breadcrumbs container"><a href="../../../../index.html">dixtra-core</a>/<a href="../dixtra.html">com.colofabrix.scala.dixtra</a>/<a href="model.html">com.colofabrix.scala.dixtra.model</a></div><div id="content" class="body-medium"><div><div class="cover-header">
+ <span class="icon"><span class="micon pa"></span></span>
+ <h1 class="h600 single">com.colofabrix.scala.dixtra.model</h1>
+</div>
+<div class="fqname body-large">
+ <span></span>
+</div>
+<div class="main-signature mono-small-block">
+ <div class="signature">
+  <span class="modifiers"></span><span class="kind"><span t="k">package </span></span><a href="model.html" t="n" class="documentableName ">com.colofabrix.scala.dixtra.model</a>
+ </div>
+</div>
+<section id="members-list">
+ <h2 class="h500">Members list</h2>
+ <div class="documentableFilter">
+  <div class="filtersContainer"></div>
+  <input class="filterableInput" placeholder="Filter by any phrase" data-test-id="filterBarInput" type="search"><button class="clearButton label-only-button" data-test-id="filterBarClearButton">Clear all</button>
+ </div>
+ <div class="membersList expand">
+  <div class="tabs">
+   <div class="contents">
+    <section id="Type-members">
+     <div data-togglable="Type members" class="tab expand">
+      <div class="member-group-header">
+       <h3 data-togglable="Type members" class="h400">Type members</h3>
+      </div>
+      <section id="Classlikes">
+       <div class="documentableList expand">
+        <div class="documentableList-expander">
+         <button class="icon-button show-content expand"></button>
+         <h4 class="groupHeader h200">Classlikes</h4>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/AlignmentConfig.html" t="n" class="documentableName ">AlignmentConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">assignmentGroups</span>: <span data-unresolved-link="" t="t">List</span>[<span data-unresolved-link="" t="t">Set</span>[<a href="model/DefinitionKind.html" t="t">DefinitionKind</a>]], <span t="k"></span><span data-unresolved-link="" t="n">operators</span>: <span data-unresolved-link="" t="t">List</span>[<span data-unresolved-link="" t="t">String</span>], <span t="k"></span><span data-unresolved-link="" t="n">arrows</span>: <a href="model/ArrowsConfig.html" t="t">ArrowsConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">extendsClauses</span>: <span data-unresolved-link="" t="t">Boolean</span>, <span t="k"></span><span data-unresolved-link="" t="n">namedArguments</span>: <span data-unresolved-link="" t="t">Boolean</span>, <span t="k"></span><span data-unresolved-link="" t="n">trailingComments</span>: <span data-unresolved-link="" t="t">Boolean</span>, <span t="k"></span><span data-unresolved-link="" t="n">scaladoc</span>: <a href="model/ScaladocAlignmentConfig.html" t="t">ScaladocAlignmentConfig</a>, <span t="k"></span><span data-unresolved-link="" t="n">acrossComments</span>: <span data-unresolved-link="" t="t">Boolean</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>What aligns with what.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>What aligns with what.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">acrossComments</dt>
+              <dd class="body-medium">
+               <p>Whether a comment on its own line between two items (definitions, statements, cases, list elements, enumerators) keeps them in one alignment group.</p>
+              </dd>
+              <dt class="body-small">arrows</dt>
+              <dd class="body-medium">
+               <p>Which arrows align.</p>
+              </dd>
+              <dt class="body-small">assignmentGroups</dt>
+              <dd class="body-medium">
+               <p>Adjacent one-line definitions align their <code>=</code> when their keywords are in the same group; a keyword in no group never aligns. A keyword is in at most one group.</p>
+              </dd>
+              <dt class="body-small">extendsClauses</dt>
+              <dd class="body-medium">
+               <p>Whether adjacent one-line definitions align their <code>extends</code> keyword.</p>
+              </dd>
+              <dt class="body-small">namedArguments</dt>
+              <dd class="body-medium">
+               <p>Whether the <code>=</code> of adjacent one-line named arguments of a call laid out one per line align.</p>
+              </dd>
+              <dt class="body-small">operators</dt>
+              <dd class="body-medium">
+               <p>The operators (<code>=</code>, <code>+=</code>, <code>:=</code>, <code>%</code>, ...) that adjacent one-line statements, and adjacent one-line elements of a list laid out one per line, align column by column.</p>
+              </dd>
+              <dt class="body-small">scaladoc</dt>
+              <dd class="body-medium">
+               <p>What aligns in scaladoc comments.</p>
+              </dd>
+              <dt class="body-small">trailingComments</dt>
+              <dd class="body-medium">
+               <p>Whether the comments at the end of consecutive lines of code start on one column.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/ArrowsConfig.html" t="n" class="documentableName ">ArrowsConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">cases</span>: <span data-unresolved-link="" t="t">Boolean</span>, <span t="k"></span><span data-unresolved-link="" t="n">pairs</span>: <span data-unresolved-link="" t="t">Boolean</span>, <span t="k"></span><span data-unresolved-link="" t="n">forEnumerators</span>: <span data-unresolved-link="" t="t">Boolean</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Which arrows align.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Which arrows align.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">cases</dt>
+              <dd class="body-medium">
+               <p>Whether consecutive one-line <code>case</code> clauses align <code>=&gt;</code>.</p>
+              </dd>
+              <dt class="body-small">forEnumerators</dt>
+              <dd class="body-medium">
+               <p>Whether the enumerators of a for-comprehension align their expressions.</p>
+              </dd>
+              <dt class="body-small">pairs</dt>
+              <dd class="body-medium">
+               <p>Whether the <code>a -&gt; b</code> elements of an exploded argument list align <code>-&gt;</code>.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/BlankLinePolicy.html" t="n" class="documentableName ">BlankLinePolicy</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Whether a blank line separates two things.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Whether a blank line separates two things.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">object </span></span><a href="model/BlankLinesConfig$.html" t="n" class="documentableName ">BlankLinesConfig</a>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="cover">
+             <div class="doc"></div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Companion</dt>
+              <dd class="body-medium">
+               <a href="model/BlankLinesConfig.html">class</a>
+              </dd>
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Mirror</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span></span>
+               </div>
+              </dd>
+              <dt class="body-small">Self type</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <span></span>
+                <div>
+                 <a href="model/BlankLinesConfig$.html" t="n">BlankLinesConfig</a>.<span t="k">type</span>
+                </div>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/BlankLinesConfig.html" t="n" class="documentableName ">BlankLinesConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">bodyEdges</span>: <span data-unresolved-link="" t="t">Map</span>[<a href="model/Construct.html" t="t">Construct</a>, <a href="model/BlankLinePolicy.html" t="t">BlankLinePolicy</a>], <span t="k"></span><span data-unresolved-link="" t="n">betweenAlignmentGroups</span>: <a href="model/BlankLinePolicy.html" t="t">BlankLinePolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">beforeScaladoc</span>: <a href="model/ScaladocSpacing.html" t="t">ScaladocSpacing</a>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Where blank lines go.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Where blank lines go.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">beforeScaladoc</dt>
+              <dd class="body-medium">
+               <p>The blank line before a scaladoc. At the start of a body, a scaladoc that wants one counts as a blank line written at its opening edge, and the body edges decide.</p>
+              </dd>
+              <dt class="body-small">betweenAlignmentGroups</dt>
+              <dd class="body-medium">
+               <p>The blank line between two adjacent one-line definitions of different alignment groups.</p>
+              </dd>
+              <dt class="body-small">bodyEdges</dt>
+              <dd class="body-medium">
+               <p>The blank lines at the edges of the body of each construct: after its opening <code>{</code> (or its header, braceless) and before its closing <code>}</code>. <code>keep</code> (the default for a construct not listed) makes the two edges agree: a blank line at either edge means a blank line at both.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Companion</dt>
+              <dd class="body-medium">
+               <a href="model/BlankLinesConfig$.html">object</a>
+              </dd>
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/BodyConfig.html" t="n" class="documentableName ">BodyConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">defBody</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">valBody</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">lazyVal</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">varBody</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">givenAlias</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">typeDef</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">assignment</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">namedArgument</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">lambdaArgument</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">lambdaBody</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">blockArgument</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">testGroup</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">testCase</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">ifBody</span>: <a href="model/MultiBodyPolicy.html" t="t">MultiBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">caseBody</span>: <a href="model/MultiBodyPolicy.html" t="t">MultiBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">tryBody</span>: <a href="model/MultiBodyPolicy.html" t="t">MultiBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">forBody</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">forYield</span>: <a href="model/YieldBodyPolicy.html" t="t">YieldBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">whileBody</span>: <a href="model/SingleBodyPolicy.html" t="t">SingleBodyPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">semicolonStatements</span>: <a href="model/SemicolonPolicy.html" t="t">SemicolonPolicy</a>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Where the bodies go relative to their separators, by construct. The bodies of a construct with several of them (the branches of an if/else, the cases of a match, the bodies of a try) are a group, and a group is never mixed: either all its bodies are on the lines of their separators, or all are below them.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Where the bodies go relative to their separators, by construct. The bodies of a construct with several of them (the branches of an if/else, the cases of a match, the bodies of a try) are a group, and a group is never mixed: either all its bodies are on the lines of their separators, or all are below them.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">assignment</dt>
+              <dd class="body-medium">
+               <p>The value after the <code>=</code> of an assignment (<code>x = 1</code>).</p>
+              </dd>
+              <dt class="body-small">blockArgument</dt>
+              <dd class="body-medium">
+               <p>The statements of a block given as an argument, after its <code>{</code> or its colon (<code>f { ... }</code>, <code>f: ...</code>).</p>
+              </dd>
+              <dt class="body-small">caseBody</dt>
+              <dd class="body-medium">
+               <p>The bodies after the <code>=&gt;</code> of the cases of a match, a <code>{ case ... }</code> or a <code>catch</code>, one group.</p>
+              </dd>
+              <dt class="body-small">defBody</dt>
+              <dd class="body-medium">
+               <p>The body after the <code>=</code> of a <code>def</code>.</p>
+              </dd>
+              <dt class="body-small">forBody</dt>
+              <dd class="body-medium">
+               <p>The body after the <code>do</code> of a <code>for</code> loop.</p>
+              </dd>
+              <dt class="body-small">forYield</dt>
+              <dd class="body-medium">
+               <p>The expression after the <code>yield</code> of a for-comprehension.</p>
+              </dd>
+              <dt class="body-small">givenAlias</dt>
+              <dd class="body-medium">
+               <p>The body after the <code>=</code> of a <code>given</code> alias.</p>
+              </dd>
+              <dt class="body-small">ifBody</dt>
+              <dd class="body-medium">
+               <p>The bodies after the <code>then</code> and <code>else</code> of an if/else, an <code>else if</code> chain being one group.</p>
+              </dd>
+              <dt class="body-small">lambdaArgument</dt>
+              <dd class="body-medium">
+               <p>The body after the <code>=&gt;</code> of a lambda passed in braces or after a colon (<code>f { x =&gt; ... }</code>, <code>f: x =&gt; ...</code>).</p>
+              </dd>
+              <dt class="body-small">lambdaBody</dt>
+              <dd class="body-medium">
+               <p>The body after the <code>=&gt;</code> of any other lambda.</p>
+              </dd>
+              <dt class="body-small">lazyVal</dt>
+              <dd class="body-medium">
+               <p>The body after the <code>=</code> of a <code>lazy val</code>.</p>
+              </dd>
+              <dt class="body-small">namedArgument</dt>
+              <dd class="body-medium">
+               <p>The value after the <code>=</code> of a named argument.</p>
+              </dd>
+              <dt class="body-small">semicolonStatements</dt>
+              <dd class="body-medium">
+               <p>The statements of a body written on one line, separated by <code>;</code>.</p>
+              </dd>
+              <dt class="body-small">testCase</dt>
+              <dd class="body-medium">
+               <p>The statements of any other test block, after its <code>{</code> or its colon (<code>"a test" in { ... }</code>, <code>test("a test"): ...</code>).</p>
+              </dd>
+              <dt class="body-small">testGroup</dt>
+              <dd class="body-medium">
+               <p>The statements of a test block holding other test blocks, after its <code>{</code> or its colon (<code>"a parser" should { ... }</code>, <code>describe("a parser"): ...</code>).</p>
+              </dd>
+              <dt class="body-small">tryBody</dt>
+              <dd class="body-medium">
+               <p>The bodies after the <code>try</code> and the <code>finally</code> of a try.</p>
+              </dd>
+              <dt class="body-small">typeDef</dt>
+              <dd class="body-medium">
+               <p>The type after the <code>=</code> of a type alias.</p>
+              </dd>
+              <dt class="body-small">valBody</dt>
+              <dd class="body-medium">
+               <p>The body after the <code>=</code> of a <code>val</code>.</p>
+              </dd>
+              <dt class="body-small">varBody</dt>
+              <dd class="body-medium">
+               <p>The body after the <code>=</code> of a <code>var</code>.</p>
+              </dd>
+              <dt class="body-small">whileBody</dt>
+              <dd class="body-medium">
+               <p>The body after the <code>do</code> of a <code>while</code> loop.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/BraceConfig.html" t="n" class="documentableName ">BraceConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">style</span>: <a href="model/BracesStyle.html" t="t">BracesStyle</a>, <span t="k"></span><span data-unresolved-link="" t="n">imports</span>: <a href="model/ImportBraces.html" t="t">ImportBraces</a>, <span t="k"></span><span data-unresolved-link="" t="n">policies</span>: <span data-unresolved-link="" t="t">Map</span>[<a href="model/Construct.html" t="t">Construct</a>, <a href="model/BracePolicy.html" t="t">BracePolicy</a>], <span t="k"></span><span data-unresolved-link="" t="n">singleExpressions</span>: <span data-unresolved-link="" t="t">Map</span>[<a href="model/Construct.html" t="t">Construct</a>, <a href="model/BracePolicy.html" t="t">BracePolicy</a>])
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>The braces: where they go, and the brace style of each construct; a construct without a setting is <span data-unresolved-link="">BracePolicy.Keep</span>.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>The braces: where they go, and the brace style of each construct; a construct without a setting is <span data-unresolved-link="">BracePolicy.Keep</span>.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">imports</dt>
+              <dd class="body-medium">
+               <p>The braces around the single selector of an <code>import</code> or <code>export</code>.</p>
+              </dd>
+              <dt class="body-small">policies</dt>
+              <dd class="body-medium">
+               <p>The brace policy of each construct.</p>
+              </dd>
+              <dt class="body-small">singleExpressions</dt>
+              <dd class="body-medium">
+               <p>The braces around a body that is a single expression, for the constructs of <a href="model/BraceConfig$.html#singleExprConstructs-0">BraceConfig.singleExprConstructs</a>; a construct without a setting is <span data-unresolved-link="">BracePolicy.ForceIndent</span>.</p>
+              </dd>
+              <dt class="body-small">style</dt>
+              <dd class="body-medium">
+               <p>Where the braces go relative to the code around them.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Companion</dt>
+              <dd class="body-medium">
+               <a href="model/BraceConfig$.html">object</a>
+              </dd>
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">object </span></span><a href="model/BraceConfig$.html" t="n" class="documentableName ">BraceConfig</a>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="cover">
+             <div class="doc"></div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Companion</dt>
+              <dd class="body-medium">
+               <a href="model/BraceConfig.html">class</a>
+              </dd>
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Mirror</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span></span>
+               </div>
+              </dd>
+              <dt class="body-small">Self type</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <span></span>
+                <div>
+                 <a href="model/BraceConfig$.html" t="n">BraceConfig</a>.<span t="k">type</span>
+                </div>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/BracePolicy.html" t="n" class="documentableName ">BracePolicy</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>How a construct writes its body.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>How a construct writes its body.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/BracesStyle.html" t="n" class="documentableName ">BracesStyle</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Where the braces go relative to the code around them.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Where the braces go relative to the code around them.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/CallSiteConfig.html" t="n" class="documentableName ">CallSiteConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">groupsSeparator</span>: <a href="model/GroupsSeparator.html" t="t">GroupsSeparator</a>, <span t="k"></span><span data-unresolved-link="" t="n">groupsBreak</span>: <a href="model/GroupsBreak.html" t="t">GroupsBreak</a>, <span t="k"></span><span data-unresolved-link="" t="n">trailingCommas</span>: <a href="model/TrailingCommas.html" t="t">TrailingCommas</a>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>The layout of calls, constructor calls and tuples.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>The layout of calls, constructor calls and tuples.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">groupsBreak</dt>
+              <dd class="body-medium">
+               <p>Which argument groups break.</p>
+              </dd>
+              <dt class="body-small">groupsSeparator</dt>
+              <dd class="body-medium">
+               <p>Where <code>)(</code> goes between broken argument groups.</p>
+              </dd>
+              <dt class="body-small">trailingCommas</dt>
+              <dd class="body-medium">
+               <p>Whether the last argument or tuple element laid out one per line is followed by a comma.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/ChainHeadPolicy.html" t="n" class="documentableName ">ChainHeadPolicy</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Whether the first selections of a chain stay together with its receiver.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Whether the first selections of a chain stay together with its receiver.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/Construct.html" t="n" class="documentableName ">Construct</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>, <span t="k">val </span><span data-unresolved-link="" t="n">allowsEnd</span>: <span data-unresolved-link="" t="t">Boolean</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>A construct whose brace style and edge blank lines are configurable.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>A construct whose brace style and edge blank lines are configurable.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">allowsEnd</dt>
+              <dd class="body-medium">
+               <p>Whether the construct can be closed by an <code>end</code> marker.</p>
+              </dd>
+              <dt class="body-small">key</dt>
+              <dd class="body-medium">
+               <p>The name of the setting in the configuration.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/DefinitionKind.html" t="n" class="documentableName ">DefinitionKind</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>A definition keyword that can align its <code>=</code> with others.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>A definition keyword that can align its <code>=</code> with others.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/DefinitionSiteConfig.html" t="n" class="documentableName ">DefinitionSiteConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">groupsSeparator</span>: <a href="model/GroupsSeparator.html" t="t">GroupsSeparator</a>, <span t="k"></span><span data-unresolved-link="" t="n">trailingCommas</span>: <a href="model/TrailingCommas.html" t="t">TrailingCommas</a>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>The layout of signatures (<code>def</code>, class constructors) and of the other lists of names a definition declares: type parameters and import selectors.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>The layout of signatures (<code>def</code>, class constructors) and of the other lists of names a definition declares: type parameters and import selectors.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">groupsSeparator</dt>
+              <dd class="body-medium">
+               <p>Where <code>)(</code> goes between broken parameter groups.</p>
+              </dd>
+              <dt class="body-small">trailingCommas</dt>
+              <dd class="body-medium">
+               <p>Whether the last parameter, type parameter or import selector laid out one per line is followed by a comma.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/GroupsBreak.html" t="n" class="documentableName ">GroupsBreak</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Which argument groups of a call (<code>f(a)(b)</code>) break when they do not fit on one line.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Which argument groups of a call (<code>f(a)(b)</code>) break when they do not fit on one line.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/GroupsSeparator.html" t="n" class="documentableName ">GroupsSeparator</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Where <code>)(</code> goes between the groups of parameters or arguments of a broken definition or call.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Where <code>)(</code> goes between the groups of parameters or arguments of a broken definition or call.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/HousekeepingConfig.html" t="n" class="documentableName ">HousekeepingConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">trimTrailingWhitespace</span>: <span data-unresolved-link="" t="t">Boolean</span>, <span t="k"></span><span data-unresolved-link="" t="n">enforceEof</span>: <span data-unresolved-link="" t="t">Boolean</span>, <span t="k"></span><span data-unresolved-link="" t="n">lineEnding</span>: <a href="model/LineEnding.html" t="t">LineEnding</a>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>The housekeeping of a whole file.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>The housekeeping of a whole file.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">enforceEof</dt>
+              <dd class="body-medium">
+               <p>Whether the file ends with exactly one line break.</p>
+              </dd>
+              <dt class="body-small">lineEnding</dt>
+              <dd class="body-medium">
+               <p>The line break written at the end of each line.</p>
+              </dd>
+              <dt class="body-small">trimTrailingWhitespace</dt>
+              <dd class="body-medium">
+               <p>Whether the spaces and tabs at the end of each line are removed; those inside a string literal always stay.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/ImportBraces.html" t="n" class="documentableName ">ImportBraces</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>The braces around the single selector of an <code>import</code> or <code>export</code>.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>The braces around the single selector of an <code>import</code> or <code>export</code>.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/InlineChainPolicy.html" t="n" class="documentableName ">InlineChainPolicy</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Whether a chain on the line of its <code>=</code> / <code>=&gt;</code> breaks at <span data-unresolved-link="">SelectorChainConfig.breakAtCount</span> selections.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Whether a chain on the line of its <code>=</code> / <code>=&gt;</code> breaks at <span data-unresolved-link="">SelectorChainConfig.breakAtCount</span> selections.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/LineEnding.html" t="n" class="documentableName ">LineEnding</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>The line break written at the end of each line.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>The line break written at the end of each line.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/MultiBodyPolicy.html" t="n" class="documentableName ">MultiBodyPolicy</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Where the bodies of a construct with several of them go relative to their separators. A group is never mixed: when the bodies are all on the lines of their separators, or all below them, the policy decides whether they stay; when they are mixed, it decides which way they all go. A group that should be on the lines of its separators goes below them when one body cannot be joined: it does not fit there on one line (once the arrows of the cases are aligned), a comment follows its separator, or it holds an if, a match or a try. A group of one body is never mixed, so both <code>-mixed</code> policies leave it as written.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Where the bodies of a construct with several of them go relative to their separators. A group is never mixed: when the bodies are all on the lines of their separators, or all below them, the policy decides whether they stay; when they are mixed, it decides which way they all go. A group that should be on the lines of its separators goes below them when one body cannot be joined: it does not fit there on one line (once the arrows of the cases are aligned), a comment follows its separator, or it holds an if, a match or a try. A group of one body is never mixed, so both <code>-mixed</code> policies leave it as written.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/NestedChainPolicy.html" t="n" class="documentableName ">NestedChainPolicy</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>How a chain nested where <span data-unresolved-link="">SelectorChainConfig.breakAtCount</span> does not apply breaks: in the enumerators of a <code>for</code> (its generators, guards and value definitions, and what they hold, but not the <code>yield</code> expression or the <code>do</code> body), and in the arguments of a call, positional or named (but not the bodies of the lambdas and blocks passed to it). A chain there never breaks at <code>breakAtCount</code> selections, and always breaks when it does not fit.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>How a chain nested where <span data-unresolved-link="">SelectorChainConfig.breakAtCount</span> does not apply breaks: in the enumerators of a <code>for</code> (its generators, guards and value definitions, and what they hold, but not the <code>yield</code> expression or the <code>do</code> body), and in the arguments of a call, positional or named (but not the bodies of the lambdas and blocks passed to it). A chain there never breaks at <code>breakAtCount</code> selections, and always breaks when it does not fit.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/OverflowConfig.html" t="n" class="documentableName ">OverflowConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">trailingComment</span>: <a href="model/TrailingOverflow.html" t="t">TrailingOverflow</a>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>What happens to what goes past the maximum width.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>What happens to what goes past the maximum width.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">trailingComment</dt>
+              <dd class="body-medium">
+               <p>What happens to a line that goes past the maximum width only because of its trailing comment.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">object </span></span><a href="model/PathsConfig$.html" t="n" class="documentableName ">PathsConfig</a>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="cover">
+             <div class="doc"></div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Companion</dt>
+              <dd class="body-medium">
+               <a href="model/PathsConfig.html">class</a>
+              </dd>
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Mirror</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span></span>
+               </div>
+              </dd>
+              <dt class="body-small">Self type</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <span></span>
+                <div>
+                 <a href="model/PathsConfig$.html" t="n">PathsConfig</a>.<span t="k">type</span>
+                </div>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/PathsConfig.html" t="n" class="documentableName ">PathsConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">included</span>: <span data-unresolved-link="" t="t">List</span>[<span data-unresolved-link="" t="t">String</span>], <span t="k"></span><span data-unresolved-link="" t="n">excluded</span>: <span data-unresolved-link="" t="t">List</span>[<span data-unresolved-link="" t="t">String</span>])
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>The files and directories to format.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>The files and directories to format.</p>
+              <p>Patterns are globs matched against paths relative to the directory being formatted, with <code>/</code> as separator: <code>*</code> matches within a path segment, <code>**</code> across segments, <code>?</code> one character.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">excluded</dt>
+              <dd class="body-medium">
+               <p>A file is not formatted if its path, or the path of a directory above it, matches one of these.</p>
+              </dd>
+              <dt class="body-small">included</dt>
+              <dd class="body-medium">
+               <p>A file is formatted only if its path matches one of these.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Companion</dt>
+              <dd class="body-medium">
+               <a href="model/PathsConfig$.html">object</a>
+              </dd>
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/ScaladocAlignmentConfig.html" t="n" class="documentableName ">ScaladocAlignmentConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">tags</span>: <span data-unresolved-link="" t="t">Boolean</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>What aligns in scaladoc comments.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>What aligns in scaladoc comments.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">tags</dt>
+              <dd class="body-medium">
+               <p>Whether the descriptions of a scaladoc's tag list align on one column; otherwise each tag's description starts after its own name.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/ScaladocSpacing.html" t="n" class="documentableName ">ScaladocSpacing</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Whether a blank line goes before a scaladoc that follows a line of code.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Whether a blank line goes before a scaladoc that follows a line of code.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" data-f-keywords="final,case">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"><span t="k">final case </span></span><span class="kind"><span t="k">class </span></span><a href="model/SelectorChainConfig.html" t="n" class="documentableName ">SelectorChainConfig</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">breakAtCount</span>: <span data-unresolved-link="" t="t">Int</span>, <span t="k"></span><span data-unresolved-link="" t="n">namespacePath</span>: <a href="model/ChainHeadPolicy.html" t="t">ChainHeadPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">objectMember</span>: <a href="model/ChainHeadPolicy.html" t="t">ChainHeadPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">receiverMinLength</span>: <span data-unresolved-link="" t="t">Int</span>, <span t="k"></span><span data-unresolved-link="" t="n">inlineChains</span>: <a href="model/InlineChainPolicy.html" t="t">InlineChainPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">inFor</span>: <a href="model/NestedChainPolicy.html" t="t">NestedChainPolicy</a>, <span t="k"></span><span data-unresolved-link="" t="n">inCall</span>: <a href="model/NestedChainPolicy.html" t="t">NestedChainPolicy</a>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>When select chains break.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>When select chains break.</p>
+             </div>
+             <h2 class="h200">Value parameters</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">breakAtCount</dt>
+              <dd class="body-medium">
+               <p>A chain with at least this many selections breaks one selection per line when the author writes it below <code>=</code> / <code>=&gt;</code>.</p>
+              </dd>
+              <dt class="body-small">inCall</dt>
+              <dd class="body-medium">
+               <p>Whether a chain in the arguments of a call keeps the line breaks of its author.</p>
+              </dd>
+              <dt class="body-small">inFor</dt>
+              <dd class="body-medium">
+               <p>Whether a chain in the enumerators of a <code>for</code> keeps the line breaks of its author.</p>
+              </dd>
+              <dt class="body-small">inlineChains</dt>
+              <dd class="body-medium">
+               <p>Whether a chain on the line of its <code>=</code> / <code>=&gt;</code> breaks at <code>breakAtCount</code> selections too.</p>
+              </dd>
+              <dt class="body-small">namespacePath</dt>
+              <dd class="body-medium">
+               <p>The lowercase names of a chain up to and including the first capitalised one (<code>java.nio.file.Files</code>).</p>
+              </dd>
+              <dt class="body-small">objectMember</dt>
+              <dd class="body-medium">
+               <p>The first member selected on a capitalised name (<code>Files.exists</code>).</p>
+              </dd>
+              <dt class="body-small">receiverMinLength</dt>
+              <dd class="body-medium">
+               <p>A chain breaks after a receiver name at least this long; a shorter one keeps its first selection on its line (<code>v.trim</code>), and that selection still counts towards <code>breakAtCount</code>.</p>
+              </dd>
+             </dl>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/SemicolonPolicy.html" t="n" class="documentableName ">SemicolonPolicy</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>The layout of the statements of a body written on one line and separated by <code>;</code> (<code>{ this(s.toInt, 0); println(s) }</code>).</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>The layout of the statements of a body written on one line and separated by <code>;</code> (<code>{ this(s.toInt, 0); println(s) }</code>).</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/SingleBodyPolicy.html" t="n" class="documentableName ">SingleBodyPolicy</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Where the body of a construct with a single body goes relative to its separator. Whatever the policy, the body goes below its separator when it cannot be on the separator line: it does not fit there on one line, or a comment follows the separator.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Where the body of a construct with a single body goes relative to its separator. Whatever the policy, the body goes below its separator when it cannot be on the separator line: it does not fit there on one line, or a comment follows the separator.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/TrailingCommas.html" t="n" class="documentableName ">TrailingCommas</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Whether the last element of a list laid out one element per line is followed by a comma.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Whether the last element of a list laid out one element per line is followed by a comma.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/TrailingOverflow.html" t="n" class="documentableName ">TrailingOverflow</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>What happens to a line of code that goes past the maximum width only because of the comment at its end.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>What happens to a line of code that goes past the maximum width only because of the comment at its end.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">enum </span></span><a href="model/YieldBodyPolicy.html" t="n" class="documentableName ">YieldBodyPolicy</a>(<span t="k"></span><span t="k">val </span><span data-unresolved-link="" t="n">key</span>: <span data-unresolved-link="" t="t">String</span>)
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p>Where the expression after the <code>yield</code> of a for-comprehension goes: the values of <a href="model/SingleBodyPolicy.html">SingleBodyPolicy</a>, and <code>break-complex</code>.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p>Where the expression after the <code>yield</code> of a for-comprehension goes: the values of <a href="model/SingleBodyPolicy.html">SingleBodyPolicy</a>, and <code>break-complex</code>.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small">
+              <dt class="body-small">Supertypes</dt>
+              <dd class="body-medium">
+               <div class="mono-small-block supertypes">
+                <div>
+                 trait <span data-unresolved-link="" t="n">Enum</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Serializable</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Product</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Equals</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Object</span>
+                </div>
+                <div>
+                 trait <span data-unresolved-link="" t="n">Matchable</span>
+                </div>
+                <div>
+                 class <span data-unresolved-link="" t="n">Any</span>
+                </div>
+                <span class="show-all-code show-content text-button h100">Show all</span>
+               </div>
+              </dd>
+             </dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </section>
+     </div>
+    </section>
+   </div>
+  </div>
+ </div>
+</section></div><div id="toc" class="body-small"><div id="toc-container"><span class="toc-title h200">In this article</span><nav class="toc-nav"><ul class="toc-list"><li><a href="#members-list">Members list</a><ul><li><a href="#Type-members">Type members</a><ul><li><a href="#Classlikes">Classlikes</a></li></ul></li></ul></li></ul></nav></div></div></div><div id="footer" class="body-small mobile-footer"><div class="left-container">Generated with</div><div class="right-container"><div class="text"></div></div><div class="text-mobile"></div></div></div></div></body></html>
