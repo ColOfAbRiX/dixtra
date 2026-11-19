@@ -20,23 +20,10 @@ When Dixtra has no rule for a specific code snippet, the code is copied exactly 
 
 - Among the Scala 3 syntax it does not parse yet is `into` on a type (Scala 3.9).
 
-# Ignoring the formatting
+## When Dixtra cannot format a file
 
-The code between a `dixtra: off` comment and a `dixtra: on` comment stays exactly as written:
+A file is reported, and left as it is, when:
 
-```scala
-object Matrices {
-  val a = 1
-
-  // dixtra: off
-  val identity = Array(
-    1, 0,
-    0, 1,
-  )
-  // dixtra: on
-}
-```
-
-- **Unclosed regions.** Without a `dixtra: on`, the region runs to the end of the file. A `// dixtra: off` at the top of a file leaves the whole file as written.
-- **Nesting.** An `off` inside a region, or an `on` outside one, does nothing.
-- **The markers themselves** are laid out like any other comment. Only the code between them is protected.
+- it is not valid Scala 3, or it is Scala 2: Dixtra rejects it with the error of the parser;
+- it holds a construct that Dixtra does not parse yet;
+- the formatted result would not be equivalent to the input, which signals a bug in the formatter: the file is left untouched and the error is reported.

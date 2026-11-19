@@ -7,11 +7,11 @@ title: Alignment
 
 What lines up in columns. Every setting is in [the settings table](#the-settings).
 
-Only adjacent one-line items align: a blank line, an item over several lines or any other statement ends a group of aligned items (see also [`across-comments`](#across-comments)). An item that would not fit once aligned breaks instead, and the items before and after it align separately.
+Only adjacent one-line items align: a blank line, an item over several lines or any other statement ends a group of aligned items (see also [`alignment.across-comments`](#alignmentacross-comments)). An item that would not fit once aligned breaks instead, and the items before and after it align separately.
 
-## `assignment-groups`
+## `alignment.assignment-groups`
 
-The groups of keywords whose adjacent one-line definitions align their `=`. The keywords are `val`, `lazy-val`, `var`, `def`, `given-alias` and `type-def`. A keyword is in at most one group, and a keyword in no group never aligns and ends the groups around it. Default `[[val, lazy-val, var, def]]`.
+The groups of keywords whose adjacent one-line definitions align their `=`. The keywords are `val`, `lazy-val`, `var`, `def`, `given-alias` and `type-def`. A keyword is in at most one group, and a keyword in no group never aligns and ends the groups around it. Default `alignment.assignment-groups = [[val, lazy-val, var, def]]`.
 
 With the default:
 
@@ -21,7 +21,7 @@ var count      = 0
 def totalCount = count * 2
 ```
 
-With `[[val, var], [def]]`, the `def` aligns with neither:
+With `alignment.assignment-groups = [[val, var], [def]]`, the `def` aligns with neither:
 
 ```scala
 val name  = "dixtra"
@@ -29,7 +29,7 @@ var count = 0
 def totalCount = count * 2
 ```
 
-With `[[val, def]]`, the `var` aligns with nothing, and the definitions before and after it align separately:
+With `alignment.assignment-groups = [[val, def]]`, the `var` aligns with nothing, and the definitions before and after it align separately:
 
 ```scala
 val name = "dixtra"
@@ -38,13 +38,13 @@ val totalCount = count * 2
 def f          = 1
 ```
 
-With `[]`, no definition aligns.
+With `alignment.assignment-groups = []`, no definition aligns.
 
-## `operators`
+## `alignment.operators`
 
-The operators that align column by column. Default `["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]`.
+The operators that align column by column. Default `alignment.operators = ["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]`.
 
-They align in adjacent one-line statements, in adjacent one-line elements of a list laid out one per line, and in an operation that is the only argument of a call statement. The named arguments follow [`named-arguments`](#named-arguments) instead.
+They align in adjacent one-line statements, in adjacent one-line elements of a list laid out one per line, and in an operation that is the only argument of a call statement. The named arguments follow [`alignment.named-arguments`](#alignmentnamed-arguments) instead.
 
 ```scala
 total += x
@@ -58,27 +58,27 @@ Seq(
 )
 ```
 
-With `[]`, no operator aligns.
+With `alignment.operators = []`, no operator aligns.
 
-## `arrows.cases`
+## `alignment.arrows.cases`
 
-Whether the `=>` of adjacent one-line cases align. Default `true`.
+Whether the `=>` of adjacent one-line cases align. Default `alignment.arrows.cases = true`.
 
 ```scala
 case Some(value) => value
 case None        => default
 ```
 
-With `false`:
+With `alignment.arrows.cases = false`:
 
 ```scala
 case Some(value) => value
 case None => default
 ```
 
-## `arrows.pairs`
+## `alignment.arrows.pairs`
 
-Whether the `->` of the `a -> b` elements of a list laid out one per line align. Default `true`.
+Whether the `->` of the `a -> b` elements of a list laid out one per line align. Default `alignment.arrows.pairs = true`.
 
 ```scala
 Map(
@@ -87,7 +87,7 @@ Map(
 )
 ```
 
-With `false`:
+With `alignment.arrows.pairs = false`:
 
 ```scala
 Map(
@@ -96,9 +96,9 @@ Map(
 )
 ```
 
-## `arrows.for-enumerators`
+## `alignment.arrows.for-enumerators`
 
-Whether the `<-` and the `=` of the enumerators of a `for` align. Default `true`.
+Whether the `<-` and the `=` of the enumerators of a `for` align. Default `alignment.arrows.for-enumerators = true`.
 
 ```scala
 for
@@ -108,7 +108,7 @@ for
 yield account
 ```
 
-With `false`:
+With `alignment.arrows.for-enumerators = false`:
 
 ```scala
 for
@@ -118,27 +118,27 @@ for
 yield account
 ```
 
-## `extends-clauses`
+## `alignment.extends-clauses`
 
-Whether the `extends` of adjacent one-line definitions (classes, objects, traits, enum cases) align. Default `true`.
+Whether the `extends` of adjacent one-line definitions (classes, objects, traits, enum cases) align. Default `alignment.extends-clauses = true`.
 
 ```scala
 case Red   extends Color("red")
 case Green extends Color("green")
 ```
 
-With `false`:
+With `alignment.extends-clauses = false`:
 
 ```scala
 case Red extends Color("red")
 case Green extends Color("green")
 ```
 
-## `named-arguments`
+## `alignment.named-arguments`
 
-Whether the `=` of adjacent one-line named arguments align, in a call laid out one argument per line. Default `false`.
+Whether the `=` of adjacent one-line named arguments align, in a call laid out one argument per line. Default `alignment.named-arguments = false`.
 
-With `true`:
+With `alignment.named-arguments = true`:
 
 ```scala
 MyCaseClass(
@@ -147,7 +147,7 @@ MyCaseClass(
 )
 ```
 
-With `false`:
+With `alignment.named-arguments = false`:
 
 ```scala
 MyCaseClass(
@@ -156,29 +156,29 @@ MyCaseClass(
 )
 ```
 
-## `trailing-comments`
+## `alignment.trailing-comments`
 
-Whether the comments at the end of consecutive lines of code start on one column, one space after the longest code. A line without a trailing comment ends the group. Default `false`.
+Whether the comments at the end of consecutive lines of code start on one column, one space after the longest code. A line without a trailing comment ends the group. Default `alignment.trailing-comments = false`.
 
-With `true`:
+With `alignment.trailing-comments = true`:
 
 ```scala
 run(1)     // one
 compute(2) // two
 ```
 
-With `false`:
+With `alignment.trailing-comments = false`:
 
 ```scala
 run(1) // one
 compute(2) // two
 ```
 
-## `across-comments`
+## `alignment.across-comments`
 
-Whether a comment on its own line between two items keeps them in one group. The items are definitions, statements, cases and list elements. A blank line still ends a group, and the enumerators of a `for` always align across comments. Default `false`.
+Whether a comment on its own line between two items keeps them in one group. The items are definitions, statements, cases and list elements. A blank line still ends a group, and the enumerators of a `for` always align across comments. Default `alignment.across-comments = false`.
 
-With `true`, one group:
+With `alignment.across-comments = true`, one group:
 
 ```scala
 val a   = 1
@@ -186,7 +186,7 @@ val a   = 1
 val bbb = 2
 ```
 
-With `false`, two groups:
+With `alignment.across-comments = false`, two groups:
 
 ```scala
 val a = 1
@@ -194,11 +194,11 @@ val a = 1
 val bbb = 2
 ```
 
-## `scaladoc.tags`
+## `alignment.scaladoc.tags`
 
-Whether the descriptions of the tags of a scaladoc start on one column. Wrapped description lines continue under the start of their description. Default `false`.
+Whether the descriptions of the tags of a scaladoc start on one column. Wrapped description lines continue under the start of their description. Default `alignment.scaladoc.tags = false`.
 
-With `true`:
+With `alignment.scaladoc.tags = true`:
 
 ```scala
 /**
@@ -208,7 +208,7 @@ With `true`:
  */
 ```
 
-With `false`:
+With `alignment.scaladoc.tags = false`:
 
 ```scala
 /**
@@ -220,15 +220,15 @@ With `false`:
 
 ## The settings
 
-| Setting                  | Default                                                        | Values                      |
-| ------------------------ | -------------------------------------------------------------- | --------------------------- |
-| `assignment-groups`      | `[[val, lazy-val, var, def]]`                                  | a list of lists of keywords |
-| `operators`              | `["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]` | a list of operators         |
-| `arrows.cases`           | `true`                                                         | `true`, `false`             |
-| `arrows.pairs`           | `true`                                                         | `true`, `false`             |
-| `arrows.for-enumerators` | `true`                                                         | `true`, `false`             |
-| `extends-clauses`        | `true`                                                         | `true`, `false`             |
-| `named-arguments`        | `false`                                                        | `true`, `false`             |
-| `trailing-comments`      | `false`                                                        | `true`, `false`             |
-| `across-comments`        | `false`                                                        | `true`, `false`             |
-| `scaladoc.tags`          | `false`                                                        | `true`, `false`             |
+| Setting                          | Default                                                        | Values                      |
+| -------------------------------- | -------------------------------------------------------------- | --------------------------- |
+| `alignment.assignment-groups`    | `[[val, lazy-val, var, def]]`                                  | a list of lists of keywords |
+| `alignment.operators`            | `["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]` | a list of operators         |
+| `alignment.arrows.cases`         | `true`                                                         | `true`, `false`             |
+| `alignment.arrows.pairs`         | `true`                                                         | `true`, `false`             |
+| `alignment.arrows.for-enumerators` | `true`                                                       | `true`, `false`             |
+| `alignment.extends-clauses`      | `true`                                                         | `true`, `false`             |
+| `alignment.named-arguments`      | `false`                                                        | `true`, `false`             |
+| `alignment.trailing-comments`    | `false`                                                        | `true`, `false`             |
+| `alignment.across-comments`      | `false`                                                        | `true`, `false`             |
+| `alignment.scaladoc.tags`        | `false`                                                        | `true`, `false`             |

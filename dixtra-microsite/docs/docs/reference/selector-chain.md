@@ -30,11 +30,11 @@ val candidates =
 
 Every setting is in [the settings table](#the-settings).
 
-## `inline-chains`
+## `selector-chain.inline-chains`
 
-Whether a chain on the line of its `=` or `=>` breaks at `break-at-count` selections too. Default `break-at-count`.
+Whether a chain on the line of its `=` or `=>` breaks at `selector-chain.break-at-count` selections too. Default `selector-chain.inline-chains = break-at-count`.
 
-`break-at-count` — it breaks like a chain written below the `=`, and goes below it:
+`selector-chain.inline-chains = break-at-count` — it breaks like a chain written below the `=`, and goes below it:
 
 ```scala
 val y =
@@ -44,17 +44,17 @@ val y =
     .sum
 ```
 
-`keep` — it stays on one line while it fits:
+`selector-chain.inline-chains = keep` — it stays on one line while it fits:
 
 ```scala
 val y = xs.map(_ + 1).filter(_ > 0).sum
 ```
 
-## `break-at-count`
+## `selector-chain.break-at-count`
 
-How many selections make a chain that is a whole body break, even when it fits. Default `3`. The receiver does not count, and the value is at least 2.
+How many selections make a chain that is a whole body break, even when it fits. Default `selector-chain.break-at-count = 3`. The receiver does not count, and the value is at least 2.
 
-With `3`, two selections stay on one line and three break:
+With `selector-chain.break-at-count = 3`, two selections stay on one line and three break:
 
 ```scala
 def total =
@@ -67,15 +67,15 @@ def total =
     .sum
 ```
 
-A chain inside an operation, an argument or a condition breaks only when it does not fit, or when the author broke it: `p.speed.vertical >= config.minSpeed` stays on one line. A chain on the line of its `=` follows `inline-chains`.
+A chain inside an operation, an argument or a condition breaks only when it does not fit, or when the author broke it: `p.speed.vertical >= config.minSpeed` stays on one line. A chain on the line of its `=` follows `selector-chain.inline-chains`.
 
-## `in-for`
+## `selector-chain.in-for`
 
 How a chain breaks in the enumerators of a `for`: the generators (`x <- xs`), the guards (`if ...`) and the value definitions (`y = ...`), and everything they hold. The expression after `yield` and the body after `do` are not enumerators.
 
-A chain there never breaks at `break-at-count` selections, and it always breaks when it does not fit. Default `never-break`.
+A chain there never breaks at `selector-chain.break-at-count` selections, and it always breaks when it does not fit. Default `selector-chain.in-for = never-break`.
 
-`never-break` — a chain the author broke is joined while it fits:
+`selector-chain.in-for = never-break` — a chain the author broke is joined while it fits:
 
 ```scala
 for
@@ -83,7 +83,7 @@ for
 yield user.name
 ```
 
-`keep` — a chain stays broken where the author broke it:
+`selector-chain.in-for = keep` — a chain stays broken where the author broke it:
 
 ```scala
 for
@@ -92,13 +92,13 @@ for
 yield user.name
 ```
 
-## `in-call`
+## `selector-chain.in-call`
 
 How a chain breaks in the arguments of a call: the arguments of a call or of a constructor, positional or named, the elements of a tuple, the arguments of an infix application with several of them (`x shouldBe (a, b)`), and everything they hold. The bodies of the lambdas and of the blocks given as arguments are not arguments: a chain there breaks like in any other body.
 
-A chain in an argument never breaks at `break-at-count` selections, and it always breaks when it does not fit. Default `never-break`.
+A chain in an argument never breaks at `selector-chain.break-at-count` selections, and it always breaks when it does not fit. Default `selector-chain.in-call = never-break`.
 
-`never-break` — a chain the author broke is joined while it fits:
+`selector-chain.in-call = never-break` — a chain the author broke is joined while it fits:
 
 ```scala
 SignatureParts(
@@ -106,7 +106,7 @@ SignatureParts(
 )
 ```
 
-`keep` — a chain stays broken where the author broke it:
+`selector-chain.in-call = keep` — a chain stays broken where the author broke it:
 
 ```scala
 SignatureParts(
@@ -117,11 +117,11 @@ SignatureParts(
 )
 ```
 
-## `namespace-path`
+## `selector-chain.namespace-path`
 
-Whether a package path at the start of a chain stays together as its receiver. A package path is the run of lowercase names up to the first capitalised one: `java.nio.file.Files`. Default `keep`.
+Whether a package path at the start of a chain stays together as its receiver. A package path is the run of lowercase names up to the first capitalised one: `java.nio.file.Files`. Default `selector-chain.namespace-path = keep`.
 
-`always-join` — always, even when the author broke the line inside the path:
+`selector-chain.namespace-path = always-join` — always, even when the author broke the line inside the path:
 
 ```scala
 java.nio.file.Files
@@ -129,9 +129,9 @@ java.nio.file.Files
   .toString
 ```
 
-`keep` — as `always-join`, unless the author broke the line inside the path.
+`selector-chain.namespace-path = keep` — as `selector-chain.namespace-path = always-join`, unless the author broke the line inside the path.
 
-`always-break` — the path breaks like any other selection:
+`selector-chain.namespace-path = always-break` — the path breaks like any other selection:
 
 ```scala
 java
@@ -142,11 +142,11 @@ java
   .toString
 ```
 
-## `object-member`
+## `selector-chain.object-member`
 
-Whether the first member selected on a capitalised name stays with it as the receiver. Default `always-break`.
+Whether the first member selected on a capitalised name stays with it as the receiver. Default `selector-chain.object-member = always-break`.
 
-`always-join` — always, even when the author broke the line before its dot:
+`selector-chain.object-member = always-join` — always, even when the author broke the line before its dot:
 
 ```scala
 IO.pure(x)
@@ -154,9 +154,9 @@ IO.pure(x)
   .flatMap(g)
 ```
 
-`keep` — as `always-join`, unless the author broke the line before its dot.
+`selector-chain.object-member = keep` — as `selector-chain.object-member = always-join`, unless the author broke the line before its dot.
 
-`always-break` — the member breaks like any other selection:
+`selector-chain.object-member = always-break` — the member breaks like any other selection:
 
 ```scala
 IO
@@ -165,11 +165,11 @@ IO
   .flatMap(g)
 ```
 
-## `receiver-min-length`
+## `selector-chain.receiver-min-length`
 
-The shortest receiver name a chain breaks after. Default `1`, and the value is at least 1. A shorter receiver keeps its first selection on its line, and that selection still counts towards `break-at-count`.
+The shortest receiver name a chain breaks after. Default `selector-chain.receiver-min-length = 1`, and the value is at least 1. A shorter receiver keeps its first selection on its line, and that selection still counts towards `selector-chain.break-at-count`.
 
-With `3`, `v` keeps `.trim` and `values` breaks:
+With `selector-chain.receiver-min-length = 3`, `v` keeps `.trim` and `values` breaks:
 
 ```scala
 v.trim
@@ -184,12 +184,12 @@ values
 
 ## The settings
 
-| Setting               | Default          | Values                                |
-| --------------------- | ---------------- | ------------------------------------- |
-| `inline-chains`       | `break-at-count` | `break-at-count`, `keep`              |
-| `break-at-count`      | `3`              | a number, at least 2                  |
-| `in-for`              | `never-break`    | `never-break`, `keep`                 |
-| `in-call`             | `never-break`    | `never-break`, `keep`                 |
-| `namespace-path`      | `keep`           | `always-join`, `keep`, `always-break` |
-| `object-member`       | `always-break`   | `always-join`, `keep`, `always-break` |
-| `receiver-min-length` | `1`              | a number, at least 1                  |
+| Setting                          | Default          | Values                                |
+| -------------------------------- | ---------------- | ------------------------------------- |
+| `selector-chain.inline-chains`   | `break-at-count` | `break-at-count`, `keep`              |
+| `selector-chain.break-at-count`  | `3`              | a number, at least 2                  |
+| `selector-chain.in-for`          | `never-break`    | `never-break`, `keep`                 |
+| `selector-chain.in-call`         | `never-break`    | `never-break`, `keep`                 |
+| `selector-chain.namespace-path`  | `keep`           | `always-join`, `keep`, `always-break` |
+| `selector-chain.object-member`   | `always-break`   | `always-join`, `keep`, `always-break` |
+| `selector-chain.receiver-min-length` | `1`          | a number, at least 1                  |

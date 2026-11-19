@@ -1,66 +1,71 @@
 ---
 layout: docs
-title: Using Dixtra
+title: Setup
 ---
 
-# Using Dixtra
+# Setup
 
-The settings that change how the code is formatted are in the [settings reference](configuration.md).
+## Requirements
 
-## With the sbt plugin
+Dixtra runs against Scala 3 code and it supports Scala 2.13 output for cross-compiled projects.
+The plugin requires sbt 2.
 
-The plugin adds the tasks listed in [the sbt plugin](sbt-plugin.md). The ones you use most:
+## The sbt plugin
 
-```shell
-sbt dixtraFormatAll       # format the sources of Compile and Test, and the build files
-sbt dixtraCheckAll        # fail when a source is not formatted
-sbt "dixtraFormatOnly src/main/scala/Main.scala"
-```
-
-`dixtraFormatAll` formats the sources of the `Compile` and `Test` configurations, and the files of the build. The generated sources are left alone: the tasks cover the unmanaged source directories only.
-
-## Only the files that changed
-
-Formatting a whole project on every save is wasteful when only a few files changed. Both the plugin and the command line can restrict the work to the files that changed since a git ref:
+Add the plugin to `project/plugins.sbt`:
 
 ```scala
-// build.sbt
-dixtraChangedSince := Some("origin/main")
+addSbtPlugin("com.colofabrix.scala" % "sbt-dixtra" % "@VERSION@")
 ```
+
+The plugin is enabled in every project of the build. Its tasks are listed in [the sbt plugin](sbt-plugin.md).
+
+With the plugin installed, format the sources of a project:
 
 ```shell
-dixtra --changed-since origin/main src
+sbt dixtraFormatAll
 ```
 
-A file counts as changed when it was committed since the ref, has uncommitted changes, or is new and not ignored by git. With `HEAD`, only the uncommitted changes count.
+and check that they are formatted:
 
-## From the command line
+```shell
+sbt dixtraCheckAll
+```
 
-The command line formats the files and the directories you give it, and writes the result back:
+Dixtra formats the code it understands and copies the rest, so the first run rarely fails: it reports the files it could not format, and the ones it could not parse.
+
+## The VS Code extension
+
+The extension formats the document of the editor with Dixtra when you run **Format Document** (`Shift+Alt+F`).
+
+Install it with `code --install-extension dixtra-vscode-<platform>-<version>.vsix`, from the [releases](https://github.com/ColOfAbRiX/dixtra/releases) page, or from the VS Code marketplace when it is published there. It is described in [the VS Code extension](vscode.md).
+
+## The command line
+
+The command line is a single executable, `dixtra`. It formats the files you give it, whatever they are, and it is the same formatter the plugin and the extension use.
+
+Download the executable for your platform from the [releases](https://github.com/ColOfAbRiX/dixtra/releases) page, and put it on your path:
+
+```text
+linux-x64    dixtra-linux-x64
+macos-arm64  dixtra-darwin-arm64
+windows-x64  dixtra-win32-x64.exe
+```
+
+Then format a directory:
 
 ```shell
 dixtra src
 ```
 
-It reports every file it formatted, and every file it could not format. With `--check` it does not write anything, and it fails when a file would change: that is what a CI job wants.
-
-```shell
-dixtra --check src
-```
-
 The options are listed in [the command line](command-line.md).
 
-## In the editor
+## The library
 
-The VS Code extension formats the open document with **Format Document**.
-A document with unsaved changes is saved first, and Dixtra runs on the file on disk, so the nearest `.dixtra.conf` and its `path-overrides` apply as in the command line.
+The formatter alone, with no dependency other than scalameta:
 
-## When Dixtra cannot format a file
+```scala
+libraryDependencies += "com.colofabrix.scala" %% "dixtra-core" % "@VERSION@"
+```
 
-A file is reported, and left as it is, when:
-
-- it is not valid Scala 3, or it is Scala 2: Dixtra rejects it with the error of the parser;
-- it holds a construct that Dixtra does not parse yet;
-- the formatted result would not be equivalent to the input, which signals a bug in the formatter: the file is left untouched and the error is reported.
-
-See [rules and limitations](rules.md) for the known limitations.
+Its API is described in [using Dixtra as a library](library.md).

@@ -36,8 +36,8 @@ A project formats the legacy sources without trailing commas and with the braces
 ```conf
 path-overrides {
   "src/main/scala/legacy/**" {
-    "trailing-commas" = never
-    "def.braces"      = force-braces
+    call-site.trailing-commas = never
+    braces.def                = force-braces
   }
 }
 ```

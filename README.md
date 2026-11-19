@@ -21,7 +21,7 @@ addSbtPlugin("com.colofabrix.scala" % "sbt-dixtra" % "1.0.0-RC1")
 
 Then run `sbt dixtraFormatAll`
 
-Here is the full [Dixtra Documentation](https://colofabrix.github.io/dixtra/).
+[Dixtra Documentation Microsite](https://colofabrix.github.io/dixtra/).
 
 ## Contributing
 

@@ -11,24 +11,24 @@ Where each body goes relative to the separator before it: on its line, or below 
 
 A construct with a single body (a definition, a lambda, a loop) takes:
 
-- `keep` — the body stays where the author wrote it.
-- `always-join` — the body on the line of its separator, even when the author wrote it below.
-- `always-break` — the body below its separator, even when the author wrote it on the line.
+- `body.<construct> = keep` — the body stays where the author wrote it.
+- `body.<construct> = always-join` — the body on the line of its separator, even when the author wrote it below.
+- `body.<construct> = always-break` — the body below its separator, even when the author wrote it on the line.
 
-`keep`:
+`body.<construct> = keep`:
 
 ```scala
 def total =
   xs.sum
 ```
 
-`always-join`:
+`body.<construct> = always-join`:
 
 ```scala
 def total = xs.sum
 ```
 
-`always-break`:
+`body.<construct> = always-break`:
 
 ```scala
 def total =
@@ -37,10 +37,10 @@ def total =
 
 The bodies of a construct with several of them (the branches of an if/else, the cases of a match, the bodies of a try) are treated as a group, never one by one: either every body is on the line of its separator, or every body is below it. A group where some bodies are inline and some others are on a new line is _mixed_. These constructs take:
 
-- `join-mixed` — a mixed group is joined on the lines of the separators; a group all on its lines, or all below, stays as it is.
-- `break-mixed` — a mixed group goes below the separators; a group all on its lines, or all below, stays as it is.
-- `always-join` — every body on the line of its separator.
-- `always-break` — every body below its separator.
+- `body.<construct> = join-mixed` — a mixed group is joined on the lines of the separators; a group all on its lines, or all below, stays as it is.
+- `body.<construct> = break-mixed` — a mixed group goes below the separators; a group all on its lines, or all below, stays as it is.
+- `body.<construct> = always-join` — every body on the line of its separator.
+- `body.<construct> = always-break` — every body below its separator.
 
 The examples are for this mixed input:
 
@@ -50,14 +50,14 @@ if c then
 else b
 ```
 
-`join-mixed` — the first branch moves up:
+`body.<construct> = join-mixed` — the first branch moves up:
 
 ```scala
 if c then a
 else b
 ```
 
-`break-mixed` — the second branch goes below too:
+`body.<construct> = break-mixed` — the second branch goes below too:
 
 ```scala
 if c then
@@ -66,7 +66,7 @@ else
   b
 ```
 
-`always-join` — as `join-mixed`, and a group all below its separators moves up too. `always-break` — as `break-mixed`, and `if c then a else b` goes below too.
+`body.<construct> = always-join` — as `body.<construct> = join-mixed`, and a group all below its separators moves up too. `body.<construct> = always-break` — as `body.<construct> = break-mixed`, and `if c then a else b` goes below too.
 
 A group of one body (an `if` without `else`, a match with one case) is never mixed, so both `-mixed` values leave it as written.
 
@@ -79,51 +79,51 @@ A group of one body (an `if` without `else`, a match with one case) is never mix
 
 ## The settings
 
-| Setting                | Default         | The body after                                                        |
-| ---------------------- | --------------- | --------------------------------------------------------------------- |
-| `def`                  | `keep`          | The `=` of a `def`                                                    |
-| `val`                  | `keep`          | The `=` of a `val`                                                    |
-| `lazy-val`             | `keep`          | The `=` of a `lazy val`                                               |
-| `var`                  | `keep`          | The `=` of a `var`                                                    |
-| `given-alias`          | `keep`          | The `=` of a given alias                                              |
-| `type-def`             | `keep`          | The `=` of a type definition                                          |
-| `assignment`           | `keep`          | The `=` of an assignment                                              |
-| `named-argument`       | `keep`          | The `=` of a named argument                                           |
-| `lambda-argument`      | `keep`          | The `=>` of a lambda given in braces or after a colon                 |
-| `lambda-body`          | `keep`          | The `=>` of any other lambda                                          |
-| `block-argument`       | `keep`          | The `{` or the colon of a block given as an argument                  |
-| `test-case`            | `keep`          | The `{` or the colon of a test case                                   |
-| `test-group`           | `keep`          | The `{` or the colon of a group of tests                              |
-| `if`                   | `break-mixed`   | The `then` and the `else` of an if/else                               |
-| `case-body`            | `break-mixed`   | The `=>` of the cases of a match, of a `{ case ... }` or of a `catch` |
-| `try`                  | `break-mixed`   | The `try` and the `finally` of a try                                  |
-| `for`                  | `keep`          | The `do` of a `for` loop                                              |
-| `for-yield`            | `break-complex` | The `yield` of a for-comprehension                                    |
-| `while`                | `keep`          | The `do` of a `while` loop                                            |
-| `semicolon-statements` | `always-break`  | The `;` between the statements of a body written on one line          |
+| Setting                       | Default         | The body after                                                        |
+| ----------------------------- | --------------- | --------------------------------------------------------------------- |
+| `body.def`                    | `keep`          | The `=` of a `def`                                                    |
+| `body.val`                    | `keep`          | The `=` of a `val`                                                    |
+| `body.lazy-val`               | `keep`          | The `=` of a `lazy val`                                               |
+| `body.var`                    | `keep`          | The `=` of a `var`                                                    |
+| `body.given-alias`            | `keep`          | The `=` of a given alias                                              |
+| `body.type-def`               | `keep`          | The `=` of a type definition                                          |
+| `body.assignment`             | `keep`          | The `=` of an assignment                                              |
+| `body.named-argument`         | `keep`          | The `=` of a named argument                                           |
+| `body.lambda-argument`        | `keep`          | The `=>` of a lambda given in braces or after a colon                 |
+| `body.lambda-body`            | `keep`          | The `=>` of any other lambda                                          |
+| `body.block-argument`         | `keep`          | The `{` or the colon of a block given as an argument                  |
+| `body.test-case`              | `keep`          | The `{` or the colon of a test case                                   |
+| `body.test-group`             | `keep`          | The `{` or the colon of a group of tests                              |
+| `body.if`                     | `break-mixed`   | The `then` and the `else` of an if/else                               |
+| `body.case-body`              | `break-mixed`   | The `=>` of the cases of a match, of a `{ case ... }` or of a `catch` |
+| `body.try`                    | `break-mixed`   | The `try` and the `finally` of a try                                  |
+| `body.for`                    | `keep`          | The `do` of a `for` loop                                              |
+| `body.for-yield`              | `break-complex` | The `yield` of a for-comprehension                                    |
+| `body.while`                  | `keep`          | The `do` of a `while` loop                                            |
+| `body.semicolon-statements`   | `always-break`  | The `;` between the statements of a body written on one line          |
 
 ## The body after `=`
 
-The eight settings of the `=` body — `def`, `val`, `lazy-val`, `var`, `given-alias`, `type-def`, `assignment`, `named-argument` — move the body the same way. With `body.def = always-break`:
+The eight settings of the `=` body — `body.def`, `body.val`, `body.lazy-val`, `body.var`, `body.given-alias`, `body.type-def`, `body.assignment`, `body.named-argument` — move the body the same way. With `body.def = always-break`:
 
 ```scala
 def total =
   xs.sum
 ```
 
-A `def` whose signature is over several lines keeps its body where it is, even with `always-join`.
+A `def` whose signature is over several lines keeps its body where it is, even with `body.def = always-join`.
 
 ## The bodies of a lambda
 
-`lambda-argument` is the `=>` of a lambda given in braces or after a colon; `lambda-body` is the `=>` of any other lambda.
+`body.lambda-argument` is the `=>` of a lambda given in braces or after a colon; `body.lambda-body` is the `=>` of any other lambda.
 
-`always-join`:
+`body.lambda-argument = always-join`:
 
 ```scala
 xs.foreach { x => println(x) }
 ```
 
-`always-break`:
+`body.lambda-argument = always-break`:
 
 ```scala
 xs.foreach { x =>
@@ -133,19 +133,19 @@ xs.foreach { x =>
 
 ## The blocks given as arguments
 
-`block-argument` is a block of statements given as an argument, without lambda parameters, that is not a test block.
+`body.block-argument` is a block of statements given as an argument, without lambda parameters, that is not a test block.
 
-A test block is a block of statements given to a call labelled by a string. Dixtra tells two of them apart by what they hold: a `test-case` holds no other test block, as the test cases of ScalaTest, MUnit, specs2 or utest do; a `test-group` holds other test blocks among its statements, as the groups of ScalaTest's WordSpec, FreeSpec and FunSpec, specs2 or utest do. A block given to `withClue` is not a test. All three settings move their statements the same way, and telling the cases from the groups lets a configuration lay out one and not the other.
+A test block is a block of statements given to a call labelled by a string. Dixtra tells two of them apart by what they hold: a `body.test-case` holds no other test block, as the test cases of ScalaTest, MUnit, specs2 or utest do; a `body.test-group` holds other test blocks among its statements, as the groups of ScalaTest's WordSpec, FreeSpec and FunSpec, specs2 or utest do. A block given to `withClue` is not a test. All three settings move their statements the same way, and telling the cases from the groups lets a configuration lay out one and not the other.
 
 After an operator (`"a parser" in { ... }`, `"a parser" should { ... }`) the braces of a test block always stay, so only a call takes the braceless form.
 
-`always-join` — the statements on the line of the `{`, with a `;` between several of them:
+`body.block-argument = always-join` — the statements on the line of the `{`, with a `;` between several of them:
 
 ```scala
 Resource.make { open() }
 ```
 
-`always-break`:
+`body.block-argument = always-break`:
 
 ```scala
 Resource.make {
@@ -155,16 +155,16 @@ Resource.make {
 
 ## The branches of an if/else
 
-`if` moves the branches after the `then` and the `else`. The branches of an `else if` chain are one group with those of the outer if/else. On the lines of their separators, the if/else stays on one line when the author wrote each `else` on the line of the branch before it; otherwise every `else` starts a line of its own. Below their separators, an `else if` stays on the line of its `else`.
+`body.if` moves the branches after the `then` and the `else`. The branches of an `else if` chain are one group with those of the outer if/else. On the lines of their separators, the if/else stays on one line when the author wrote each `else` on the line of the branch before it; otherwise every `else` starts a line of its own. Below their separators, an `else if` stays on the line of its `else`.
 
-`always-join`, for the input above:
+`body.if = always-join`, for the input above:
 
 ```scala
 if c then a
 else b
 ```
 
-`always-break`:
+`body.if = always-break`:
 
 ```scala
 if c then
@@ -175,7 +175,7 @@ else
 
 ## The bodies of the cases
 
-`case-body` moves the bodies after the `=>` of the cases of a `match`, of a `{ case ... }` or of a `catch`, which are one group. When a case would not fit once its arrow is aligned (see [`alignment.arrows.cases`](alignment.md)), every body goes below its `=>`.
+`body.case-body` moves the bodies after the `=>` of the cases of a `match`, of a `{ case ... }` or of a `catch`, which are one group. When a case would not fit once its arrow is aligned (see [`alignment.arrows.cases`](alignment.md)), every body goes below its `=>`.
 
 The examples are for this mixed input:
 
@@ -187,7 +187,7 @@ x match {
 }
 ```
 
-`join-mixed`:
+`body.case-body = join-mixed`:
 
 ```scala
 x match {
@@ -196,7 +196,7 @@ x match {
 }
 ```
 
-`break-mixed`:
+`body.case-body = break-mixed`:
 
 ```scala
 x match {
@@ -207,11 +207,11 @@ x match {
 }
 ```
 
-`always-join` — as `join-mixed`, also when every body is below its `=>`. `always-break` — as `break-mixed`, also when every body is on its `=>` line.
+`body.case-body = always-join` — as `body.case-body = join-mixed`, also when every body is below its `=>`. `body.case-body = always-break` — as `body.case-body = break-mixed`, also when every body is on its `=>` line.
 
 ## The bodies of a try
 
-`try` moves the bodies after the `try` and the `finally`, which are one group; the cases after `catch` follow `case-body`. A try written on one line that fits stays as it is, unless its bodies go below their keywords. With `braces.try = force-braces`, the bodies of a try over several lines are always below their `{`.
+`body.try` moves the bodies after the `try` and the `finally`, which are one group; the cases after `catch` follow `body.case-body`. A try written on one line that fits stays as it is, unless its bodies go below their keywords. With `braces.try = force-braces`, the bodies of a try over several lines are always below their `{`.
 
 The examples, with `braces.try = force-indent`, are for this mixed input:
 
@@ -221,14 +221,14 @@ try
 finally b()
 ```
 
-`join-mixed`:
+`body.try = join-mixed`:
 
 ```scala
 try a()
 finally b()
 ```
 
-`break-mixed`:
+`body.try = break-mixed`:
 
 ```scala
 try
@@ -237,19 +237,19 @@ finally
   b()
 ```
 
-`always-join` — as `join-mixed`, also when both bodies are below their keywords. `always-break` — as `break-mixed`, also when both bodies are on the lines of their keywords.
+`body.try = always-join` — as `body.try = join-mixed`, also when both bodies are below their keywords. `body.try = always-break` — as `body.try = break-mixed`, also when both bodies are on the lines of their keywords.
 
 ## The bodies of the loops
 
-`for` is the body after the `do` of a `for` loop; `while` is the body after the `do` of a `while` loop. A loop written on one line that fits stays as it is, unless `always-break`.
+`body.for` is the body after the `do` of a `for` loop; `body.while` is the body after the `do` of a `while` loop. A loop written on one line that fits stays as it is, unless `always-break`.
 
-`always-join`:
+`body.for = always-join`:
 
 ```scala
 for x <- xs do println(x)
 ```
 
-`always-break`:
+`body.for = always-break`:
 
 ```scala
 for x <- xs do
@@ -260,22 +260,22 @@ With `braces.for = force-braces`, a body on its line gives `for (x <- xs) printl
 
 ## The expression after `yield`
 
-`for-yield` moves the expression after the `yield` of a for-comprehension. A for-comprehension written on one line that fits stays as it is, unless `always-break`.
+`body.for-yield` moves the expression after the `yield` of a for-comprehension. A for-comprehension written on one line that fits stays as it is, unless `always-break`.
 
-`always-join`:
+`body.for-yield = always-join`:
 
 ```scala
 yield x + y
 ```
 
-`always-break`:
+`body.for-yield = always-break`:
 
 ```scala
 yield
   x + y
 ```
 
-`break-complex` — as `always-break`, but a simple expression, a single name, a path (`ExitCode.Success`) or a literal stays on the line of the `yield`:
+`body.for-yield = break-complex` — as `body.for-yield = always-break`, but a simple expression, a single name, a path (`ExitCode.Success`) or a literal stays on the line of the `yield`:
 
 ```scala
 yield
@@ -286,15 +286,15 @@ yield name
 
 ## The statements on one line
 
-`semicolon-statements` holds the statements of a body written on one line and separated by `;`, whatever the construct.
+`body.semicolon-statements` holds the statements of a body written on one line and separated by `;`, whatever the construct.
 
-`keep` — they stay on one line, with their braces, while it fits:
+`body.semicolon-statements = keep` — they stay on one line, with their braces, while it fits:
 
 ```scala
 def this(s: String) = { this(s.toInt, 0); println(s) }
 ```
 
-`always-break` — one statement per line, below the `=`:
+`body.semicolon-statements = always-break` — one statement per line, below the `=`:
 
 ```scala
 def this(s: String) =

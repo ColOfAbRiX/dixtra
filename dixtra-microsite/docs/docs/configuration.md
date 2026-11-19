@@ -113,3 +113,37 @@ path-overrides {
 - **Conflicts.** Two matching globs that give a setting different values fail that file only, with the error `<setting> is set to different values by path-overrides."<glob>" and path-overrides."<glob>"`. An invalid value in an override fails the whole configuration.
 
 The details of the globs are in [path overrides](reference/path-overrides.md).
+
+# Ignoring the formatting
+
+The code between a `dixtra: off` comment and a `dixtra: on` comment stays exactly as written:
+
+```scala
+object Matrices {
+  val a = 1
+
+  // dixtra: off
+  val identity = Array(
+    1, 0,
+    0, 1,
+  )
+  // dixtra: on
+}
+```
+
+- **Unclosed regions.** Without a `dixtra: on`, the region runs to the end of the file. A `// dixtra: off` at the top of a file leaves the whole file as written.
+- **Nesting.** An `off` inside a region, or an `on` outside one, does nothing.
+- **The markers themselves** are laid out like any other comment. Only the code between them is protected.
+
+## Disabling Dixtra for a subproject
+
+The `dixtra: off` markers protect regions of one file. To leave the sources and build files of a whole sbt subproject as written, turn the plugin off for that subproject:
+
+```scala
+lazy val myProject = 
+  project
+    .in(file("myProject"))
+    .disablePlugins(DixtraPlugin)
+```
+
+The plugin then adds nothing to the subproject: its sources are not formatted on compile, and none of the `dixtraFormat*` or `dixtraCheck*` tasks run for it.

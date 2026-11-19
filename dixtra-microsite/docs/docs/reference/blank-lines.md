@@ -17,7 +17,7 @@ Some rules have no setting:
 
 The edges are after the opening `{` (or after the header, without braces) and before the closing `}`; a body without braces has no closing edge. For `package`, the edge is the blank line after the package clause.
 
-`always` — a blank line at both edges:
+`blank-lines.body-edges.<construct> = always` — a blank line at both edges:
 
 ```scala
 class A {
@@ -27,7 +27,7 @@ class A {
 }
 ```
 
-`never` — no blank line at the edges:
+`blank-lines.body-edges.<construct> = never` — no blank line at the edges:
 
 ```scala
 class A {
@@ -35,7 +35,7 @@ class A {
 }
 ```
 
-`keep` — as written, made to agree: a blank line at either edge means one at both. Written with a blank line only after the `{`, the class gets one before the `}` too:
+`blank-lines.body-edges.<construct> = keep` — as written, made to agree: a blank line at either edge means one at both. Written with a blank line only after the `{`, the class gets one before the `}` too:
 
 ```scala
 class A {
@@ -47,7 +47,7 @@ class A {
 
 By default the containers and the test blocks keep the blank lines the author wrote, the package clause is followed by one, and the other bodies never have any.
 
-`test-case` and `test-group` tell the tests from the groups of tests, so a configuration can give a blank line after `"a parser" should {` and none after `"parses a number" in {`:
+`blank-lines.body-edges.test-case` and `blank-lines.body-edges.test-group` tell the tests from the groups of tests, so a configuration can give a blank line after `"a parser" should {` and none after `"parses a number" in {`:
 
 ```scala
 "a parser" should {
@@ -63,9 +63,9 @@ A test case is a test block that holds no other test block; a group is one that 
 
 ## The blank line between two one-line definitions
 
-`between-alignment-groups` holds the blank line between two adjacent one-line definitions of different alignment groups (see [`alignment.assignment-groups`](alignment.md)). The examples are with `[[val], [def]]`.
+`blank-lines.between-alignment-groups` holds the blank line between two adjacent one-line definitions of different alignment groups (see [`alignment.assignment-groups`](alignment.md)). The examples are with `alignment.assignment-groups = [[val], [def]]`.
 
-`keep` — as written. `always`:
+`blank-lines.between-alignment-groups = keep` — as written. `blank-lines.between-alignment-groups = always`:
 
 ```scala
 val a = 1
@@ -73,7 +73,7 @@ val a = 1
 def b = 2
 ```
 
-`never`:
+`blank-lines.between-alignment-groups = never`:
 
 ```scala
 val a = 1
@@ -82,9 +82,9 @@ def b = 2
 
 ## The blank line before a scaladoc
 
-`before-scaladoc` holds the blank line before a scaladoc that follows a line of code.
+`blank-lines.before-scaladoc` holds the blank line before a scaladoc that follows a line of code.
 
-`always` — before every scaladoc, except a one-line scaladoc right after a line that opens a block. With `body-edges.class = keep`, a scaladoc at the start of a class gives both edges a blank line:
+`blank-lines.before-scaladoc = always` — before every scaladoc, except a one-line scaladoc right after a line that opens a block. With `blank-lines.body-edges.class = keep`, a scaladoc at the start of a class gives both edges a blank line:
 
 ```scala
 class Repository {
@@ -95,7 +95,7 @@ class Repository {
 }
 ```
 
-`always-multiline` — as `always`, for a multi-line scaladoc only; a one-line scaladoc stays as written, and does not count as a blank line at the start of a body:
+`blank-lines.before-scaladoc = always-multiline` — as `blank-lines.before-scaladoc = always`, for a multi-line scaladoc only; a one-line scaladoc stays as written, and does not count as a blank line at the start of a body:
 
 ```scala
 def a = 1
@@ -103,7 +103,7 @@ def a = 1
 def b = 2
 ```
 
-`keep` — as written. `never` — no blank line, a method's included; after a line that opens a block, `body-edges` decides:
+`blank-lines.before-scaladoc = keep` — as written. `blank-lines.before-scaladoc = never` — no blank line, a method's included; after a line that opens a block, `blank-lines.body-edges` decides:
 
 ```scala
 def a = 1
@@ -111,39 +111,39 @@ def a = 1
 def b = 2
 ```
 
-At the start of a body (a class, an object, a trait, an enum, an extension, a package), a scaladoc that gets a blank line counts as a blank line written at the opening edge, and `body-edges` decides.
+At the start of a body (a class, an object, a trait, an enum, an extension, a package), a scaladoc that gets a blank line counts as a blank line written at the opening edge, and `blank-lines.body-edges` decides.
 
 ## The settings
 
-| Setting                      | Default  |
-| ---------------------------- | -------- |
-| `body-edges.abstract-class`  | `keep`   |
-| `body-edges.block-argument`  | `never`  |
-| `body-edges.case-body`       | `never`  |
-| `body-edges.case-class`      | `keep`   |
-| `body-edges.class`           | `keep`   |
-| `body-edges.def`             | `never`  |
-| `body-edges.enum`            | `keep`   |
-| `body-edges.extension`       | `keep`   |
-| `body-edges.for`             | `never`  |
-| `body-edges.for-yield`       | `never`  |
-| `body-edges.given-alias`     | `never`  |
-| `body-edges.given-instance`  | `keep`   |
-| `body-edges.if`              | `never`  |
-| `body-edges.lambda-argument` | `never`  |
-| `body-edges.lambda-body`     | `never`  |
-| `body-edges.lazy-val`        | `never`  |
-| `body-edges.match`           | `never`  |
-| `body-edges.new-anonymous`   | `never`  |
-| `body-edges.object`          | `keep`   |
-| `body-edges.package`         | `always` |
-| `body-edges.package-object`  | `keep`   |
-| `body-edges.test-case`       | `keep`   |
-| `body-edges.test-group`      | `keep`   |
-| `body-edges.trait`           | `keep`   |
-| `body-edges.try`             | `never`  |
-| `body-edges.val`             | `never`  |
-| `body-edges.var`             | `never`  |
-| `body-edges.while`           | `never`  |
-| `between-alignment-groups`   | `keep`   |
-| `before-scaladoc`            | `always` |
+| Setting                                | Default  |
+| -------------------------------------- | -------- |
+| `blank-lines.body-edges.abstract-class`  | `keep`   |
+| `blank-lines.body-edges.block-argument`  | `never`  |
+| `blank-lines.body-edges.case-body`       | `never`  |
+| `blank-lines.body-edges.case-class`      | `keep`   |
+| `blank-lines.body-edges.class`           | `keep`   |
+| `blank-lines.body-edges.def`             | `never`  |
+| `blank-lines.body-edges.enum`            | `keep`   |
+| `blank-lines.body-edges.extension`       | `keep`   |
+| `blank-lines.body-edges.for`             | `never`  |
+| `blank-lines.body-edges.for-yield`       | `never`  |
+| `blank-lines.body-edges.given-alias`     | `never`  |
+| `blank-lines.body-edges.given-instance`  | `keep`   |
+| `blank-lines.body-edges.if`              | `never`  |
+| `blank-lines.body-edges.lambda-argument` | `never`  |
+| `blank-lines.body-edges.lambda-body`     | `never`  |
+| `blank-lines.body-edges.lazy-val`        | `never`  |
+| `blank-lines.body-edges.match`           | `never`  |
+| `blank-lines.body-edges.new-anonymous`   | `never`  |
+| `blank-lines.body-edges.object`          | `keep`   |
+| `blank-lines.body-edges.package`         | `always` |
+| `blank-lines.body-edges.package-object`  | `keep`   |
+| `blank-lines.body-edges.test-case`       | `keep`   |
+| `blank-lines.body-edges.test-group`      | `keep`   |
+| `blank-lines.body-edges.trait`           | `keep`   |
+| `blank-lines.body-edges.try`             | `never`  |
+| `blank-lines.body-edges.val`             | `never`  |
+| `blank-lines.body-edges.var`             | `never`  |
+| `blank-lines.body-edges.while`           | `never`  |
+| `blank-lines.between-alignment-groups`   | `keep`   |
+| `blank-lines.before-scaladoc`            | `always` |

@@ -50,8 +50,17 @@ The check tasks fail the build when a file is not formatted, which is what a CI 
 sbt dixtraCheckAll
 ```
 
-To check only the files that changed, and to keep the job fast:
+## Only the files that changed
+
+Formatting a whole project on every save is wasteful when only a few files changed. Both the plugin and the command line can restrict the work to the files that changed since a git ref:
+
+```scala
+// build.sbt
+dixtraChangedSince := Some("origin/main")
+```
 
 ```shell
-sbt "set dixtraChangedSince := Some(\"origin/main\")" dixtraCheckAll
+dixtra --changed-since origin/main src
 ```
+
+A file counts as changed when it was committed since the ref, has uncommitted changes, or is new and not ignored by git. With `HEAD`, only the uncommitted changes count.

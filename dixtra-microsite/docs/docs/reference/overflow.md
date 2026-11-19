@@ -7,17 +7,17 @@ title: Overflow
 
 What happens to what goes past `max-column`, when breaking the construct is not the answer.
 
-## `trailing-comment`
+## `overflow.trailing-comment`
 
-What happens to a line that goes past `max-column` only because of the comment at its end. Default `keep`.
+What happens to a line that goes past `max-column` only because of the comment at its end. Default `overflow.trailing-comment = keep`.
 
-`keep` — the line stays longer than `max-column`:
+`overflow.trailing-comment = keep` — the line stays longer than `max-column`:
 
 ```scala
 val total = prices.sum // a comment that does not fit
 ```
 
-`move-above` — the comment moves to a line of its own above the code, at its indent, wrapped if it is too long:
+`overflow.trailing-comment = move-above` — the comment moves to a line of its own above the code, at its indent, wrapped if it is too long:
 
 ```scala
 // a comment that does not fit
@@ -28,6 +28,6 @@ A trailing comment never counts in the width, so the code before it never breaks
 
 ## The settings
 
-| Setting            | Default | Values               |
-| ------------------ | ------- | -------------------- |
-| `trailing-comment` | `keep`  | `keep`, `move-above` |
+| Setting                       | Default | Values               |
+| ----------------------------- | ------- | -------------------- |
+| `overflow.trailing-comment`   | `keep`  | `keep`, `move-above` |

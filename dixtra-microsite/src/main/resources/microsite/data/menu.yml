@@ -2,9 +2,6 @@ options:
   - title: Introduction
     url: docs/index.html
 
-  - title: Setup
-    url: docs/setup.html
-
   - title: Using Dixtra
     url: docs/usage.html
 
@@ -37,17 +34,17 @@ options:
   - title: The sbt plugin
     url: docs/sbt-plugin.html
 
-  - title: Building from source
-    url: docs/building.html
+  - title: The VS Code extension
+    url: docs/vscode.html
 
   - title: The command line
     url: docs/command-line.html
 
-  - title: The VS Code extension
-    url: docs/vscode.html
-
   - title: Rules and limitations
     url: docs/rules.html
+
+  - title: Building from source
+    url: docs/building.html
 
   - title: Using Dixtra as a library
     url: docs/library.html
