@@ -1,0 +1,241 @@
+<!DOCTYPE html><html><head><title>Dixtra: Configuration</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="ColOfAbRiX" /><meta name="description" content="An opinionated formatter for Scala 3" /><meta name="og:image" content="/dixtra/img/poster.png" /><meta name="image" property="og:image" content="/dixtra/img/poster.png" /><meta name="og:title" content="Dixtra: Configuration" /><meta name="title" property="og:title" content="Dixtra: Configuration" /><meta name="og:site_name" content="Dixtra" /><meta name="og:url" content="https://colofabrix.github.io/dixtra/" /><meta name="og:type" content="website" /><meta name="og:description" content="An opinionated formatter for Scala 3" /><link rel="icon" type="image/png" href="/dixtra/img/favicon.png" /><meta name="twitter:title" content="Dixtra: Configuration" /><meta name="twitter:image" content="/dixtra/img/poster.png" /><meta name="twitter:description" content="An opinionated formatter for Scala 3" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/dixtra/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/dixtra/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/dixtra/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/dixtra/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/dixtra/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/dixtra/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/dixtra/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/dixtra/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/dixtra/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/dixtra/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/dixtra/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/dixtra/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/dixtra/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/dixtra/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/dixtra/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/dixtra/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/dixtra/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/dixtra/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/dixtra/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/dixtra/img/favicon310x150.png" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/dixtra/highlight/styles/atom-one-dark.css" /><link rel="stylesheet" href="/dixtra/css/light-style.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><div id="sidebar-brand"><a href="/dixtra/" class="brand"><div class="brand-wrapper"></div><span>Dixtra</span></a><button id="main-toggle" class="sidebar-toggle"><span class="close"></span></button></div><div class="sidebar-nav"> <div class="sidebar-nav-item  "><a href="/dixtra/docs/index.html" title="Introduction" class="">Introduction</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/usage.html" title="Using Dixtra" class="">Using Dixtra</a></div> <div class="sidebar-nav-item active open"><a href="/dixtra/docs/configuration.html" title="Configuration" class="drop-nested">Configuration</a><i class="fa fa-angle-right"></i><div class="sub-section"> <a href="/dixtra/docs/reference/braces.html" title="Braces" class="">Braces</a> <a href="/dixtra/docs/reference/body.html" title="Bodies" class="">Bodies</a> <a href="/dixtra/docs/reference/selector-chain.html" title="Selector chains" class="">Selector chains</a> <a href="/dixtra/docs/reference/alignment.html" title="Alignment" class="">Alignment</a> <a href="/dixtra/docs/reference/blank-lines.html" title="Blank lines" class="">Blank lines</a> <a href="/dixtra/docs/reference/call-site.html" title="Call sites" class="">Call sites</a> <a href="/dixtra/docs/reference/definition-site.html" title="Definition sites" class="">Definition sites</a> <a href="/dixtra/docs/reference/overflow.html" title="Overflow" class="">Overflow</a> <a href="/dixtra/docs/reference/housekeeping.html" title="Housekeeping" class="">Housekeeping</a> <a href="/dixtra/docs/reference/paths.html" title="Paths" class="">Paths</a> <a href="/dixtra/docs/reference/path-overrides.html" title="Path overrides" class="">Path overrides</a></div></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/sbt-plugin.html" title="The sbt plugin" class="">The sbt plugin</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/vscode.html" title="The VS Code extension" class="">The VS Code extension</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/command-line.html" title="The command line" class="">The command line</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/rules.html" title="Rules and limitations" class="">Rules and limitations</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/building.html" title="Building from source" class="">Building from source</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/library.html" title="Using Dixtra as a library" class="">Using Dixtra as a library</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/api.html" title="API documentation" class="">API documentation</a></div></div></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li class="search-nav"><div id="search-dropdown"><label><i class="fa fa-search"></i>Search</label><input id="search-bar" type="text" placeholder="Enter keywords here..." onclick="displayToggleSearch(event)" /><ul id="search-dropdown-content" class="dropdown dropdown-content"></ul></div></li><li id="gh-eyes-item" class="hidden-xs to-uppercase"><a href="https://github.com/ColOfAbRiX/dixtra" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye"></i><span>Watchers<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs to-uppercase"><a href="https://github.com/ColOfAbRiX/dixtra" target="_blank" rel="noopener noreferrer"><i class="fa fa-star-o"></i><span>Stars<span id="stars" class="label label-default">--</span></span></a></li></ul></div></div></div></div><div id="content" data-github-owner="ColOfAbRiX" data-github-repo="dixtra"><div class="content-wrapper"><section><h1 id="configuration">Configuration</h1>
+
+<p>Dixtra gets its configuration from <code class="highlighter-rouge">.dixtra.conf</code> files, written in <a href="https://github.com/lightbend/config/blob/master/HOCON.md">HOCON</a>, the format of the reference configuration of the command line.</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span>-<span class="n">version</span> = <span class="m">1</span>.<span class="m">0</span>.<span class="m">0</span>
+
+<span class="n">max</span>-<span class="n">column</span> = <span class="m">100</span>
+
+<span class="n">braces</span> { <span class="n">style</span> = <span class="n">stroustrup</span>, <span class="n">if</span> = <span class="n">force</span>-<span class="n">braces</span> }
+<span class="n">paths</span>.<span class="n">excluded</span> = [<span class="s2">"**/generated/**"</span>]
+</code></pre></div></div>
+
+<p>A project overrides only the settings it changes. Every setting that is not written keeps its default, listed with an example for every value in the <a href="#the-settings-reference">settings reference</a>.</p>
+
+<h2 id="which-file-applies">Which file applies</h2>
+
+<p>For each file it formats, Dixtra uses the nearest <code class="highlighter-rouge">.dixtra.conf</code> in the directory of the file, or in a directory above it. Without one, it uses the defaults.</p>
+
+<p>The lookup stops at the first configuration found: a <code class="highlighter-rouge">.dixtra.conf</code> in a subdirectory does not inherit the one of the directory above it. Put the settings that apply to a whole project in the configuration of its root, and the ones that apply to a subtree in the configuration of that subtree.</p>
+
+<h2 id="replacing-the-configuration">Replacing the configuration</h2>
+
+<p>A file given with <code class="highlighter-rouge">--config-path</code>, or text given with <code class="highlighter-rouge">--config-string</code>, replaces the lookup: no <code class="highlighter-rouge">.dixtra.conf</code> is read at all.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dixtra <span class="nt">--config-string</span> <span class="s2">"max-column = 80, braces.style = allman"</span> src
+dixtra <span class="nt">--config-path</span> build/.dixtra.conf src
+</code></pre></div></div>
+
+<p>The same options exist in the sbt plugin, as <code class="highlighter-rouge">dixtraConfig</code>.</p>
+
+<h2 id="the-top-level-settings">The top-level settings</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Setting</th>
+      <th>Default</th>
+      <th>What it does</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">config-version</code></td>
+      <td><code class="highlighter-rouge">1.0.0</code></td>
+      <td>The version of the schema of the configuration. A configuration without it is read as the current version; one written for a later version, or for another major version, is rejected instead of being half understood</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">max-column</code></td>
+      <td><code class="highlighter-rouge">120</code></td>
+      <td>The longest a line can be. A construct whose one-line form does not fit within this width breaks</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">compat213</code></td>
+      <td><code class="highlighter-rouge">false</code></td>
+      <td>Whether the output must also be valid Scala 2.13, for the sources of a project cross-compiled for Scala 2.13 and Scala 3</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="configuration-version">Configuration version</h3>
+
+<p>Dixtra follows <a href="https://semver.org/">Semantic versioning</a> where given a version number <code class="highlighter-rouge">MAJOR.MINOR.PATCH</code> the:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">MAJOR</code> version indicates incompatible API changes</li>
+  <li><code class="highlighter-rouge">MINOR</code> version indicates new functionalities in a backward compatible manner</li>
+  <li><code class="highlighter-rouge">PATCH</code> version indicates backward compatible bug fixes</li>
+</ul>
+
+<p>A configuration written for a another minor or path version of the same major version is guaranteed to be backward compatible.</p>
+
+<h3 id="column-width">Column width</h3>
+
+<p>This settings ensure that no line will exceed this width.</p>
+
+<h3 id="scala-213-compatibility">Scala 2.13 compatibility</h3>
+
+<p><code class="highlighter-rouge">compat213</code> keeps the output valid Scala 2.13 too, for the sources of a project cross-compiled for Scala 2.13 and Scala 3. When it is <code class="highlighter-rouge">true</code>, Dixtra enforces the settings that would otherwise write Scala 3 syntax, whatever the rest of the configuration says:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Setting</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">braces.&lt;construct&gt;</code></td>
+      <td><code class="highlighter-rouge">keep</code>, except <code class="highlighter-rouge">package</code> and <code class="highlighter-rouge">try</code>: <code class="highlighter-rouge">force-braces</code></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">braces.single-expr.&lt;construct&gt;</code></td>
+      <td><code class="highlighter-rouge">keep</code></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">body.semicolon-statements</code></td>
+      <td><code class="highlighter-rouge">keep</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="highlighter-rouge">braces.style</code>, <code class="highlighter-rouge">braces.imports</code> and the other body settings keep their values. A source that is valid Scala 2.13 too keeps the braces of the Scala 2 form, and a <code class="highlighter-rouge">package</code> clause and a <code class="highlighter-rouge">try</code> written without braces get them:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f</span> <span class="k">=</span> <span class="o">{</span>
+  <span class="nf">a</span><span class="o">()</span>
+  <span class="nf">b</span><span class="o">()</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>A source that is valid only in Scala 3 is still formatted, but the setting does not make it valid Scala 2.13. A source that is Scala 2 is still rejected. The setting can be set in a <a href="/dixtra/docs/reference/path-overrides.html"><code class="highlighter-rouge">path-overrides</code></a> entry, so only some files are formatted in compatibility mode.</p>
+
+<h2 id="the-settings-reference">The settings reference</h2>
+
+<p>The settings are split into one page per group. Each page lists the settings, their defaults and an example for every value they take.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Group</th>
+      <th>What it holds</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="/dixtra/docs/reference/braces.html">braces</a></td>
+      <td>The braces, the <code class="highlighter-rouge">end</code> markers or the indentation of every construct, and where the braces go</td>
+    </tr>
+    <tr>
+      <td><a href="/dixtra/docs/reference/body.html">body</a></td>
+      <td>Whether a body stays on the line of its separator, or goes below it</td>
+    </tr>
+    <tr>
+      <td><a href="/dixtra/docs/reference/selector-chain.html">selector-chain</a></td>
+      <td>When a chain of selections breaks, and how</td>
+    </tr>
+    <tr>
+      <td><a href="/dixtra/docs/reference/alignment.html">alignment</a></td>
+      <td>What lines up in columns</td>
+    </tr>
+    <tr>
+      <td><a href="/dixtra/docs/reference/blank-lines.html">blank-lines</a></td>
+      <td>The blank lines at the edges of the bodies, between groups and before the scaladocs</td>
+    </tr>
+    <tr>
+      <td><a href="/dixtra/docs/reference/call-site.html">call-site</a></td>
+      <td>The arguments of a call and the elements of a tuple: groups and commas</td>
+    </tr>
+    <tr>
+      <td><a href="/dixtra/docs/reference/definition-site.html">definition-site</a></td>
+      <td>The parameters of a <code class="highlighter-rouge">def</code> or of a class, and the selectors of an import: groups and commas</td>
+    </tr>
+    <tr>
+      <td><a href="/dixtra/docs/reference/overflow.html">overflow</a></td>
+      <td>What happens to what goes past <code class="highlighter-rouge">max-column</code></td>
+    </tr>
+    <tr>
+      <td><a href="/dixtra/docs/reference/housekeeping.html">housekeeping</a></td>
+      <td>The trailing whitespace, the line break at the end of the file, the line endings</td>
+    </tr>
+    <tr>
+      <td><a href="/dixtra/docs/reference/paths.html">paths</a></td>
+      <td>The files of a directory to format</td>
+    </tr>
+    <tr>
+      <td><a href="/dixtra/docs/reference/path-overrides.html">path-overrides</a></td>
+      <td>Other settings for some of the files</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="settings-for-some-files">Settings for some files</h2>
+
+<p><code class="highlighter-rouge">path-overrides</code> gives some files other settings. Each key is a glob, with the syntax of <code class="highlighter-rouge">paths</code> (<code class="highlighter-rouge">*</code>, <code class="highlighter-rouge">**</code>, <code class="highlighter-rouge">?</code>), and its section holds the settings of the files it matches:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">path</span>-<span class="n">overrides</span> {
+  <span class="s2">"src/main/scala/legacy/**"</span> { <span class="n">trailing</span>-<span class="n">commas</span> = <span class="n">never</span> }
+  <span class="s2">"build.sbt"</span> { <span class="n">housekeeping</span>.<span class="n">enforce</span>-<span class="n">eof</span> = <span class="n">false</span> }
+}
+</code></pre></div></div>
+
+<ul>
+  <li><strong>Globs</strong> are relative to the directory of the configuration file that declares them, or to the working directory for <code class="highlighter-rouge">--config-string</code>. A file outside that directory never matches. A glob holding a <code class="highlighter-rouge">.</code> must be quoted, or HOCON reads the <code class="highlighter-rouge">.</code> as a section separator.</li>
+  <li><strong>Settings.</strong> A section can set any setting or alias but <code class="highlighter-rouge">paths</code>, <code class="highlighter-rouge">config-version</code> and <code class="highlighter-rouge">path-overrides</code>: those are ignored with a warning, as unknown settings are.</li>
+  <li><strong>Precedence.</strong> A file gets the settings of every glob its path matches, over the rest of the configuration: a setting in an override beats the same setting written outside <code class="highlighter-rouge">path-overrides</code>, directly or through an alias.</li>
+  <li><strong>Conflicts.</strong> Two matching globs that give a setting different values fail that file only, with the error <code class="highlighter-rouge">&lt;setting&gt; is set to different values by path-overrides."&lt;glob&gt;" and path-overrides."&lt;glob&gt;"</code>. An invalid value in an override fails the whole configuration.</li>
+</ul>
+
+<p>The details of the globs are in <a href="/dixtra/docs/reference/path-overrides.html">path overrides</a>.</p>
+
+<h1 id="ignoring-the-formatting">Ignoring the formatting</h1>
+
+<p>The code between a <code class="highlighter-rouge">dixtra: off</code> comment and a <code class="highlighter-rouge">dixtra: on</code> comment stays exactly as written:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">Matrices</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="nv">a</span> <span class="k">=</span> <span class="mi">1</span>
+
+  <span class="c1">// dixtra: off</span>
+  <span class="k">val</span> <span class="nv">identity</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span>
+    <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span>
+    <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span>
+  <span class="o">)</span>
+  <span class="c1">// dixtra: on</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li><strong>Unclosed regions.</strong> Without a <code class="highlighter-rouge">dixtra: on</code>, the region runs to the end of the file. A <code class="highlighter-rouge">// dixtra: off</code> at the top of a file leaves the whole file as written.</li>
+  <li><strong>Nesting.</strong> An <code class="highlighter-rouge">off</code> inside a region, or an <code class="highlighter-rouge">on</code> outside one, does nothing.</li>
+  <li><strong>The markers themselves</strong> are laid out like any other comment. Only the code between them is protected.</li>
+</ul>
+
+<h2 id="disabling-dixtra-for-a-subproject">Disabling Dixtra for a subproject</h2>
+
+<p>The <code class="highlighter-rouge">dixtra: off</code> markers protect regions of one file. To leave the sources and build files of a whole sbt subproject as written, turn the plugin off for that subproject:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">lazy</span> <span class="k">val</span> <span class="nv">myProject</span> <span class="k">=</span> 
+  <span class="n">project</span>
+    <span class="o">.</span><span class="py">in</span><span class="o">(</span><span class="nf">file</span><span class="o">(</span><span class="s">"myProject"</span><span class="o">))</span>
+    <span class="o">.</span><span class="py">disablePlugins</span><span class="o">(</span><span class="nc">DixtraPlugin</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>The plugin then adds nothing to the subproject: its sources are not formatted on compile, and none of the <code class="highlighter-rouge">dixtraFormat*</code> or <code class="highlighter-rouge">dixtraCheck*</code> tasks run for it.</p>
+</section></div></div></div></div><script src="/dixtra/highlight/highlight.pack.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/languages/conf.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/languages/text.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/languages/shell.min.js"></script><script src="/dixtra/lunr/lunr.js"></script><script>
+// For all code blocks, copy the language from the containing div
+// to the inner code tag (where hljs expects it to be)
+const langPrefix = 'language-';
+document.querySelectorAll(`div[class^='${langPrefix}']`).forEach(function(div) {
+  div.classList.forEach(function(cssClass) {
+    if (cssClass.startsWith(langPrefix)) {
+      const lang = cssClass.substring(langPrefix.length);
+      div.querySelectorAll('pre code').forEach(function(code) {
+        code.classList.add(lang);
+      });
+    }
+  });
+});
+
+hljs.configure({languages:['scala','java','bash','scala','conf','text','shell']});
+hljs.initHighlightingOnLoad();
+      </script><script>console.info('\x57\x65\x62\x73\x69\x74\x65\x20\x62\x75\x69\x6c\x74\x20\x77\x69\x74\x68\x3a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x5f\x5f\x0a\x20\x20\x20\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x5f\x20\x20\x2f\x20\x2f\x5f\x20\x20\x20\x20\x20\x20\x5f\x5f\x5f\x5f\x20\x5f\x5f\x5f\x20\x20\x28\x5f\x29\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x28\x5f\x29\x20\x2f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x0a\x20\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x60\x5f\x5f\x20\x5c\x2f\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x20\x2f\x20\x5f\x5f\x2f\x20\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x0a\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x5f\x2f\x20\x2f\x20\x2f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x5f\x5f\x2f\x20\x2f\x20\x20\x2f\x20\x2f\x5f\x2f\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x20\x2f\x5f\x2f\x20\x20\x5f\x5f\x28\x5f\x5f\x20\x20\x29\x0a\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2e\x5f\x5f\x5f\x2f\x5c\x5f\x5f\x2f\x20\x20\x20\x20\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x2f\x20\x20\x20\x5c\x5f\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x0a\x0a\x68\x74\x74\x70\x73\x3a\x2f\x2f\x34\x37\x64\x65\x67\x2e\x67\x69\x74\x68\x75\x62\x2e\x69\x6f\x2f\x73\x62\x74\x2d\x6d\x69\x63\x72\x6f\x73\x69\x74\x65\x73')</script><script src="/dixtra/js/search.js"></script><script src="/dixtra/js/docs.js"></script></body></html>
