@@ -19,6 +19,7 @@ object ReferenceDocs {
     outputTo: Int,
     output: List[String],
     trailer: List[(String, String)],
+    sameAs: Option[String],
   )
 
   final case class Section(
@@ -49,6 +50,9 @@ object ReferenceDocs {
 
   private val trailerPrefix =
     "//"
+
+  private val sameOutputPattern: Regex =
+    """^<!-- same-output-as: ([^ ]+) -->$""".r
 
   def loadPages(dir: Path): List[Page] =
     if !Files.isDirectory(dir) then
@@ -139,7 +143,7 @@ object ReferenceDocs {
 
     findFence(body) match {
       case None =>
-        Subsection(key, value, -1, -1, Nil, Nil)
+        Subsection(key, value, -1, -1, Nil, Nil, None)
       case Some((open, close)) =>
         val block        = body.slice(open + 1, close)
         val markerIndex  = block.indexWhere(_ == trailerMarker)
@@ -160,8 +164,9 @@ object ReferenceDocs {
             .flatMap(splitAssignment)
 
         val outputFrom = start + 1 + open + 1
+        val sameAs = body.take(open).flatMap { case sameOutputPattern(other) => Some(other) case _ => None }.headOption
 
-        Subsection(key, value, outputFrom, outputFrom + rawOutput.size, output, entries)
+        Subsection(key, value, outputFrom, outputFrom + rawOutput.size, output, entries, sameAs)
     }
 
   private def findFence(lines: List[String]): Option[(Int, Int)] =

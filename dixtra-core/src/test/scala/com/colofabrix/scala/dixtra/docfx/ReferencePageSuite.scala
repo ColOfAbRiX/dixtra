@@ -1,7 +1,6 @@
 package com.colofabrix.scala.dixtra.docfx
 
 import com.colofabrix.scala.dixtra.docfx.ReferenceDocs.{ loadPages, Page }
-
 import java.nio.file.{ Files, Path }
 
 /**
@@ -15,13 +14,28 @@ object ReferencePageSuite {
   private val relativeDocs = Path.of("dixtra-microsite", "docs", "docs", "reference")
 
   val docsDir: Option[Path] =
-    val explicit = sys.props.get("dixtra.docsDir").toList.map(Path.of(_))
+    val explicit =
+      sys
+        .props
+        .get("dixtra.docsDir")
+        .toList
+        .map(Path.of(_))
+        
     explicit
       .concat(ancestors(Path.of(sys.props.getOrElse("user.dir", ".")).toAbsolutePath).map(_.resolve(relativeDocs)))
       .find(Files.isDirectory(_))
 
   val writeMode: Boolean =
-    sys.props.get("dixtra.docs.write").contains("true")
+    sys
+      .props
+      .get("dixtra.docs.write")
+      .contains("true") || sys.env.get("DIXTRA_DOCS_WRITE").contains("true")
+
+  def referencePages: List[Page] =
+    docsDir
+      .toList
+      .flatMap(loadPages)
+      .filter(_.sections.flatMap(_.subsections).nonEmpty)
 
   def page(name: String): Either[String, Page] =
     docsDir match {

@@ -2,7 +2,6 @@ package com.colofabrix.scala.dixtra.docfx
 
 import com.colofabrix.scala.dixtra.{ Config, Dixtra }
 import com.colofabrix.scala.dixtra.docfx.ReferenceDocs.{ Page, Section, Subsection }
-
 import java.nio.file.Files
 
 /**
@@ -73,7 +72,7 @@ object ReferenceDocsChecker {
   private def validateSubsection(settings: SettingsResolver, section: Section, subsection: Subsection): List[String] =
     val label           = s"${subsection.key} = ${subsection.value}"
     val fenceProblems   = if subsection.outputFrom < 0 then List(s"$label: no scala code block") else Nil
-    val trailerProblems = validateTrailer(label, section.key, subsection)
+    val trailerProblems = validateTrailer(settings, label, section.key, subsection)
 
     val outputProblems =
       section.before match {
@@ -94,13 +93,34 @@ object ReferenceDocsChecker {
 
     fenceProblems ++ trailerProblems ++ outputProblems
 
-  private def validateTrailer(label: String, sectionKey: String, subsection: Subsection): List[String] =
+  private def validateTrailer(
+    settings: SettingsResolver,
+    label: String,
+    sectionKey: String,
+    subsection: Subsection,
+  ): List[String] =
     val keys     = subsection.trailer.map(_._1)
-    val expected = List("max-column", sectionKey)
+    val required = List("max-column", sectionKey)
 
-    val keyProblems =
-      if keys == expected then Nil
-      else List(s"$label: settings block is ${keys.mkString(", ")}, expected ${expected.mkString(", ")}")
+    val missingProblems =
+      required
+        .filterNot(keys.contains)
+        .map(key => s"$label: settings block is missing '$key', it holds ${keys.mkString(", ")}")
+
+    val orderProblems =
+      keys.headOption.filter(_ != "max-column").map(_ => s"$label: settings block must start with 'max-column'").toList
+
+    val extraProblems =
+      keys
+        .filterNot(required.contains)
+        .flatMap { key =>
+          settings.default(key) match {
+            case None => List(s"$label: unknown setting '$key' in the settings block")
+            case Some(default) if subsection.trailer.toMap.get(key).contains(default) =>
+              List(s"$label: settings block lists '$key' at its default value '$default'")
+            case Some(_) => Nil
+          }
+        }
 
     val valueProblems =
       subsection
@@ -110,7 +130,7 @@ object ReferenceDocsChecker {
             s"$label: settings block says $key = $value, heading says ${subsection.value}"
         }
 
-    keyProblems ++ valueProblems
+    missingProblems ++ orderProblems ++ extraProblems ++ valueProblems
 
   private def distinctnessProblems(page: Page): List[String] =
     page
@@ -121,12 +141,28 @@ object ReferenceDocsChecker {
           .groupBy(_.key)
           .toList
           .flatMap { case (key, subsections) =>
-            subsections
-              .groupBy(_.output)
-              .collect {
-                case (_, group) if group.size > 1 =>
-                  s"$key: values ${group.map(_.value).sorted.mkString(", ")} render identically"
+            val (declared, independent) = subsections.partition(_.sameAs.isDefined)
+
+            val declarationProblems =
+              declared.flatMap { subsection =>
+                subsections.find(_.value == subsection.sameAs.getOrElse("")) match {
+                  case None =>
+                    List(s"$key = ${subsection.value}: declares the output of '${subsection.sameAs.getOrElse("")}', which is not a value of the setting")
+                  case Some(other) if other.output != subsection.output =>
+                    List(s"$key = ${subsection.value}: should render as '${other.value}' but does not")
+                  case Some(_) => Nil
+                }
               }
+
+            val duplicateProblems =
+              independent
+                .groupBy(_.output)
+                .collect {
+                  case (_, group) if group.size > 1 =>
+                    s"$key: values ${group.map(_.value).sorted.mkString(", ")} render identically"
+                }
+
+            declarationProblems ++ duplicateProblems
           }
       }
 
@@ -145,10 +181,7 @@ object ReferenceDocsChecker {
         .linesIterator
         .toList
 
-  private def configOf(
-    settings: SettingsResolver,
-    trailer: List[(String, String)],
-  ): Either[String, Config] =
+  private def configOf(settings: SettingsResolver, trailer: List[(String, String)]): Either[String, Config] =
     trailer.foldLeft[Either[String, Config]](Right(Config.default)) { case (accumulated, (key, value)) =>
       for
         config  <- accumulated

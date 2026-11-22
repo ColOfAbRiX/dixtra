@@ -3,7 +3,6 @@ package com.colofabrix.scala.dixtra.docfx
 import com.colofabrix.scala.dixtra.docfx.ReferenceDocs.{ parsePage, Page }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
 import java.nio.file.Files
 
 object ReferenceDocsCheckerSpec {

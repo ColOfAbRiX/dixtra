@@ -29,6 +29,20 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Cache the sbt boot and the coursier caches
+        uses: actions/cache@v6
+        with:
+          # The launcher of the sbt 1.13 sub-build keeps its boot jars where neither setup-java nor
+          # setup-sbt cache them; without them it downloads sbt 1.13.0 from Maven Central, which
+          # rate-limits GitHub-hosted runners with HTTP 429 (run 44579525829)
+          path: |
+            ~/.sbt/boot
+            ~/.cache/coursier/v1
+            ~/.coursier/v1
+          key: microsite-sbt-${{ hashFiles('dixtra-microsite/project/build.properties', 'dixtra-microsite/project/plugins.sbt') }}
+          restore-keys: |
+            microsite-sbt-
+
       - name: Set up JDK 21
         uses: actions/setup-java@v6
         with:

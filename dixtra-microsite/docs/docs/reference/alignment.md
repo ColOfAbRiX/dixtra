@@ -5,188 +5,418 @@ title: Alignment
 
 # Alignment
 
-What lines up in columns. Every setting is in [the settings table](#the-settings).
+What lines up in columns.
 
-Only adjacent one-line items align: a blank line, an item over several lines or any other statement ends a group of aligned items (see also [`alignment.across-comments`](#alignmentacross-comments)). An item that would not fit once aligned breaks instead, and the items before and after it align separately.
+Only adjacent one-line items align: a blank line, an item over several lines or any other statement ends a group of aligned items.
+
+An item that would not fit once aligned breaks instead, and the items before and after it align separately.
 
 ## `alignment.assignment-groups`
 
-The groups of keywords whose adjacent one-line definitions align their `=`. The keywords are `val`, `lazy-val`, `var`, `def`, `given-alias` and `type-def`. A keyword is in at most one group, and a keyword in no group never aligns and ends the groups around it. Default `alignment.assignment-groups = [[val, lazy-val, var, def]]`.
+**Default:** `[[val, lazy-val, var, def]]`.
 
-With the default:
+The groups of keywords whose adjacent one-line definitions align their `=`. The keywords are `val`, `lazy-val`, `var`, `def`, `given-alias` and `type-def`. A keyword is in at most one group, and a keyword in no group never aligns and ends the groups around it.
 
-```scala
-val name       = "dixtra"
-var count      = 0
-def totalCount = count * 2
-```
-
-With `alignment.assignment-groups = [[val, var], [def]]`, the `def` aligns with neither:
+Before:
 
 ```scala
-val name  = "dixtra"
-var count = 0
-def totalCount = count * 2
+val a = 1
+var bb = 2
+val c = 3
+def dddd = 4
 ```
 
-With `alignment.assignment-groups = [[val, def]]`, the `var` aligns with nothing, and the definitions before and after it align separately:
+### `alignment.assignment-groups = [[val, lazy-val, var, def]]`
+
+All four keywords are in one group, so the three definitions align their `=`:
 
 ```scala
-val name = "dixtra"
-var count = 0
-val totalCount = count * 2
-def f          = 1
+val a    = 1
+var bb   = 2
+val c    = 3
+def dddd = 4
+
+// With settings:
+//   max-column = 80
+//   alignment.assignment-groups = [[val, lazy-val, var, def]]
 ```
 
-With `alignment.assignment-groups = []`, no definition aligns.
+### `alignment.assignment-groups = [[val, var], [def]]`
+
+The `def` is in a group of its own, so it aligns with neither `val` nor `var`:
+
+```scala
+val a  = 1
+var bb = 2
+val c  = 3
+def dddd = 4
+
+// With settings:
+//   max-column = 80
+//   alignment.assignment-groups = [[val, var], [def]]
+```
+
+### `alignment.assignment-groups = [[val, def]]`
+
+The `var` is in no group, so it never aligns and ends the groups around it:
+
+```scala
+val a = 1
+var bb = 2
+val c    = 3
+def dddd = 4
+
+// With settings:
+//   max-column = 80
+//   alignment.assignment-groups = [[val, def]]
+```
+
+### `alignment.assignment-groups = []`
+
+No keyword is in a group, so no definition aligns:
+
+```scala
+val a = 1
+var bb = 2
+val c = 3
+
+def dddd = 4
+
+// With settings:
+//   max-column = 80
+//   alignment.assignment-groups = []
+```
 
 ## `alignment.operators`
 
-The operators that align column by column. Default `alignment.operators = ["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]`.
+**Default:** `["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]`.
 
-They align in adjacent one-line statements, in adjacent one-line elements of a list laid out one per line, and in an operation that is the only argument of a call statement. The named arguments follow [`alignment.named-arguments`](#alignmentnamed-arguments) instead.
+The operators that align column by column in adjacent one-line statements, and in adjacent one-line elements of a list laid out one per line. The named arguments follow [`alignment.named-arguments`](#alignmentnamed-arguments) instead.
 
-```scala
-total += x
-n     = 0
-```
+Before:
 
 ```scala
-Seq(
-  "org.typelevel" %% "cats-core" % "2.13.0",
-  "co.fs2"        %% "fs2-io"    % "3.13.0",
-)
+def run(): Unit =
+  total += x
+  n = 0
 ```
 
-With `alignment.operators = []`, no operator aligns.
+### `alignment.operators = ["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]`
+
+The `=` of the two statements aligns with the `+=`:
+
+```scala
+def run(): Unit =
+  total += x
+  n     = 0
+
+// With settings:
+//   max-column = 80
+//   alignment.operators = ["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]
+```
+
+### `alignment.operators = []`
+
+No operator aligns:
+
+```scala
+def run(): Unit =
+  total += x
+  n = 0
+
+// With settings:
+//   max-column = 80
+//   alignment.operators = []
+```
 
 ## `alignment.arrows.cases`
 
-Whether the `=>` of adjacent one-line cases align. Default `alignment.arrows.cases = true`.
+**Default:** `true`.
+
+Whether the `=>` of adjacent one-line cases align.
+
+Before:
 
 ```scala
-case Some(value) => value
-case None        => default
+def f(value: Option[Int]) = value match
+  case Some(value) => value
+  case None => default
 ```
 
-With `alignment.arrows.cases = false`:
+### `alignment.arrows.cases = true`
+
+The `=>` of the two cases align:
 
 ```scala
-case Some(value) => value
-case None => default
+def f(value: Option[Int]) =
+  value match {
+    case Some(value) => value
+    case None        => default
+  }
+
+// With settings:
+//   max-column = 80
+//   alignment.arrows.cases = true
+```
+
+### `alignment.arrows.cases = false`
+
+Each `=>` stays after its own pattern:
+
+```scala
+def f(value: Option[Int]) =
+  value match {
+    case Some(value) => value
+    case None => default
+  }
+
+// With settings:
+//   max-column = 80
+//   alignment.arrows.cases = false
 ```
 
 ## `alignment.arrows.pairs`
 
-Whether the `->` of the `a -> b` elements of a list laid out one per line align. Default `alignment.arrows.pairs = true`.
+**Default:** `true`.
+
+Whether the `->` of the `a -> b` elements of a list laid out one per line align.
+
+Before:
 
 ```scala
-Map(
-  "one"   -> 1,
-  "three" -> 3,
-)
-```
-
-With `alignment.arrows.pairs = false`:
-
-```scala
-Map(
+val m = Map(
   "one" -> 1,
   "three" -> 3,
 )
 ```
 
-## `alignment.arrows.for-enumerators`
+### `alignment.arrows.pairs = true`
 
-Whether the `<-` and the `=` of the enumerators of a `for` align. Default `alignment.arrows.for-enumerators = true`.
+The `->` of the two elements align:
 
 ```scala
-for
-  user     <- users
-  userCount = users.size
-  account  <- accounts(user)
-yield account
+val m =
+  Map(
+    "one"   -> 1,
+    "three" -> 3,
+  )
+
+// With settings:
+//   max-column = 80
+//   alignment.arrows.pairs = true
 ```
 
-With `alignment.arrows.for-enumerators = false`:
+### `alignment.arrows.pairs = false`
+
+Each `->` stays after its own key:
 
 ```scala
-for
-  user <- users
-  userCount = users.size
-  account <- accounts(user)
-yield account
+val m =
+  Map(
+    "one" -> 1,
+    "three" -> 3,
+  )
+
+// With settings:
+//   max-column = 80
+//   alignment.arrows.pairs = false
+```
+
+## `alignment.arrows.for-enumerators`
+
+**Default:** `true`.
+
+Whether the `<-` and the `=` of the enumerators of a `for` align.
+
+Before:
+
+```scala
+def f =
+  for
+    user <- users
+    userCount = users.size
+    account <- accounts(user)
+  yield account
+```
+
+### `alignment.arrows.for-enumerators = true`
+
+The `<-` and the `=` of the three enumerators align:
+
+```scala
+def f =
+  for
+    user     <- users
+    userCount = users.size
+    account  <- accounts(user)
+  yield account
+
+// With settings:
+//   max-column = 80
+//   alignment.arrows.for-enumerators = true
+```
+
+### `alignment.arrows.for-enumerators = false`
+
+Each enumerator keeps its own spacing:
+
+```scala
+def f =
+  for
+    user <- users
+    userCount = users.size
+    account <- accounts(user)
+  yield account
+
+// With settings:
+//   max-column = 80
+//   alignment.arrows.for-enumerators = false
 ```
 
 ## `alignment.extends-clauses`
 
-Whether the `extends` of adjacent one-line definitions (classes, objects, traits, enum cases) align. Default `alignment.extends-clauses = true`.
+**Default:** `true`.
+
+Whether the `extends` of adjacent one-line definitions (classes, objects, traits, enum cases) align.
+
+Before:
 
 ```scala
-case Red   extends Color("red")
-case Green extends Color("green")
+enum Color:
+  case Red extends Color("red")
+  case Green extends Color("green")
 ```
 
-With `alignment.extends-clauses = false`:
+### `alignment.extends-clauses = true`
+
+The `extends` of the two cases align:
 
 ```scala
-case Red extends Color("red")
-case Green extends Color("green")
+enum Color {
+  case Red   extends Color("red")
+  case Green extends Color("green")
+}
+
+// With settings:
+//   max-column = 80
+//   alignment.extends-clauses = true
+```
+
+### `alignment.extends-clauses = false`
+
+Each `extends` follows its own name:
+
+```scala
+enum Color {
+  case Red extends Color("red")
+  case Green extends Color("green")
+}
+
+// With settings:
+//   max-column = 80
+//   alignment.extends-clauses = false
 ```
 
 ## `alignment.named-arguments`
 
-Whether the `=` of adjacent one-line named arguments align, in a call laid out one argument per line. Default `alignment.named-arguments = false`.
+**Default:** `false`.
 
-With `alignment.named-arguments = true`:
+Whether the `=` of adjacent one-line named arguments align, in a call laid out one argument per line.
 
-```scala
-MyCaseClass(
-  aaa  = "",
-  name = 123,
-)
-```
-
-With `alignment.named-arguments = false`:
+Before:
 
 ```scala
-MyCaseClass(
+val c = MyCaseClass(
   aaa = "",
   name = 123,
 )
 ```
 
-## `alignment.trailing-comments`
+### `alignment.named-arguments = true`
 
-Whether the comments at the end of consecutive lines of code start on one column, one space after the longest code. A line without a trailing comment ends the group. Default `alignment.trailing-comments = false`.
+Currently written like `false`.
 
-With `alignment.trailing-comments = true`:
+<!-- same-output-as: false -->
+
+The `=` of the two named arguments align:
 
 ```scala
-run(1)     // one
-compute(2) // two
+val c =
+  MyCaseClass(
+    aaa = "",
+    name = 123,
+  )
+
+// With settings:
+//   max-column = 80
+//   alignment.named-arguments = true
 ```
 
-With `alignment.trailing-comments = false`:
+### `alignment.named-arguments = false`
+
+Each `=` follows its own name:
 
 ```scala
-run(1) // one
-compute(2) // two
+val c =
+  MyCaseClass(
+    aaa = "",
+    name = 123,
+  )
+
+// With settings:
+//   max-column = 80
+//   alignment.named-arguments = false
+```
+
+## `alignment.trailing-comments`
+
+**Default:** `false`.
+
+Whether the comments at the end of consecutive lines of code start on one column, one space after the longest code. A line without a trailing comment ends the group.
+
+Before:
+
+```scala
+def run(): Unit =
+  run(1) // one
+  compute(2) // two
+```
+
+### `alignment.trailing-comments = true`
+
+The two comments start on one column:
+
+```scala
+def run(): Unit =
+  run(1)     // one
+  compute(2) // two
+
+// With settings:
+//   max-column = 80
+//   alignment.trailing-comments = true
+```
+
+### `alignment.trailing-comments = false`
+
+Each comment follows its own code:
+
+```scala
+def run(): Unit =
+  run(1) // one
+  compute(2) // two
+
+// With settings:
+//   max-column = 80
+//   alignment.trailing-comments = false
 ```
 
 ## `alignment.across-comments`
 
-Whether a comment on its own line between two items keeps them in one group. The items are definitions, statements, cases and list elements. A blank line still ends a group, and the enumerators of a `for` always align across comments. Default `alignment.across-comments = false`.
+**Default:** `false`.
 
-With `alignment.across-comments = true`, one group:
+Whether a comment on its own line between two items keeps them in one group. The items are definitions, statements, cases and list elements. A blank line still ends a group, and the enumerators of a `for` always align across comments.
 
-```scala
-val a   = 1
-// note
-val bbb = 2
-```
-
-With `alignment.across-comments = false`, two groups:
+Before:
 
 ```scala
 val a = 1
@@ -194,21 +424,41 @@ val a = 1
 val bbb = 2
 ```
 
-## `alignment.scaladoc.tags`
+### `alignment.across-comments = true`
 
-Whether the descriptions of the tags of a scaladoc start on one column. Wrapped description lines continue under the start of their description. Default `alignment.scaladoc.tags = false`.
-
-With `alignment.scaladoc.tags = true`:
+The comment does not end the group, so the two definitions align:
 
 ```scala
-/**
- * @param source The source text.
- * @param width  The maximum width.
- * @return       The formatted text.
- */
+val a   = 1
+// note
+val bbb = 2
+
+// With settings:
+//   max-column = 80
+//   alignment.across-comments = true
 ```
 
-With `alignment.scaladoc.tags = false`:
+### `alignment.across-comments = false`
+
+The comment ends the group, so the definitions align on their own:
+
+```scala
+val a = 1
+// note
+val bbb = 2
+
+// With settings:
+//   max-column = 80
+//   alignment.across-comments = false
+```
+
+## `alignment.scaladoc.tags`
+
+**Default:** `false`.
+
+Whether the descriptions of the tags of a scaladoc start on one column. Wrapped description lines continue under the start of their description.
+
+Before:
 
 ```scala
 /**
@@ -216,19 +466,39 @@ With `alignment.scaladoc.tags = false`:
  * @param width The maximum width.
  * @return The formatted text.
  */
+def f(source: String, width: Int): String = ???
 ```
 
-## The settings
+### `alignment.scaladoc.tags = true`
 
-| Setting                          | Default                                                        | Values                      |
-| -------------------------------- | -------------------------------------------------------------- | --------------------------- |
-| `alignment.assignment-groups`    | `[[val, lazy-val, var, def]]`                                  | a list of lists of keywords |
-| `alignment.operators`            | `["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]` | a list of operators         |
-| `alignment.arrows.cases`         | `true`                                                         | `true`, `false`             |
-| `alignment.arrows.pairs`         | `true`                                                         | `true`, `false`             |
-| `alignment.arrows.for-enumerators` | `true`                                                       | `true`, `false`             |
-| `alignment.extends-clauses`      | `true`                                                         | `true`, `false`             |
-| `alignment.named-arguments`      | `false`                                                        | `true`, `false`             |
-| `alignment.trailing-comments`    | `false`                                                        | `true`, `false`             |
-| `alignment.across-comments`      | `false`                                                        | `true`, `false`             |
-| `alignment.scaladoc.tags`        | `false`                                                        | `true`, `false`             |
+The descriptions start on one column:
+
+```scala
+/**
+ * @param source The source text.
+ * @param width  The maximum width.
+ * @return       The formatted text.
+ */
+def f(source: String, width: Int): String = ???
+
+// With settings:
+//   max-column = 80
+//   alignment.scaladoc.tags = true
+```
+
+### `alignment.scaladoc.tags = false`
+
+Each description follows its own tag:
+
+```scala
+/**
+ * @param source The source text.
+ * @param width The maximum width.
+ * @return The formatted text.
+ */
+def f(source: String, width: Int): String = ???
+
+// With settings:
+//   max-column = 80
+//   alignment.scaladoc.tags = false
+```

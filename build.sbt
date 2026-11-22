@@ -8,6 +8,7 @@ val scala3Version = "3.9.0"
 val sbtScalaVersion = "3.8.4"
 
 ThisBuild / organization := "com.colofabrix.scala"
+ThisBuild / version      := "1.0.0-RC1"
 
 Global / run / fork := true
 Global / tpolecatExcludeOptions ++=
@@ -35,6 +36,41 @@ lazy val scala3Settings =
     Test / scalacOptions ~= (_.filterNot(_.startsWith("-P:wartremover:"))),
   )
 
+// The settings for publishing to Maven Central, via the Sonatype Central Portal
+// (scala-sbt.org/2.x/docs/en/recipes/central.html). `publishSigned` stages the signed artifacts locally, then
+// `sonaUpload` (or `sonaRelease`) uploads them to the Central Portal.
+lazy val publishSettings =
+  Seq(
+    homepage             := Some(uri("https://github.com/ColOfAbRiX/dixtra")),
+    organizationName     := "ColOfAbRiX",
+    organizationHomepage := Some(uri("https://github.com/ColOfAbRiX")),
+    licenses             := List(License.MIT),
+    scmInfo              := Some(
+      ScmInfo(
+        uri("https://github.com/ColOfAbRiX/dixtra"),
+        "scm:git@github.com:ColOfAbRiX/dixtra.git",
+      ),
+    ),
+    developers           := List(
+      Developer(
+        "ColOfAbRiX",
+        "Fabrizio Colonna",
+        "colofabrix@tin.it",
+        uri("https://github.com/ColOfAbRiX"),
+      ),
+    ),
+    pomIncludeRepository := { _ => false },
+    publishMavenStyle    := true,
+    // The Central Portal rejects the legacy POM style of sbt plugins, so disable it for all the published projects
+    sbtPluginPublishLegacyMavenStyle := false,
+    versionScheme        := Some("early-semver"),
+    publishTo            := {
+      val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+      if (version.value.endsWith("-SNAPSHOT")) Some("central-snapshots" at centralSnapshots)
+      else localStaging.value
+    },
+  )
+
 // The build: it only aggregates the projects. `run` runs the command line.
 lazy val dixtra =
   project
@@ -54,14 +90,16 @@ lazy val dixtraCore =
     .in(file("dixtra-core"))
     .settings(scala3Settings)
     .settings(
-      name    := "dixtra-core",
-      version := "1.0.0-RC1",
+      name        := "dixtra-core",
+      version     := "1.0.0-RC1",
+      description := "The dixtra formatter for Scala 3: the formatting of a source text by a configuration.",
       libraryDependencies ++= List(
         "org.scalameta" %% "scalameta"                % "4.17.4",
         "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.20" % Test,
         "org.scalatest" %% "scalatest-wordspec"       % "3.2.20" % Test,
       ),
     )
+    .settings(publishSettings)
 
 // The command line: the configuration files, the files to format and the reports, on top of the formatter.
 // `nativeImage` builds it as a GraalVM native executable (see project/NativeImage.scala).
@@ -74,6 +112,7 @@ lazy val dixtraCli =
     .settings(
       name                := "dixtra-cli",
       version             := "1.0.0-RC1",
+      description         := "The dixtra command line: the configuration files, the files to format and the reports.",
       buildInfoKeys       := Seq[BuildInfoKey](version),
       buildInfoPackage    := "com.colofabrix.scala.dixtra",
       wartremoverExcluded += (Compile / sourceManaged).value,
@@ -122,6 +161,7 @@ lazy val dixtraCli =
         }
       },
     )
+    .settings(publishSettings)
 
 // The JMH benchmarks of the formatter and of its hotspots, on a frozen corpus. Not published. Run them, with the bytes
 // allocated per operation, saving the results:
@@ -148,6 +188,7 @@ lazy val sbtDixtra =
     .settings(
       name                          := "sbt-dixtra",
       version                       := "1.0.0-RC1",
+      description                   := "The sbt plugin of dixtra: it formats the Scala sources on compile.",
       scalaVersion                  := sbtScalaVersion,
       semanticdbEnabled             := true,
       semanticdbVersion             := scalafixSemanticdb.revision,
@@ -165,6 +206,7 @@ lazy val sbtDixtra =
       scriptedBufferLog    := false,
       scriptedDependencies := scriptedDependencies.dependsOn(dixtraCore / publishLocal, dixtraCli / publishLocal).value,
     )
+    .settings(publishSettings)
 
 // The VS Code extension: it formats the document of the editor with dixtra on Format Document, and npm builds it in
 // this folder. `vscodePackage` installs the npm dependencies, compiles the extension and packages it into a `.vsix`,
