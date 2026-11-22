@@ -244,6 +244,150 @@ class ApplicationSpec extends AnyWordSpec with Matchers with FormatMatchers {
       mixed should formatTo(expected, keep)
     }
 
+    "keep the groups glued by `)(` with independent" in {
+      val input =
+        """val r = Resource.make(IO.blocking(Files.createTempFile(directory, prefix, ".tmp")), otherArgument)(
+          |  temp => IO.blocking(Files.delete(temp)).void
+          |)
+          |""".stripMargin
+      val config      = Config.withMaxColumn(80)
+      val independent = withCallSite(_.copy(groupsBreak = GroupsBreak.Independent), config)
+
+      val expected =
+        """val r =
+          |  Resource.make(
+          |    IO.blocking(Files.createTempFile(directory, prefix, ".tmp")),
+          |    otherArgument)(
+          |    temp => IO.blocking(Files.delete(temp)).void,
+          |  )
+          |""".stripMargin
+
+      input should formatStablyTo(expected, independent)
+    }
+
+    "honour next-group when independent groups break" in {
+      val input =
+        """val r = Resource.make(IO.blocking(Files.createTempFile(directory, prefix, ".tmp")), otherArgument)(
+          |  temp => IO.blocking(Files.delete(temp)).void
+          |)
+          |""".stripMargin
+      val config = Config.withMaxColumn(80)
+      val nextGroup =
+        withCallSite(
+          _.copy(groupsBreak = GroupsBreak.Independent, groupsSeparator = GroupsSeparator.NextGroup),
+          config,
+        )
+
+      val expected =
+        """val r =
+          |  Resource.make(
+          |    IO.blocking(Files.createTempFile(directory, prefix, ".tmp")),
+          |    otherArgument,
+          |  )(temp => IO.blocking(Files.delete(temp)).void,
+          |  )
+          |""".stripMargin
+
+      input should formatStablyTo(expected, nextGroup)
+    }
+
+    "keep a broken using group glued to the previous group" in {
+      val input =
+        """val r = Resource.make(
+          |  firstArgument,
+          |  secondArgument
+          |)(using
+          |  ordering,
+          |  numeric
+          |)
+          |""".stripMargin
+      val config      = Config.withMaxColumn(80)
+      val independent = withCallSite(_.copy(groupsBreak = GroupsBreak.Independent), config)
+
+      val expected =
+        """val r =
+          |  Resource.make(
+          |    firstArgument,
+          |    secondArgument)(using
+          |    ordering,
+          |    numeric,
+          |  )
+          |""".stripMargin
+
+      input should formatStablyTo(expected, independent)
+    }
+
+    "glue to the next group when a trailing comment blocks previous-group" in {
+      val input =
+        """val r = Resource.make(
+          |  firstArgument,
+          |  secondArgument // keep this comment
+          |)(temp => IO.blocking(Files.delete(temp)).void)
+          |""".stripMargin
+      val config = Config.withMaxColumn(80)
+
+      val expected =
+        """val r =
+          |  Resource.make(
+          |    firstArgument,
+          |    secondArgument, // keep this comment
+          |  )(temp => IO.blocking(Files.delete(temp)).void,
+          |  )
+          |""".stripMargin
+
+      input should formatStablyTo(expected, config)
+    }
+
+    "keep a comment-only group beside a broken group without a lonely delimiter" in {
+      val input =
+        """val r = Resource.make(
+          |  firstArgument,
+          |  secondArgument
+          |)(/* only comment */)
+          |""".stripMargin
+      val config = Config.withMaxColumn(80)
+
+      val expected =
+        """val r =
+          |  Resource.make(
+          |    firstArgument,
+          |    secondArgument,
+          |  )(/* only comment */)
+          |""".stripMargin
+
+      input should formatStablyTo(expected, config)
+    }
+
+    "glue every junction in three independently broken groups" in {
+      val input =
+        """val r = combine(
+          |  first,
+          |  second
+          |)(
+          |  third,
+          |  fourth
+          |)(
+          |  fifth,
+          |  sixth
+          |)
+          |""".stripMargin
+      val config      = Config.withMaxColumn(80)
+      val independent = withCallSite(_.copy(groupsBreak = GroupsBreak.Independent), config)
+
+      val expected =
+        """val r =
+          |  combine(
+          |    first,
+          |    second)(
+          |    third,
+          |    fourth)(
+          |    fifth,
+          |    sixth,
+          |  )
+          |""".stripMargin
+
+      input should formatStablyTo(expected, independent)
+    }
+
   }
 
   "a tuple" should {

@@ -55,9 +55,8 @@ private[term] final class ApplicationRenderer(
    * The argument clauses of a call in order, starting at `column` on a line indented at `indent`. Two or more
    * parenthesised clauses in a row, the argument groups, break together: when they cannot stay on one line, every group
    * breaks with each argument on its own line, glued by `call-site.groups-separator` (see [[ClauseGroups]]), and the
-   * closing `)` goes on
-   * a line of its own at `indent`. With `call-site.groups-break = last-first` only the
-   * last group breaks while the groups before it stay on the line of the call; with `keep` each group decides by
+   * closing `)` goes on a line of its own at `indent`. With `call-site.groups-break = last-first` only the
+   * last group breaks while the groups before it stay on the line of the call; with `independent` each group decides by
    * itself. A trailing brace block keeps its own rules.
    */
   def argumentClauses(clauses: List[Term.ArgClause], indent: Int, column: Int): Doc =
@@ -67,7 +66,7 @@ private[term] final class ApplicationRenderer(
     else
       grouped(groups, indent, column) match {
         case Some(doc) => following(rest, doc, indent, column)
-        case None      => following(clauses, Doc.Empty, indent, column)
+        case None      => following(rest, eachGroup(groups, indent, column), indent, column)
       }
 
   // `clauses` after `before`, each deciding its layout from the column where it starts.
@@ -161,6 +160,67 @@ private[term] final class ApplicationRenderer(
 
       val layout = ClauseGroups.broken(Doc.Empty, broken, separator, indent, keywordAsParameter = false)
       Some(if layout.open then layout.doc ++ Doc.Line ++ Doc.text(")") else layout.doc)
+
+  /**
+   * The argument groups of a call, each with the layout it decides for itself: a group stays on one line when it fits
+   * there and the author wrote it on one line, and breaks otherwise. The `)(` between the groups is glued by
+   * [[ClauseGroups]], so no lonely delimiter line appears.
+   */
+  private def eachGroup(clauses: List[Term.ArgClause], indent: Int, column: Int): Doc =
+    val separator =
+      ctx
+        .config
+        .callSite
+        .groupsSeparator
+
+    // The layout of each group, decided from the column where it starts: the column depends on the groups before it,
+    // so they are laid out one after the other.
+    val arrangements =
+      clauses.foldLeft((Doc.Empty, List.empty[ClauseGroups.Arrangement])) { case ((prefix, arranged), clause) =>
+        val startColumn = ctx.endColumn(prefix, indent, column)
+        val (example, arrangement) = arrangementOf(clause, indent, startColumn)
+
+        (prefix ++ example, arranged :+ arrangement)
+      }._2
+
+    val arrangedDoc = ClauseGroups.arranged(Doc.Empty, arrangements, separator, indent)
+    arrangedDoc
+
+  /**
+   * The document of an argument group and the layout it takes: on one line, broken, or as the author wrote it.
+   */
+  private def arrangementOf(clause: Term.ArgClause, indent: Int, column: Int): (Doc, ClauseGroups.Arrangement) =
+    val args = clause.values
+
+    args match {
+      case (_: Term.Block | _: Term.PartialFunction) :: Nil if ctx.hasGapComments(clause) =>
+        val source = ctx.ownSourceDoc(clause)
+        (source, ClauseGroups.AsWritten(source))
+
+      case _ =>
+        val comments = CommentedList.of(ctx, clause.pos.start, args, clause.pos.end, ctx.config.callSite.trailingCommas)
+        val keyword  = Syntax.clauseKeyword(clause.mod)
+        val elements = argumentAlignment.aligned(args, indent + 2)
+        val group    = ClauseGroups.Group("", keyword, elements, comments)
+
+        val inline =
+          Doc.text(s"($keyword") ++ comments.inline(args.map(arg => ctx.sourceDoc(arg))) ++ Doc.text(")")
+
+        val authorSignal = clause.pos.text.contains('\n')
+        val fitsInline   = ctx.fits(inline, column)
+
+        if args.isEmpty && comments.isEmpty then
+          (Doc.text(s"(${keyword.trim})"), ClauseGroups.OnOneLine(Doc.text(s"(${keyword.trim})")))
+        else if args.isEmpty then
+          val source = ctx.ownSourceDoc(clause)
+          (source, ClauseGroups.AsWritten(source))
+        else if !comments.forcesBreak && !authorSignal && fitsInline then
+          (inline, ClauseGroups.OnOneLine(inline))
+        else
+          val layout = ClauseGroups.broken(Doc.Empty, List(group), ctx.config.callSite.groupsSeparator, indent, false)
+          val example = if layout.open then layout.doc ++ Doc.Line ++ Doc.text(")") else layout.doc
+          (example, ClauseGroups.Broken(group, keywordAsParameter = false))
+    }
 
   /**
    * A term used as an operand (chain receiver, applied function, argument, side of an infix operator): a block or a

@@ -5,78 +5,187 @@ title: Call sites
 
 # Call sites
 
-The layout of the arguments where they are passed: calls, constructor calls and tuples. A trailing `{ ... }` argument (`foldLeft(z) { (acc, x) => ... }`) is not a group, and follows its own rules. Every setting is in [the settings table](#the-settings).
+The layout of the arguments where they are passed: calls, constructor calls and tuples. 
+
+A trailing `{ ... }` argument (`foldLeft(z) { (acc, x) => ... }`) is not a group, and follows its own rules.
 
 ## `call-site.trailing-commas`
 
-Whether the last argument, or the last element of a tuple, of a list laid out one per line is followed by a comma. A list on one line never has one. Default `call-site.trailing-commas = always`.
+**Default:** `always`.
 
-`call-site.trailing-commas = always`:
+Whether the last argument, or the last element of a tuple, of a list laid out one per line is followed by a comma. A list on one line never has one.
 
-```scala
-compute(
-  firstArgument,
-  secondArgument,
-)
-```
-
-`call-site.trailing-commas = never`:
+Before:
 
 ```scala
-compute(
+val r = compute(
   firstArgument,
   secondArgument
 )
 ```
 
-## `call-site.groups-separator`
+### `call-site.trailing-commas = always`
 
-Where `)(` goes between the groups of arguments of a broken call. Default `call-site.groups-separator = previous-group`.
-
-`call-site.groups-separator = previous-group` — after the last argument of the group before, with the arguments of the next group below it:
+The last argument gets its comma:
 
 ```scala
-Resource.make(
-  IO.blocking(Files.createTempFile(dir, prefix, ".tmp")))(
-  temp => IO.blocking(Files.delete(temp)).void,
-)
+val r =
+  compute(
+    firstArgument,
+    secondArgument,
+  )
+
+// With settings:
+//   max-column = 80
+//   call-site.trailing-commas = always
 ```
 
-`call-site.groups-separator = next-group` — at the start of the next group, on the line of the closing `)`:
+### `call-site.trailing-commas = never`
+
+The last argument stays without its comma, as written:
 
 ```scala
-Resource.make(
-  IO.blocking(Files.createTempFile(dir, prefix, ".tmp")),
-)(temp => IO.blocking(Files.delete(temp)).void,
-)
+val r =
+  compute(
+    firstArgument,
+    secondArgument
+  )
+
+// With settings:
+//   max-column = 80
+//   call-site.trailing-commas = never
+```
+
+## `call-site.groups-separator`
+
+**Default:** `previous-group`.
+
+Where `)(` goes between the groups of arguments of a broken call.
+
+Before:
+
+```scala
+val r = Resource.make(
+  acquireResource(config),
+  releaseResource
+)(release)
+```
+
+### `call-site.groups-separator = previous-group`
+
+`)(` goes at the end of the last element of the group before, with the elements of the next group below it:
+
+```scala
+val r =
+  Resource.make(
+    acquireResource(config),
+    releaseResource)(
+    release,
+  )
+
+// With settings:
+//   max-column = 80
+//   call-site.groups-separator = previous-group
+```
+
+### `call-site.groups-separator = next-group`
+
+`)(` goes at the start of the next group, on the line of the closing `)`:
+
+```scala
+val r =
+  Resource.make(
+    acquireResource(config),
+    releaseResource,
+  )(release,
+  )
+
+// With settings:
+//   max-column = 80
+//   call-site.groups-separator = next-group
 ```
 
 ## `call-site.groups-break`
 
-Which groups of arguments break when the groups of a call do not fit on one line. Default `call-site.groups-break = last-first`.
+**Default:** `last-first`.
 
-`call-site.groups-break = break-all` — every group, each argument on its own line (see `call-site.groups-separator` above for the shape).
+Which groups of arguments break when the groups of a call do not fit on one line.
 
-`call-site.groups-break = last-first` — only the last group, while the groups before it fit on the line of the call; every group when they do not:
+Before:
 
 ```scala
-Resource.make(IO.blocking(Files.createTempFile(dir, prefix, ".tmp")))(
-  temp => IO.blocking(Files.delete(temp)).void,
+val e = Option.when(condition)(
+  computeValue(argument)
 )
-```
 
-`call-site.groups-break = independent` — each group by itself, as in a call with one group: a group breaks when the author broke it or it does not fit, and the others stay as they are:
-
-```scala
-Resource.make(
-  acquire,
+val r = Resource.make(
+  acquireResource(config),
+  releaseResource
 )(release)
 ```
 
-## The settings
+### `call-site.groups-break = break-all`
 
-| Setting                      | Default          | Values                                   |
-| ---------------------------- | ---------------- | ---------------------------------------- |
-| `call-site.trailing-commas`  | `always`         | `always`, `never`                        |
-| `call-site.groups-separator` | `previous-group` | `previous-group`, `next-group`           |
-| `call-site.groups-break`     | `last-first`     | `break-all`, `last-first`, `independent` |
+Every group breaks, each argument on its own line. Even a first group that would fit breaks with the last one:
+
+```scala
+val e =
+  Option.when(
+    condition)(
+    computeValue(argument),
+  )
+
+val r =
+  Resource.make(
+    acquireResource(config),
+    releaseResource)(
+    release,
+  )
+
+// With settings:
+//   max-column = 80
+//   call-site.groups-break = break-all
+```
+
+### `call-site.groups-break = last-first`
+
+Only the last group breaks while the groups before it fit on the line of the call. When the author broke a leading group, every group breaks:
+
+```scala
+val e =
+  Option.when(condition)(
+    computeValue(argument),
+  )
+
+val r =
+  Resource.make(
+    acquireResource(config),
+    releaseResource)(
+    release,
+  )
+
+// With settings:
+//   max-column = 80
+//   call-site.groups-break = last-first
+```
+
+### `call-site.groups-break = independent`
+
+Each group decides for itself, as in a call with one group: it breaks when the author broke it or it does not fit from where it starts. A leading group that fits stays inline, and a last group that fits stays inline even after a broken one:
+
+```scala
+val e =
+  Option.when(condition)(
+    computeValue(argument),
+  )
+
+val r =
+  Resource.make(
+    acquireResource(config),
+    releaseResource,
+  )(release)
+
+// With settings:
+//   max-column = 80
+//   call-site.groups-break = independent
+```

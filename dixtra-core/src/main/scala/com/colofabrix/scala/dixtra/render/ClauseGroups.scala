@@ -7,10 +7,10 @@ import com.colofabrix.scala.dixtra.render.comments.CommentedList
 
 /**
  * The groups of parameters or arguments of a broken definition or call, `(a, b)(c)`, each element on its own line.
- * Between groups the parentheses are glued so no lonely delimiter line ever appears, by the groups separator: at the
- * start of the next group (`)(c` for a plain group, `)(using` for a `using` group) or after the last element of the
- * group before (`b)(`, unless a comment follows that element). Empty groups stay glued as `()`. In a definition the
- * `using` / `implicit` keyword behaves exactly like a parameter.
+ * Between groups the parentheses are glued by the groups separator: at the start of the next group (`)(c` for a plain
+ * group, `)(using` for a `using` group) or after the last element of the group before (`b)(`, unless a comment follows
+ * that element). A comment that prevents gluing on both sides can leave a lonely delimiter line. Empty groups stay
+ * glued as `()`. In a definition the `using` / `implicit` keyword behaves exactly like a parameter.
  */
 private[render] object ClauseGroups {
 
@@ -33,6 +33,61 @@ private[render] object ClauseGroups {
    * it on a line of its own); when none is open, `lastWidth` is the width of its last line.
    */
   final case class Layout(doc: Doc, open: Boolean, lastWidth: Int)
+
+  /**
+   * How a group is laid out by the caller that decides it: on one line with its own parentheses, broken with its
+   * parentheses around it, or kept as the author wrote it.
+   */
+  sealed trait Arrangement {
+
+    /**
+     * The document of the group, without the closing delimiter of a broken group: the caller glues the `)(` of the
+     * next group to it.
+     *
+     * @param closes True when the closing delimiter follows the last element of the group on its line.
+     */
+    def render(closes: Boolean): Doc
+
+  }
+
+  /**
+   * A group on one line, with its own parentheses.
+   */
+  final case class OnOneLine(value: Doc) extends Arrangement {
+    def render(closes: Boolean): Doc = value
+  }
+
+  /**
+   * A group broken with its elements on their own lines, its opening parenthesis written and its closing one not: the
+   * caller writes it, glued to the next group when the separator asks for it.
+   *
+   * @param group The group: its keyword and its elements, with their comments.
+   * @param keywordAsParameter True when the keyword of the group goes on a line of its own, like a parameter of a
+   *                            definition; else it stays after the `(`.
+   */
+  final case class Broken(group: Group, keywordAsParameter: Boolean) extends Arrangement {
+
+    /**
+     * The document of the group, its elements one per line, without the comma after the last one when `closes`: the
+     * closing delimiter then follows that element on its line.
+     */
+    def render(closes: Boolean): Doc =
+      val opening = Doc.text(group.opening + "(")
+      val content =
+        if keywordAsParameter then
+          keywordOnOwnLine(group, closes)
+        else
+          openContent(group, closes)
+
+      opening ++ content
+  }
+
+  /**
+   * A group kept as the author wrote it: it closes itself and cannot host a glued `)(`.
+   */
+  final case class AsWritten(value: Doc) extends Arrangement {
+    def render(closes: Boolean): Doc = value
+  }
 
   /**
    * The groups after `lead`, broken, on lines indented at `baseIndent`. With `keywordAsParameter` (a definition) the
@@ -140,5 +195,45 @@ private[render] object ClauseGroups {
         .getOrElse(exploded)
     else
       exploded
+
+  /**
+   * The groups of a call, each with the layout the caller decided for it, laid out one after the other with the `)(`
+   * between them glued so no lonely delimiter line appears.
+   *
+   * The groups break together here only in the sense that their junctions are glued: each group keeps the layout the
+   * caller gave it, inline or broken. A broken group whose last element can host the junction closes on that element
+   * (`b)(`), the one before it closing on the line of its own (`)`) and the next group opening there (`)(c`); a group
+   * whose last element is followed by a comment, or kept as the author wrote it, cannot host the junction and the next
+   * group opens after its closing delimiter.
+   *
+   * @param lead The document the groups follow.
+   * @param groups The groups and their layout, in order.
+   * @param separator Where the `)(` goes between the groups.
+   * @param baseIndent The indent of the lines the groups are broken on.
+   */
+  def arranged(lead: Doc, groups: List[Arrangement], separator: GroupsSeparator, baseIndent: Int): Doc = {
+    def closeBroken(run: List[Broken]): Doc =
+      val brokenGroups = run.map(_.group)
+      val layout       = broken(Doc.Empty, brokenGroups, separator, baseIndent, keywordAsParameter = false)
+
+      if layout.open then
+        layout.doc ++ Doc.Line ++ Doc.text(")")
+      else
+        layout.doc
+
+    val (result, run) =
+      groups.foldLeft((lead, List.empty[Broken])) { case ((doc, run), arrangement) =>
+        arrangement match {
+          case broken: Broken =>
+            (doc, run :+ broken)
+
+          case other =>
+            val closed = if run.isEmpty then doc else doc ++ closeBroken(run)
+            (closed ++ other.render(closes = false), Nil)
+        }
+      }
+
+    if run.isEmpty then result else result ++ closeBroken(run)
+  }
 
 }
