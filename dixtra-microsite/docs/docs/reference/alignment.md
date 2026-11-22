@@ -334,16 +334,12 @@ val c = MyCaseClass(
 
 ### `alignment.named-arguments = true`
 
-Currently written like `false`.
-
-<!-- same-output-as: false -->
-
 The `=` of the two named arguments align:
 
 ```scala
 val c =
   MyCaseClass(
-    aaa = "",
+    aaa  = "",
     name = 123,
   )
 

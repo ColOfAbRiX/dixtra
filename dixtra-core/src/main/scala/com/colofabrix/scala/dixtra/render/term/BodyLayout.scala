@@ -186,6 +186,15 @@ private[render] object BodyLayout {
     }
 
   /**
+   * Whether the author wrote `body` in braces, as `{ ... }`.
+   */
+  def writtenInBraces(body: Term): Boolean =
+    body match {
+      case _: Term.Block => body.pos.text.startsWith("{")
+      case _             => false
+    }
+
+  /**
    * Whether the author wrote `body`, after a separator ending at `separatorEnd`, below the separator. For a body in
    * braces it is whether its first statement starts a line after the `{`, so it keeps its place when the braces go.
    */

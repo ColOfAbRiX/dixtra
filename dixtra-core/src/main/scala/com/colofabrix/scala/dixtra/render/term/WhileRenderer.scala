@@ -40,6 +40,7 @@ private[term] final class WhileRenderer(ctx: RenderContext, terms: TermRenderer)
         .tokensBetween(ctx.span(whileTerm.expr)._2, ctx.span(whileTerm.body)._1)
         .exists(_.is[Token.KwDo])
 
+    val kept       = ctx.config.braces(Construct.While) == BracePolicy.Keep
     val braces     = ctx.usesBraces(Construct.While, !hasDo)
     val inlineFits = ctx.fits(inline, indent)
 
@@ -69,7 +70,9 @@ private[term] final class WhileRenderer(ctx: RenderContext, terms: TermRenderer)
       val below  = BodyLayout.writtenBelow(ctx, ctx.span(whileTerm.expr)._2, whileTerm.body)
       val member = BodyLayout.Member(below, ctx.fits(onLine, indent), BodyLayout.isSimple(ctx, whileTerm.body))
 
-      if BodyLayout.singleBelow(policy, member) then
+      if kept && BodyLayout.writtenInBraces(whileTerm.body) then
+        head ++ Doc.text(" ") ++ Doc.braced(terms.bracedBody(whileTerm.body, indent + 2, Construct.While))
+      else if BodyLayout.singleBelow(policy, member) then
         head ++ Doc.Nest(2, Doc.Line ++ body)
       else
         onLine

@@ -2,6 +2,7 @@ package com.colofabrix.scala.dixtra.render.term
 
 import com.colofabrix.scala.dixtra.doc.*
 import com.colofabrix.scala.dixtra.doc.Doc.++
+import com.colofabrix.scala.dixtra.model.BracePolicy
 import com.colofabrix.scala.dixtra.model.Construct
 import com.colofabrix.scala.dixtra.render.comments.CommentGaps
 import com.colofabrix.scala.dixtra.render.context.RenderContext
@@ -59,14 +60,21 @@ private[term] final class IfElseRenderer(ctx: RenderContext, terms: TermRenderer
           if braces then withBraces(ifTerm, branches, indent) else plain(ifTerm, branches, indent)
         }
 
-  // Whether the if/else uses braces, and its `if (cond)` / `if cond then` part.
+  // Whether the if/else uses braces, and its `if (cond)` / `if cond then` part. With `braces.if = keep` the header stays
+  // in the form the author wrote; the braces of the body follow the author's braces.
   private def header(ifTerm: Term.If): (Boolean, Doc) =
     val condEnd = ctx.span(ifTerm.cond)._2
     val hasThen = ctx.tokensBetween(condEnd, ctx.span(ifTerm.thenp)._1).exists(_.is[Token.KwThen])
-    val braces  = ctx.usesBraces(Construct.If, !hasThen)
+    val written = BodyLayout.writtenInBraces(ifTerm.thenp) || BodyLayout.writtenInBraces(ifTerm.elsep)
+    val braces  = ctx.usesBraces(Construct.If, !hasThen || written)
+    val kept    = ctx.config.braces(Construct.If) == BracePolicy.Keep
+
+    val parens =
+      if kept then !hasThen
+      else braces
 
     val ifThen =
-      if braces then
+      if parens then
         Doc.text("if (") ++ ctx.ownSourceDoc(ifTerm.cond) ++ Doc.text(")")
       else
         Doc.text("if ") ++ ctx.ownSourceDoc(ifTerm.cond) ++ Doc.text(" then")

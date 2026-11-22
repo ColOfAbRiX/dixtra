@@ -435,6 +435,136 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
 
   }
 
+  "the braces of a construct set to keep" should {
+
+    "stay in a for loop written with them" in {
+      val input =
+        """def f(): Unit =
+          |  for x <- xs do {
+          |    a(x)
+          |    b(x)
+          |  }
+          |""".stripMargin
+
+      input should formatStablyTo(input, withBraces(Construct.For -> Keep))
+    }
+
+    "stay in an if/else written with them" in {
+      val input =
+        """def f =
+          |  if c then {
+          |    a()
+          |  } else {
+          |    b()
+          |  }
+          |""".stripMargin
+
+      input should formatStablyTo(input, withBraces(Construct.If -> Keep))
+    }
+
+    "be added to the other branch of a mixed if/else" in {
+      val input =
+        """def f =
+          |  if c then {
+          |    a()
+          |  } else b()
+          |""".stripMargin
+
+      val expected =
+        """def f =
+          |  if c then {
+          |    a()
+          |  } else {
+          |    b()
+          |  }
+          |""".stripMargin
+
+      input should formatStablyTo(expected, withBraces(Construct.If -> Keep))
+    }
+
+    "stay in an if/else written in the parenthesised form" in {
+      val input =
+        """def f =
+          |  if (c) {
+          |    a()
+          |  } else {
+          |    b()
+          |  }
+          |""".stripMargin
+
+      input should formatStablyTo(input, withBraces(Construct.If -> Keep))
+    }
+
+    "not be added to an if written without them" in {
+      val input =
+        """def f =
+          |  if c then
+          |    a()
+          |  else
+          |    b()
+          |""".stripMargin
+
+      input should formatStablyTo(input, withBraces(Construct.If -> Keep))
+    }
+
+    "not be added to a while written without them" in {
+      val input =
+        """def f(): Unit =
+          |  while c do
+          |    step()
+          |    more()
+          |""".stripMargin
+
+      input should formatStablyTo(input, withBraces(Construct.While -> Keep))
+    }
+
+    "not be added to a loop written without them" in {
+      val input =
+        """def f(): Unit =
+          |  for x <- xs do
+          |    a(x)
+          |    b(x)
+          |""".stripMargin
+
+      input should formatStablyTo(input, withBraces(Construct.For -> Keep))
+    }
+
+    "stay in a for-comprehension written with them" in {
+      val input =
+        """def f =
+          |  for x <- xs yield {
+          |    a(x)
+          |    b(x)
+          |  }
+          |""".stripMargin
+
+      val expected =
+        """def f =
+          |  for
+          |    x <- xs
+          |  yield {
+          |    a(x)
+          |    b(x)
+          |  }
+          |""".stripMargin
+
+      input should formatStablyTo(expected, withBraces(Construct.ForYield -> Keep))
+    }
+
+    "stay in a while loop written with them" in {
+      val input =
+        """def f(): Unit =
+          |  while c do {
+          |    step()
+          |    more()
+          |  }
+          |""".stripMargin
+
+      input should formatStablyTo(input, withBraces(Construct.While -> Keep))
+    }
+
+  }
+
   "the braces around a single-expression body (braces.single-expr)" should {
 
     // A lambda with statements as the only expression of a braced body: Scala 2 needs the braces (tapir

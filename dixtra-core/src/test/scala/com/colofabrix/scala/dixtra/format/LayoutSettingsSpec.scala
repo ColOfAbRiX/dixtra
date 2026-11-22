@@ -1047,7 +1047,7 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
     val aligned =
       """val x =
         |  MyCaseClass(
-        |    aaa = "",
+        |    aaa  = "",
         |    name = 123,
         |  )
         |""".stripMargin

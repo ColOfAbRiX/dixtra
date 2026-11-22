@@ -993,17 +993,14 @@ def loopTwo(): Unit =
 
 ### `braces.for = keep`
 
-A body written in braces is not kept as written here, so this value is currently written like `force-indent`.
-
-<!-- same-output-as: force-indent -->
-
 As the author wrote it: the first body keeps its braces, the second one stays braceless.
 
 ```scala
 def loopOne(): Unit =
-  for x <- xs do
+  for x <- xs do {
     a(x)
     b(x)
+  }
 
 def loopTwo(): Unit =
   for x <- xs do
@@ -1342,6 +1339,11 @@ def branchTwo =
     a()
   else
     b()
+
+def branchThree =
+  if c then {
+    a()
+  } else b()
 ```
 
 ### `braces.if = force-braces`
@@ -1357,6 +1359,13 @@ def branchOne =
   }
 
 def branchTwo =
+  if (c) {
+    a()
+  } else {
+    b()
+  }
+
+def branchThree =
   if (c) {
     a()
   } else {
@@ -1389,6 +1398,12 @@ def branchTwo =
   else
     b()
 
+def branchThree =
+  if c then
+    a()
+  else
+    b()
+
 // With settings:
 //   max-column = 80
 //   braces.if = force-end
@@ -1411,6 +1426,12 @@ def branchTwo =
   else
     b()
 
+def branchThree =
+  if c then
+    a()
+  else
+    b()
+
 // With settings:
 //   max-column = 80
 //   braces.if = force-indent
@@ -1418,24 +1439,28 @@ def branchTwo =
 
 ### `braces.if = keep`
 
-A body written in braces is not kept as written here, so this value is currently written like `force-indent`.
-
-<!-- same-output-as: force-indent -->
-
 As the author wrote it: the first body keeps its braces, the second one stays braceless.
 
 ```scala
 def branchOne =
-  if c then
+  if c then {
     a()
-  else
+  } else {
     b()
+  }
 
 def branchTwo =
   if c then
     a()
   else
     b()
+
+def branchThree =
+  if c then {
+    a()
+  } else {
+    b()
+  }
 
 // With settings:
 //   max-column = 80
@@ -2881,17 +2906,14 @@ def stepTwo(): Unit =
 
 ### `braces.while = keep`
 
-A body written in braces is not kept as written here, so this value is currently written like `force-indent`.
-
-<!-- same-output-as: force-indent -->
-
 As the author wrote it: the first body keeps its braces, the second one stays braceless.
 
 ```scala
 def stepOne(): Unit =
-  while c do
+  while c do {
     step()
     more()
+  }
 
 def stepTwo(): Unit =
   while c do

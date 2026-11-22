@@ -16,9 +16,9 @@ import scala.meta.*
  */
 private[term] final class ArgumentAlignment(ctx: RenderContext, terms: TermRenderer, operand: (Term, Int) => Doc) {
 
-  // The exploded arguments, aligning the `->` of consecutive one-line pairs and, column by column, the operators of
-  // consecutive one-line operations from `alignment.operators` (see [[Alignment]]); the comma after each argument
-  // counts towards the max column. Named arguments are not aligned.
+  // The exploded arguments, aligning the `->` of consecutive one-line pairs, the operators of consecutive one-line
+  // operations from `alignment.operators` and the `=` of consecutive named arguments from `alignment.named-arguments`
+  // (see [[Alignment]]); the comma after each argument counts towards the max column.
   def aligned(args: List[Term], indent: Int): List[Doc] =
     val last = args.length - 1
     val docs =
@@ -89,10 +89,8 @@ private[term] final class ArgumentAlignment(ctx: RenderContext, terms: TermRende
       eligible = arg => ctx.config.alignment.namedArguments && line(arg).isDefined && name(arg).isDefined,
       width = name,
       fitsAt = { (arg, target) =>
-        (line(arg), name(arg)) match {
-          case (Some(1), Some(w)) => ctx.fitsWidth(indent, 1 + math.max(0, target - w) + 1)
-          case _                  => false
-        }
+        line(arg).isDefined &&
+        name(arg).exists(w => ctx.fitsWidth(indent, 1 + math.max(0, target - w) + 1))
       },
     )
 

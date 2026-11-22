@@ -823,4 +823,67 @@ class AlignmentSpec extends AnyWordSpec with Matchers with FormatMatchers {
 
   }
 
+  "alignment.named-arguments" should {
+
+    "align the = of adjacent named arguments when true" in {
+      val input =
+        """val c = MyCaseClass(
+          |  aaa = "",
+          |  name = 123,
+          |)
+          |""".stripMargin
+
+      val expected =
+        """val c =
+          |  MyCaseClass(
+          |    aaa  = "",
+          |    name = 123,
+          |  )
+          |""".stripMargin
+
+      input should formatStablyTo(expected, withAlignment(_.copy(namedArguments = true)))
+    }
+
+    "leave the = of named arguments unaligned when false" in {
+      val input =
+        """val c = MyCaseClass(
+          |  aaa = "",
+          |  name = 123,
+          |)
+          |""".stripMargin
+
+      val expected =
+        """val c =
+          |  MyCaseClass(
+          |    aaa = "",
+          |    name = 123,
+          |  )
+          |""".stripMargin
+
+      input should formatStablyTo(expected, withAlignment(_.copy(namedArguments = false)))
+    }
+
+    "leave a lone named argument among positional ones unaligned" in {
+      val input =
+        """val c = MyCaseClass(
+          |  aaa,
+          |  name = 123,
+          |  bbb,
+          |)
+          |""".stripMargin
+
+      val expected =
+        """val c =
+          |  MyCaseClass(
+          |    aaa,
+          |    name = 123,
+          |    bbb,
+          |  )
+          |""".stripMargin
+
+      input should formatStablyTo(expected, withAlignment(_.copy(namedArguments = true)))
+    }
+
+  }
+
 }

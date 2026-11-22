@@ -64,6 +64,7 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
    */
   def renderFor(forLoop: Term.For, indent: Int): Doc =
     val inline = ctx.ownSourceDoc(forLoop)
+    val kept   = ctx.config.braces(Construct.For) == BracePolicy.Keep
     val braced = enumsOpener(forLoop).isDefined
     val braces = ctx.usesBraces(Construct.For, braced)
 
@@ -126,7 +127,9 @@ private[term] final class ForRenderer(ctx: RenderContext, terms: TermRenderer) {
       def afterDo(lineWidth: Int): Doc =
         val member = BodyLayout.Member(below, ctx.fits(body, lineWidth + 1), BodyLayout.isSimple(ctx, forLoop.body))
 
-        if BodyLayout.singleBelow(policy, member) then
+        if kept && BodyLayout.writtenInBraces(forLoop.body) then
+          Doc.text(" ") ++ Doc.braced(terms.bracedBody(forLoop.body, indent + 2, Construct.For))
+        else if BodyLayout.singleBelow(policy, member) then
           Doc.Nest(2, Doc.Line ++ body)
         else
           Doc.text(" ") ++ body
