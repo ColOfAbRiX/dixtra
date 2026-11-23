@@ -117,6 +117,8 @@ lazy val docsTheme =
     .site
     .mainNavigation(depth = 3)
     .site
+    .pageNavigation(depth = 1)
+    .site
     .footer("Dixtra — An opinionated formatter for Scala 3 · MIT licensed")
     .site
     .landingPage(

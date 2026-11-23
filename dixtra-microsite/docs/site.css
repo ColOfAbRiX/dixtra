@@ -85,6 +85,11 @@
     display: inline-block;
     right: 20px;
     width: 265px;
+    max-height: calc(100dvh - var(--top-bar-height) - 100px);
+    padding-bottom: 4px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
     border: 1px solid var(--component-border);
     border-radius: 6px;
   }
@@ -98,13 +103,39 @@
 #page-nav .nav-list li {
   margin-bottom: 6px;
   line-height: 1.35;
-  overflow-wrap: anywhere;
+}
+
+#page-nav p.header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 0;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.12);
+}
+
+#page-nav p.footer:empty {
+  display: none;
+}
+
+#page-nav::-webkit-scrollbar {
+  width: 8px;
+}
+
+#page-nav::-webkit-scrollbar-thumb {
+  background-color: var(--primary-medium);
+  border-radius: 4px;
+}
+
+#page-nav::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 #page-nav .nav-list li a,
 #page-nav .nav-list li code {
-  white-space: normal;
-  overflow-wrap: anywhere;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 #page-nav .nav-list .level1 code {
