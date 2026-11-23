@@ -1,7 +1,3 @@
----
-layout: docs
-title: API documentation
----
 
 # API documentation
 

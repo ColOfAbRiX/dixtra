@@ -1,7 +1,3 @@
----
-layout: docs
-title: Alignment
----
 
 # Alignment
 
@@ -91,7 +87,7 @@ def dddd = 4
 
 **Default:** `["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]`.
 
-The operators that align column by column in adjacent one-line statements, and in adjacent one-line elements of a list laid out one per line. The named arguments follow [`alignment.named-arguments`](#alignmentnamed-arguments) instead.
+The operators that align column by column in adjacent one-line statements, and in adjacent one-line elements of a list laid out one per line. The named arguments follow [`alignment.named-arguments`](#alignment-named-arguments) instead.
 
 Before:
 

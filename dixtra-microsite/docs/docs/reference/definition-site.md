@@ -1,7 +1,3 @@
----
-layout: docs
-title: Definition sites
----
 
 # Definition sites
 

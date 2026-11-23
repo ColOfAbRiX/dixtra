@@ -1,7 +1,3 @@
----
-layout: docs
-title: The sbt plugin
----
 
 # The sbt plugin
 

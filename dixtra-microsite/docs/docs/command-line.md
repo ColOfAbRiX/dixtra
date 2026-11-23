@@ -1,7 +1,3 @@
----
-layout: docs
-title: The command line
----
 
 # The command line
 

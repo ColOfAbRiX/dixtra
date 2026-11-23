@@ -1,7 +1,3 @@
----
-layout: docs
-title: Using Dixtra as a library
----
 
 # Using Dixtra as a library
 

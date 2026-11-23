@@ -1,7 +1,3 @@
----
-layout: docs
-title: Building from source
----
 
 # Building from source
 

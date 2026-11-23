@@ -53,25 +53,22 @@ jobs:
       - name: Set up sbt
         uses: sbt/setup-sbt@v1
 
-      - name: Install Jekyll
-        run: |
-          sudo apt-get install -y ruby-dev && sudo gem install bundler "jekyll:~>4.0.0" jekyll-relative-links webrick
-          echo "$HOME/gems/bin" >> $GITHUB_PATH
-          echo "GEM_HOME=$HOME/gems" >> $GITHUB_ENV
-
       - name: Stage the API documentation
         run: sbt copyApiDocsToSite
 
+      # Laika renders the site from the markdown under dixtra-microsite/docs; the `site` task then drops the
+      # staged scaladoc into target/docs/site/api. No Ruby and no Jekyll are involved.
+      - name: Build the microsite
+        run: |
+          cd dixtra-microsite
+          sbt --no-global site
+
       - name: Publish the microsite
         if: github.event_name != 'pull_request'
-        run: |
-          cd dixtra-microsite
-          sbt publishMicrosite
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Build the microsite (pull request)
-        if: github.event_name == 'pull_request'
-        run: |
-          cd dixtra-microsite
-          sbt makeMicrosite
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          publish_branch: gh-pages
+          publish_dir: dixtra-microsite/target/docs/site
+          user_name: "github-actions[bot]"
+          user_email: "41898282+github-actions[bot]@users.noreply.github.com"

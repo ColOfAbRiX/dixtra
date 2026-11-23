@@ -1,7 +1,3 @@
----
-layout: docs
-title: Call sites
----
 
 # Call sites
 

@@ -1,7 +1,3 @@
----
-layout: docs
-title: Blank lines
----
 
 # Blank lines
 

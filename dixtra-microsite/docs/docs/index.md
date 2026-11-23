@@ -1,7 +1,3 @@
----
-layout: docs
-title: Intro
----
 
 # Introduction
 
@@ -54,7 +50,7 @@ All three run the same formatter, with the same configuration.
 
 ## Where to go next
 
-- [Setup](setup.md): install Dixtra and format something.
+- [Setup](usage.md): install Dixtra and format something.
 - [Using Dixtra](usage.md): format, check, and format only what changed.
 - [Configuration](configuration.md): the `.dixtra.conf` file, and the [settings reference](configuration.md) with an example for every value.
 - [Rules and limitations](rules.md): the rules that have no setting, and what Dixtra cannot parse yet.

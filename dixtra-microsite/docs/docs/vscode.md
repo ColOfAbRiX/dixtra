@@ -1,7 +1,3 @@
----
-layout: docs
-title: The VS Code extension
----
 
 # The VS Code extension
 
