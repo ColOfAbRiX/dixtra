@@ -16,7 +16,7 @@ Multi-module sbt 2 build (root `build.sbt`), Scala 3.9.0:
 | `sbtDixtra`     | `dixtra-sbt/`       | sbt 2 plugin. Resolves `dixtra-cli` at task run time in its own classloader, no build-time dependency. |
 | `dixtraVsCode`  | `dixtra-vscode/`    | VS Code extension; npm build via `vscodePackage`.                                                      |
 | `dixtraBench`   | `dixtra-bench/`     | JMH benchmarks over a frozen corpus. Not published.                                                    |
-| —               | `dixtra-microsite/` | **Separate sbt 1.13 build** (sbt-microsites/Jekyll), not aggregated by the root.                       |
+| —               | `dixtra-microsite/` | **Separate sbt 1.13 build** (Laika), not aggregated by the root.                                        |
 
 Dependency direction: front-ends (`cli`, `sbt`, `vscode`, `bench`) → `core`. `core` must stay
 independent of I/O and of the front-ends.
@@ -62,17 +62,18 @@ Verification rules:
 - **`publishLocal` with the fixed version `1.0.0-RC1`**: ivy refuses to overwrite a
   non-SNAPSHOT `ivy.xml`. Remove the `~/.ivy2/local/com.colofabrix.scala/<version>`
   directory (a plain `mv` works if a shell guard blocks `rm -rf`) before republishing.
-- **Microsite build**: `sbt --no-global makeMicrosite` from `dixtra-microsite/` — the
-  global sbt config sets `rootOutputDirectory`, a root-build-only key, and the sub-build
-  fails to load without `--no-global`. Output lands in `dixtra-microsite/target/site`.
-- **Microsite publish can "succeed" without publishing**: `pushMicrosite` swallows GitHub
-  422 errors (fileless directories in `target/site`; fixed by `copyApiDocsToSite` writing
-  placeholder READMEs). Treat a publish as verified only when the `gh-pages` head moved to
+- **Microsite build**: `sbt --no-global site` from `dixtra-microsite/` — Laika renders the
+  markdown under `docs/`, then `site` copies the scaladoc staged by the root build into
+  `target/docs/site/api/{core,cli}`. The stage comes first (`sbt copyApiDocsToSite` from the
+  root), otherwise the task fails with a message naming the missing directories. `--no-global`
+  is needed locally because the global sbt config sets `rootOutputDirectory`, a root-build-only
+  key, and the sub-build fails to load without it. Output lands in
+  `dixtra-microsite/target/docs/site`.
+- **Microsite publish is unverified until gh-pages moves**: the workflow deploys with
+  `peaceiris/actions-gh-pages`; treat a publish as done only when the `gh-pages` head moved to
   a new commit, never from the workflow step status.
 - **CI: verify job logs, not the workflow summary.** Open each job and step (especially
   platform matrix jobs) and confirm the smoke-test steps passed.
-- **Microsite CI Jekyll log noise**: the `light` theme Sass emits `math.div` deprecation
-  warnings that sbt prefixes with `[error]` — a failing-looking log can be a green run.
 - **Maven Central throttles GitHub runners** on sbt launcher downloads; the microsite
   workflow needs an explicit cache over `~/.sbt/boot`, `~/.cache/coursier/v1`,
   `~/.coursier/v1` or the launcher retries for ~17 minutes and fails with
@@ -89,7 +90,19 @@ Verification rules:
   "The settings" table. The other group pages use per-setting `##` headings with
   "With ..." examples and keep a "The settings" table. `path-overrides.md` documents a
   config section and keeps its own shape.
-- Doc pages are plain markdown: no compiled/type-checked mdoc snippets.
+- Doc pages are plain markdown: Laika renders them, but the code samples are not compiled,
+  so they are not checked against the library.
+- The theme lives in `dixtra-microsite/build.sbt` (Helium: colors, layout, top navigation,
+  landing page, footer); page order comes from the `directory.conf` files next to the pages,
+  not from a menu file.
+- Internal links are validated at build time: a link to a missing page or a wrong anchor fails
+  `sbt --no-global site` with the page and the target named, so link references cannot rot.
+- The published version appears literally in the install snippets of `docs/usage.md` and
+  `docs/library.md` (Laika does not substitute variables inside code blocks): bump those
+  three lines together with `DocsVersion`.
+- Build with `site`, never `laikaSite` alone: `laikaSite` renders the pages and deletes the
+  copied scaladoc, while `site` renders and then copies it back. To start from scratch use
+  `sbt clean`, not a hand-deleted `target/docs`, because Laika caches its render on the inputs.
 - The README stays lean; the microsite is the enriched developer-facing version.
 - User-facing option docs also live in
   `dixtra-cli/src/main/resources/reference.conf`; keep reference pages and it consistent.

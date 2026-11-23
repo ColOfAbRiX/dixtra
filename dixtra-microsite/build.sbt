@@ -19,6 +19,9 @@ lazy val DocsVersion = "1.0.0-RC1"
 lazy val copyApiDocs = taskKey[Unit]("Copies the staged API documentation into the built site")
 lazy val site        = taskKey[Unit]("Builds the documentation site, the API documentation included")
 
+// Deep slate chrome with a burnt-amber accent: the palette of a code editor rather than the stock Helium teal, so the
+// Scala snippets and the settings reference pages stay the focus. The light and dark schemes are both configured
+// explicitly, otherwise dark-mode readers fall back to Helium's own teal palette.
 lazy val docsTheme =
   Helium.defaults
     .all.metadata(
@@ -27,11 +30,86 @@ lazy val docsTheme =
       version = Some(DocsVersion),
       language = Some("en"),
     )
+    .all
+    .themeColors(
+      primary = Color.hex("1e293b"),
+      secondary = Color.hex("c2410c"),
+      primaryMedium = Color.hex("cbd5e1"),
+      primaryLight = Color.hex("f1f5f9"),
+      text = Color.hex("1f2937"),
+      background = Color.hex("ffffff"),
+      bgGradient = (Color.hex("0f172a"), Color.hex("1e293b")),
+    )
+    .all
+    .syntaxHighlightingColors(
+      base = ColorQuintet(
+        Color.hex("0f172a"),
+        Color.hex("94a3b8"),
+        Color.hex("cbd5e1"),
+        Color.hex("bae6fd"),
+        Color.hex("f8fafc"),
+      ),
+      wheel = ColorQuintet(
+        Color.hex("f472b6"),
+        Color.hex("fb923c"),
+        Color.hex("fcd34d"),
+        Color.hex("86efac"),
+        Color.hex("38bdf8"),
+      ),
+    )
     .site
-    .layout(contentWidth = px(900))
+    .darkMode
+    .themeColors(
+      primary = Color.hex("e2e8f0"),
+      secondary = Color.hex("fb923c"),
+      primaryMedium = Color.hex("334155"),
+      primaryLight = Color.hex("1e293b"),
+      text = Color.hex("e5e7eb"),
+      background = Color.hex("0f172a"),
+      bgGradient = (Color.hex("020617"), Color.hex("0f172a")),
+    )
+    .site
+    .darkMode
+    .syntaxHighlightingColors(
+      base = ColorQuintet(
+        Color.hex("020617"),
+        Color.hex("94a3b8"),
+        Color.hex("cbd5e1"),
+        Color.hex("bae6fd"),
+        Color.hex("f8fafc"),
+      ),
+      wheel = ColorQuintet(
+        Color.hex("f472b6"),
+        Color.hex("fb923c"),
+        Color.hex("fcd34d"),
+        Color.hex("86efac"),
+        Color.hex("38bdf8"),
+      ),
+    )
+    .site
+    .layout(
+      contentWidth = px(920),
+      navigationWidth = px(265),
+      defaultBlockSpacing = px(14),
+      defaultLineHeight = 1.6,
+    )
+    .site
+    .fontSizes(
+      body = px(16),
+      code = px(14),
+      title = px(32),
+      header2 = px(24),
+      header3 = px(18),
+      header4 = px(16),
+      small = px(13),
+    )
+    .site
+    .internalCSS(Root / "site.css")
     .site
     .topNavigationBar(
       navLinks = Seq(
+        TextLink.internal(Root / "docs" / "index.md", "Docs"),
+        TextLink.internal(Root / "docs" / "reference" / "braces.md", "Reference"),
         TextLink.internal(Root / "docs" / "api.md", "API"),
         IconLink.external("https://github.com/ColOfAbRiX/dixtra", HeliumIcon.github),
       )
@@ -39,7 +117,7 @@ lazy val docsTheme =
     .site
     .mainNavigation(depth = 3)
     .site
-    .footer("An opinionated formatter for Scala 3, MIT licensed.")
+    .footer("Dixtra — An opinionated formatter for Scala 3 · MIT licensed")
     .site
     .landingPage(
       title = Some("Dixtra"),
@@ -48,13 +126,18 @@ lazy val docsTheme =
       license = Some("MIT"),
       titleLinks = Seq(
         ButtonLink.internal(Root / "docs" / "usage.md", "Get started"),
+        ButtonLink.internal(Root / "docs" / "reference" / "braces.md", "Settings reference"),
       ),
       linkPanel = Some(
         LinkPanel(
-          "Settings",
+          "Reference",
           TextLink.internal(Root / "docs" / "reference" / "braces.md", "Braces"),
-          TextLink.internal(Root / "docs" / "reference" / "call-site.md", "Call sites"),
+          TextLink.internal(Root / "docs" / "reference" / "body.md", "Bodies"),
+          TextLink.internal(Root / "docs" / "reference" / "selector-chain.md", "Selector chains"),
           TextLink.internal(Root / "docs" / "reference" / "alignment.md", "Alignment"),
+          TextLink.internal(Root / "docs" / "reference" / "call-site.md", "Call sites"),
+          TextLink.internal(Root / "docs" / "reference" / "definition-site.md", "Definition sites"),
+          TextLink.internal(Root / "docs" / "reference" / "overflow.md", "Overflow"),
         )
       ),
       projectLinks = Seq(

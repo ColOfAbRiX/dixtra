@@ -11,7 +11,7 @@ The plugin requires sbt 2.
 Add the plugin to `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("com.colofabrix.scala" % "sbt-dixtra" % "@VERSION@")
+addSbtPlugin("com.colofabrix.scala" % "sbt-dixtra" % "1.0.0-RC1")
 ```
 
 The plugin is enabled in every project of the build. Its tasks are listed in [the sbt plugin](sbt-plugin.md).
@@ -61,7 +61,7 @@ The options are listed in [the command line](command-line.md).
 The formatter alone, with no dependency other than scalameta:
 
 ```scala
-libraryDependencies += "com.colofabrix.scala" %% "dixtra-core" % "@VERSION@"
+libraryDependencies += "com.colofabrix.scala" %% "dixtra-core" % "1.0.0-RC1"
 ```
 
 Its API is described in [using Dixtra as a library](library.md).

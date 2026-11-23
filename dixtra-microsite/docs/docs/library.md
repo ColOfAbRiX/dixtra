@@ -4,7 +4,7 @@
 `dixtra-core` is the formatter alone, with no dependency other than scalameta:
 
 ```scala
-libraryDependencies += "com.colofabrix.scala" %% "dixtra-core" % "@VERSION@"
+libraryDependencies += "com.colofabrix.scala" %% "dixtra-core" % "1.0.0-RC1"
 ```
 
 ```scala
