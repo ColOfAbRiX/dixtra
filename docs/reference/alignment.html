@@ -1,275 +1,491 @@
-<!DOCTYPE html><html><head><title>Dixtra: Alignment</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="ColOfAbRiX" /><meta name="description" content="An opinionated formatter for Scala 3" /><meta name="og:image" content="/dixtra/img/poster.png" /><meta name="image" property="og:image" content="/dixtra/img/poster.png" /><meta name="og:title" content="Dixtra: Alignment" /><meta name="title" property="og:title" content="Dixtra: Alignment" /><meta name="og:site_name" content="Dixtra" /><meta name="og:url" content="https://colofabrix.github.io/dixtra/" /><meta name="og:type" content="website" /><meta name="og:description" content="An opinionated formatter for Scala 3" /><link rel="icon" type="image/png" href="/dixtra/img/favicon.png" /><meta name="twitter:title" content="Dixtra: Alignment" /><meta name="twitter:image" content="/dixtra/img/poster.png" /><meta name="twitter:description" content="An opinionated formatter for Scala 3" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/dixtra/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/dixtra/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/dixtra/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/dixtra/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/dixtra/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/dixtra/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/dixtra/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/dixtra/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/dixtra/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/dixtra/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/dixtra/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/dixtra/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/dixtra/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/dixtra/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/dixtra/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/dixtra/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/dixtra/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/dixtra/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/dixtra/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/dixtra/img/favicon310x150.png" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/dixtra/highlight/styles/atom-one-dark.css" /><link rel="stylesheet" href="/dixtra/css/light-style.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><div id="sidebar-brand"><a href="/dixtra/" class="brand"><div class="brand-wrapper"></div><span>Dixtra</span></a><button id="main-toggle" class="sidebar-toggle"><span class="close"></span></button></div><div class="sidebar-nav"> <div class="sidebar-nav-item  "><a href="/dixtra/docs/index.html" title="Introduction" class="">Introduction</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/usage.html" title="Using Dixtra" class="">Using Dixtra</a></div> <div class="sidebar-nav-item  open"><a href="/dixtra/docs/configuration.html" title="Configuration" class="drop-nested">Configuration</a><i class="fa fa-angle-right"></i><div class="sub-section"> <a href="/dixtra/docs/reference/braces.html" title="Braces" class="">Braces</a> <a href="/dixtra/docs/reference/body.html" title="Bodies" class="">Bodies</a> <a href="/dixtra/docs/reference/selector-chain.html" title="Selector chains" class="">Selector chains</a> <a href="/dixtra/docs/reference/alignment.html" title="Alignment" class="active">Alignment</a> <a href="/dixtra/docs/reference/blank-lines.html" title="Blank lines" class="">Blank lines</a> <a href="/dixtra/docs/reference/call-site.html" title="Call sites" class="">Call sites</a> <a href="/dixtra/docs/reference/definition-site.html" title="Definition sites" class="">Definition sites</a> <a href="/dixtra/docs/reference/overflow.html" title="Overflow" class="">Overflow</a> <a href="/dixtra/docs/reference/housekeeping.html" title="Housekeeping" class="">Housekeeping</a> <a href="/dixtra/docs/reference/paths.html" title="Paths" class="">Paths</a> <a href="/dixtra/docs/reference/path-overrides.html" title="Path overrides" class="">Path overrides</a></div></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/sbt-plugin.html" title="The sbt plugin" class="">The sbt plugin</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/vscode.html" title="The VS Code extension" class="">The VS Code extension</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/command-line.html" title="The command line" class="">The command line</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/rules.html" title="Rules and limitations" class="">Rules and limitations</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/building.html" title="Building from source" class="">Building from source</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/library.html" title="Using Dixtra as a library" class="">Using Dixtra as a library</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/api.html" title="API documentation" class="">API documentation</a></div></div></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li class="search-nav"><div id="search-dropdown"><label><i class="fa fa-search"></i>Search</label><input id="search-bar" type="text" placeholder="Enter keywords here..." onclick="displayToggleSearch(event)" /><ul id="search-dropdown-content" class="dropdown dropdown-content"></ul></div></li><li id="gh-eyes-item" class="hidden-xs to-uppercase"><a href="https://github.com/ColOfAbRiX/dixtra" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye"></i><span>Watchers<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs to-uppercase"><a href="https://github.com/ColOfAbRiX/dixtra" target="_blank" rel="noopener noreferrer"><i class="fa fa-star-o"></i><span>Stars<span id="stars" class="label label-default">--</span></span></a></li></ul></div></div></div></div><div id="content" data-github-owner="ColOfAbRiX" data-github-repo="dixtra"><div class="content-wrapper"><section><h1 id="alignment">Alignment</h1>
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Typelevel Laika + Helium Theme" />
+  <title>Alignment</title>
+  
+  
+  <meta name="description" content="An opinionated formatter for Scala 3"/>
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:500">
+  
+  <link rel="stylesheet" type="text/css" href="../../helium/site/icofont.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../helium/site/laika-helium.css" />
+    <link rel="stylesheet" type="text/css" href="../../site.css" />
+  <script src="../../helium/site/laika-helium.js"></script>
+  
+  
+  <script> /* for avoiding page load transitions */ </script>
+</head>
 
-<p>What lines up in columns. Every setting is in <a href="#the-settings">the settings table</a>.</p>
+  <body>
 
-<p>Only adjacent one-line items align: a blank line, an item over several lines or any other statement ends a group of aligned items (see also <a href="#alignmentacross-comments"><code class="highlighter-rouge">alignment.across-comments</code></a>). An item that would not fit once aligned breaks instead, and the items before and after it align separately.</p>
+    <header id="top-bar" class="light-default dark-default">
 
-<h2 id="alignmentassignment-groups"><code class="highlighter-rouge">alignment.assignment-groups</code></h2>
+  <div class="row">
+    <a id="nav-icon">
+      <i class="icofont-laika navigationMenu" title="Navigation">&#xefa2;</i>
+    </a>
+    
+    
+  </div>
 
-<p>The groups of keywords whose adjacent one-line definitions align their <code class="highlighter-rouge">=</code>. The keywords are <code class="highlighter-rouge">val</code>, <code class="highlighter-rouge">lazy-val</code>, <code class="highlighter-rouge">var</code>, <code class="highlighter-rouge">def</code>, <code class="highlighter-rouge">given-alias</code> and <code class="highlighter-rouge">type-def</code>. A keyword is in at most one group, and a keyword in no group never aligns and ends the groups around it. Default <code class="highlighter-rouge">alignment.assignment-groups = [[val, lazy-val, var, def]]</code>.</p>
+  <a class="icon-link glyph-link" href="../../"><i class="icofont-laika home" title="Home">&#xef47;</i></a>
 
-<p>With the default:</p>
+  <div class="row links">
+    
+    <a class="text-link" href="../">Docs</a>
+    
+    <a class="text-link" href="braces.html">Reference</a>
+    
+    <a class="text-link" href="../api.html">API</a>
+    
+    <a class="icon-link svg-link" href="https://github.com/ColOfAbRiX/dixtra"><span class="github" title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <g class="svg-shape">
+    <path d="M49.995,1c-27.609,-0 -49.995,22.386 -49.995,50.002c-0,22.09 14.325,40.83 34.194,47.444c2.501,0.458 3.413,-1.086 3.413,-2.412c0,-1.185 -0.043,-4.331 -0.067,-8.503c-13.908,3.021 -16.843,-6.704 -16.843,-6.704c-2.274,-5.773 -5.552,-7.311 -5.552,-7.311c-4.54,-3.103 0.344,-3.042 0.344,-3.042c5.018,0.356 7.658,5.154 7.658,5.154c4.46,7.64 11.704,5.433 14.552,4.156c0.454,-3.232 1.744,-5.436 3.174,-6.685c-11.102,-1.262 -22.775,-5.553 -22.775,-24.713c-0,-5.457 1.949,-9.92 5.147,-13.416c-0.516,-1.265 -2.231,-6.348 0.488,-13.233c0,0 4.199,-1.344 13.751,5.126c3.988,-1.108 8.266,-1.663 12.518,-1.682c4.245,0.019 8.523,0.574 12.517,1.682c9.546,-6.47 13.736,-5.126 13.736,-5.126c2.728,6.885 1.013,11.968 0.497,13.233c3.204,3.496 5.141,7.959 5.141,13.416c0,19.209 -11.691,23.436 -22.83,24.673c1.795,1.544 3.394,4.595 3.394,9.26c0,6.682 -0.061,12.076 -0.061,13.715c0,1.338 0.899,2.894 3.438,2.406c19.853,-6.627 34.166,-25.354 34.166,-47.438c-0,-27.616 -22.389,-50.002 -50.005,-50.002"/>
+  </g>
+</svg></span></a>
+    
+  </div>  
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">name</span>       <span class="k">=</span> <span class="s">"dixtra"</span>
-<span class="k">var</span> <span class="n">count</span>      <span class="k">=</span> <span class="mi">0</span>
-<span class="k">def</span> <span class="nf">totalCount</span> <span class="k">=</span> <span class="n">count</span> <span class="o">*</span> <span class="mi">2</span>
-</code></pre></div></div>
+</header>
+    
+    <nav id="sidebar">
 
-<p>With <code class="highlighter-rouge">alignment.assignment-groups = [[val, var], [def]]</code>, the <code class="highlighter-rouge">def</code> aligns with neither:</p>
+  <div class="row">
+    
+    <a class="text-link" href="../">Docs</a>
+    
+    <a class="text-link" href="braces.html">Reference</a>
+    
+    <a class="text-link" href="../api.html">API</a>
+    
+    <a class="icon-link svg-link" href="https://github.com/ColOfAbRiX/dixtra"><span class="github" title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <g class="svg-shape">
+    <path d="M49.995,1c-27.609,-0 -49.995,22.386 -49.995,50.002c-0,22.09 14.325,40.83 34.194,47.444c2.501,0.458 3.413,-1.086 3.413,-2.412c0,-1.185 -0.043,-4.331 -0.067,-8.503c-13.908,3.021 -16.843,-6.704 -16.843,-6.704c-2.274,-5.773 -5.552,-7.311 -5.552,-7.311c-4.54,-3.103 0.344,-3.042 0.344,-3.042c5.018,0.356 7.658,5.154 7.658,5.154c4.46,7.64 11.704,5.433 14.552,4.156c0.454,-3.232 1.744,-5.436 3.174,-6.685c-11.102,-1.262 -22.775,-5.553 -22.775,-24.713c-0,-5.457 1.949,-9.92 5.147,-13.416c-0.516,-1.265 -2.231,-6.348 0.488,-13.233c0,0 4.199,-1.344 13.751,5.126c3.988,-1.108 8.266,-1.663 12.518,-1.682c4.245,0.019 8.523,0.574 12.517,1.682c9.546,-6.47 13.736,-5.126 13.736,-5.126c2.728,6.885 1.013,11.968 0.497,13.233c3.204,3.496 5.141,7.959 5.141,13.416c0,19.209 -11.691,23.436 -22.83,24.673c1.795,1.544 3.394,4.595 3.394,9.26c0,6.682 -0.061,12.076 -0.061,13.715c0,1.338 0.899,2.894 3.438,2.406c19.853,-6.627 34.166,-25.354 34.166,-47.438c-0,-27.616 -22.389,-50.002 -50.005,-50.002"/>
+  </g>
+</svg></span></a>
+    
+  </div>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">name</span>  <span class="k">=</span> <span class="s">"dixtra"</span>
-<span class="k">var</span> <span class="n">count</span> <span class="k">=</span> <span class="mi">0</span>
-<span class="k">def</span> <span class="nf">totalCount</span> <span class="k">=</span> <span class="n">count</span> <span class="o">*</span> <span class="mi">2</span>
-</code></pre></div></div>
+  <ul class="nav-list">
+    <li class="level1 nav-header">docs</li>
+    <li class="level2 nav-leaf"><a href="../">Introduction</a></li>
+    <li class="level2 nav-leaf"><a href="../usage.html">Setup</a></li>
+    <li class="level2 nav-leaf"><a href="../configuration.html">Configuration</a></li>
+    <li class="level2 nav-leaf"><a href="../sbt-plugin.html">The sbt plugin</a></li>
+    <li class="level2 nav-leaf"><a href="../vscode.html">The VS Code extension</a></li>
+    <li class="level2 nav-leaf"><a href="../command-line.html">The command line</a></li>
+    <li class="level2 nav-leaf"><a href="../rules.html">Rules and limitations</a></li>
+    <li class="level2 nav-leaf"><a href="../building.html">Building from source</a></li>
+    <li class="level2 nav-leaf"><a href="../library.html">Using Dixtra as a library</a></li>
+    <li class="level2 nav-leaf"><a href="../api.html">API documentation</a></li>
+    <li class="level2 nav-header">reference</li>
+    <li class="level3 nav-leaf"><a href="braces.html">Braces</a></li>
+    <li class="level3 nav-leaf"><a href="body.html">Bodies</a></li>
+    <li class="level3 nav-leaf"><a href="selector-chain.html">Selector chains</a></li>
+    <li class="level3 active nav-leaf"><a href="#">Alignment</a></li>
+    <li class="level3 nav-leaf"><a href="blank-lines.html">Blank lines</a></li>
+    <li class="level3 nav-leaf"><a href="call-site.html">Call sites</a></li>
+    <li class="level3 nav-leaf"><a href="definition-site.html">Definition sites</a></li>
+    <li class="level3 nav-leaf"><a href="overflow.html">Overflow</a></li>
+    <li class="level3 nav-leaf"><a href="housekeeping.html">Housekeeping</a></li>
+    <li class="level3 nav-leaf"><a href="paths.html">Paths</a></li>
+    <li class="level3 nav-leaf"><a href="path-overrides.html">Path overrides</a></li>
+  </ul>
 
-<p>With <code class="highlighter-rouge">alignment.assignment-groups = [[val, def]]</code>, the <code class="highlighter-rouge">var</code> aligns with nothing, and the definitions before and after it align separately:</p>
+</nav>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">name</span> <span class="k">=</span> <span class="s">"dixtra"</span>
-<span class="k">var</span> <span class="n">count</span> <span class="k">=</span> <span class="mi">0</span>
-<span class="k">val</span> <span class="nv">totalCount</span> <span class="k">=</span> <span class="n">count</span> <span class="o">*</span> <span class="mi">2</span>
-<span class="k">def</span> <span class="nf">f</span>          <span class="k">=</span> <span class="mi">1</span>
-</code></pre></div></div>
+    <div id="container">
 
-<p>With <code class="highlighter-rouge">alignment.assignment-groups = []</code>, no definition aligns.</p>
+      
+<nav id="page-nav">
+  <p class="header"><a href="#">Alignment</a></p>
 
-<h2 id="alignmentoperators"><code class="highlighter-rouge">alignment.operators</code></h2>
+  <ul class="nav-list">
+    <li class="level1 nav-leaf"><a href="#alignment-assignment-groups-1"><code>alignment.assignment-groups</code></a></li>
+    <li class="level1 nav-leaf"><a href="#alignment-operators-1"><code>alignment.operators</code></a></li>
+    <li class="level1 nav-leaf"><a href="#alignment-arrows-cases"><code>alignment.arrows.cases</code></a></li>
+    <li class="level1 nav-leaf"><a href="#alignment-arrows-pairs"><code>alignment.arrows.pairs</code></a></li>
+    <li class="level1 nav-leaf"><a href="#alignment-arrows-for-enumerators"><code>alignment.arrows.for-enumerators</code></a></li>
+    <li class="level1 nav-leaf"><a href="#alignment-extends-clauses"><code>alignment.extends-clauses</code></a></li>
+    <li class="level1 nav-leaf"><a href="#alignment-named-arguments"><code>alignment.named-arguments</code></a></li>
+    <li class="level1 nav-leaf"><a href="#alignment-trailing-comments"><code>alignment.trailing-comments</code></a></li>
+    <li class="level1 nav-leaf"><a href="#alignment-across-comments"><code>alignment.across-comments</code></a></li>
+    <li class="level1 nav-leaf"><a href="#alignment-scaladoc-tags"><code>alignment.scaladoc.tags</code></a></li>
+  </ul>
 
-<p>The operators that align column by column. Default <code class="highlighter-rouge">alignment.operators = ["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]</code>.</p>
+  <p class="footer"></p>
+</nav>
 
-<p>They align in adjacent one-line statements, in adjacent one-line elements of a list laid out one per line, and in an operation that is the only argument of a call statement. The named arguments follow <a href="#alignmentnamed-arguments"><code class="highlighter-rouge">alignment.named-arguments</code></a> instead.</p>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">total</span> <span class="o">+=</span> <span class="n">x</span>
-<span class="n">n</span>     <span class="k">=</span> <span class="mi">0</span>
-</code></pre></div></div>
+      <main class="content">
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Seq</span><span class="o">(</span>
-  <span class="s">"org.typelevel"</span> <span class="o">%%</span> <span class="s">"cats-core"</span> <span class="o">%</span> <span class="s">"2.13.0"</span><span class="o">,</span>
-  <span class="s">"co.fs2"</span>        <span class="o">%%</span> <span class="s">"fs2-io"</span>    <span class="o">%</span> <span class="s">"3.13.0"</span><span class="o">,</span>
-<span class="o">)</span>
-</code></pre></div></div>
+        <h1 id="alignment" class="title">Alignment</h1>
+        <p>What lines up in columns.</p>
+        <p>Only adjacent one-line items align: a blank line, an item over several lines or any other statement ends a group of aligned items.</p>
+        <p>An item that would not fit once aligned breaks instead, and the items before and after it align separately.</p>
+        
+        <h2 id="alignment-assignment-groups-1" class="section"><a class="anchor-link left" href="#alignment-assignment-groups-1"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.assignment-groups</code></h2>
+        <p><strong>Default:</strong> <code>[[val, lazy-val, var, def]]</code>.</p>
+        <p>The groups of keywords whose adjacent one-line definitions align their <code>=</code>. The keywords are <code>val</code>, <code>lazy-val</code>, <code>var</code>, <code>def</code>, <code>given-alias</code> and <code>type-def</code>. A keyword is in at most one group, and a keyword in no group never aligns and ends the groups around it.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">a</span><span> = </span><span class="number-literal">1</span><span>
+</span><span class="keyword">var</span><span> </span><span class="identifier">bb</span><span> = </span><span class="number-literal">2</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">c</span><span> = </span><span class="number-literal">3</span><span>
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">dddd</span><span> = </span><span class="number-literal">4</span></code></pre>
+        
+        <h3 id="alignment-assignment-groups-val-lazy-val-var-def" class="section"><a class="anchor-link left" href="#alignment-assignment-groups-val-lazy-val-var-def"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.assignment-groups = [[val, lazy-val, var, def]]</code></h3>
+        <p>All four keywords are in one group, so the three definitions align their <code>=</code>:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">a</span><span>    = </span><span class="number-literal">1</span><span>
+</span><span class="keyword">var</span><span> </span><span class="identifier">bb</span><span>   = </span><span class="number-literal">2</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">c</span><span>    = </span><span class="number-literal">3</span><span>
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">dddd</span><span> = </span><span class="number-literal">4</span><span>
 
-<p>With <code class="highlighter-rouge">alignment.operators = []</code>, no operator aligns.</p>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.assignment-groups = [[val, lazy-val, var, def]]</span></code></pre>
+        
+        <h3 id="alignment-assignment-groups-val-var-def" class="section"><a class="anchor-link left" href="#alignment-assignment-groups-val-var-def"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.assignment-groups = [[val, var], [def]]</code></h3>
+        <p>The <code>def</code> is in a group of its own, so it aligns with neither <code>val</code> nor <code>var</code>:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">a</span><span>  = </span><span class="number-literal">1</span><span>
+</span><span class="keyword">var</span><span> </span><span class="identifier">bb</span><span> = </span><span class="number-literal">2</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">c</span><span>  = </span><span class="number-literal">3</span><span>
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">dddd</span><span> = </span><span class="number-literal">4</span><span>
 
-<h2 id="alignmentarrowscases"><code class="highlighter-rouge">alignment.arrows.cases</code></h2>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.assignment-groups = [[val, var], [def]]</span></code></pre>
+        
+        <h3 id="alignment-assignment-groups-val-def" class="section"><a class="anchor-link left" href="#alignment-assignment-groups-val-def"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.assignment-groups = [[val, def]]</code></h3>
+        <p>The <code>var</code> is in no group, so it never aligns and ends the groups around it:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">a</span><span> = </span><span class="number-literal">1</span><span>
+</span><span class="keyword">var</span><span> </span><span class="identifier">bb</span><span> = </span><span class="number-literal">2</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">c</span><span>    = </span><span class="number-literal">3</span><span>
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">dddd</span><span> = </span><span class="number-literal">4</span><span>
 
-<p>Whether the <code class="highlighter-rouge">=&gt;</code> of adjacent one-line cases align. Default <code class="highlighter-rouge">alignment.arrows.cases = true</code>.</p>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.assignment-groups = [[val, def]]</span></code></pre>
+        
+        <h3 id="alignment-assignment-groups-2" class="section"><a class="anchor-link left" href="#alignment-assignment-groups-2"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.assignment-groups = []</code></h3>
+        <p>No keyword is in a group, so no definition aligns:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">a</span><span> = </span><span class="number-literal">1</span><span>
+</span><span class="keyword">var</span><span> </span><span class="identifier">bb</span><span> = </span><span class="number-literal">2</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">c</span><span> = </span><span class="number-literal">3</span><span>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">value</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">value</span>
-<span class="k">case</span> <span class="nc">None</span>        <span class="k">=&gt;</span> <span class="n">default</span>
-</code></pre></div></div>
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">dddd</span><span> = </span><span class="number-literal">4</span><span>
 
-<p>With <code class="highlighter-rouge">alignment.arrows.cases = false</code>:</p>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.assignment-groups = []</span></code></pre>
+        
+        <h2 id="alignment-operators-1" class="section"><a class="anchor-link left" href="#alignment-operators-1"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.operators</code></h2>
+        <p><strong>Default:</strong> <code>[&quot;=&quot;, &quot;+=&quot;, &quot;-=&quot;, &quot;*=&quot;, &quot;/=&quot;, &quot;:=&quot;, &quot;++=&quot;, &quot;%&quot;, &quot;%%&quot;, &quot;%%%&quot;]</code>.</p>
+        <p>The operators that align column by column in adjacent one-line statements, and in adjacent one-line elements of a list laid out one per line. The named arguments follow <a href="#alignment-named-arguments"><code>alignment.named-arguments</code></a> instead.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">total</span><span> += </span><span class="identifier">x</span><span>
+  </span><span class="identifier">n</span><span> = </span><span class="number-literal">0</span></code></pre>
+        
+        <h3 id="alignment-operators-2" class="section"><a class="anchor-link left" href="#alignment-operators-2"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.operators = [&quot;=&quot;, &quot;+=&quot;, &quot;-=&quot;, &quot;*=&quot;, &quot;/=&quot;, &quot;:=&quot;, &quot;++=&quot;, &quot;%&quot;, &quot;%%&quot;, &quot;%%%&quot;]</code></h3>
+        <p>The <code>=</code> of the two statements aligns with the <code>+=</code>:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">total</span><span> += </span><span class="identifier">x</span><span>
+  </span><span class="identifier">n</span><span>     = </span><span class="number-literal">0</span><span>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">value</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">value</span>
-<span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="n">default</span>
-</code></pre></div></div>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.operators = [&quot;=&quot;, &quot;+=&quot;, &quot;-=&quot;, &quot;*=&quot;, &quot;/=&quot;, &quot;:=&quot;, &quot;++=&quot;, &quot;%&quot;, &quot;%%&quot;, &quot;%%%&quot;]</span></code></pre>
+        
+        <h3 id="alignment-operators-3" class="section"><a class="anchor-link left" href="#alignment-operators-3"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.operators = []</code></h3>
+        <p>No operator aligns:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">total</span><span> += </span><span class="identifier">x</span><span>
+  </span><span class="identifier">n</span><span> = </span><span class="number-literal">0</span><span>
 
-<h2 id="alignmentarrowspairs"><code class="highlighter-rouge">alignment.arrows.pairs</code></h2>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.operators = []</span></code></pre>
+        
+        <h2 id="alignment-arrows-cases" class="section"><a class="anchor-link left" href="#alignment-arrows-cases"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.arrows.cases</code></h2>
+        <p><strong>Default:</strong> <code>true</code>.</p>
+        <p>Whether the <code>=&gt;</code> of adjacent one-line cases align.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(</span><span class="identifier">value</span><span>: </span><span class="type-name">Option</span><span>[</span><span class="type-name">Int</span><span>]) = </span><span class="identifier">value</span><span> </span><span class="keyword">match</span><span>
+  </span><span class="keyword">case</span><span> </span><span class="type-name">Some</span><span>(</span><span class="identifier">value</span><span>) =&gt; </span><span class="identifier">value</span><span>
+  </span><span class="keyword">case</span><span> </span><span class="type-name">None</span><span> =&gt; </span><span class="keyword">default</span></code></pre>
+        
+        <h3 id="alignment-arrows-cases-true" class="section"><a class="anchor-link left" href="#alignment-arrows-cases-true"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.arrows.cases = true</code></h3>
+        <p>The <code>=&gt;</code> of the two cases align:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(</span><span class="identifier">value</span><span>: </span><span class="type-name">Option</span><span>[</span><span class="type-name">Int</span><span>]) =
+  </span><span class="identifier">value</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="type-name">Some</span><span>(</span><span class="identifier">value</span><span>) =&gt; </span><span class="identifier">value</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="type-name">None</span><span>        =&gt; </span><span class="keyword">default</span><span>
+  }
 
-<p>Whether the <code class="highlighter-rouge">-&gt;</code> of the <code class="highlighter-rouge">a -&gt; b</code> elements of a list laid out one per line align. Default <code class="highlighter-rouge">alignment.arrows.pairs = true</code>.</p>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.arrows.cases = true</span></code></pre>
+        
+        <h3 id="alignment-arrows-cases-false" class="section"><a class="anchor-link left" href="#alignment-arrows-cases-false"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.arrows.cases = false</code></h3>
+        <p>Each <code>=&gt;</code> stays after its own pattern:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(</span><span class="identifier">value</span><span>: </span><span class="type-name">Option</span><span>[</span><span class="type-name">Int</span><span>]) =
+  </span><span class="identifier">value</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="type-name">Some</span><span>(</span><span class="identifier">value</span><span>) =&gt; </span><span class="identifier">value</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="type-name">None</span><span> =&gt; </span><span class="keyword">default</span><span>
+  }
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Map</span><span class="o">(</span>
-  <span class="s">"one"</span>   <span class="o">-&gt;</span> <span class="mi">1</span><span class="o">,</span>
-  <span class="s">"three"</span> <span class="o">-&gt;</span> <span class="mi">3</span><span class="o">,</span>
-<span class="o">)</span>
-</code></pre></div></div>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.arrows.cases = false</span></code></pre>
+        
+        <h2 id="alignment-arrows-pairs" class="section"><a class="anchor-link left" href="#alignment-arrows-pairs"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.arrows.pairs</code></h2>
+        <p><strong>Default:</strong> <code>true</code>.</p>
+        <p>Whether the <code>-&gt;</code> of the <code>a -&gt; b</code> elements of a list laid out one per line align.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">m</span><span> = </span><span class="type-name">Map</span><span>(
+  </span><span class="string-literal">&quot;one&quot;</span><span> -&gt; </span><span class="number-literal">1</span><span>,
+  </span><span class="string-literal">&quot;three&quot;</span><span> -&gt; </span><span class="number-literal">3</span><span>,
+)</span></code></pre>
+        
+        <h3 id="alignment-arrows-pairs-true" class="section"><a class="anchor-link left" href="#alignment-arrows-pairs-true"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.arrows.pairs = true</code></h3>
+        <p>The <code>-&gt;</code> of the two elements align:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">m</span><span> =
+  </span><span class="type-name">Map</span><span>(
+    </span><span class="string-literal">&quot;one&quot;</span><span>   -&gt; </span><span class="number-literal">1</span><span>,
+    </span><span class="string-literal">&quot;three&quot;</span><span> -&gt; </span><span class="number-literal">3</span><span>,
+  )
 
-<p>With <code class="highlighter-rouge">alignment.arrows.pairs = false</code>:</p>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.arrows.pairs = true</span></code></pre>
+        
+        <h3 id="alignment-arrows-pairs-false" class="section"><a class="anchor-link left" href="#alignment-arrows-pairs-false"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.arrows.pairs = false</code></h3>
+        <p>Each <code>-&gt;</code> stays after its own key:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">m</span><span> =
+  </span><span class="type-name">Map</span><span>(
+    </span><span class="string-literal">&quot;one&quot;</span><span> -&gt; </span><span class="number-literal">1</span><span>,
+    </span><span class="string-literal">&quot;three&quot;</span><span> -&gt; </span><span class="number-literal">3</span><span>,
+  )
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Map</span><span class="o">(</span>
-  <span class="s">"one"</span> <span class="o">-&gt;</span> <span class="mi">1</span><span class="o">,</span>
-  <span class="s">"three"</span> <span class="o">-&gt;</span> <span class="mi">3</span><span class="o">,</span>
-<span class="o">)</span>
-</code></pre></div></div>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.arrows.pairs = false</span></code></pre>
+        
+        <h2 id="alignment-arrows-for-enumerators" class="section"><a class="anchor-link left" href="#alignment-arrows-for-enumerators"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.arrows.for-enumerators</code></h2>
+        <p><strong>Default:</strong> <code>true</code>.</p>
+        <p>Whether the <code>&lt;-</code> and the <code>=</code> of the enumerators of a <code>for</code> align.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span> =
+  </span><span class="keyword">for</span><span>
+    </span><span class="identifier">user</span><span> &lt;- </span><span class="identifier">users</span><span>
+    </span><span class="identifier">userCount</span><span> = </span><span class="identifier">users</span><span>.</span><span class="identifier">size</span><span>
+    </span><span class="identifier">account</span><span> &lt;- </span><span class="identifier">accounts</span><span>(</span><span class="identifier">user</span><span>)
+  </span><span class="keyword">yield</span><span> </span><span class="identifier">account</span></code></pre>
+        
+        <h3 id="alignment-arrows-for-enumerators-true" class="section"><a class="anchor-link left" href="#alignment-arrows-for-enumerators-true"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.arrows.for-enumerators = true</code></h3>
+        <p>The <code>&lt;-</code> and the <code>=</code> of the three enumerators align:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span> =
+  </span><span class="keyword">for</span><span>
+    </span><span class="identifier">user</span><span>     &lt;- </span><span class="identifier">users</span><span>
+    </span><span class="identifier">userCount</span><span> = </span><span class="identifier">users</span><span>.</span><span class="identifier">size</span><span>
+    </span><span class="identifier">account</span><span>  &lt;- </span><span class="identifier">accounts</span><span>(</span><span class="identifier">user</span><span>)
+  </span><span class="keyword">yield</span><span> </span><span class="identifier">account</span><span>
 
-<h2 id="alignmentarrowsfor-enumerators"><code class="highlighter-rouge">alignment.arrows.for-enumerators</code></h2>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.arrows.for-enumerators = true</span></code></pre>
+        
+        <h3 id="alignment-arrows-for-enumerators-false" class="section"><a class="anchor-link left" href="#alignment-arrows-for-enumerators-false"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.arrows.for-enumerators = false</code></h3>
+        <p>Each enumerator keeps its own spacing:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span> =
+  </span><span class="keyword">for</span><span>
+    </span><span class="identifier">user</span><span> &lt;- </span><span class="identifier">users</span><span>
+    </span><span class="identifier">userCount</span><span> = </span><span class="identifier">users</span><span>.</span><span class="identifier">size</span><span>
+    </span><span class="identifier">account</span><span> &lt;- </span><span class="identifier">accounts</span><span>(</span><span class="identifier">user</span><span>)
+  </span><span class="keyword">yield</span><span> </span><span class="identifier">account</span><span>
 
-<p>Whether the <code class="highlighter-rouge">&lt;-</code> and the <code class="highlighter-rouge">=</code> of the enumerators of a <code class="highlighter-rouge">for</code> align. Default <code class="highlighter-rouge">alignment.arrows.for-enumerators = true</code>.</p>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.arrows.for-enumerators = false</span></code></pre>
+        
+        <h2 id="alignment-extends-clauses" class="section"><a class="anchor-link left" href="#alignment-extends-clauses"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.extends-clauses</code></h2>
+        <p><strong>Default:</strong> <code>true</code>.</p>
+        <p>Whether the <code>extends</code> of adjacent one-line definitions (classes, objects, traits, enum cases) align.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">enum</span><span> </span><span class="type-name">Color</span><span>:
+  </span><span class="keyword">case</span><span> </span><span class="type-name">Red</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Color</span><span>(</span><span class="string-literal">&quot;red&quot;</span><span>)
+  </span><span class="keyword">case</span><span> </span><span class="type-name">Green</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Color</span><span>(</span><span class="string-literal">&quot;green&quot;</span><span>)</span></code></pre>
+        
+        <h3 id="alignment-extends-clauses-true" class="section"><a class="anchor-link left" href="#alignment-extends-clauses-true"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.extends-clauses = true</code></h3>
+        <p>The <code>extends</code> of the two cases align:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">enum</span><span> </span><span class="type-name">Color</span><span> {
+  </span><span class="keyword">case</span><span> </span><span class="type-name">Red</span><span>   </span><span class="keyword">extends</span><span> </span><span class="type-name">Color</span><span>(</span><span class="string-literal">&quot;red&quot;</span><span>)
+  </span><span class="keyword">case</span><span> </span><span class="type-name">Green</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Color</span><span>(</span><span class="string-literal">&quot;green&quot;</span><span>)
+}
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span>
-  <span class="n">user</span>     <span class="k">&lt;-</span> <span class="n">users</span>
-  <span class="n">userCount</span> <span class="k">=</span> <span class="nv">users</span><span class="o">.</span><span class="py">size</span>
-  <span class="n">account</span>  <span class="k">&lt;-</span> <span class="nf">accounts</span><span class="o">(</span><span class="n">user</span><span class="o">)</span>
-<span class="k">yield</span> <span class="n">account</span>
-</code></pre></div></div>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.extends-clauses = true</span></code></pre>
+        
+        <h3 id="alignment-extends-clauses-false" class="section"><a class="anchor-link left" href="#alignment-extends-clauses-false"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.extends-clauses = false</code></h3>
+        <p>Each <code>extends</code> follows its own name:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">enum</span><span> </span><span class="type-name">Color</span><span> {
+  </span><span class="keyword">case</span><span> </span><span class="type-name">Red</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Color</span><span>(</span><span class="string-literal">&quot;red&quot;</span><span>)
+  </span><span class="keyword">case</span><span> </span><span class="type-name">Green</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Color</span><span>(</span><span class="string-literal">&quot;green&quot;</span><span>)
+}
 
-<p>With <code class="highlighter-rouge">alignment.arrows.for-enumerators = false</code>:</p>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.extends-clauses = false</span></code></pre>
+        
+        <h2 id="alignment-named-arguments" class="section"><a class="anchor-link left" href="#alignment-named-arguments"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.named-arguments</code></h2>
+        <p><strong>Default:</strong> <code>false</code>.</p>
+        <p>Whether the <code>=</code> of adjacent one-line named arguments align, in a call laid out one argument per line.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">c</span><span> = </span><span class="type-name">MyCaseClass</span><span>(
+  </span><span class="identifier">aaa</span><span> = </span><span class="string-literal">&quot;&quot;</span><span>,
+  </span><span class="identifier">name</span><span> = </span><span class="number-literal">123</span><span>,
+)</span></code></pre>
+        
+        <h3 id="alignment-named-arguments-true" class="section"><a class="anchor-link left" href="#alignment-named-arguments-true"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.named-arguments = true</code></h3>
+        <p>The <code>=</code> of the two named arguments align:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">c</span><span> =
+  </span><span class="type-name">MyCaseClass</span><span>(
+    </span><span class="identifier">aaa</span><span>  = </span><span class="string-literal">&quot;&quot;</span><span>,
+    </span><span class="identifier">name</span><span> = </span><span class="number-literal">123</span><span>,
+  )
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span>
-  <span class="n">user</span> <span class="k">&lt;-</span> <span class="n">users</span>
-  <span class="n">userCount</span> <span class="k">=</span> <span class="nv">users</span><span class="o">.</span><span class="py">size</span>
-  <span class="n">account</span> <span class="k">&lt;-</span> <span class="nf">accounts</span><span class="o">(</span><span class="n">user</span><span class="o">)</span>
-<span class="k">yield</span> <span class="n">account</span>
-</code></pre></div></div>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.named-arguments = true</span></code></pre>
+        
+        <h3 id="alignment-named-arguments-false" class="section"><a class="anchor-link left" href="#alignment-named-arguments-false"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.named-arguments = false</code></h3>
+        <p>Each <code>=</code> follows its own name:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">c</span><span> =
+  </span><span class="type-name">MyCaseClass</span><span>(
+    </span><span class="identifier">aaa</span><span> = </span><span class="string-literal">&quot;&quot;</span><span>,
+    </span><span class="identifier">name</span><span> = </span><span class="number-literal">123</span><span>,
+  )
 
-<h2 id="alignmentextends-clauses"><code class="highlighter-rouge">alignment.extends-clauses</code></h2>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.named-arguments = false</span></code></pre>
+        
+        <h2 id="alignment-trailing-comments" class="section"><a class="anchor-link left" href="#alignment-trailing-comments"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.trailing-comments</code></h2>
+        <p><strong>Default:</strong> <code>false</code>.</p>
+        <p>Whether the comments at the end of consecutive lines of code start on one column, one space after the longest code. A line without a trailing comment ends the group.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">run</span><span>(</span><span class="number-literal">1</span><span>) </span><span class="comment">// one
+</span><span>  </span><span class="identifier">compute</span><span>(</span><span class="number-literal">2</span><span>) </span><span class="comment">// two</span></code></pre>
+        
+        <h3 id="alignment-trailing-comments-true" class="section"><a class="anchor-link left" href="#alignment-trailing-comments-true"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.trailing-comments = true</code></h3>
+        <p>The two comments start on one column:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">run</span><span>(</span><span class="number-literal">1</span><span>)     </span><span class="comment">// one
+</span><span>  </span><span class="identifier">compute</span><span>(</span><span class="number-literal">2</span><span>) </span><span class="comment">// two
+</span><span>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.trailing-comments = true</span></code></pre>
+        
+        <h3 id="alignment-trailing-comments-false" class="section"><a class="anchor-link left" href="#alignment-trailing-comments-false"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.trailing-comments = false</code></h3>
+        <p>Each comment follows its own code:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">run</span><span>(</span><span class="number-literal">1</span><span>) </span><span class="comment">// one
+</span><span>  </span><span class="identifier">compute</span><span>(</span><span class="number-literal">2</span><span>) </span><span class="comment">// two
+</span><span>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.trailing-comments = false</span></code></pre>
+        
+        <h2 id="alignment-across-comments" class="section"><a class="anchor-link left" href="#alignment-across-comments"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.across-comments</code></h2>
+        <p><strong>Default:</strong> <code>false</code>.</p>
+        <p>Whether a comment on its own line between two items keeps them in one group. The items are definitions, statements, cases and list elements. A blank line still ends a group, and the enumerators of a <code>for</code> always align across comments.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">a</span><span> = </span><span class="number-literal">1</span><span>
+</span><span class="comment">// note
+</span><span class="keyword">val</span><span> </span><span class="identifier">bbb</span><span> = </span><span class="number-literal">2</span></code></pre>
+        
+        <h3 id="alignment-across-comments-true" class="section"><a class="anchor-link left" href="#alignment-across-comments-true"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.across-comments = true</code></h3>
+        <p>The comment does not end the group, so the two definitions align:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">a</span><span>   = </span><span class="number-literal">1</span><span>
+</span><span class="comment">// note
+</span><span class="keyword">val</span><span> </span><span class="identifier">bbb</span><span> = </span><span class="number-literal">2</span><span>
 
-<p>Whether the <code class="highlighter-rouge">extends</code> of adjacent one-line definitions (classes, objects, traits, enum cases) align. Default <code class="highlighter-rouge">alignment.extends-clauses = true</code>.</p>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.across-comments = true</span></code></pre>
+        
+        <h3 id="alignment-across-comments-false" class="section"><a class="anchor-link left" href="#alignment-across-comments-false"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.across-comments = false</code></h3>
+        <p>The comment ends the group, so the definitions align on their own:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">a</span><span> = </span><span class="number-literal">1</span><span>
+</span><span class="comment">// note
+</span><span class="keyword">val</span><span> </span><span class="identifier">bbb</span><span> = </span><span class="number-literal">2</span><span>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nc">Red</span>   <span class="k">extends</span> <span class="nc">Color</span><span class="o">(</span><span class="s">"red"</span><span class="o">)</span>
-<span class="k">case</span> <span class="nc">Green</span> <span class="k">extends</span> <span class="nc">Color</span><span class="o">(</span><span class="s">"green"</span><span class="o">)</span>
-</code></pre></div></div>
-
-<p>With <code class="highlighter-rouge">alignment.extends-clauses = false</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nc">Red</span> <span class="k">extends</span> <span class="nc">Color</span><span class="o">(</span><span class="s">"red"</span><span class="o">)</span>
-<span class="k">case</span> <span class="nc">Green</span> <span class="k">extends</span> <span class="nc">Color</span><span class="o">(</span><span class="s">"green"</span><span class="o">)</span>
-</code></pre></div></div>
-
-<h2 id="alignmentnamed-arguments"><code class="highlighter-rouge">alignment.named-arguments</code></h2>
-
-<p>Whether the <code class="highlighter-rouge">=</code> of adjacent one-line named arguments align, in a call laid out one argument per line. Default <code class="highlighter-rouge">alignment.named-arguments = false</code>.</p>
-
-<p>With <code class="highlighter-rouge">alignment.named-arguments = true</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">MyCaseClass</span><span class="o">(</span>
-  <span class="n">aaa</span>  <span class="k">=</span> <span class="s">""</span><span class="o">,</span>
-  <span class="n">name</span> <span class="k">=</span> <span class="mi">123</span><span class="o">,</span>
-<span class="o">)</span>
-</code></pre></div></div>
-
-<p>With <code class="highlighter-rouge">alignment.named-arguments = false</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">MyCaseClass</span><span class="o">(</span>
-  <span class="n">aaa</span> <span class="k">=</span> <span class="s">""</span><span class="o">,</span>
-  <span class="n">name</span> <span class="k">=</span> <span class="mi">123</span><span class="o">,</span>
-<span class="o">)</span>
-</code></pre></div></div>
-
-<h2 id="alignmenttrailing-comments"><code class="highlighter-rouge">alignment.trailing-comments</code></h2>
-
-<p>Whether the comments at the end of consecutive lines of code start on one column, one space after the longest code. A line without a trailing comment ends the group. Default <code class="highlighter-rouge">alignment.trailing-comments = false</code>.</p>
-
-<p>With <code class="highlighter-rouge">alignment.trailing-comments = true</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">run</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>     <span class="c1">// one</span>
-<span class="nf">compute</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="c1">// two</span>
-</code></pre></div></div>
-
-<p>With <code class="highlighter-rouge">alignment.trailing-comments = false</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">run</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="c1">// one</span>
-<span class="nf">compute</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="c1">// two</span>
-</code></pre></div></div>
-
-<h2 id="alignmentacross-comments"><code class="highlighter-rouge">alignment.across-comments</code></h2>
-
-<p>Whether a comment on its own line between two items keeps them in one group. The items are definitions, statements, cases and list elements. A blank line still ends a group, and the enumerators of a <code class="highlighter-rouge">for</code> always align across comments. Default <code class="highlighter-rouge">alignment.across-comments = false</code>.</p>
-
-<p>With <code class="highlighter-rouge">alignment.across-comments = true</code>, one group:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">a</span>   <span class="k">=</span> <span class="mi">1</span>
-<span class="c1">// note</span>
-<span class="k">val</span> <span class="nv">bbb</span> <span class="k">=</span> <span class="mi">2</span>
-</code></pre></div></div>
-
-<p>With <code class="highlighter-rouge">alignment.across-comments = false</code>, two groups:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">a</span> <span class="k">=</span> <span class="mi">1</span>
-<span class="c1">// note</span>
-<span class="k">val</span> <span class="nv">bbb</span> <span class="k">=</span> <span class="mi">2</span>
-</code></pre></div></div>
-
-<h2 id="alignmentscaladoctags"><code class="highlighter-rouge">alignment.scaladoc.tags</code></h2>
-
-<p>Whether the descriptions of the tags of a scaladoc start on one column. Wrapped description lines continue under the start of their description. Default <code class="highlighter-rouge">alignment.scaladoc.tags = false</code>.</p>
-
-<p>With <code class="highlighter-rouge">alignment.scaladoc.tags = true</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
- * @param source The source text.
- * @param width  The maximum width.
- * @return       The formatted text.
- */</span>
-</code></pre></div></div>
-
-<p>With <code class="highlighter-rouge">alignment.scaladoc.tags = false</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.across-comments = false</span></code></pre>
+        
+        <h2 id="alignment-scaladoc-tags" class="section"><a class="anchor-link left" href="#alignment-scaladoc-tags"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.scaladoc.tags</code></h2>
+        <p><strong>Default:</strong> <code>false</code>.</p>
+        <p>Whether the descriptions of the tags of a scaladoc start on one column. Wrapped description lines continue under the start of their description.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="comment">/**
  * @param source The source text.
  * @param width The maximum width.
  * @return The formatted text.
- */</span>
-</code></pre></div></div>
+ */</span><span>
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(</span><span class="identifier">source</span><span>: </span><span class="type-name">String</span><span>, </span><span class="identifier">width</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> = ???</span></code></pre>
+        
+        <h3 id="alignment-scaladoc-tags-true" class="section"><a class="anchor-link left" href="#alignment-scaladoc-tags-true"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.scaladoc.tags = true</code></h3>
+        <p>The descriptions start on one column:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="comment">/**
+ * @param source The source text.
+ * @param width  The maximum width.
+ * @return       The formatted text.
+ */</span><span>
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(</span><span class="identifier">source</span><span>: </span><span class="type-name">String</span><span>, </span><span class="identifier">width</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> = ???
 
-<h2 id="the-settings">The settings</h2>
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.scaladoc.tags = true</span></code></pre>
+        
+        <h3 id="alignment-scaladoc-tags-false" class="section"><a class="anchor-link left" href="#alignment-scaladoc-tags-false"><i class="icofont-laika link">&#xef71;</i></a><code>alignment.scaladoc.tags = false</code></h3>
+        <p>Each description follows its own tag:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="comment">/**
+ * @param source The source text.
+ * @param width The maximum width.
+ * @return The formatted text.
+ */</span><span>
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(</span><span class="identifier">source</span><span>: </span><span class="type-name">String</span><span>, </span><span class="identifier">width</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> = ???
 
-<table>
-  <thead>
-    <tr>
-      <th>Setting</th>
-      <th>Default</th>
-      <th>Values</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code class="highlighter-rouge">alignment.assignment-groups</code></td>
-      <td><code class="highlighter-rouge">[[val, lazy-val, var, def]]</code></td>
-      <td>a list of lists of keywords</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">alignment.operators</code></td>
-      <td><code class="highlighter-rouge">["=", "+=", "-=", "*=", "/=", ":=", "++=", "%", "%%", "%%%"]</code></td>
-      <td>a list of operators</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">alignment.arrows.cases</code></td>
-      <td><code class="highlighter-rouge">true</code></td>
-      <td><code class="highlighter-rouge">true</code>, <code class="highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">alignment.arrows.pairs</code></td>
-      <td><code class="highlighter-rouge">true</code></td>
-      <td><code class="highlighter-rouge">true</code>, <code class="highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">alignment.arrows.for-enumerators</code></td>
-      <td><code class="highlighter-rouge">true</code></td>
-      <td><code class="highlighter-rouge">true</code>, <code class="highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">alignment.extends-clauses</code></td>
-      <td><code class="highlighter-rouge">true</code></td>
-      <td><code class="highlighter-rouge">true</code>, <code class="highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">alignment.named-arguments</code></td>
-      <td><code class="highlighter-rouge">false</code></td>
-      <td><code class="highlighter-rouge">true</code>, <code class="highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">alignment.trailing-comments</code></td>
-      <td><code class="highlighter-rouge">false</code></td>
-      <td><code class="highlighter-rouge">true</code>, <code class="highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">alignment.across-comments</code></td>
-      <td><code class="highlighter-rouge">false</code></td>
-      <td><code class="highlighter-rouge">true</code>, <code class="highlighter-rouge">false</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">alignment.scaladoc.tags</code></td>
-      <td><code class="highlighter-rouge">false</code></td>
-      <td><code class="highlighter-rouge">true</code>, <code class="highlighter-rouge">false</code></td>
-    </tr>
-  </tbody>
-</table>
-</section></div></div></div></div><script src="/dixtra/highlight/highlight.pack.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/languages/conf.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/languages/text.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/languages/shell.min.js"></script><script src="/dixtra/lunr/lunr.js"></script><script>
-// For all code blocks, copy the language from the containing div
-// to the inner code tag (where hljs expects it to be)
-const langPrefix = 'language-';
-document.querySelectorAll(`div[class^='${langPrefix}']`).forEach(function(div) {
-  div.classList.forEach(function(cssClass) {
-    if (cssClass.startsWith(langPrefix)) {
-      const lang = cssClass.substring(langPrefix.length);
-      div.querySelectorAll('pre code').forEach(function(code) {
-        code.classList.add(lang);
-      });
-    }
-  });
-});
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   alignment.scaladoc.tags = false</span></code></pre>
 
-hljs.configure({languages:['scala','java','bash','scala','conf','text','shell']});
-hljs.initHighlightingOnLoad();
-      </script><script>console.info('\x57\x65\x62\x73\x69\x74\x65\x20\x62\x75\x69\x6c\x74\x20\x77\x69\x74\x68\x3a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x5f\x5f\x0a\x20\x20\x20\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x5f\x20\x20\x2f\x20\x2f\x5f\x20\x20\x20\x20\x20\x20\x5f\x5f\x5f\x5f\x20\x5f\x5f\x5f\x20\x20\x28\x5f\x29\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x28\x5f\x29\x20\x2f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x0a\x20\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x60\x5f\x5f\x20\x5c\x2f\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x20\x2f\x20\x5f\x5f\x2f\x20\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x0a\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x5f\x2f\x20\x2f\x20\x2f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x5f\x5f\x2f\x20\x2f\x20\x20\x2f\x20\x2f\x5f\x2f\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x20\x2f\x5f\x2f\x20\x20\x5f\x5f\x28\x5f\x5f\x20\x20\x29\x0a\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2e\x5f\x5f\x5f\x2f\x5c\x5f\x5f\x2f\x20\x20\x20\x20\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x2f\x20\x20\x20\x5c\x5f\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x0a\x0a\x68\x74\x74\x70\x73\x3a\x2f\x2f\x34\x37\x64\x65\x67\x2e\x67\x69\x74\x68\x75\x62\x2e\x69\x6f\x2f\x73\x62\x74\x2d\x6d\x69\x63\x72\x6f\x73\x69\x74\x65\x73')</script><script src="/dixtra/js/search.js"></script><script src="/dixtra/js/docs.js"></script></body></html>
+        
+<hr class="footer-rule"/>
+<footer>
+  Dixtra — An opinionated formatter for Scala 3 · MIT licensed
+</footer>
+
+
+      </main>
+
+    </div>
+
+  </body>
+
+</html>

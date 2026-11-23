@@ -1,385 +1,1234 @@
-<!DOCTYPE html><html><head><title>Dixtra: Bodies</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="ColOfAbRiX" /><meta name="description" content="An opinionated formatter for Scala 3" /><meta name="og:image" content="/dixtra/img/poster.png" /><meta name="image" property="og:image" content="/dixtra/img/poster.png" /><meta name="og:title" content="Dixtra: Bodies" /><meta name="title" property="og:title" content="Dixtra: Bodies" /><meta name="og:site_name" content="Dixtra" /><meta name="og:url" content="https://colofabrix.github.io/dixtra/" /><meta name="og:type" content="website" /><meta name="og:description" content="An opinionated formatter for Scala 3" /><link rel="icon" type="image/png" href="/dixtra/img/favicon.png" /><meta name="twitter:title" content="Dixtra: Bodies" /><meta name="twitter:image" content="/dixtra/img/poster.png" /><meta name="twitter:description" content="An opinionated formatter for Scala 3" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/dixtra/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/dixtra/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/dixtra/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/dixtra/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/dixtra/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/dixtra/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/dixtra/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/dixtra/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/dixtra/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/dixtra/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/dixtra/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/dixtra/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/dixtra/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/dixtra/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/dixtra/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/dixtra/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/dixtra/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/dixtra/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/dixtra/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/dixtra/img/favicon310x150.png" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/dixtra/highlight/styles/atom-one-dark.css" /><link rel="stylesheet" href="/dixtra/css/light-style.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><div id="sidebar-brand"><a href="/dixtra/" class="brand"><div class="brand-wrapper"></div><span>Dixtra</span></a><button id="main-toggle" class="sidebar-toggle"><span class="close"></span></button></div><div class="sidebar-nav"> <div class="sidebar-nav-item  "><a href="/dixtra/docs/index.html" title="Introduction" class="">Introduction</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/usage.html" title="Using Dixtra" class="">Using Dixtra</a></div> <div class="sidebar-nav-item  open"><a href="/dixtra/docs/configuration.html" title="Configuration" class="drop-nested">Configuration</a><i class="fa fa-angle-right"></i><div class="sub-section"> <a href="/dixtra/docs/reference/braces.html" title="Braces" class="">Braces</a> <a href="/dixtra/docs/reference/body.html" title="Bodies" class="active">Bodies</a> <a href="/dixtra/docs/reference/selector-chain.html" title="Selector chains" class="">Selector chains</a> <a href="/dixtra/docs/reference/alignment.html" title="Alignment" class="">Alignment</a> <a href="/dixtra/docs/reference/blank-lines.html" title="Blank lines" class="">Blank lines</a> <a href="/dixtra/docs/reference/call-site.html" title="Call sites" class="">Call sites</a> <a href="/dixtra/docs/reference/definition-site.html" title="Definition sites" class="">Definition sites</a> <a href="/dixtra/docs/reference/overflow.html" title="Overflow" class="">Overflow</a> <a href="/dixtra/docs/reference/housekeeping.html" title="Housekeeping" class="">Housekeeping</a> <a href="/dixtra/docs/reference/paths.html" title="Paths" class="">Paths</a> <a href="/dixtra/docs/reference/path-overrides.html" title="Path overrides" class="">Path overrides</a></div></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/sbt-plugin.html" title="The sbt plugin" class="">The sbt plugin</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/vscode.html" title="The VS Code extension" class="">The VS Code extension</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/command-line.html" title="The command line" class="">The command line</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/rules.html" title="Rules and limitations" class="">Rules and limitations</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/building.html" title="Building from source" class="">Building from source</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/library.html" title="Using Dixtra as a library" class="">Using Dixtra as a library</a></div> <div class="sidebar-nav-item  "><a href="/dixtra/docs/api.html" title="API documentation" class="">API documentation</a></div></div></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li class="search-nav"><div id="search-dropdown"><label><i class="fa fa-search"></i>Search</label><input id="search-bar" type="text" placeholder="Enter keywords here..." onclick="displayToggleSearch(event)" /><ul id="search-dropdown-content" class="dropdown dropdown-content"></ul></div></li><li id="gh-eyes-item" class="hidden-xs to-uppercase"><a href="https://github.com/ColOfAbRiX/dixtra" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye"></i><span>Watchers<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs to-uppercase"><a href="https://github.com/ColOfAbRiX/dixtra" target="_blank" rel="noopener noreferrer"><i class="fa fa-star-o"></i><span>Stars<span id="stars" class="label label-default">--</span></span></a></li></ul></div></div></div></div><div id="content" data-github-owner="ColOfAbRiX" data-github-repo="dixtra"><div class="content-wrapper"><section><h1 id="bodies">Bodies</h1>
-
-<p>Where each body goes relative to the separator before it: on its line, or below it one level in. The separators are the <code class="highlighter-rouge">=</code> of a definition, the <code class="highlighter-rouge">=&gt;</code> of a lambda or of a case, the <code class="highlighter-rouge">then</code> and the <code class="highlighter-rouge">else</code> of an if/else, the <code class="highlighter-rouge">do</code> of a loop. Every setting is in <a href="#the-settings">the settings table</a>.</p>
-
-<h2 id="the-values">The values</h2>
-
-<p>A construct with a single body (a definition, a lambda, a loop) takes:</p>
-
-<ul>
-  <li><code class="highlighter-rouge">body.&lt;construct&gt; = keep</code> — the body stays where the author wrote it.</li>
-  <li><code class="highlighter-rouge">body.&lt;construct&gt; = always-join</code> — the body on the line of its separator, even when the author wrote it below.</li>
-  <li><code class="highlighter-rouge">body.&lt;construct&gt; = always-break</code> — the body below its separator, even when the author wrote it on the line.</li>
-</ul>
-
-<p><code class="highlighter-rouge">body.&lt;construct&gt; = keep</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">total</span> <span class="k">=</span>
-  <span class="nv">xs</span><span class="o">.</span><span class="py">sum</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.&lt;construct&gt; = always-join</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">total</span> <span class="k">=</span> <span class="nv">xs</span><span class="o">.</span><span class="py">sum</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.&lt;construct&gt; = always-break</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">total</span> <span class="k">=</span>
-  <span class="nv">xs</span><span class="o">.</span><span class="py">sum</span>
-</code></pre></div></div>
-
-<p>The bodies of a construct with several of them (the branches of an if/else, the cases of a match, the bodies of a try) are treated as a group, never one by one: either every body is on the line of its separator, or every body is below it. A group where some bodies are inline and some others are on a new line is <em>mixed</em>. These constructs take:</p>
-
-<ul>
-  <li><code class="highlighter-rouge">body.&lt;construct&gt; = join-mixed</code> — a mixed group is joined on the lines of the separators; a group all on its lines, or all below, stays as it is.</li>
-  <li><code class="highlighter-rouge">body.&lt;construct&gt; = break-mixed</code> — a mixed group goes below the separators; a group all on its lines, or all below, stays as it is.</li>
-  <li><code class="highlighter-rouge">body.&lt;construct&gt; = always-join</code> — every body on the line of its separator.</li>
-  <li><code class="highlighter-rouge">body.&lt;construct&gt; = always-break</code> — every body below its separator.</li>
-</ul>
-
-<p>The examples are for this mixed input:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">c</span> <span class="n">then</span>
-  <span class="n">a</span>
-<span class="k">else</span> <span class="n">b</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.&lt;construct&gt; = join-mixed</code> — the first branch moves up:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">c</span> <span class="n">then</span> <span class="n">a</span>
-<span class="k">else</span> <span class="n">b</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.&lt;construct&gt; = break-mixed</code> — the second branch goes below too:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">c</span> <span class="n">then</span>
-  <span class="n">a</span>
-<span class="k">else</span>
-  <span class="n">b</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.&lt;construct&gt; = always-join</code> — as <code class="highlighter-rouge">body.&lt;construct&gt; = join-mixed</code>, and a group all below its separators moves up too. <code class="highlighter-rouge">body.&lt;construct&gt; = always-break</code> — as <code class="highlighter-rouge">body.&lt;construct&gt; = break-mixed</code>, and <code class="highlighter-rouge">if c then a else b</code> goes below too.</p>
-
-<p>A group of one body (an <code class="highlighter-rouge">if</code> without <code class="highlighter-rouge">else</code>, a match with one case) is never mixed, so both <code class="highlighter-rouge">-mixed</code> values leave it as written.</p>
-
-<h2 id="the-rules-that-hold-whatever-the-setting">The rules that hold whatever the setting</h2>
-
-<ul>
-  <li>A body goes below its separator when it cannot be joined on its line: it does not fit there on one line, or a comment follows the separator.</li>
-  <li>In a group, such a body puts every body of the group below its separator, and so does a body that holds an <code class="highlighter-rouge">if</code>, a <code class="highlighter-rouge">match</code> or a <code class="highlighter-rouge">try</code>.</li>
-  <li>The settings move bodies only relative to their separators: an <code class="highlighter-rouge">else</code> written on its own line stays on its own line, and every <code class="highlighter-rouge">case</code> is on its own line.</li>
-  <li>With braces (see <a href="/dixtra/docs/reference/braces.html">braces</a>), a body below its separator is in braces, and a construct whose bodies are on their lines has none: <code class="highlighter-rouge">if (c) a else b</code>, <code class="highlighter-rouge">for (x &lt;- xs) f(x)</code>, <code class="highlighter-rouge">while (c) step()</code>.</li>
-</ul>
-
-<h2 id="the-settings">The settings</h2>
-
-<table>
-  <thead>
-    <tr>
-      <th>Setting</th>
-      <th>Default</th>
-      <th>The body after</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code class="highlighter-rouge">body.def</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">=</code> of a <code class="highlighter-rouge">def</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.val</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">=</code> of a <code class="highlighter-rouge">val</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.lazy-val</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">=</code> of a <code class="highlighter-rouge">lazy val</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.var</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">=</code> of a <code class="highlighter-rouge">var</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.given-alias</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">=</code> of a given alias</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.type-def</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">=</code> of a type definition</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.assignment</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">=</code> of an assignment</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.named-argument</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">=</code> of a named argument</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.lambda-argument</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">=&gt;</code> of a lambda given in braces or after a colon</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.lambda-body</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">=&gt;</code> of any other lambda</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.block-argument</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">{</code> or the colon of a block given as an argument</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.test-case</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">{</code> or the colon of a test case</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.test-group</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">{</code> or the colon of a group of tests</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.if</code></td>
-      <td><code class="highlighter-rouge">break-mixed</code></td>
-      <td>The <code class="highlighter-rouge">then</code> and the <code class="highlighter-rouge">else</code> of an if/else</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.case-body</code></td>
-      <td><code class="highlighter-rouge">break-mixed</code></td>
-      <td>The <code class="highlighter-rouge">=&gt;</code> of the cases of a match, of a <code class="highlighter-rouge">{ case ... }</code> or of a <code class="highlighter-rouge">catch</code></td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.try</code></td>
-      <td><code class="highlighter-rouge">break-mixed</code></td>
-      <td>The <code class="highlighter-rouge">try</code> and the <code class="highlighter-rouge">finally</code> of a try</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.for</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">do</code> of a <code class="highlighter-rouge">for</code> loop</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.for-yield</code></td>
-      <td><code class="highlighter-rouge">break-complex</code></td>
-      <td>The <code class="highlighter-rouge">yield</code> of a for-comprehension</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.while</code></td>
-      <td><code class="highlighter-rouge">keep</code></td>
-      <td>The <code class="highlighter-rouge">do</code> of a <code class="highlighter-rouge">while</code> loop</td>
-    </tr>
-    <tr>
-      <td><code class="highlighter-rouge">body.semicolon-statements</code></td>
-      <td><code class="highlighter-rouge">always-break</code></td>
-      <td>The <code class="highlighter-rouge">;</code> between the statements of a body written on one line</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 id="the-body-after-">The body after <code class="highlighter-rouge">=</code></h2>
-
-<p>The eight settings of the <code class="highlighter-rouge">=</code> body — <code class="highlighter-rouge">body.def</code>, <code class="highlighter-rouge">body.val</code>, <code class="highlighter-rouge">body.lazy-val</code>, <code class="highlighter-rouge">body.var</code>, <code class="highlighter-rouge">body.given-alias</code>, <code class="highlighter-rouge">body.type-def</code>, <code class="highlighter-rouge">body.assignment</code>, <code class="highlighter-rouge">body.named-argument</code> — move the body the same way. With <code class="highlighter-rouge">body.def = always-break</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">total</span> <span class="k">=</span>
-  <span class="nv">xs</span><span class="o">.</span><span class="py">sum</span>
-</code></pre></div></div>
-
-<p>A <code class="highlighter-rouge">def</code> whose signature is over several lines keeps its body where it is, even with <code class="highlighter-rouge">body.def = always-join</code>.</p>
-
-<h2 id="the-bodies-of-a-lambda">The bodies of a lambda</h2>
-
-<p><code class="highlighter-rouge">body.lambda-argument</code> is the <code class="highlighter-rouge">=&gt;</code> of a lambda given in braces or after a colon; <code class="highlighter-rouge">body.lambda-body</code> is the <code class="highlighter-rouge">=&gt;</code> of any other lambda.</p>
-
-<p><code class="highlighter-rouge">body.lambda-argument = always-join</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">xs</span><span class="o">.</span><span class="py">foreach</span> <span class="o">{</span> <span class="n">x</span> <span class="k">=&gt;</span> <span class="nf">println</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="o">}</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.lambda-argument = always-break</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">xs</span><span class="o">.</span><span class="py">foreach</span> <span class="o">{</span> <span class="n">x</span> <span class="k">=&gt;</span>
-  <span class="nf">println</span><span class="o">(</span><span class="n">x</span><span class="o">)</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<h2 id="the-blocks-given-as-arguments">The blocks given as arguments</h2>
-
-<p><code class="highlighter-rouge">body.block-argument</code> is a block of statements given as an argument, without lambda parameters, that is not a test block.</p>
-
-<p>A test block is a block of statements given to a call labelled by a string. Dixtra tells two of them apart by what they hold: a <code class="highlighter-rouge">body.test-case</code> holds no other test block, as the test cases of ScalaTest, MUnit, specs2 or utest do; a <code class="highlighter-rouge">body.test-group</code> holds other test blocks among its statements, as the groups of ScalaTest’s WordSpec, FreeSpec and FunSpec, specs2 or utest do. A block given to <code class="highlighter-rouge">withClue</code> is not a test. All three settings move their statements the same way, and telling the cases from the groups lets a configuration lay out one and not the other.</p>
-
-<p>After an operator (<code class="highlighter-rouge">"a parser" in { ... }</code>, <code class="highlighter-rouge">"a parser" should { ... }</code>) the braces of a test block always stay, so only a call takes the braceless form.</p>
-
-<p><code class="highlighter-rouge">body.block-argument = always-join</code> — the statements on the line of the <code class="highlighter-rouge">{</code>, with a <code class="highlighter-rouge">;</code> between several of them:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Resource</span><span class="o">.</span><span class="py">make</span> <span class="o">{</span> <span class="nf">open</span><span class="o">()</span> <span class="o">}</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.block-argument = always-break</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Resource</span><span class="o">.</span><span class="py">make</span> <span class="o">{</span>
-  <span class="nf">open</span><span class="o">()</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<h2 id="the-branches-of-an-ifelse">The branches of an if/else</h2>
-
-<p><code class="highlighter-rouge">body.if</code> moves the branches after the <code class="highlighter-rouge">then</code> and the <code class="highlighter-rouge">else</code>. The branches of an <code class="highlighter-rouge">else if</code> chain are one group with those of the outer if/else. On the lines of their separators, the if/else stays on one line when the author wrote each <code class="highlighter-rouge">else</code> on the line of the branch before it; otherwise every <code class="highlighter-rouge">else</code> starts a line of its own. Below their separators, an <code class="highlighter-rouge">else if</code> stays on the line of its <code class="highlighter-rouge">else</code>.</p>
-
-<p><code class="highlighter-rouge">body.if = always-join</code>, for the input above:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">c</span> <span class="n">then</span> <span class="n">a</span>
-<span class="k">else</span> <span class="n">b</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.if = always-break</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">c</span> <span class="n">then</span>
-  <span class="n">a</span>
-<span class="k">else</span>
-  <span class="n">b</span>
-</code></pre></div></div>
-
-<h2 id="the-bodies-of-the-cases">The bodies of the cases</h2>
-
-<p><code class="highlighter-rouge">body.case-body</code> moves the bodies after the <code class="highlighter-rouge">=&gt;</code> of the cases of a <code class="highlighter-rouge">match</code>, of a <code class="highlighter-rouge">{ case ... }</code> or of a <code class="highlighter-rouge">catch</code>, which are one group. When a case would not fit once its arrow is aligned (see <a href="/dixtra/docs/reference/alignment.html"><code class="highlighter-rouge">alignment.arrows.cases</code></a>), every body goes below its <code class="highlighter-rouge">=&gt;</code>.</p>
-
-<p>The examples are for this mixed input:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span> <span class="k">match</span> <span class="o">{</span>
-  <span class="k">case</span> <span class="mi">1</span> <span class="k">=&gt;</span>
-    <span class="s">"one"</span>
-  <span class="k">case</span> <span class="mi">22</span> <span class="k">=&gt;</span> <span class="s">"two"</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.case-body = join-mixed</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span> <span class="k">match</span> <span class="o">{</span>
-  <span class="k">case</span> <span class="mi">1</span>  <span class="k">=&gt;</span> <span class="s">"one"</span>
-  <span class="k">case</span> <span class="mi">22</span> <span class="k">=&gt;</span> <span class="s">"two"</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.case-body = break-mixed</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span> <span class="k">match</span> <span class="o">{</span>
-  <span class="k">case</span> <span class="mi">1</span> <span class="k">=&gt;</span>
-    <span class="s">"one"</span>
-  <span class="k">case</span> <span class="mi">22</span> <span class="k">=&gt;</span>
-    <span class="s">"two"</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.case-body = always-join</code> — as <code class="highlighter-rouge">body.case-body = join-mixed</code>, also when every body is below its <code class="highlighter-rouge">=&gt;</code>. <code class="highlighter-rouge">body.case-body = always-break</code> — as <code class="highlighter-rouge">body.case-body = break-mixed</code>, also when every body is on its <code class="highlighter-rouge">=&gt;</code> line.</p>
-
-<h2 id="the-bodies-of-a-try">The bodies of a try</h2>
-
-<p><code class="highlighter-rouge">body.try</code> moves the bodies after the <code class="highlighter-rouge">try</code> and the <code class="highlighter-rouge">finally</code>, which are one group; the cases after <code class="highlighter-rouge">catch</code> follow <code class="highlighter-rouge">body.case-body</code>. A try written on one line that fits stays as it is, unless its bodies go below their keywords. With <code class="highlighter-rouge">braces.try = force-braces</code>, the bodies of a try over several lines are always below their <code class="highlighter-rouge">{</code>.</p>
-
-<p>The examples, with <code class="highlighter-rouge">braces.try = force-indent</code>, are for this mixed input:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span>
-  <span class="nf">a</span><span class="o">()</span>
-<span class="k">finally</span> <span class="nf">b</span><span class="o">()</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.try = join-mixed</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="nf">a</span><span class="o">()</span>
-<span class="k">finally</span> <span class="nf">b</span><span class="o">()</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.try = break-mixed</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span>
-  <span class="nf">a</span><span class="o">()</span>
-<span class="k">finally</span>
-  <span class="nf">b</span><span class="o">()</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.try = always-join</code> — as <code class="highlighter-rouge">body.try = join-mixed</code>, also when both bodies are below their keywords. <code class="highlighter-rouge">body.try = always-break</code> — as <code class="highlighter-rouge">body.try = break-mixed</code>, also when both bodies are on the lines of their keywords.</p>
-
-<h2 id="the-bodies-of-the-loops">The bodies of the loops</h2>
-
-<p><code class="highlighter-rouge">body.for</code> is the body after the <code class="highlighter-rouge">do</code> of a <code class="highlighter-rouge">for</code> loop; <code class="highlighter-rouge">body.while</code> is the body after the <code class="highlighter-rouge">do</code> of a <code class="highlighter-rouge">while</code> loop. A loop written on one line that fits stays as it is, unless <code class="highlighter-rouge">always-break</code>.</p>
-
-<p><code class="highlighter-rouge">body.for = always-join</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">x</span> <span class="k">&lt;-</span> <span class="n">xs</span> <span class="k">do</span> <span class="nf">println</span><span class="o">(</span><span class="n">x</span><span class="o">)</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.for = always-break</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">x</span> <span class="k">&lt;-</span> <span class="n">xs</span> <span class="k">do</span>
-  <span class="nf">println</span><span class="o">(</span><span class="n">x</span><span class="o">)</span>
-</code></pre></div></div>
-
-<p>With <code class="highlighter-rouge">braces.for = force-braces</code>, a body on its line gives <code class="highlighter-rouge">for (x &lt;- xs) println(x)</code>.</p>
-
-<h2 id="the-expression-after-yield">The expression after <code class="highlighter-rouge">yield</code></h2>
-
-<p><code class="highlighter-rouge">body.for-yield</code> moves the expression after the <code class="highlighter-rouge">yield</code> of a for-comprehension. A for-comprehension written on one line that fits stays as it is, unless <code class="highlighter-rouge">always-break</code>.</p>
-
-<p><code class="highlighter-rouge">body.for-yield = always-join</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">yield</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.for-yield = always-break</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">yield</span>
-  <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.for-yield = break-complex</code> — as <code class="highlighter-rouge">body.for-yield = always-break</code>, but a simple expression, a single name, a path (<code class="highlighter-rouge">ExitCode.Success</code>) or a literal stays on the line of the <code class="highlighter-rouge">yield</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">yield</span>
-  <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
-
-<span class="k">yield</span> <span class="n">name</span>
-</code></pre></div></div>
-
-<h2 id="the-statements-on-one-line">The statements on one line</h2>
-
-<p><code class="highlighter-rouge">body.semicolon-statements</code> holds the statements of a body written on one line and separated by <code class="highlighter-rouge">;</code>, whatever the construct.</p>
-
-<p><code class="highlighter-rouge">body.semicolon-statements = keep</code> — they stay on one line, with their braces, while it fits:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">this</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span> <span class="nf">this</span><span class="o">(</span><span class="nv">s</span><span class="o">.</span><span class="py">toInt</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span> <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="o">}</span>
-</code></pre></div></div>
-
-<p><code class="highlighter-rouge">body.semicolon-statements = always-break</code> — one statement per line, below the <code class="highlighter-rouge">=</code>:</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">this</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=</span>
-  <span class="nf">this</span><span class="o">(</span><span class="nv">s</span><span class="o">.</span><span class="py">toInt</span><span class="o">,</span> <span class="mi">0</span><span class="o">)</span>
-  <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="o">)</span>
-</code></pre></div></div>
-</section></div></div></div></div><script src="/dixtra/highlight/highlight.pack.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/languages/conf.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/languages/text.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/languages/shell.min.js"></script><script src="/dixtra/lunr/lunr.js"></script><script>
-// For all code blocks, copy the language from the containing div
-// to the inner code tag (where hljs expects it to be)
-const langPrefix = 'language-';
-document.querySelectorAll(`div[class^='${langPrefix}']`).forEach(function(div) {
-  div.classList.forEach(function(cssClass) {
-    if (cssClass.startsWith(langPrefix)) {
-      const lang = cssClass.substring(langPrefix.length);
-      div.querySelectorAll('pre code').forEach(function(code) {
-        code.classList.add(lang);
-      });
-    }
-  });
-});
-
-hljs.configure({languages:['scala','java','bash','scala','conf','text','shell']});
-hljs.initHighlightingOnLoad();
-      </script><script>console.info('\x57\x65\x62\x73\x69\x74\x65\x20\x62\x75\x69\x6c\x74\x20\x77\x69\x74\x68\x3a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x5f\x5f\x0a\x20\x20\x20\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x5f\x20\x20\x2f\x20\x2f\x5f\x20\x20\x20\x20\x20\x20\x5f\x5f\x5f\x5f\x20\x5f\x5f\x5f\x20\x20\x28\x5f\x29\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x28\x5f\x29\x20\x2f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x0a\x20\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x60\x5f\x5f\x20\x5c\x2f\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x20\x2f\x20\x5f\x5f\x2f\x20\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x0a\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x5f\x2f\x20\x2f\x20\x2f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x5f\x5f\x2f\x20\x2f\x20\x20\x2f\x20\x2f\x5f\x2f\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x20\x2f\x5f\x2f\x20\x20\x5f\x5f\x28\x5f\x5f\x20\x20\x29\x0a\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2e\x5f\x5f\x5f\x2f\x5c\x5f\x5f\x2f\x20\x20\x20\x20\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x2f\x20\x20\x20\x5c\x5f\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x0a\x0a\x68\x74\x74\x70\x73\x3a\x2f\x2f\x34\x37\x64\x65\x67\x2e\x67\x69\x74\x68\x75\x62\x2e\x69\x6f\x2f\x73\x62\x74\x2d\x6d\x69\x63\x72\x6f\x73\x69\x74\x65\x73')</script><script src="/dixtra/js/search.js"></script><script src="/dixtra/js/docs.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Typelevel Laika + Helium Theme" />
+  <title>Bodies</title>
+  
+  
+  <meta name="description" content="An opinionated formatter for Scala 3"/>
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:500">
+  
+  <link rel="stylesheet" type="text/css" href="../../helium/site/icofont.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../helium/site/laika-helium.css" />
+    <link rel="stylesheet" type="text/css" href="../../site.css" />
+  <script src="../../helium/site/laika-helium.js"></script>
+  
+  
+  <script> /* for avoiding page load transitions */ </script>
+</head>
+
+  <body>
+
+    <header id="top-bar" class="light-default dark-default">
+
+  <div class="row">
+    <a id="nav-icon">
+      <i class="icofont-laika navigationMenu" title="Navigation">&#xefa2;</i>
+    </a>
+    
+    
+  </div>
+
+  <a class="icon-link glyph-link" href="../../"><i class="icofont-laika home" title="Home">&#xef47;</i></a>
+
+  <div class="row links">
+    
+    <a class="text-link" href="../">Docs</a>
+    
+    <a class="text-link" href="braces.html">Reference</a>
+    
+    <a class="text-link" href="../api.html">API</a>
+    
+    <a class="icon-link svg-link" href="https://github.com/ColOfAbRiX/dixtra"><span class="github" title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <g class="svg-shape">
+    <path d="M49.995,1c-27.609,-0 -49.995,22.386 -49.995,50.002c-0,22.09 14.325,40.83 34.194,47.444c2.501,0.458 3.413,-1.086 3.413,-2.412c0,-1.185 -0.043,-4.331 -0.067,-8.503c-13.908,3.021 -16.843,-6.704 -16.843,-6.704c-2.274,-5.773 -5.552,-7.311 -5.552,-7.311c-4.54,-3.103 0.344,-3.042 0.344,-3.042c5.018,0.356 7.658,5.154 7.658,5.154c4.46,7.64 11.704,5.433 14.552,4.156c0.454,-3.232 1.744,-5.436 3.174,-6.685c-11.102,-1.262 -22.775,-5.553 -22.775,-24.713c-0,-5.457 1.949,-9.92 5.147,-13.416c-0.516,-1.265 -2.231,-6.348 0.488,-13.233c0,0 4.199,-1.344 13.751,5.126c3.988,-1.108 8.266,-1.663 12.518,-1.682c4.245,0.019 8.523,0.574 12.517,1.682c9.546,-6.47 13.736,-5.126 13.736,-5.126c2.728,6.885 1.013,11.968 0.497,13.233c3.204,3.496 5.141,7.959 5.141,13.416c0,19.209 -11.691,23.436 -22.83,24.673c1.795,1.544 3.394,4.595 3.394,9.26c0,6.682 -0.061,12.076 -0.061,13.715c0,1.338 0.899,2.894 3.438,2.406c19.853,-6.627 34.166,-25.354 34.166,-47.438c-0,-27.616 -22.389,-50.002 -50.005,-50.002"/>
+  </g>
+</svg></span></a>
+    
+  </div>  
+
+</header>
+    
+    <nav id="sidebar">
+
+  <div class="row">
+    
+    <a class="text-link" href="../">Docs</a>
+    
+    <a class="text-link" href="braces.html">Reference</a>
+    
+    <a class="text-link" href="../api.html">API</a>
+    
+    <a class="icon-link svg-link" href="https://github.com/ColOfAbRiX/dixtra"><span class="github" title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <g class="svg-shape">
+    <path d="M49.995,1c-27.609,-0 -49.995,22.386 -49.995,50.002c-0,22.09 14.325,40.83 34.194,47.444c2.501,0.458 3.413,-1.086 3.413,-2.412c0,-1.185 -0.043,-4.331 -0.067,-8.503c-13.908,3.021 -16.843,-6.704 -16.843,-6.704c-2.274,-5.773 -5.552,-7.311 -5.552,-7.311c-4.54,-3.103 0.344,-3.042 0.344,-3.042c5.018,0.356 7.658,5.154 7.658,5.154c4.46,7.64 11.704,5.433 14.552,4.156c0.454,-3.232 1.744,-5.436 3.174,-6.685c-11.102,-1.262 -22.775,-5.553 -22.775,-24.713c-0,-5.457 1.949,-9.92 5.147,-13.416c-0.516,-1.265 -2.231,-6.348 0.488,-13.233c0,0 4.199,-1.344 13.751,5.126c3.988,-1.108 8.266,-1.663 12.518,-1.682c4.245,0.019 8.523,0.574 12.517,1.682c9.546,-6.47 13.736,-5.126 13.736,-5.126c2.728,6.885 1.013,11.968 0.497,13.233c3.204,3.496 5.141,7.959 5.141,13.416c0,19.209 -11.691,23.436 -22.83,24.673c1.795,1.544 3.394,4.595 3.394,9.26c0,6.682 -0.061,12.076 -0.061,13.715c0,1.338 0.899,2.894 3.438,2.406c19.853,-6.627 34.166,-25.354 34.166,-47.438c-0,-27.616 -22.389,-50.002 -50.005,-50.002"/>
+  </g>
+</svg></span></a>
+    
+  </div>
+
+  <ul class="nav-list">
+    <li class="level1 nav-header">docs</li>
+    <li class="level2 nav-leaf"><a href="../">Introduction</a></li>
+    <li class="level2 nav-leaf"><a href="../usage.html">Setup</a></li>
+    <li class="level2 nav-leaf"><a href="../configuration.html">Configuration</a></li>
+    <li class="level2 nav-leaf"><a href="../sbt-plugin.html">The sbt plugin</a></li>
+    <li class="level2 nav-leaf"><a href="../vscode.html">The VS Code extension</a></li>
+    <li class="level2 nav-leaf"><a href="../command-line.html">The command line</a></li>
+    <li class="level2 nav-leaf"><a href="../rules.html">Rules and limitations</a></li>
+    <li class="level2 nav-leaf"><a href="../building.html">Building from source</a></li>
+    <li class="level2 nav-leaf"><a href="../library.html">Using Dixtra as a library</a></li>
+    <li class="level2 nav-leaf"><a href="../api.html">API documentation</a></li>
+    <li class="level2 nav-header">reference</li>
+    <li class="level3 nav-leaf"><a href="braces.html">Braces</a></li>
+    <li class="level3 active nav-leaf"><a href="#">Bodies</a></li>
+    <li class="level3 nav-leaf"><a href="selector-chain.html">Selector chains</a></li>
+    <li class="level3 nav-leaf"><a href="alignment.html">Alignment</a></li>
+    <li class="level3 nav-leaf"><a href="blank-lines.html">Blank lines</a></li>
+    <li class="level3 nav-leaf"><a href="call-site.html">Call sites</a></li>
+    <li class="level3 nav-leaf"><a href="definition-site.html">Definition sites</a></li>
+    <li class="level3 nav-leaf"><a href="overflow.html">Overflow</a></li>
+    <li class="level3 nav-leaf"><a href="housekeeping.html">Housekeeping</a></li>
+    <li class="level3 nav-leaf"><a href="paths.html">Paths</a></li>
+    <li class="level3 nav-leaf"><a href="path-overrides.html">Path overrides</a></li>
+  </ul>
+
+</nav>
+
+    <div id="container">
+
+      
+<nav id="page-nav">
+  <p class="header"><a href="#">Bodies</a></p>
+
+  <ul class="nav-list">
+    <li class="level1 nav-leaf"><a href="#body-def"><code>body.def</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-val"><code>body.val</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-lazy-val"><code>body.lazy-val</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-var"><code>body.var</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-given-alias"><code>body.given-alias</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-type-def"><code>body.type-def</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-assignment"><code>body.assignment</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-named-argument"><code>body.named-argument</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-lambda-argument"><code>body.lambda-argument</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-lambda-body"><code>body.lambda-body</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-block-argument"><code>body.block-argument</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-test-case"><code>body.test-case</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-test-group"><code>body.test-group</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-if"><code>body.if</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-case-body"><code>body.case-body</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-try"><code>body.try</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-for"><code>body.for</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-for-yield"><code>body.for-yield</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-while"><code>body.while</code></a></li>
+    <li class="level1 nav-leaf"><a href="#body-semicolon-statements"><code>body.semicolon-statements</code></a></li>
+  </ul>
+
+  <p class="footer"></p>
+</nav>
+
+
+      <main class="content">
+
+        <h1 id="bodies" class="title">Bodies</h1>
+        <p>Where each body goes relative to the separator before it: on its line, or below it one level in. The separators are the <code>=</code> of a definition, the <code>=&gt;</code> of a lambda or of a case, the <code>then</code> and the <code>else</code> of an if/else, the <code>do</code> of a loop.</p>
+        <p>A construct with a single body (a definition, a lambda, a loop) takes <code>keep</code>, <code>always-join</code> or <code>always-break</code>. The bodies of a construct with several of them (the branches of an if/else, the cases of a match, the bodies of a try) are one group, never one by one: either every body is on the line of its separator, or every body is below it, and it takes <code>join-mixed</code>, <code>break-mixed</code>, <code>always-join</code> or <code>always-break</code>. A group where some bodies are inline and some others are on a new line is <em>mixed</em>.</p>
+        <p>Whatever the setting: a body goes below its separator when it cannot be joined on its line, and in a group such a body puts every body of the group below its separator. The settings move bodies only relative to their separators: an <code>else</code> written on its own line stays on its own line, and every <code>case</code> is on its own line. With braces (see <a href="braces.html">braces</a>), a body below its separator is in braces, and a construct whose bodies are on their lines has none.</p>
+        
+        <h2 id="body-def" class="section"><a class="anchor-link left" href="#body-def"><i class="icofont-laika link">&#xef71;</i></a><code>body.def</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>=</code> of a <code>def</code>.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">total</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span></code></pre>
+        
+        <h3 id="body-def-keep" class="section"><a class="anchor-link left" href="#body-def-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.def = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">total</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.def = keep</span></code></pre>
+        
+        <h3 id="body-def-always-join" class="section"><a class="anchor-link left" href="#body-def-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.def = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">total</span><span>   = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">average</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.def = always-join</span></code></pre>
+        
+        <h3 id="body-def-always-break" class="section"><a class="anchor-link left" href="#body-def-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.def = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">total</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.def = always-break</span></code></pre>
+        
+        <h2 id="body-val" class="section"><a class="anchor-link left" href="#body-val"><i class="icofont-laika link">&#xef71;</i></a><code>body.val</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>=</code> of a <code>val</code>.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">total</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span></code></pre>
+        
+        <h3 id="body-val-keep" class="section"><a class="anchor-link left" href="#body-val-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.val = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">total</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.val = keep</span></code></pre>
+        
+        <h3 id="body-val-always-join" class="section"><a class="anchor-link left" href="#body-val-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.val = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">total</span><span>   = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">average</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.val = always-join</span></code></pre>
+        
+        <h3 id="body-val-always-break" class="section"><a class="anchor-link left" href="#body-val-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.val = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">total</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.val = always-break</span></code></pre>
+        
+        <h2 id="body-lazy-val" class="section"><a class="anchor-link left" href="#body-lazy-val"><i class="icofont-laika link">&#xef71;</i></a><code>body.lazy-val</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>=</code> of a <code>lazy val</code>.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">lazy</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">total</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">lazy</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span></code></pre>
+        
+        <h3 id="body-lazy-val-keep" class="section"><a class="anchor-link left" href="#body-lazy-val-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.lazy-val = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">lazy</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">total</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">lazy</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.lazy-val = keep</span></code></pre>
+        
+        <h3 id="body-lazy-val-always-join" class="section"><a class="anchor-link left" href="#body-lazy-val-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.lazy-val = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">lazy</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">total</span><span>   = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">lazy</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">average</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.lazy-val = always-join</span></code></pre>
+        
+        <h3 id="body-lazy-val-always-break" class="section"><a class="anchor-link left" href="#body-lazy-val-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.lazy-val = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">lazy</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">total</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">lazy</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.lazy-val = always-break</span></code></pre>
+        
+        <h2 id="body-var" class="section"><a class="anchor-link left" href="#body-var"><i class="icofont-laika link">&#xef71;</i></a><code>body.var</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>=</code> of a <code>var</code>.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">var</span><span> </span><span class="identifier">total</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">var</span><span> </span><span class="identifier">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span></code></pre>
+        
+        <h3 id="body-var-keep" class="section"><a class="anchor-link left" href="#body-var-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.var = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">var</span><span> </span><span class="identifier">total</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">var</span><span> </span><span class="identifier">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.var = keep</span></code></pre>
+        
+        <h3 id="body-var-always-join" class="section"><a class="anchor-link left" href="#body-var-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.var = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">var</span><span> </span><span class="identifier">total</span><span>   = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">var</span><span> </span><span class="identifier">average</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.var = always-join</span></code></pre>
+        
+        <h3 id="body-var-always-break" class="section"><a class="anchor-link left" href="#body-var-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.var = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">var</span><span> </span><span class="identifier">total</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span>
+</span><span class="keyword">var</span><span> </span><span class="identifier">average</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">sum</span><span> / </span><span class="identifier">xs</span><span>.</span><span class="identifier">size</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.var = always-break</span></code></pre>
+        
+        <h2 id="body-given-alias" class="section"><a class="anchor-link left" href="#body-given-alias"><i class="icofont-laika link">&#xef71;</i></a><code>body.given-alias</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>=</code> of a given alias.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">given</span><span> </span><span class="identifier">intOrder</span><span>: </span><span class="type-name">Ordering</span><span>[</span><span class="type-name">Int</span><span>] = </span><span class="type-name">Ordering</span><span>.</span><span class="type-name">Int</span><span>
+</span><span class="identifier">given</span><span> </span><span class="identifier">stringOrder</span><span>: </span><span class="type-name">Ordering</span><span>[</span><span class="type-name">String</span><span>] =
+  </span><span class="type-name">Ordering</span><span>.</span><span class="type-name">String</span></code></pre>
+        
+        <h3 id="body-given-alias-keep" class="section"><a class="anchor-link left" href="#body-given-alias-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.given-alias = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">given</span><span> </span><span class="identifier">intOrder</span><span>: </span><span class="type-name">Ordering</span><span>[</span><span class="type-name">Int</span><span>] = </span><span class="type-name">Ordering</span><span>.</span><span class="type-name">Int</span><span>
+
+</span><span class="identifier">given</span><span> </span><span class="identifier">stringOrder</span><span>: </span><span class="type-name">Ordering</span><span>[</span><span class="type-name">String</span><span>] =
+  </span><span class="type-name">Ordering</span><span>.</span><span class="type-name">String</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.given-alias = keep</span></code></pre>
+        
+        <h3 id="body-given-alias-always-join" class="section"><a class="anchor-link left" href="#body-given-alias-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.given-alias = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">given</span><span> </span><span class="identifier">intOrder</span><span>: </span><span class="type-name">Ordering</span><span>[</span><span class="type-name">Int</span><span>] = </span><span class="type-name">Ordering</span><span>.</span><span class="type-name">Int</span><span>
+
+</span><span class="identifier">given</span><span> </span><span class="identifier">stringOrder</span><span>: </span><span class="type-name">Ordering</span><span>[</span><span class="type-name">String</span><span>] = </span><span class="type-name">Ordering</span><span>.</span><span class="type-name">String</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.given-alias = always-join</span></code></pre>
+        
+        <h3 id="body-given-alias-always-break" class="section"><a class="anchor-link left" href="#body-given-alias-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.given-alias = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">given</span><span> </span><span class="identifier">intOrder</span><span>: </span><span class="type-name">Ordering</span><span>[</span><span class="type-name">Int</span><span>] =
+  </span><span class="type-name">Ordering</span><span>.</span><span class="type-name">Int</span><span>
+
+</span><span class="identifier">given</span><span> </span><span class="identifier">stringOrder</span><span>: </span><span class="type-name">Ordering</span><span>[</span><span class="type-name">String</span><span>] =
+  </span><span class="type-name">Ordering</span><span>.</span><span class="type-name">String</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.given-alias = always-break</span></code></pre>
+        
+        <h2 id="body-type-def" class="section"><a class="anchor-link left" href="#body-type-def"><i class="icofont-laika link">&#xef71;</i></a><code>body.type-def</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>=</code> of a type definition.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">type</span><span> </span><span class="type-name">A</span><span> = </span><span class="type-name">Int</span><span>
+</span><span class="keyword">type</span><span> </span><span class="type-name">B</span><span> =
+  </span><span class="type-name">List</span><span>[</span><span class="type-name">Int</span><span>]</span></code></pre>
+        
+        <h3 id="body-type-def-keep" class="section"><a class="anchor-link left" href="#body-type-def-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.type-def = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">type</span><span> </span><span class="type-name">A</span><span> = </span><span class="type-name">Int</span><span>
+</span><span class="keyword">type</span><span> </span><span class="type-name">B</span><span> =
+  </span><span class="type-name">List</span><span>[</span><span class="type-name">Int</span><span>]
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.type-def = keep</span></code></pre>
+        
+        <h3 id="body-type-def-always-join" class="section"><a class="anchor-link left" href="#body-type-def-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.type-def = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">type</span><span> </span><span class="type-name">A</span><span> = </span><span class="type-name">Int</span><span>
+</span><span class="keyword">type</span><span> </span><span class="type-name">B</span><span> = </span><span class="type-name">List</span><span>[</span><span class="type-name">Int</span><span>]
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.type-def = always-join</span></code></pre>
+        
+        <h3 id="body-type-def-always-break" class="section"><a class="anchor-link left" href="#body-type-def-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.type-def = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">type</span><span> </span><span class="type-name">A</span><span> =
+  </span><span class="type-name">Int</span><span>
+</span><span class="keyword">type</span><span> </span><span class="type-name">B</span><span> =
+  </span><span class="type-name">List</span><span>[</span><span class="type-name">Int</span><span>]
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.type-def = always-break</span></code></pre>
+        
+        <h2 id="body-assignment" class="section"><a class="anchor-link left" href="#body-assignment"><i class="icofont-laika link">&#xef71;</i></a><code>body.assignment</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>=</code> of an assignment.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">reset</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">total</span><span> = </span><span class="number-literal">0</span><span>
+  </span><span class="identifier">count</span><span> =
+    </span><span class="number-literal">1</span></code></pre>
+        
+        <h3 id="body-assignment-keep" class="section"><a class="anchor-link left" href="#body-assignment-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.assignment = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">reset</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">total</span><span> = </span><span class="number-literal">0</span><span>
+  </span><span class="identifier">count</span><span> =
+    </span><span class="number-literal">1</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.assignment = keep</span></code></pre>
+        
+        <h3 id="body-assignment-always-join" class="section"><a class="anchor-link left" href="#body-assignment-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.assignment = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">reset</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">total</span><span> = </span><span class="number-literal">0</span><span>
+  </span><span class="identifier">count</span><span> = </span><span class="number-literal">1</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.assignment = always-join</span></code></pre>
+        
+        <h3 id="body-assignment-always-break" class="section"><a class="anchor-link left" href="#body-assignment-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.assignment = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">reset</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">total</span><span> =
+    </span><span class="number-literal">0</span><span>
+  </span><span class="identifier">count</span><span> =
+    </span><span class="number-literal">1</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.assignment = always-break</span></code></pre>
+        
+        <h2 id="body-named-argument" class="section"><a class="anchor-link left" href="#body-named-argument"><i class="icofont-laika link">&#xef71;</i></a><code>body.named-argument</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>=</code> of a named argument.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">c</span><span> = </span><span class="type-name">Config</span><span>(
+  </span><span class="identifier">name</span><span> = </span><span class="string-literal">&quot;dixtra&quot;</span><span>,
+  </span><span class="identifier">width</span><span> =
+    </span><span class="number-literal">80</span><span>,
+)</span></code></pre>
+        
+        <h3 id="body-named-argument-keep" class="section"><a class="anchor-link left" href="#body-named-argument-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.named-argument = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">c</span><span> =
+  </span><span class="type-name">Config</span><span>(
+    </span><span class="identifier">name</span><span> = </span><span class="string-literal">&quot;dixtra&quot;</span><span>,
+    </span><span class="identifier">width</span><span> =
+      </span><span class="number-literal">80</span><span>,
+  )
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.named-argument = keep</span></code></pre>
+        
+        <h3 id="body-named-argument-always-join" class="section"><a class="anchor-link left" href="#body-named-argument-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.named-argument = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">c</span><span> =
+  </span><span class="type-name">Config</span><span>(
+    </span><span class="identifier">name</span><span> = </span><span class="string-literal">&quot;dixtra&quot;</span><span>,
+    </span><span class="identifier">width</span><span> = </span><span class="number-literal">80</span><span>,
+  )
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.named-argument = always-join</span></code></pre>
+        
+        <h3 id="body-named-argument-always-break" class="section"><a class="anchor-link left" href="#body-named-argument-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.named-argument = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">c</span><span> =
+  </span><span class="type-name">Config</span><span>(
+    </span><span class="identifier">name</span><span> =
+      </span><span class="string-literal">&quot;dixtra&quot;</span><span>,
+    </span><span class="identifier">width</span><span> =
+      </span><span class="number-literal">80</span><span>,
+  )
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.named-argument = always-break</span></code></pre>
+        
+        <h2 id="body-lambda-argument" class="section"><a class="anchor-link left" href="#body-lambda-argument"><i class="icofont-laika link">&#xef71;</i></a><code>body.lambda-argument</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>=&gt;</code> of a lambda given in braces or after a colon.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">foreach</span><span> { </span><span class="identifier">x</span><span> =&gt; </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>) }
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">foreach</span><span> { </span><span class="identifier">x</span><span> =&gt;
+    </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>)
+  }</span></code></pre>
+        
+        <h3 id="body-lambda-argument-keep" class="section"><a class="anchor-link left" href="#body-lambda-argument-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.lambda-argument = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">foreach</span><span> { </span><span class="identifier">x</span><span> =&gt; </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>) }
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">foreach</span><span> { </span><span class="identifier">x</span><span> =&gt;
+    </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>)
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.lambda-argument = keep</span></code></pre>
+        
+        <h3 id="body-lambda-argument-always-join" class="section"><a class="anchor-link left" href="#body-lambda-argument-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.lambda-argument = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">foreach</span><span> { </span><span class="identifier">x</span><span> =&gt; </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>) }
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">foreach</span><span> { </span><span class="identifier">x</span><span> =&gt; </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>) }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.lambda-argument = always-join</span></code></pre>
+        
+        <h3 id="body-lambda-argument-always-break" class="section"><a class="anchor-link left" href="#body-lambda-argument-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.lambda-argument = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">foreach</span><span> { </span><span class="identifier">x</span><span> =&gt;
+    </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>)
+  }
+  </span><span class="identifier">xs</span><span>.</span><span class="identifier">foreach</span><span> { </span><span class="identifier">x</span><span> =&gt;
+    </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>)
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.lambda-argument = always-break</span></code></pre>
+        
+        <h2 id="body-lambda-body" class="section"><a class="anchor-link left" href="#body-lambda-body"><i class="icofont-laika link">&#xef71;</i></a><code>body.lambda-body</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>=&gt;</code> of any other lambda.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">f</span><span> = (</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>) =&gt; </span><span class="identifier">x</span><span> + </span><span class="number-literal">1</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">g</span><span> = (</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>) =&gt;
+  </span><span class="identifier">x</span><span> + </span><span class="number-literal">2</span></code></pre>
+        
+        <h3 id="body-lambda-body-keep" class="section"><a class="anchor-link left" href="#body-lambda-body-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.lambda-body = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">f</span><span> = (</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>) =&gt; </span><span class="identifier">x</span><span> + </span><span class="number-literal">1</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">g</span><span> =
+  (</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>) =&gt;
+    </span><span class="identifier">x</span><span> + </span><span class="number-literal">2</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.lambda-body = keep</span></code></pre>
+        
+        <h3 id="body-lambda-body-always-join" class="section"><a class="anchor-link left" href="#body-lambda-body-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.lambda-body = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">f</span><span> = (</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>) =&gt; </span><span class="identifier">x</span><span> + </span><span class="number-literal">1</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">g</span><span> = (</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>) =&gt; </span><span class="identifier">x</span><span> + </span><span class="number-literal">2</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.lambda-body = always-join</span></code></pre>
+        
+        <h3 id="body-lambda-body-always-break" class="section"><a class="anchor-link left" href="#body-lambda-body-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.lambda-body = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">f</span><span> =
+  (</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>) =&gt;
+    </span><span class="identifier">x</span><span> + </span><span class="number-literal">1</span><span>
+</span><span class="keyword">val</span><span> </span><span class="identifier">g</span><span> =
+  (</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>) =&gt;
+    </span><span class="identifier">x</span><span> + </span><span class="number-literal">2</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.lambda-body = always-break</span></code></pre>
+        
+        <h2 id="body-block-argument" class="section"><a class="anchor-link left" href="#body-block-argument"><i class="icofont-laika link">&#xef71;</i></a><code>body.block-argument</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>{</code> or the colon of a block of statements given as an argument, without lambda parameters and not a test block.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="type-name">Resource</span><span>.</span><span class="identifier">make</span><span> { </span><span class="identifier">open</span><span>() }
+  </span><span class="type-name">Resource</span><span>.</span><span class="identifier">make</span><span> {
+    </span><span class="identifier">close</span><span>()
+  }</span></code></pre>
+        
+        <h3 id="body-block-argument-keep" class="section"><a class="anchor-link left" href="#body-block-argument-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.block-argument = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="type-name">Resource</span><span>.</span><span class="identifier">make</span><span> { </span><span class="identifier">open</span><span>() }
+  </span><span class="type-name">Resource</span><span>.</span><span class="identifier">make</span><span> {
+    </span><span class="identifier">close</span><span>()
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.block-argument = keep</span></code></pre>
+        
+        <h3 id="body-block-argument-always-join" class="section"><a class="anchor-link left" href="#body-block-argument-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.block-argument = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="type-name">Resource</span><span>.</span><span class="identifier">make</span><span> { </span><span class="identifier">open</span><span>() }
+  </span><span class="type-name">Resource</span><span>.</span><span class="identifier">make</span><span> { </span><span class="identifier">close</span><span>() }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.block-argument = always-join</span></code></pre>
+        
+        <h3 id="body-block-argument-always-break" class="section"><a class="anchor-link left" href="#body-block-argument-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.block-argument = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="type-name">Resource</span><span>.</span><span class="identifier">make</span><span> {
+    </span><span class="identifier">open</span><span>()
+  }
+  </span><span class="type-name">Resource</span><span>.</span><span class="identifier">make</span><span> {
+    </span><span class="identifier">close</span><span>()
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.block-argument = always-break</span></code></pre>
+        
+        <h2 id="body-test-case" class="section"><a class="anchor-link left" href="#body-test-case"><i class="icofont-laika link">&#xef71;</i></a><code>body.test-case</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>{</code> or the colon of a test case: a block of statements given to a call labelled by a string, holding no other test block.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">suite</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a parser&quot;</span><span>) { </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) }
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a printer&quot;</span><span>) {
+    </span><span class="identifier">print</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>)
+  }</span></code></pre>
+        
+        <h3 id="body-test-case-keep" class="section"><a class="anchor-link left" href="#body-test-case-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.test-case = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">suite</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a parser&quot;</span><span>) { </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) }
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a printer&quot;</span><span>) {
+    </span><span class="identifier">print</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>)
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.test-case = keep</span></code></pre>
+        
+        <h3 id="body-test-case-always-join" class="section"><a class="anchor-link left" href="#body-test-case-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.test-case = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">suite</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a parser&quot;</span><span>) { </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) }
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a printer&quot;</span><span>) { </span><span class="identifier">print</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.test-case = always-join</span></code></pre>
+        
+        <h3 id="body-test-case-always-break" class="section"><a class="anchor-link left" href="#body-test-case-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.test-case = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">suite</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a parser&quot;</span><span>) {
+    </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>)
+  }
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a printer&quot;</span><span>) {
+    </span><span class="identifier">print</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>)
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.test-case = always-break</span></code></pre>
+        
+        <h2 id="body-test-group" class="section"><a class="anchor-link left" href="#body-test-group"><i class="icofont-laika link">&#xef71;</i></a><code>body.test-group</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>{</code> or the colon of a group of tests: a block of statements given to a call labelled by a string, holding other test blocks.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">suite</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;group one&quot;</span><span>) { </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a&quot;</span><span>) { </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) } }
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;group two&quot;</span><span>) {
+    </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;b&quot;</span><span>) { </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) }
+  }</span></code></pre>
+        
+        <h3 id="body-test-group-keep" class="section"><a class="anchor-link left" href="#body-test-group-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.test-group = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">suite</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;group one&quot;</span><span>) { </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a&quot;</span><span>) { </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) } }
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;group two&quot;</span><span>) {
+    </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;b&quot;</span><span>) { </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) }
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.test-group = keep</span></code></pre>
+        
+        <h3 id="body-test-group-always-join" class="section"><a class="anchor-link left" href="#body-test-group-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.test-group = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">suite</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;group one&quot;</span><span>) { </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a&quot;</span><span>) { </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) } }
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;group two&quot;</span><span>) { </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;b&quot;</span><span>) { </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) } }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.test-group = always-join</span></code></pre>
+        
+        <h3 id="body-test-group-always-break" class="section"><a class="anchor-link left" href="#body-test-group-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.test-group = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">suite</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;group one&quot;</span><span>) {
+    </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;a&quot;</span><span>) { </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) }
+  }
+  </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;group two&quot;</span><span>) {
+    </span><span class="identifier">test</span><span>(</span><span class="string-literal">&quot;b&quot;</span><span>) { </span><span class="identifier">parse</span><span>(</span><span class="string-literal">&quot;x&quot;</span><span>) }
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.test-group = always-break</span></code></pre>
+        
+        <h2 id="body-if" class="section"><a class="anchor-link left" href="#body-if"><i class="icofont-laika link">&#xef71;</i></a><code>body.if</code></h2>
+        <p><strong>Default:</strong> <code>break-mixed</code>.</p>
+        <p>The <code>then</code> and the <code>else</code> of an if/else. The branches of an <code>else if</code> chain are one group with those of the outer if/else.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>: </span><span class="type-name">Int</span><span> =
+  </span><span class="keyword">if</span><span> </span><span class="identifier">c</span><span> </span><span class="identifier">then</span><span>
+    </span><span class="identifier">a</span><span>
+  </span><span class="keyword">else</span><span> </span><span class="identifier">b</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>: </span><span class="type-name">Int</span><span> =
+  </span><span class="keyword">if</span><span> </span><span class="identifier">d</span><span> </span><span class="identifier">then</span><span>
+    </span><span class="identifier">e</span><span>
+  </span><span class="keyword">else</span><span>
+    </span><span class="identifier">f</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>: </span><span class="type-name">Int</span><span> = </span><span class="keyword">if</span><span> </span><span class="identifier">i</span><span> </span><span class="identifier">then</span><span> </span><span class="identifier">j</span><span> </span><span class="keyword">else</span><span> </span><span class="identifier">k</span></code></pre>
+        
+        <h3 id="body-if-join-mixed" class="section"><a class="anchor-link left" href="#body-if-join-mixed"><i class="icofont-laika link">&#xef71;</i></a><code>body.if = join-mixed</code></h3>
+        <p>A mixed group is joined on the lines of the separators; a group all on its lines, or all below, stays as it is.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>: </span><span class="type-name">Int</span><span> =
+  </span><span class="keyword">if</span><span> </span><span class="identifier">c</span><span> </span><span class="identifier">then</span><span> </span><span class="identifier">a</span><span>
+  </span><span class="keyword">else</span><span> </span><span class="identifier">b</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>: </span><span class="type-name">Int</span><span> =
+  </span><span class="keyword">if</span><span> </span><span class="identifier">d</span><span> </span><span class="identifier">then</span><span>
+    </span><span class="identifier">e</span><span>
+  </span><span class="keyword">else</span><span>
+    </span><span class="identifier">f</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>: </span><span class="type-name">Int</span><span> = </span><span class="keyword">if</span><span> </span><span class="identifier">i</span><span> </span><span class="identifier">then</span><span> </span><span class="identifier">j</span><span> </span><span class="keyword">else</span><span> </span><span class="identifier">k</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.if = join-mixed</span></code></pre>
+        
+        <h3 id="body-if-always-join" class="section"><a class="anchor-link left" href="#body-if-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.if = always-join</code></h3>
+        <p>Every body goes on the line of its separator.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>: </span><span class="type-name">Int</span><span> =
+  </span><span class="keyword">if</span><span> </span><span class="identifier">c</span><span> </span><span class="identifier">then</span><span> </span><span class="identifier">a</span><span>
+  </span><span class="keyword">else</span><span> </span><span class="identifier">b</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>: </span><span class="type-name">Int</span><span> =
+  </span><span class="keyword">if</span><span> </span><span class="identifier">d</span><span> </span><span class="identifier">then</span><span> </span><span class="identifier">e</span><span>
+  </span><span class="keyword">else</span><span> </span><span class="identifier">f</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>: </span><span class="type-name">Int</span><span> = </span><span class="keyword">if</span><span> </span><span class="identifier">i</span><span> </span><span class="identifier">then</span><span> </span><span class="identifier">j</span><span> </span><span class="keyword">else</span><span> </span><span class="identifier">k</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.if = always-join</span></code></pre>
+        
+        <h3 id="body-if-break-mixed" class="section"><a class="anchor-link left" href="#body-if-break-mixed"><i class="icofont-laika link">&#xef71;</i></a><code>body.if = break-mixed</code></h3>
+        <p>A mixed group goes below the separators; a group all on its lines, or all below, stays as it is.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>: </span><span class="type-name">Int</span><span> =
+  </span><span class="keyword">if</span><span> </span><span class="identifier">c</span><span> </span><span class="identifier">then</span><span>
+    </span><span class="identifier">a</span><span>
+  </span><span class="keyword">else</span><span>
+    </span><span class="identifier">b</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>: </span><span class="type-name">Int</span><span> =
+  </span><span class="keyword">if</span><span> </span><span class="identifier">d</span><span> </span><span class="identifier">then</span><span>
+    </span><span class="identifier">e</span><span>
+  </span><span class="keyword">else</span><span>
+    </span><span class="identifier">f</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>: </span><span class="type-name">Int</span><span> = </span><span class="keyword">if</span><span> </span><span class="identifier">i</span><span> </span><span class="identifier">then</span><span> </span><span class="identifier">j</span><span> </span><span class="keyword">else</span><span> </span><span class="identifier">k</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.if = break-mixed</span></code></pre>
+        
+        <h3 id="body-if-always-break" class="section"><a class="anchor-link left" href="#body-if-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.if = always-break</code></h3>
+        <p>Every body goes below its separator.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>: </span><span class="type-name">Int</span><span> =
+  </span><span class="keyword">if</span><span> </span><span class="identifier">c</span><span> </span><span class="identifier">then</span><span>
+    </span><span class="identifier">a</span><span>
+  </span><span class="keyword">else</span><span>
+    </span><span class="identifier">b</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>: </span><span class="type-name">Int</span><span> =
+  </span><span class="keyword">if</span><span> </span><span class="identifier">d</span><span> </span><span class="identifier">then</span><span>
+    </span><span class="identifier">e</span><span>
+  </span><span class="keyword">else</span><span>
+    </span><span class="identifier">f</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>: </span><span class="type-name">Int</span><span> =
+  </span><span class="keyword">if</span><span> </span><span class="identifier">i</span><span> </span><span class="identifier">then</span><span>
+    </span><span class="identifier">j</span><span>
+  </span><span class="keyword">else</span><span>
+    </span><span class="identifier">k</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.if = always-break</span></code></pre>
+        
+        <h2 id="body-case-body" class="section"><a class="anchor-link left" href="#body-case-body"><i class="icofont-laika link">&#xef71;</i></a><code>body.case-body</code></h2>
+        <p><strong>Default:</strong> <code>break-mixed</code>.</p>
+        <p>The <code>=&gt;</code> of the cases of a <code>match</code>, of a <code>{ case ... }</code> or of a <code>catch</code>, which are one group.</p>
+        <p>Before:</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> = </span><span class="identifier">x</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt;
+      </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">22</span><span> =&gt; </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>(</span><span class="identifier">y</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> = </span><span class="identifier">y</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt;
+      </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">2</span><span> =&gt;
+      </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>(</span><span class="identifier">z</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> = </span><span class="identifier">z</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt; </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">2</span><span> =&gt; </span><span class="string-literal">&quot;two&quot;</span><span>
+  }</span></code></pre>
+        
+        <h3 id="body-case-body-join-mixed" class="section"><a class="anchor-link left" href="#body-case-body-join-mixed"><i class="icofont-laika link">&#xef71;</i></a><code>body.case-body = join-mixed</code></h3>
+        <p>A mixed group is joined on the lines of the separators; a group all on its lines, or all below, stays as it is.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">x</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span>  =&gt; </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">22</span><span> =&gt; </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>(</span><span class="identifier">y</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">y</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt;
+      </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">2</span><span> =&gt;
+      </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>(</span><span class="identifier">z</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">z</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt; </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">2</span><span> =&gt; </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.case-body = join-mixed</span></code></pre>
+        
+        <h3 id="body-case-body-always-join" class="section"><a class="anchor-link left" href="#body-case-body-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.case-body = always-join</code></h3>
+        <p>Every body goes on the line of its separator.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">x</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span>  =&gt; </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">22</span><span> =&gt; </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>(</span><span class="identifier">y</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">y</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt; </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">2</span><span> =&gt; </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>(</span><span class="identifier">z</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">z</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt; </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">2</span><span> =&gt; </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.case-body = always-join</span></code></pre>
+        
+        <h3 id="body-case-body-break-mixed" class="section"><a class="anchor-link left" href="#body-case-body-break-mixed"><i class="icofont-laika link">&#xef71;</i></a><code>body.case-body = break-mixed</code></h3>
+        <p>A mixed group goes below the separators; a group all on its lines, or all below, stays as it is.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">x</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt;
+      </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">22</span><span> =&gt;
+      </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>(</span><span class="identifier">y</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">y</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt;
+      </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">2</span><span> =&gt;
+      </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>(</span><span class="identifier">z</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">z</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt; </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">2</span><span> =&gt; </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.case-body = break-mixed</span></code></pre>
+        
+        <h3 id="body-case-body-always-break" class="section"><a class="anchor-link left" href="#body-case-body-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.case-body = always-break</code></h3>
+        <p>Every body goes below its separator.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(</span><span class="identifier">x</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">x</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt;
+      </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">22</span><span> =&gt;
+      </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>(</span><span class="identifier">y</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">y</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt;
+      </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">2</span><span> =&gt;
+      </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>(</span><span class="identifier">z</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">String</span><span> =
+  </span><span class="identifier">z</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">1</span><span> =&gt;
+      </span><span class="string-literal">&quot;one&quot;</span><span>
+    </span><span class="keyword">case</span><span> </span><span class="number-literal">2</span><span> =&gt;
+      </span><span class="string-literal">&quot;two&quot;</span><span>
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.case-body = always-break</span></code></pre>
+        
+        <h2 id="body-try" class="section"><a class="anchor-link left" href="#body-try"><i class="icofont-laika link">&#xef71;</i></a><code>body.try</code></h2>
+        <p><strong>Default:</strong> <code>break-mixed</code>.</p>
+        <p>The bodies after the <code>try</code> and the <code>finally</code>, which are one group; the cases after <code>catch</code> follow <code>body.case-body</code>.</p>
+        <p>Before:</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span>
+    </span><span class="identifier">a</span><span>()
+  </span><span class="keyword">finally</span><span> </span><span class="identifier">b</span><span>()
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span>
+    </span><span class="identifier">c</span><span>()
+  </span><span class="keyword">finally</span><span>
+    </span><span class="identifier">d</span><span>()
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span> </span><span class="identifier">a</span><span>()
+  </span><span class="keyword">finally</span><span> </span><span class="identifier">b</span><span>()</span></code></pre>
+        
+        <h3 id="body-try-join-mixed" class="section"><a class="anchor-link left" href="#body-try-join-mixed"><i class="icofont-laika link">&#xef71;</i></a><code>body.try = join-mixed</code></h3>
+        <p>A mixed group is joined on the lines of the separators; a group all on its lines, or all below, stays as it is.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span> </span><span class="identifier">a</span><span>()
+  </span><span class="keyword">finally</span><span> </span><span class="identifier">b</span><span>()
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span>
+    </span><span class="identifier">c</span><span>()
+  </span><span class="keyword">finally</span><span>
+    </span><span class="identifier">d</span><span>()
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span> </span><span class="identifier">a</span><span>()
+  </span><span class="keyword">finally</span><span> </span><span class="identifier">b</span><span>()
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   braces.try = force-indent
+//   body.try = join-mixed</span></code></pre>
+        
+        <h3 id="body-try-always-join" class="section"><a class="anchor-link left" href="#body-try-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.try = always-join</code></h3>
+        <p>Every body goes on the line of its separator.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span> </span><span class="identifier">a</span><span>()
+  </span><span class="keyword">finally</span><span> </span><span class="identifier">b</span><span>()
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span> </span><span class="identifier">c</span><span>()
+  </span><span class="keyword">finally</span><span> </span><span class="identifier">d</span><span>()
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span> </span><span class="identifier">a</span><span>()
+  </span><span class="keyword">finally</span><span> </span><span class="identifier">b</span><span>()
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   braces.try = force-indent
+//   body.try = always-join</span></code></pre>
+        
+        <h3 id="body-try-break-mixed" class="section"><a class="anchor-link left" href="#body-try-break-mixed"><i class="icofont-laika link">&#xef71;</i></a><code>body.try = break-mixed</code></h3>
+        <p>A mixed group goes below the separators; a group all on its lines, or all below, stays as it is.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span>
+    </span><span class="identifier">a</span><span>()
+  </span><span class="keyword">finally</span><span>
+    </span><span class="identifier">b</span><span>()
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span>
+    </span><span class="identifier">c</span><span>()
+  </span><span class="keyword">finally</span><span>
+    </span><span class="identifier">d</span><span>()
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span> </span><span class="identifier">a</span><span>()
+  </span><span class="keyword">finally</span><span> </span><span class="identifier">b</span><span>()
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   braces.try = force-indent
+//   body.try = break-mixed</span></code></pre>
+        
+        <h3 id="body-try-always-break" class="section"><a class="anchor-link left" href="#body-try-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.try = always-break</code></h3>
+        <p>Every body goes below its separator.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span>
+    </span><span class="identifier">a</span><span>()
+  </span><span class="keyword">finally</span><span>
+    </span><span class="identifier">b</span><span>()
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">g</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span>
+    </span><span class="identifier">c</span><span>()
+  </span><span class="keyword">finally</span><span>
+    </span><span class="identifier">d</span><span>()
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">h</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">try</span><span>
+    </span><span class="identifier">a</span><span>()
+  </span><span class="keyword">finally</span><span>
+    </span><span class="identifier">b</span><span>()
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   braces.try = force-indent
+//   body.try = always-break</span></code></pre>
+        
+        <h2 id="body-for" class="section"><a class="anchor-link left" href="#body-for"><i class="icofont-laika link">&#xef71;</i></a><code>body.for</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>do</code> of a <code>for</code> loop.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">for</span><span> </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span> </span><span class="identifier">do</span><span> </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>)
+  </span><span class="keyword">for</span><span> </span><span class="identifier">y</span><span> &lt;- </span><span class="identifier">ys</span><span> </span><span class="identifier">do</span><span>
+    </span><span class="identifier">println</span><span>(</span><span class="identifier">y</span><span>)</span></code></pre>
+        
+        <h3 id="body-for-keep" class="section"><a class="anchor-link left" href="#body-for-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.for = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">for</span><span> </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span> </span><span class="identifier">do</span><span> </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>)
+  </span><span class="keyword">for</span><span> </span><span class="identifier">y</span><span> &lt;- </span><span class="identifier">ys</span><span> </span><span class="identifier">do</span><span>
+    </span><span class="identifier">println</span><span>(</span><span class="identifier">y</span><span>)
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.for = keep</span></code></pre>
+        
+        <h3 id="body-for-always-join" class="section"><a class="anchor-link left" href="#body-for-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.for = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">for</span><span> </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span> </span><span class="identifier">do</span><span> </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>)
+  </span><span class="keyword">for</span><span> </span><span class="identifier">y</span><span> &lt;- </span><span class="identifier">ys</span><span> </span><span class="identifier">do</span><span> </span><span class="identifier">println</span><span>(</span><span class="identifier">y</span><span>)
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.for = always-join</span></code></pre>
+        
+        <h3 id="body-for-always-break" class="section"><a class="anchor-link left" href="#body-for-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.for = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">for</span><span> </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span> </span><span class="identifier">do</span><span>
+    </span><span class="identifier">println</span><span>(</span><span class="identifier">x</span><span>)
+  </span><span class="keyword">for</span><span> </span><span class="identifier">y</span><span> &lt;- </span><span class="identifier">ys</span><span> </span><span class="identifier">do</span><span>
+    </span><span class="identifier">println</span><span>(</span><span class="identifier">y</span><span>)
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.for = always-break</span></code></pre>
+        
+        <h2 id="body-for-yield" class="section"><a class="anchor-link left" href="#body-for-yield"><i class="icofont-laika link">&#xef71;</i></a><code>body.for-yield</code></h2>
+        <p><strong>Default:</strong> <code>break-complex</code>.</p>
+        <p>The expression after the <code>yield</code> of a for-comprehension.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">a</span><span> =
+  </span><span class="keyword">for</span><span> </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span>
+  </span><span class="keyword">yield</span><span>
+    </span><span class="identifier">name</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">b</span><span> =
+  </span><span class="keyword">for</span><span> </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span>
+  </span><span class="keyword">yield</span><span> </span><span class="identifier">x</span><span> + </span><span class="number-literal">1</span></code></pre>
+        
+        <h3 id="body-for-yield-keep" class="section"><a class="anchor-link left" href="#body-for-yield-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.for-yield = keep</code></h3>
+        <p>The expression stays where the author wrote it.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">a</span><span> =
+  </span><span class="keyword">for</span><span>
+    </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span>
+  </span><span class="keyword">yield</span><span>
+    </span><span class="identifier">name</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">b</span><span> =
+  </span><span class="keyword">for</span><span>
+    </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span>
+  </span><span class="keyword">yield</span><span> </span><span class="identifier">x</span><span> + </span><span class="number-literal">1</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.for-yield = keep</span></code></pre>
+        
+        <h3 id="body-for-yield-always-join" class="section"><a class="anchor-link left" href="#body-for-yield-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.for-yield = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">a</span><span> =
+  </span><span class="keyword">for</span><span>
+    </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span>
+  </span><span class="keyword">yield</span><span> </span><span class="identifier">name</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">b</span><span> =
+  </span><span class="keyword">for</span><span>
+    </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span>
+  </span><span class="keyword">yield</span><span> </span><span class="identifier">x</span><span> + </span><span class="number-literal">1</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.for-yield = always-join</span></code></pre>
+        
+        <h3 id="body-for-yield-always-break" class="section"><a class="anchor-link left" href="#body-for-yield-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.for-yield = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">a</span><span> =
+  </span><span class="keyword">for</span><span>
+    </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span>
+  </span><span class="keyword">yield</span><span>
+    </span><span class="identifier">name</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">b</span><span> =
+  </span><span class="keyword">for</span><span>
+    </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span>
+  </span><span class="keyword">yield</span><span>
+    </span><span class="identifier">x</span><span> + </span><span class="number-literal">1</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.for-yield = always-break</span></code></pre>
+        
+        <h3 id="body-for-yield-break-complex" class="section"><a class="anchor-link left" href="#body-for-yield-break-complex"><i class="icofont-laika link">&#xef71;</i></a><code>body.for-yield = break-complex</code></h3>
+        <p>As <code>always-break</code>, but a simple expression, a single name, a path or a literal stays on the line of the <code>yield</code>.</p>
+        <pre><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">a</span><span> =
+  </span><span class="keyword">for</span><span>
+    </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span>
+  </span><span class="keyword">yield</span><span> </span><span class="identifier">name</span><span>
+
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">b</span><span> =
+  </span><span class="keyword">for</span><span>
+    </span><span class="identifier">x</span><span> &lt;- </span><span class="identifier">xs</span><span>
+  </span><span class="keyword">yield</span><span>
+    </span><span class="identifier">x</span><span> + </span><span class="number-literal">1</span><span>
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.for-yield = break-complex</span></code></pre>
+        
+        <h2 id="body-while" class="section"><a class="anchor-link left" href="#body-while"><i class="icofont-laika link">&#xef71;</i></a><code>body.while</code></h2>
+        <p><strong>Default:</strong> <code>keep</code>.</p>
+        <p>The <code>do</code> of a <code>while</code> loop.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">while</span><span> </span><span class="identifier">c</span><span> </span><span class="identifier">do</span><span> </span><span class="identifier">step</span><span>()
+  </span><span class="keyword">while</span><span> </span><span class="identifier">d</span><span> </span><span class="identifier">do</span><span>
+    </span><span class="identifier">other</span><span>()</span></code></pre>
+        
+        <h3 id="body-while-keep" class="section"><a class="anchor-link left" href="#body-while-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.while = keep</code></h3>
+        <p>The body stays where the author wrote it.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">while</span><span> (</span><span class="identifier">c</span><span>) </span><span class="identifier">step</span><span>()
+  </span><span class="keyword">while</span><span> (</span><span class="identifier">d</span><span>) {
+    </span><span class="identifier">other</span><span>()
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.while = keep</span></code></pre>
+        
+        <h3 id="body-while-always-join" class="section"><a class="anchor-link left" href="#body-while-always-join"><i class="icofont-laika link">&#xef71;</i></a><code>body.while = always-join</code></h3>
+        <p>The body goes on the line of its separator, even when the author wrote it below.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">while</span><span> (</span><span class="identifier">c</span><span>) </span><span class="identifier">step</span><span>()
+  </span><span class="keyword">while</span><span> (</span><span class="identifier">d</span><span>) </span><span class="identifier">other</span><span>()
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.while = always-join</span></code></pre>
+        
+        <h3 id="body-while-always-break" class="section"><a class="anchor-link left" href="#body-while-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.while = always-break</code></h3>
+        <p>The body goes below its separator, even when the author wrote it on the line.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">f</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="keyword">while</span><span> (</span><span class="identifier">c</span><span>) {
+    </span><span class="identifier">step</span><span>()
+  }
+  </span><span class="keyword">while</span><span> (</span><span class="identifier">d</span><span>) {
+    </span><span class="identifier">other</span><span>()
+  }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.while = always-break</span></code></pre>
+        
+        <h2 id="body-semicolon-statements" class="section"><a class="anchor-link left" href="#body-semicolon-statements"><i class="icofont-laika link">&#xef71;</i></a><code>body.semicolon-statements</code></h2>
+        <p><strong>Default:</strong> <code>always-break</code>.</p>
+        <p>The <code>;</code> between the statements of a body written on one line, whatever the construct.</p>
+        <p>Before:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> = { </span><span class="identifier">println</span><span>(</span><span class="number-literal">1</span><span>); </span><span class="identifier">println</span><span>(</span><span class="number-literal">2</span><span>) }</span></code></pre>
+        
+        <h3 id="body-semicolon-statements-keep" class="section"><a class="anchor-link left" href="#body-semicolon-statements-keep"><i class="icofont-laika link">&#xef71;</i></a><code>body.semicolon-statements = keep</code></h3>
+        <p>The statements stay on one line, with their braces, while it fits.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> = { </span><span class="identifier">println</span><span>(</span><span class="number-literal">1</span><span>); </span><span class="identifier">println</span><span>(</span><span class="number-literal">2</span><span>) }
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.semicolon-statements = keep</span></code></pre>
+        
+        <h3 id="body-semicolon-statements-always-break" class="section"><a class="anchor-link left" href="#body-semicolon-statements-always-break"><i class="icofont-laika link">&#xef71;</i></a><code>body.semicolon-statements = always-break</code></h3>
+        <p>One statement per line, below the <code>=</code>.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">run</span><span>(): </span><span class="type-name">Unit</span><span> =
+  </span><span class="identifier">println</span><span>(</span><span class="number-literal">1</span><span>)
+  </span><span class="identifier">println</span><span>(</span><span class="number-literal">2</span><span>)
+
+</span><span class="comment">// With settings:
+//   max-column = 80
+//   body.semicolon-statements = always-break</span></code></pre>
+
+        
+<hr class="footer-rule"/>
+<footer>
+  Dixtra — An opinionated formatter for Scala 3 · MIT licensed
+</footer>
+
+
+      </main>
+
+    </div>
+
+  </body>
+
+</html>
