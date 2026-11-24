@@ -1,5 +1,6 @@
 package com.colofabrix.scala.dixtra.format
 
+import com.colofabrix.scala.dixtra.*
 import com.colofabrix.scala.dixtra.testkit.FormatMatchers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -80,6 +81,26 @@ class FormatterOffSpec extends AnyWordSpec with Matchers with FormatMatchers {
       val expected = "object A {\n  val s = \"// dixtra: off\"\n  // dixtra: off is a marker\n  val b = 2\n}\n"
 
       input should formatTo(expected)
+    }
+
+    "make the output unsafe when the code around it moves it into another body" in {
+      val input =
+        """package a {
+          |  def f =
+          |    val x = 1
+          |    x
+          |  // dixtra: off
+          |  val y = 2
+          |  // dixtra: on
+          |}
+          |""".stripMargin
+
+      val expected =
+        Left((classOf[UnsafeOutputError], "Formatted output is not equivalent to the input; file left unchanged"))
+
+      val actual = Dixtra.format(input).left.map(error => (error.getClass, error.getMessage))
+
+      actual shouldBe expected
     }
 
   }

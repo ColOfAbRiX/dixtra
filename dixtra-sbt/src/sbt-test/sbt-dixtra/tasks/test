@@ -1,0 +1,33 @@
+# Every configuration and the build definition at once
+-> dixtraCheckAll
+> dixtraFormatAll
+$ must-mirror src/main/scala/A.scala expected/A.scala
+$ must-mirror src/test/scala/ASpec.scala expected/ASpec.scala
+$ must-mirror build.sbt expected/build.sbt
+> dixtraCheckAll
+
+# A file found formatted is remembered only until it changes
+> dixtraCheck
+$ copy-file changes/A.scala src/main/scala/A.scala
+-> dixtraCheck
+> dixtraFormat
+$ must-mirror src/main/scala/A.scala expected/A.scala
+
+# Formatting before compiling only warns about a file it cannot format, and leaves it to the compiler
+$ copy-file changes/Unsafe.scala src/main/scala/Unsafe.scala
+> set dixtraOnCompile := true
+> compile
+$ must-mirror src/main/scala/Unsafe.scala changes/Unsafe.scala
+> set dixtraOnCompile := false
+$ delete src/main/scala/Unsafe.scala
+
+# Only the files changed since a git ref, untracked ones included
+$ copy-file changes/C.scala src/main/scala/C.scala
+$ exec git init -q
+$ exec git add src/main/scala/C.scala
+$ exec git -c user.name=test -c user.email=test@example.com commit -q -m c
+$ copy-file changes/B.scala src/main/scala/B.scala
+> set dixtraChangedSince := Some("HEAD")
+> dixtraFormat
+$ must-mirror src/main/scala/B.scala expected/B.scala
+$ must-mirror src/main/scala/C.scala changes/C.scala

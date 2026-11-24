@@ -258,7 +258,7 @@ private[term] final class ApplicationRenderer(
         argumentBlocks
           .colonLambda(block, indent)
           .orElse(argumentBlocks.colonBlock(block, indent))
-          .filter(_ => !Render.isFlat(withBraces))
+          .filter(_ => !Render.isFlat(withBraces) && !continuesAfter(clause))
           .getOrElse(Doc.text(" ") ++ withBraces)
       case (pf: Term.PartialFunction) :: Nil if !ctx.isParenthesized(pf) =>
         Doc.text(" ") ++ argumentBlocks.braceBlock(pf, indent, column + 1)
@@ -272,6 +272,19 @@ private[term] final class ApplicationRenderer(
    */
   def tuple(t: Term.Tuple, indent: Int): Doc =
     parenthesised(t, "", t.args, indent, indent)
+
+  // Whether the application of `clause` goes on after it (`xs.map { ... }.sum`, `f { ... }(a)`, `g { ... } + 1`): a
+  // braceless argument would take what follows into its body, so it keeps its braces.
+  private def continuesAfter(clause: Term.ArgClause): Boolean =
+    clause.parent.exists { application =>
+      application.parent.exists {
+        case select: Term.Select       => select.qual eq application
+        case apply: Term.Apply         => apply.fun eq application
+        case applyType: Term.ApplyType => applyType.fun eq application
+        case infix: Term.ApplyInfix    => infix.lhs eq application
+        case _                         => false
+      }
+    }
 
   // A parenthesised argument clause: inline unless a trigger fires, else one argument per line. A `using` clause keeps
   // its keyword on the opening line. Comments between arguments stay attached to their argument; a line comment or a

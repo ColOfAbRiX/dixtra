@@ -95,8 +95,9 @@ final class DefRenderer(
 
   /**
    * Render a secondary constructor (`def this(...) = this(...)`): its signature breaks as the signature of a `def`. A
-   * body that is the call alone goes on the `=` line when it fits there; a body of several statements goes below the
-   * `=`, one statement per line, or stays as written on one line by `body.semicolon-statements`. None to keep it as
+   * body that is the call alone goes on the `=` line when it fits there; a body of several statements goes one statement
+   * per line, below the `=` or in braces opened on the `=` line by `braces.def`, or stays as written on one line by
+   * `body.semicolon-statements`. None to keep it as
    * written: a statement that is not a term, or comments that cannot be re-attached.
    */
   def renderSecondary(ctor: Ctor.Secondary, baseIndent: Int): Option[Doc] =
@@ -106,11 +107,14 @@ final class DefRenderer(
       signature = secondaryParts(ctor, nameEnd)
                   if !signatures.hasUnattachableComments(signature, eq.start)
                   if ctx.commentsBetween(eq.end, ctor.pos.end).isEmpty
-      body     <- secondaryBody(ctor, eq.end, baseIndent + 2)
-      lineRest  = if Render.isFlat(body) then Doc.text(" = ") ++ body else Doc.text(" =")
+      braced    = bracedStatements(ctor, eq.end)
+      body     <- secondaryBody(ctor, eq.end, baseIndent + 2, braced)
+      onLine    = if Render.isFlat(body) then Doc.text(" = ") ++ body else Doc.text(" =")
+      lineRest  = if braced then Doc.text(" = {") else onLine
       laidOut  <- signatures.render(signature, baseIndent, lineRest)
     yield
-      placeBody(laidOut, body)
+      // A block in braces opens on the `=` line
+      if braced then laidOut.doc ++ Doc.text(" = ") ++ body else placeBody(laidOut, body)
 
   /**
    * The width of the signature before the `=`, when it is on one line.
@@ -202,20 +206,12 @@ final class DefRenderer(
 
   // The body of a secondary constructor at `indent`: its call alone, the body as written on one line (with
   // `body.semicolon-statements = keep`), or the call and the statements in braces or one per line, following
-  // `braces.def` as the body of a `def` does. None when a statement is not a term.
-  private def secondaryBody(ctor: Ctor.Secondary, equalsEnd: Int, indent: Int): Option[Doc] =
+  // `braces.def` as the body of a `def` does (`braced`). None when a statement is not a term.
+  private def secondaryBody(ctor: Ctor.Secondary, equalsEnd: Int, indent: Int, braced: Boolean): Option[Doc] =
     val call       = terms.renderInit(ctor.body.init, indent)
     val stats      = ctor.body.stats
     val statements = stats.collect { case term: Term => term }
     val allTerms   = statements.sizeIs == stats.size
-    
-    val writtenBraced =
-      ctx
-        .slice(equalsEnd, ctor.pos.end)
-        .trim
-        .startsWith("{")
-
-    val braced = ctx.braceStyle(Construct.Def, writtenBraced, ended = false) == BracePolicy.ForceBraces
 
     if stats.isEmpty then
       Some(call)
@@ -226,6 +222,19 @@ final class DefRenderer(
         val docs = Doc.intercalate(Doc.Line, call :: statements.map(terms.render(_, indent, forceExplode = false)))
         if braced then Doc.braced(docs) else docs
       }
+
+  // Whether the body of a secondary constructor is laid out as statements one per line in braces, following
+  // `braces.def`.
+  private def bracedStatements(ctor: Ctor.Secondary, equalsEnd: Int): Boolean =
+    val writtenBraced =
+      ctx
+        .slice(equalsEnd, ctor.pos.end)
+        .trim
+        .startsWith("{")
+
+    val hasStatements = ctor.body.stats.nonEmpty && !SemicolonStatements.keptOnLine(ctx, ctor)
+
+    hasStatements && ctx.braceStyle(Construct.Def, writtenBraced, ended = false) == BracePolicy.ForceBraces
 
   private def secondaryParts(ctor: Ctor.Secondary, nameEnd: Int): SignatureParts =
     SignatureParts(

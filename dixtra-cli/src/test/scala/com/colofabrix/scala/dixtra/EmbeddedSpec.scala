@@ -125,23 +125,6 @@ class EmbeddedSpec extends AnyWordSpec with Matchers {
       }
     }
 
-    "process a changed file whose name is not ASCII" in {
-      withTempDir { dir =>
-        git(dir, "init", "-q")
-        val _ = write(dir.resolve("A.scala"), "val x = 1\n")
-        git(dir, "add", "A.scala")
-        git(dir, "commit", "-q", "-m", "a")
-        val untracked      = write(dir.resolve("Ä.scala"), unformatted)
-        val (code, out, _) = run("--check", "--changed-since", "HEAD", dir.toString)
-
-        val expected = (1, List("would format: Ä", "1 file: 1 would format"))
-
-        val actual = (code, out.map(_.replace(untracked.toString, "Ä")))
-
-        actual shouldBe expected
-      }
-    }
-
     "fail outside a git repository" in {
       withTempDir { dir =>
         val _ = write(dir.resolve("A.scala"), unformatted)

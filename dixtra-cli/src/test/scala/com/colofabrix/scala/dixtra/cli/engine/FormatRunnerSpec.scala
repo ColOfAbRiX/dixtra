@@ -265,6 +265,34 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
       }
     }
 
+    "report a failure for output not equivalent to the input without writing" in {
+      withTempDir { dir =>
+        val source =
+          """package a {
+            |  def f =
+            |    val x = 1
+            |    x
+            |  // dixtra: off
+            |  val y = 2
+            |  // dixtra: on
+            |}
+            |""".stripMargin
+            
+        val file = write(dir.resolve("A.scala"), source)
+
+        val expected =
+          (
+            List(FileResult.Failed(file, "Formatted output is not equivalent to the input; file left unchanged")),
+            source,
+          )
+
+        val results = runner(check = false).run(List(file)).unsafeRunSync()
+        val actual  = (results, read(file))
+
+        actual shouldBe expected
+      }
+    }
+
   }
 
   "the runner isolating per-file failures" should {

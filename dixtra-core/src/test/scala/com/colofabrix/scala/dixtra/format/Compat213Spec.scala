@@ -170,16 +170,18 @@ class Compat213Spec extends AnyWordSpec with Matchers {
 
     "keep the statements of a one-line block on one line" in {
       val source = "class A(s: String) {\n  def this() = { this(\"a\"); println(s) }\n}\n"
+      val expected = source
       val actual = formatted(source)
 
-      actual should include("this(\"a\"); println(s)")
+      actual shouldBe expected
     }
 
     "keep the braces of a multi-line secondary constructor" in {
       val source = "class A(m: String) {\n  def this() = {\n    this(\"a\")\n    println(m)\n  }\n}\n"
+      val expected = source
       val actual = formatted(source)
 
-      actual should include("def this() = {")
+      actual shouldBe expected
     }
 
   }

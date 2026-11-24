@@ -388,6 +388,12 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
         "def f = xs.map { x => x + 1 }\n",
         "def f = xs.map { x => x + 1 }\n",
       ),
+      (
+        Construct.LambdaArgument,
+        ForceIndent,
+        "def f =\n  xs.map { x =>\n    val y = x\n    y\n  }.filter(_ > 0).sum\n",
+        "def f =\n  xs\n    .map { x =>\n      val y = x\n      y\n    }\n    .filter(_ > 0)\n    .sum\n",
+      ),
     )
 
   "each brace style" should {
