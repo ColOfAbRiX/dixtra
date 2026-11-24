@@ -50,6 +50,30 @@ class EquivalenceSpec extends AnyWordSpec with Matchers {
       actual shouldBe expected
     }
 
+    "accept an added end marker" in {
+      val expected = true
+      val actual   = equivalent("def f =\n  a\n  b\n", "def f =\n  a\n  b\nend f\n")
+      actual shouldBe expected
+    }
+
+    "reject unwrapping a block that changes the precedence" in {
+      val expected = false
+      val actual   = equivalent("val x = { a + b } * c\n", "val x = a + b * c\n")
+      actual shouldBe expected
+    }
+
+    "reject a changed word in a comment" in {
+      val expected = false
+      val actual   = equivalent("val x = 1 // one\n", "val x = 1 // two\n")
+      actual shouldBe expected
+    }
+
+    "reject swapped comments" in {
+      val expected = false
+      val actual   = equivalent("// a\nval x = 1\n// b\nval y = 2\n", "// b\nval x = 1\n// a\nval y = 2\n")
+      actual shouldBe expected
+    }
+
   }
 
   "the verification of a statement that is only realigned" should {
@@ -192,6 +216,9 @@ class EquivalenceSpec extends AnyWordSpec with Matchers {
     parse(text).stats.head
 
   private def packageClause(text: String): Pkg =
-    parse(text).stats.collect { case pkg: Pkg => pkg }.head
+    parse(text)
+      .stats
+      .collect { case pkg: Pkg => pkg }
+      .head
 
 }

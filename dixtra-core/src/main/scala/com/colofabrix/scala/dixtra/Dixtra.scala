@@ -98,6 +98,9 @@ import scala.util.control.NonFatal
  */
 object Dixtra {
 
+  private val ByteOrderMark =
+    "\uFEFF"
+
   /**
    * Format the given source text using the default configuration.
    */
@@ -126,9 +129,12 @@ object Dixtra {
    *         equivalent to the input.
    */
   def format(source: String, config: Config, dialect: Dialect): Either[FormatError, String] =
+    // A byte order mark is not Scala: it is set aside and written back
+    val bom       = if source.startsWith(ByteOrderMark) then ByteOrderMark else ""
+    val text      = source.stripPrefix(ByteOrderMark)
     val effective = config.effective
-    val lf        = Housekeeping.withLf(source)
-    val eol       = Housekeeping.separator(effective.housekeeping.lineEnding, source)
+    val lf        = Housekeeping.withLf(text)
+    val eol       = Housekeeping.separator(effective.housekeeping.lineEnding, text)
 
     // The blank lines between imports, and with `blank-lines.before-scaladoc = never` before scaladocs, are removed
     // before rendering, so the layout sees the result
@@ -145,11 +151,8 @@ object Dixtra {
                      .left
                      .map(UnsafeOutputError(_))
       verified  <- verify(lf, tree, restored, dialect)
-    yield
-      if eol == "\n" then
-        verified
-      else
-        verified.replace("\n", eol)
+      result     = bom + Housekeeping.withSeparator(verified, eol, text)
+    yield result
 
   // Parse the source as written: a Scala 2 source is reported as such, so that it is skipped. It either parses only as
   // Scala 2, or it parses as Scala 3 too but uses a construct that Scala 3 dropped (see [[Scala2Syntax]]).

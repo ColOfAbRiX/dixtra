@@ -10,7 +10,8 @@ import scala.meta.tokens.Token
  * source before it is parsed, and on the source slices the renderers copy, tokenising them with Scalameta:
  *   - String, interpolation, and comment contents are single tokens, never whitespace tokens, so their interior spacing
  *     is inherently preserved.
- *   - Leading (indentation) whitespace is preserved.
+ *   - Leading (indentation) whitespace is preserved, but for a tab, which becomes two spaces: indentation mixing tabs
+ *     and spaces, as the renderers would write next to it, is not valid Scala 3.
  *   - Newlines and blank lines are preserved.
  *
  * If the text cannot be tokenised, the input is returned unchanged (safety net).
@@ -48,7 +49,7 @@ object WhitespaceNormalizer {
               (acc.append(token.text), true, false)
             case _: Token.HSpace =>
               if atLineStart then
-                (acc.append(token.text), true, false)
+                (acc.append(if token.text == "\t" then "  " else token.text), true, false)
               else if prevWasHSpace then
                 (acc, false, true)
               else

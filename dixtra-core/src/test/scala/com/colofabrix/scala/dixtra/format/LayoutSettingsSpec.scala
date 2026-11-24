@@ -1389,6 +1389,12 @@ class LayoutSettingsSpec extends AnyWordSpec with Matchers with LayoutRows {
       input should formatTo(expected, config(ScaladocSpacing.Never))
     }
 
+    "keep the blank line between a package clause and a scaladoc with never" in {
+      val input    = "package a\n\n/** Doc */\nobject A\n"
+      val expected = input
+      input should formatTo(expected, config(ScaladocSpacing.Never))
+    }
+
   }
 
   "blank-lines.between-alignment-groups" should {

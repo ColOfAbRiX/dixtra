@@ -37,6 +37,14 @@ class HousekeepingSpec extends AnyWordSpec with Matchers {
       actual shouldBe expected
     }
 
+    "keep the spaces at the end of a line inside an interpolated string literal" in {
+      val input    = "object A {\n  val s = s\"\"\"a   \n  b $x   \n  \"\"\"\n}\n"
+      val expected = Right("object A {\n  val s =\n    s\"\"\"a   \n  b $x   \n  \"\"\"\n}\n")
+      val actual   = Dixtra.format(input, defaults)
+
+      actual shouldBe expected
+    }
+
     "be idempotent" in {
       val once     = Dixtra.format(multilineString, defaults)
       val expected = once
@@ -113,6 +121,52 @@ class HousekeepingSpec extends AnyWordSpec with Matchers {
         val actual   = Dixtra.format(lf.replace("\n", fromEol), housekeeping(true, true, ending))
         actual shouldBe expected
       }
+    }
+
+    "keep the line breaks inside the string literals of a file that mixes \\r\\n and \\n" in {
+      val input =
+        "object A {\r\n  val s = \"\"\"a\nb\"\"\"\r\n  val t = \"\"\"c\r\nd\"\"\"\r\n  val b    =    1\n}\r\n"
+
+      val expected =
+        Right(
+          "object A {\r\n  val s =\r\n    \"\"\"a\nb\"\"\"\r\n  val t =\r\n    \"\"\"c\r\nd\"\"\"\r\n  val b = 1\r\n}\r\n",
+        )
+
+      val actual = Dixtra.format(input, defaults)
+
+      actual shouldBe expected
+    }
+
+    "keep a lone \\r as text in a file with \\n line breaks" in {
+      val input    = "object A {\n  // a\rb\n  val b    =    1\n}\n"
+      val expected = Right("object A {\n  // a\rb\n  val b = 1\n}\n")
+      val actual   = Dixtra.format(input, defaults)
+
+      actual shouldBe expected
+    }
+
+  }
+
+  "a byte order mark" should {
+
+    "be kept at the start of the formatted file" in {
+      val input    = "\uFEFFobject A {\n  val a    =    1\n}\n"
+      val expected = Right("\uFEFFobject A {\n  val a = 1\n}\n")
+      val actual   = Dixtra.format(input, defaults)
+
+      actual shouldBe expected
+    }
+
+  }
+
+  "a file of whitespace only" should {
+
+    "become empty" in {
+      val input    = "   \n\n"
+      val expected = Right("")
+      val actual   = Dixtra.format(input, defaults)
+
+      actual shouldBe expected
     }
 
   }

@@ -83,6 +83,44 @@ class FormatterOffSpec extends AnyWordSpec with Matchers with FormatMatchers {
       input should formatTo(expected)
     }
 
+    "be opened by a marker right below another line comment" in {
+      val input = "object A {\n  // Explain the table\n  // dixtra: off\n  val m    =    1\n  // dixtra: on\n}\n"
+      val expected = input
+      input should formatTo(expected)
+    }
+
+    "not be opened again by an off marker inside it" in {
+      val input =
+        "object A {\n  // dixtra: off\n  val a    =    1\n  // dixtra: off\n  val b    =    2\n  // dixtra: on\n" +
+        "  val c    =    3\n}\n"
+
+      val expected =
+        "object A {\n  // dixtra: off\n  val a    =    1\n  // dixtra: off\n  val b    =    2\n  // dixtra: on\n" +
+        "  val c = 3\n}\n"
+
+      input should formatTo(expected)
+    }
+
+    "not be closed by an on marker outside a region" in {
+      val input = "object A {\n  // dixtra: on\n  val a    =    1\n}\n"
+      val expected = "object A {\n  // dixtra: on\n  val a = 1\n}\n"
+      input should formatTo(expected)
+    }
+
+    "cover the whole file from an off marker on its first line" in {
+      val input = "// dixtra: off\nobject A {\n  val a    =    1\n}\n"
+      val expected = input
+      input should formatTo(expected)
+    }
+
+    "run to the end of a file without a final line break, which it does not get" in {
+      val input = "object A {\n  val a    =    1\n}\n// dixtra: off\nval b    =    2"
+      val expected = Right("object A {\n  val a = 1\n}\n// dixtra: off\nval b    =    2")
+      val actual = Dixtra.format(input)
+
+      actual shouldBe expected
+    }
+
     "make the output unsafe when the code around it moves it into another body" in {
       val input =
         """package a {

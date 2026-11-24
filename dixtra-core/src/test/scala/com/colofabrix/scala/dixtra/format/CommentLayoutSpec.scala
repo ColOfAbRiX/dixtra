@@ -33,8 +33,18 @@ class CommentLayoutSpec extends AnyWordSpec with Matchers with LayoutRows {
         "// first para\n//\n// second para\nval a = 1\n",
         "// first para\n//\n// second para\nval a = 1\n",
       ),
-      ("a space after //", at(40), "//foo\nval a = 1 //bar\n", "// foo\nval a = 1 // bar\n"),
-      ("several spaces after // kept", at(40), "//   foo\nval a = 1\n", "//   foo\nval a = 1\n"),
+      (
+        "a space after //",
+        at(40),
+        "//foo\nval a = 1 //bar\n",
+        "// foo\nval a = 1 // bar\n",
+      ),
+      (
+        "several spaces after // kept",
+        at(40),
+        "//   foo\nval a = 1\n",
+        "//   foo\nval a = 1\n",
+      ),
       (
         "an overlong // line broken in several",
         at(30),
@@ -136,6 +146,48 @@ class CommentLayoutSpec extends AnyWordSpec with Matchers with LayoutRows {
         at(80),
         "/**\n * Example:\n * {{{\n *   val x = f(a)  // ok\n * }}}\n */\ndef f = 1\n",
         "/**\n * Example:\n * {{{\n *   val x = f(a)  // ok\n * }}}\n */\ndef f = 1\n",
+      ),
+      (
+        "a {{{ block of prose wider than the line kept",
+        at(40),
+        "/**\n * {{{\n * foo bar baz qux quux corge grault garply waldo fred\n * baz\n * }}}\n */\ndef f = 1\n",
+        "/**\n * {{{\n * foo bar baz qux quux corge grault garply waldo fred\n * baz\n * }}}\n */\ndef f = 1\n",
+      ),
+      (
+        "a ``` block of prose wider than the line kept",
+        at(40),
+        "/**\n * Text.\n * ```\n * foo bar baz qux quux corge grault garply waldo fred\n * baz\n * ```\n */\ndef f = 1\n",
+        "/**\n * Text.\n * ```\n * foo bar baz qux quux corge grault garply waldo fred\n * baz\n * ```\n */\ndef f = 1\n",
+      ),
+      (
+        "a <pre> block of prose wider than the line kept",
+        at(40),
+        "/**\n * <pre>\n * foo bar baz qux quux corge grault garply waldo fred\n * baz\n * </pre>\n */\ndef f = 1\n",
+        "/**\n * <pre>\n * foo bar baz qux quux corge grault garply waldo fred\n * baz\n * </pre>\n */\ndef f = 1\n",
+      ),
+      (
+        "a table wider than the line kept",
+        at(40),
+        "/**\n * | foo bar baz qux quux corge grault garply waldo fred |\n * | c | d |\n */\ndef f = 1\n",
+        "/**\n * | foo bar baz qux quux corge grault garply waldo fred |\n * | c | d |\n */\ndef f = 1\n",
+      ),
+      (
+        "a heading wider than the line kept apart from the text below",
+        at(40),
+        "/**\n * # foo bar baz qux quux corge grault garply waldo fred\n * some words here\n */\ndef f = 1\n",
+        "/**\n * # foo bar baz qux quux corge grault garply waldo fred\n * some words here\n */\ndef f = 1\n",
+      ),
+      (
+        "a numbered item wrapped under its text",
+        at(40),
+        "/**\n * 1. foo bar baz qux quux corge grault garply waldo fred\n * 2. second item\n */\ndef f = 1\n",
+        "/**\n * 1. foo bar baz qux quux corge grault\n *    garply waldo fred\n * 2. second item\n */\ndef f = 1\n",
+      ),
+      (
+        "a NOTE: line starting a paragraph of its own",
+        at(40),
+        "/**\n * Some text.\n * NOTE: this stays\n * on its line\n */\ndef f = 1\n",
+        "/**\n * Some text.\n * NOTE: this stays on its line\n */\ndef f = 1\n",
       ),
     )
 

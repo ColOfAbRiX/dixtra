@@ -1,6 +1,8 @@
 package com.colofabrix.scala.dixtra.format
 
+import com.colofabrix.scala.dixtra.Config
 import com.colofabrix.scala.dixtra.Dixtra
+import com.colofabrix.scala.dixtra.SourceDialect
 import com.colofabrix.scala.dixtra.testkit.FormatMatchers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -112,6 +114,40 @@ class ScalaReleasesSpec extends AnyWordSpec with Matchers with FormatMatchers {
       val expected = dropped.map(_ => Left("Scala2Error"))
 
       val actual = dropped.map(Dixtra.format(_).left.map(_.getClass.getSimpleName))
+
+      actual shouldBe expected
+    }
+
+    "skip a source that parses only as Scala 2, as a source file and as a build file" in {
+      val source    = "object A {\n  val then = 1\n}\n"
+      val buildFile = "val then = 1\n"
+
+      val skipped  = Left(("Scala2Error", "the file is Scala 2: it parses as Scala 2 but not as Scala 3"))
+      val expected = (skipped, skipped)
+
+      val asSource    = Dixtra.format(source, Config.default, SourceDialect.scala)
+      val asBuildFile = Dixtra.format(buildFile, Config.default, SourceDialect.sbt)
+
+      val actual =
+        (
+          asSource.left.map(error => (error.getClass.getSimpleName, error.getMessage)),
+          asBuildFile.left.map(error => (error.getClass.getSimpleName, error.getMessage)),
+        )
+
+      actual shouldBe expected
+    }
+
+    "skip a construct that Scala 3 dropped with compat213 too, naming it" in {
+      val source = "object A {\n  def f() { println(1) }\n}\n"
+      val config = Config.default.copy(compat213 = true)
+
+      val expected = Left(("Scala2Error", "the file is Scala 2: it uses procedure syntax, which Scala 3 dropped"))
+
+      val actual =
+        Dixtra
+          .format(source, config)
+          .left
+          .map(error => (error.getClass.getSimpleName, error.getMessage))
 
       actual shouldBe expected
     }

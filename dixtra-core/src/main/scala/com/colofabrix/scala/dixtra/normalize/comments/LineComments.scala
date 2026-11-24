@@ -1,17 +1,19 @@
 package com.colofabrix.scala.dixtra.normalize.comments
 
+import com.colofabrix.scala.dixtra.normalize.FormatterOff
 import com.colofabrix.scala.dixtra.normalize.SourceEdits.Edit
 import scala.meta.tokens.Token
 
 /**
  * The `//` comments: consecutive own-line `//` comments at one column are one comment, reflowed to the width, with at
- * least one space after `//`. A trailing comment only gets that space. Directives (`///`, `//>`, `//noinspection`, ...)
- * are left alone.
+ * least one space after `//`, but for a `dixtra: off` or `dixtra: on` marker, which stays a comment of its own. A
+ * trailing comment only gets that space. Directives (`///`, `//>`, `//noinspection`, ...) are left alone.
  */
 private[normalize] object LineComments {
 
   // `///` and `//>` directly after `//`, and tool directives after optional spaces.
-  private val directivePrefixes = List("/", ">")
+  private val directivePrefixes = 
+    List("/", ">")
 
   private val toolDirectives =
     List("noinspection", "scalastyle:", "scalafmt:", "format:", "$COVERAGE", "#region", "#endregion")
@@ -59,11 +61,13 @@ private[normalize] object LineComments {
       }
       .reverse
 
+  // A `dixtra: off` or `dixtra: on` marker is a run of its own: reflowed into the comment next to it, it would be lost.
   private def adjacent(text: CommentSource, a: Token, b: Token): Boolean =
     val gap          = text.source.slice(a.end, b.start)
     val oneLineApart = gap.isBlank && gap.count(_ == '\n') == 1
     val sameColumn   = text.column(a.start) == text.column(b.start)
-    oneLineApart && sameColumn
+    val noMarker     = !FormatterOff.isMarker(a.text) && !FormatterOff.isMarker(b.text)
+    oneLineApart && sameColumn && noMarker
 
   private def reflow(text: CommentSource, group: Vector[Token.Comment], maxColumn: Int): Option[Edit] =
     for

@@ -394,6 +394,24 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
         "def f =\n  xs.map { x =>\n    val y = x\n    y\n  }.filter(_ > 0).sum\n",
         "def f =\n  xs\n    .map { x =>\n      val y = x\n      y\n    }\n    .filter(_ > 0)\n    .sum\n",
       ),
+      (
+        Construct.Def,
+        ForceEnd,
+        "object A {\n  def f =\n    a\n    b\n    // done\n  end f\n}\n",
+        "object A {\n  def f =\n    a\n    b\n    // done\n  end f\n}\n",
+      ),
+      (
+        Construct.Def,
+        ForceBraces,
+        "object A {\n  def f =\n    a\n    b\n    // done\n  end f\n}\n",
+        "object A {\n  def f = {\n    a\n    b\n    // done\n  }\n}\n",
+      ),
+      (
+        Construct.Def,
+        ForceIndent,
+        "object A {\n  def f =\n    a\n    b\n    // done\n  end f\n}\n",
+        "object A {\n  def f =\n    a\n    b\n    // done\n}\n",
+      ),
     )
 
   "each brace style" should {
@@ -403,6 +421,20 @@ class BraceStyleSpec extends AnyWordSpec with Matchers with LayoutRows {
           (s"${construct.key} as ${policy.key}", withBraces(construct -> policy), input, expected)
       },
     )
+  }
+
+  "a package clause that gets braces" should {
+
+    "have its members laid out again at the column they move to" in {
+      val input = "package a\n\nobject B {\n  val x = compute(firstArgument, second)\n}\n"
+
+      val expected = "package a {\n\n  object B {\n    val x =\n      compute(firstArgument, second)\n  }\n\n}\n"
+
+      val config = withBraces(Construct.Package -> ForceBraces).copy(maxColumn = 40)
+
+      input should formatStablyTo(expected, config)
+    }
+
   }
 
   "the end markers of statements in a block" should {

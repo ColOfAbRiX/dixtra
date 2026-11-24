@@ -25,8 +25,8 @@ import scala.meta.*
  * `selector-chain.break-at-count` selections; with `selector-chain.in-for` / `selector-chain.in-call` set to
  * `never-break`, a chain the author broke there is joined while it fits.
  *
- * Comments before a dot are re-attached (trailing the previous segment, or on their own lines); a comment after a dot
- * or between a member and its arguments keeps the chain verbatim.
+ * Comments before a dot are re-attached (trailing the previous segment, or on their own lines), and a comment after a
+ * dot moves before it.
  *
  * @param ctx The shared render context.
  * @param terms The term renderer, for segments that are not selections.

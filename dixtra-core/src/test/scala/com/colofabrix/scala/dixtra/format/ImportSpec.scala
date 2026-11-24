@@ -43,6 +43,12 @@ class ImportSpec extends AnyWordSpec with Matchers with FormatMatchers {
       input should formatStablyTo(expected)
     }
 
+    "join the importers of a clause continued on the next line after a comma" in {
+      val input    = "import a.B,\n  c.D\nimport e.F\n\nobject A\n"
+      val expected = "import a.B, c.D\nimport e.F\n\nobject A\n"
+      input should formatStablyTo(expected)
+    }
+
     "follow the same rules in an export" in {
       val input    = "object A {\n  export b.{c,d}\n}\n"
       val expected = "object A {\n  export b.{ c, d }\n}\n"

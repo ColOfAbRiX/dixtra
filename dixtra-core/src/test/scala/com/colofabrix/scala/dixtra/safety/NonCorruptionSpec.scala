@@ -47,14 +47,12 @@ class NonCorruptionSpec extends AnyWordSpec with Matchers with FormatMatchers {
     "be preserved without mixing in bare newlines" in {
       val input = "object A {\r\n  val x = 1\r\n  val xs = List(a,\r\n    b)\r\n}\r\n"
 
-      val expected = false
+      val expected = Right(false)
 
       val actual =
         Dixtra
           .format(input)
-          .getOrElse("")
-          .replace("\r\n", "")
-          .contains('\n')
+          .map(_.replace("\r\n", "").contains('\n'))
 
       actual shouldBe expected
     }

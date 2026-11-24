@@ -440,10 +440,10 @@ class ConfigInvariantSpec extends AnyWordSpec with Matchers with FormatMatchers 
 
   }
 
-  // Formatting with `there`, then `back`, then `there` again gives the first result
+  // Formatting with `there` succeeds, and then formatting with `back` and with `there` again gives the first result
   private def converges(source: String, there: Config, back: Config): Boolean =
     val first = Dixtra.format(source, there)
-    first.flatMap(Dixtra.format(_, back)).flatMap(Dixtra.format(_, there)) == first
+    first.isRight && first.flatMap(Dixtra.format(_, back)).flatMap(Dixtra.format(_, there)) == first
 
   "the brace styles" should {
 

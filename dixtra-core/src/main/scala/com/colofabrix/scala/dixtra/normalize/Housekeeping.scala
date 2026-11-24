@@ -44,14 +44,50 @@ object Housekeeping {
 
   /**
    * `source` with `\n` line breaks. A file with only `\r` line breaks (classic macOS) has them turned into `\n`; in any
-   * other file a lone `\r` is text.
+   * other file a lone `\r` is text. In a file that mixes `\r\n` and `\n` the line breaks inside string literals are
+   * part of the strings and stay as written.
    */
   def withLf(source: String): String =
     written(source) match {
-      case "\r\n" => source.replace("\r\n", "\n")
-      case "\r"   => source.replace('\r', '\n')
-      case _      => source
+      case "\r\n" if mixed(source) => outsideStrings(source)(_.replace("\r\n", "\n"))
+      case "\r\n"                  => source.replace("\r\n", "\n")
+      case "\r"                    => source.replace('\r', '\n')
+      case _                       => source
     }
+
+  /**
+   * `formatted`, with `\n` line breaks, with the line break `eol` of the output of `original`. In a file that mixes
+   * `\r\n` and `\n` the line breaks inside string literals are left as [[withLf]] kept them.
+   */
+  def withSeparator(formatted: String, eol: String, original: String): String =
+    if eol == "\n" then
+      formatted
+    else if mixed(original) then
+      outsideStrings(formatted)(_.replace("\n", eol))
+    else
+      formatted.replace("\n", eol)
+
+  // Whether `source` has both `\r\n` and bare `\n` line breaks.
+  private def mixed(source: String): Boolean =
+    source.contains("\r\n") && source.replace("\r\n", "").contains('\n')
+
+  // `source` with `edit` applied to the text between its string literals, or to all of it when it cannot be tokenised.
+  private def outsideStrings(source: String)(edit: String => String): String =
+    SourceEdits
+      .tokens(source)
+      .fold(edit(source)) { tokens =>
+        val literals =
+          tokens.collect { case literal @ (_: Token.Constant.String | _: Token.Interpolation.Part) =>
+            (literal.start, literal.end)
+          }
+
+        val (text, last) =
+          literals.foldLeft((new StringBuilder, 0)) { case ((acc, from), (start, end)) =>
+            (acc ++= edit(source.substring(from, start)) ++= source.substring(start, end), end)
+          }
+
+        (text ++= edit(source.substring(last))).toString
+      }
 
   // The line break of `source`: `\r\n` if it has one, `\r` if it has only `\r` and no `\n`, otherwise `\n`.
   private def written(source: String): String =

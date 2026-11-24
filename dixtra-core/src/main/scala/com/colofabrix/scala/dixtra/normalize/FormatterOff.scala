@@ -20,6 +20,12 @@ object FormatterOff {
     """(?i)(?://|/\*)\s*dixtra\s*:\s*(off|on)\s*(?:\*/)?""".r
 
   /**
+   * Whether the comment `text` is a `dixtra: off` or `dixtra: on` marker.
+   */
+  def isMarker(text: String): Boolean =
+    Marker.matches(text.trim)
+
+  /**
    * `formatted`, the formatted text of `original`, with the regions of `original` between its markers put back as
    * written; Left when the two texts do not have the same regions.
    */
