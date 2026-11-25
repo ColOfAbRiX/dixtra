@@ -108,17 +108,23 @@ object ReferenceDocsChecker {
         .map(key => s"$label: settings block is missing '$key', it holds ${keys.mkString(", ")}")
 
     val orderProblems =
-      keys.headOption.filter(_ != "max-column").map(_ => s"$label: settings block must start with 'max-column'").toList
+      keys
+        .headOption
+        .filter(_ != "max-column")
+        .map(_ => s"$label: settings block must start with 'max-column'")
+        .toList
 
     val extraProblems =
       keys
         .filterNot(required.contains)
         .flatMap { key =>
           settings.default(key) match {
-            case None => List(s"$label: unknown setting '$key' in the settings block")
+            case None =>
+              List(s"$label: unknown setting '$key' in the settings block")
             case Some(default) if subsection.trailer.toMap.get(key).contains(default) =>
               List(s"$label: settings block lists '$key' at its default value '$default'")
-            case Some(_) => Nil
+            case Some(_) =>
+              Nil
           }
         }
 
@@ -147,10 +153,13 @@ object ReferenceDocsChecker {
               declared.flatMap { subsection =>
                 subsections.find(_.value == subsection.sameAs.getOrElse("")) match {
                   case None =>
-                    List(s"$key = ${subsection.value}: declares the output of '${subsection.sameAs.getOrElse("")}', which is not a value of the setting")
+                    List(
+                      s"$key = ${subsection.value}: declares the output of '${subsection.sameAs.getOrElse("")}', which is not a value of the setting",
+                    )
                   case Some(other) if other.output != subsection.output =>
                     List(s"$key = ${subsection.value}: should render as '${other.value}' but does not")
-                  case Some(_) => Nil
+                  case Some(_) =>
+                    Nil
                 }
               }
 

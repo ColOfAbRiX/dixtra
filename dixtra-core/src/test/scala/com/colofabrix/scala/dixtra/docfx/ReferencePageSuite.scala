@@ -11,25 +11,35 @@ import java.nio.file.{ Files, Path }
  */
 object ReferencePageSuite {
 
-  private val relativeDocs = Path.of("dixtra-microsite", "docs", "docs", "reference")
+  private val relativeDocs =
+    Path.of("dixtra-microsite", "docs", "docs", "reference")
 
   val docsDir: Option[Path] =
-    val explicit =
-      sys
-        .props
-        .get("dixtra.docsDir")
-        .toList
-        .map(Path.of(_))
-        
-    explicit
-      .concat(ancestors(Path.of(sys.props.getOrElse("user.dir", ".")).toAbsolutePath).map(_.resolve(relativeDocs)))
+    sys
+      .props
+      .get("dixtra.docsDir")
+      .toList
+      .map(Path.of(_))
+      .concat {
+        val workingDir = Path.of(sys.props.getOrElse("user.dir", ".")).toAbsolutePath
+        ancestors(workingDir).map(_.resolve(relativeDocs))
+      }
       .find(Files.isDirectory(_))
 
-  val writeMode: Boolean =
+  private val writeFromProperty =
     sys
       .props
       .get("dixtra.docs.write")
-      .contains("true") || sys.env.get("DIXTRA_DOCS_WRITE").contains("true")
+      .contains("true")
+
+  private val writeFromEnvironment =
+    sys
+      .env
+      .get("DIXTRA_DOCS_WRITE")
+      .contains("true")
+
+  val writeMode: Boolean =
+    writeFromProperty || writeFromEnvironment
 
   def referencePages: List[Page] =
     docsDir

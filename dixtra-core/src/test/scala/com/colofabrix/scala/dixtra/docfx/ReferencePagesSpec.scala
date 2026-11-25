@@ -11,13 +11,14 @@ class ReferencePagesSpec extends AnyWordSpec with Matchers {
       ReferencePageSuite.docsDir should not be empty
     }
 
-    ReferencePageSuite.referencePages.foreach { page =>
-      s"${page.name} match the formatter" in {
-        val problems = ReferencePageSuite.check(page.name)
-
-        problems shouldBe empty
+    ReferencePageSuite
+      .referencePages
+      .foreach { page =>
+        s"${page.name} match the formatter" in {
+          val problems = ReferencePageSuite.check(page.name)
+          problems shouldBe empty
+        }
       }
-    }
 
   }
 

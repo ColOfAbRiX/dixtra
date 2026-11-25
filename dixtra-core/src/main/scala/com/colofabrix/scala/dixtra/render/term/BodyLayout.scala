@@ -190,8 +190,13 @@ private[render] object BodyLayout {
    */
   def writtenInBraces(body: Term): Boolean =
     body match {
-      case _: Term.Block => body.pos.text.startsWith("{")
-      case _             => false
+      case _: Term.Block =>
+        body
+          .pos
+          .text
+          .startsWith("{")
+      case _ =>
+        false
     }
 
   /**

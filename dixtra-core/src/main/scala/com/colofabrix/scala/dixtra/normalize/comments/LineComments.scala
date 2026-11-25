@@ -12,7 +12,7 @@ import scala.meta.tokens.Token
 private[normalize] object LineComments {
 
   // `///` and `//>` directly after `//`, and tool directives after optional spaces.
-  private val directivePrefixes = 
+  private val directivePrefixes =
     List("/", ">")
 
   private val toolDirectives =

@@ -137,7 +137,7 @@ class DefSignatureSpec extends AnyWordSpec with Matchers with FormatMatchers {
           |""".stripMargin
 
       val config = withBraces(Construct.Def -> BracePolicy.Keep)
-      
+
       input should formatStablyTo(expected, config)
     }
 

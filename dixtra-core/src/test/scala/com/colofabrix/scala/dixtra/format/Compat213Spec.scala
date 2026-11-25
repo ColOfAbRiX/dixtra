@@ -148,41 +148,41 @@ class Compat213Spec extends AnyWordSpec with Matchers {
     }
 
     "keep the braces of a block that Scala 2 needs" in {
-      val source = "def f = {\n  a()\n  b()\n}\n"
+      val source   = "def f = {\n  a()\n  b()\n}\n"
       val expected = source
-      val actual = formatted(source)
+      val actual   = formatted(source)
 
       actual shouldBe expected
     }
 
     "give braces to a try whose Scala 2 form has none" in {
-      val source = "def f =\n  try a()\n  catch {\n    case e: Exception => b()\n  }\n"
+      val source   = "def f =\n  try a()\n  catch {\n    case e: Exception => b()\n  }\n"
       val expected = "def f =\n  try {\n    a()\n  } catch {\n    case e: Exception => b()\n  }\n"
-      val actual = formatted(source)
+      val actual   = formatted(source)
 
       actual shouldBe expected
     }
 
     "give braces to the package clause" in {
-      val source = "package a\n\nobject B {\n  val x = 1\n}\n"
+      val source   = "package a\n\nobject B {\n  val x = 1\n}\n"
       val expected = "package a {\n\n  object B {\n    val x = 1\n  }\n\n}\n"
-      val actual = formatted(source)
+      val actual   = formatted(source)
 
       actual shouldBe expected
     }
 
     "keep the statements of a one-line block on one line" in {
-      val source = "class A(s: String) {\n  def this()={ this(\"a\"); println(s) }\n}\n"
+      val source   = "class A(s: String) {\n  def this()={ this(\"a\"); println(s) }\n}\n"
       val expected = "class A(s: String) {\n  def this() = { this(\"a\"); println(s) }\n}\n"
-      val actual = formatted(source)
+      val actual   = formatted(source)
 
       actual shouldBe expected
     }
 
     "keep the braces of a multi-line secondary constructor" in {
-      val source = "class A(m: String) {\n  def this()={\n    this(\"a\")\n    println(m)\n  }\n}\n"
+      val source   = "class A(m: String) {\n  def this()={\n    this(\"a\")\n    println(m)\n  }\n}\n"
       val expected = "class A(m: String) {\n  def this() = {\n    this(\"a\")\n    println(m)\n  }\n}\n"
-      val actual = formatted(source)
+      val actual   = formatted(source)
 
       actual shouldBe expected
     }

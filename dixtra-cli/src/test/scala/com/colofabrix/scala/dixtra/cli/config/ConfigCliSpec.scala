@@ -429,7 +429,7 @@ class ConfigCliSpec extends AnyWordSpec with Matchers {
           .configVersion
           .split("\\.")
           .toList
-          
+
       val newerPatch = s"$major.$minor.${patch.toInt + 1}"
       val expected   = Validated.valid((Config.default, Nil))
 

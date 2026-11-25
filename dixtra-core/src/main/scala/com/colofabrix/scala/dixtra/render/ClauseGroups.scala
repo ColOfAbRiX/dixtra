@@ -41,8 +41,8 @@ private[render] object ClauseGroups {
   sealed trait Arrangement {
 
     /**
-     * The document of the group, without the closing delimiter of a broken group: the caller glues the `)(` of the
-     * next group to it.
+     * The document of the group, without the closing delimiter of a broken group: the caller glues the `)(` of the next
+     * group to it.
      *
      * @param closes True when the closing delimiter follows the last element of the group on its line.
      */
@@ -63,7 +63,7 @@ private[render] object ClauseGroups {
    *
    * @param group The group: its keyword and its elements, with their comments.
    * @param keywordAsParameter True when the keyword of the group goes on a line of its own, like a parameter of a
-   *                            definition; else it stays after the `(`.
+   *                           definition; else it stays after the `(`.
    */
   final case class Broken(group: Group, keywordAsParameter: Boolean) extends Arrangement {
 
@@ -80,6 +80,7 @@ private[render] object ClauseGroups {
           openContent(group, closes)
 
       opening ++ content
+
   }
 
   /**
@@ -211,7 +212,7 @@ private[render] object ClauseGroups {
    * @param separator Where the `)(` goes between the groups.
    * @param baseIndent The indent of the lines the groups are broken on.
    */
-  def arranged(lead: Doc, groups: List[Arrangement], separator: GroupsSeparator, baseIndent: Int): Doc = {
+  def arranged(lead: Doc, groups: List[Arrangement], separator: GroupsSeparator, baseIndent: Int): Doc =
     def closeBroken(run: List[Broken]): Doc =
       val brokenGroups = run.map(_.group)
       val layout       = broken(Doc.Empty, brokenGroups, separator, baseIndent, keywordAsParameter = false)
@@ -234,6 +235,5 @@ private[render] object ClauseGroups {
       }
 
     if run.isEmpty then result else result ++ closeBroken(run)
-  }
 
 }

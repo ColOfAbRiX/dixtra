@@ -277,7 +277,7 @@ class FormatRunnerSpec extends AnyWordSpec with Matchers {
             |  // dixtra: on
             |}
             |""".stripMargin
-            
+
         val file = write(dir.resolve("A.scala"), source)
 
         val expected =

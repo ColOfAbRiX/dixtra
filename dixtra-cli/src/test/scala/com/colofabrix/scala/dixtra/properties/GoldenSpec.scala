@@ -36,13 +36,13 @@ class GoldenSpec extends AnyWordSpec with Matchers with FormatMatchers {
       val name = dir.getFileName.toString
 
       s"format $name as expected" in {
-        val config = ConfigCli.fromFile(dir.resolve(ConfigCli.fileName)).getOrElse(fail(s"invalid $name config"))
+        val config   = ConfigCli.fromFile(dir.resolve(ConfigCli.fileName)).getOrElse(fail(s"invalid $name config"))
         val expected = read(dir.resolve("expected.scala.txt"))
         read(dir.resolve("input.scala.txt")) should formatTo(expected, config)
       }
 
       s"be idempotent for $name" in {
-        val config = ConfigCli.fromFile(dir.resolve(ConfigCli.fileName)).getOrElse(fail(s"invalid $name config"))
+        val config   = ConfigCli.fromFile(dir.resolve(ConfigCli.fileName)).getOrElse(fail(s"invalid $name config"))
         val expected = read(dir.resolve("expected.scala.txt"))
         expected should formatTo(expected, config)
       }

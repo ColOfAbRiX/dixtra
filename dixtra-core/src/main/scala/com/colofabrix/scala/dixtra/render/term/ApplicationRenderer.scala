@@ -173,15 +173,17 @@ private[term] final class ApplicationRenderer(
         .callSite
         .groupsSeparator
 
-    // The layout of each group, decided from the column where it starts: the column depends on the groups before it,
-    // so they are laid out one after the other.
+    // The layout of each group, decided from the column where it starts: the column depends on the groups before it, so
+    // they are laid out one after the other.
     val arrangements =
-      clauses.foldLeft((Doc.Empty, List.empty[ClauseGroups.Arrangement])) { case ((prefix, arranged), clause) =>
-        val startColumn = ctx.endColumn(prefix, indent, column)
-        val (example, arrangement) = arrangementOf(clause, indent, startColumn)
+      clauses
+        .foldLeft((Doc.Empty, List.empty[ClauseGroups.Arrangement])) { case ((prefix, arranged), clause) =>
+          val startColumn            = ctx.endColumn(prefix, indent, column)
+          val (example, arrangement) = arrangementOf(clause, indent, startColumn)
 
-        (prefix ++ example, arranged :+ arrangement)
-      }._2
+          (prefix ++ example, arranged :+ arrangement)
+        }
+        ._2
 
     val arrangedDoc = ClauseGroups.arranged(Doc.Empty, arrangements, separator, indent)
     arrangedDoc
@@ -206,8 +208,12 @@ private[term] final class ApplicationRenderer(
         val inline =
           Doc.text(s"($keyword") ++ comments.inline(args.map(arg => ctx.sourceDoc(arg))) ++ Doc.text(")")
 
-        val authorSignal = clause.pos.text.contains('\n')
-        val fitsInline   = ctx.fits(inline, column)
+        val authorSignal =
+          clause
+            .pos
+            .text
+            .contains('\n')
+        val fitsInline = ctx.fits(inline, column)
 
         if args.isEmpty && comments.isEmpty then
           (Doc.text(s"(${keyword.trim})"), ClauseGroups.OnOneLine(Doc.text(s"(${keyword.trim})")))
@@ -217,7 +223,7 @@ private[term] final class ApplicationRenderer(
         else if !comments.forcesBreak && !authorSignal && fitsInline then
           (inline, ClauseGroups.OnOneLine(inline))
         else
-          val layout = ClauseGroups.broken(Doc.Empty, List(group), ctx.config.callSite.groupsSeparator, indent, false)
+          val layout  = ClauseGroups.broken(Doc.Empty, List(group), ctx.config.callSite.groupsSeparator, indent, false)
           val example = if layout.open then layout.doc ++ Doc.Line ++ Doc.text(")") else layout.doc
           (example, ClauseGroups.Broken(group, keywordAsParameter = false))
     }
@@ -276,15 +282,19 @@ private[term] final class ApplicationRenderer(
   // Whether the application of `clause` goes on after it (`xs.map { ... }.sum`, `f { ... }(a)`, `g { ... } + 1`): a
   // braceless argument would take what follows into its body, so it keeps its braces.
   private def continuesAfter(clause: Term.ArgClause): Boolean =
-    clause.parent.exists { application =>
-      application.parent.exists {
-        case select: Term.Select       => select.qual eq application
-        case apply: Term.Apply         => apply.fun eq application
-        case applyType: Term.ApplyType => applyType.fun eq application
-        case infix: Term.ApplyInfix    => infix.lhs eq application
-        case _                         => false
+    clause
+      .parent
+      .exists { application =>
+        application
+          .parent
+          .exists {
+            case select: Term.Select       => select.qual eq application
+            case apply: Term.Apply         => apply.fun eq application
+            case applyType: Term.ApplyType => applyType.fun eq application
+            case infix: Term.ApplyInfix    => infix.lhs eq application
+            case _                         => false
+          }
       }
-    }
 
   // A parenthesised argument clause: inline unless a trigger fires, else one argument per line. A `using` clause keeps
   // its keyword on the opening line. Comments between arguments stay attached to their argument; a line comment or a

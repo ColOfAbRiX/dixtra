@@ -95,23 +95,23 @@ final class DefRenderer(
 
   /**
    * Render a secondary constructor (`def this(...) = this(...)`): its signature breaks as the signature of a `def`. A
-   * body that is the call alone goes on the `=` line when it fits there; a body of several statements goes one statement
-   * per line, below the `=` or in braces opened on the `=` line by `braces.def`, or stays as written on one line by
-   * `body.semicolon-statements`. None to keep it as
-   * written: a statement that is not a term, or comments that cannot be re-attached.
+   * body that is the call alone goes on the `=` line when it fits there; a body of several statements goes one
+   * statement per line, below the `=` or in braces opened on the `=` line by `braces.def`, or stays as written on one
+   * line by `body.semicolon-statements`. None to keep it as written: a statement that is not a term, or comments that
+   * cannot be re-attached.
    */
   def renderSecondary(ctor: Ctor.Secondary, baseIndent: Int): Option[Doc] =
     for
-      nameEnd  <- thisKeywordEnd(ctor)
-      eq       <- ctx.equalsBefore(nameEnd, ctor.body.init.pos.start)
+      nameEnd <- thisKeywordEnd(ctor)
+      eq <- ctx.equalsBefore(nameEnd, ctor.body.init.pos.start)
       signature = secondaryParts(ctor, nameEnd)
                   if !signatures.hasUnattachableComments(signature, eq.start)
                   if ctx.commentsBetween(eq.end, ctor.pos.end).isEmpty
-      braced    = bracedStatements(ctor, eq.end)
-      body     <- secondaryBody(ctor, eq.end, baseIndent + 2, braced)
-      onLine    = if Render.isFlat(body) then Doc.text(" = ") ++ body else Doc.text(" =")
-      lineRest  = if braced then Doc.text(" = {") else onLine
-      laidOut  <- signatures.render(signature, baseIndent, lineRest)
+      braced = bracedStatements(ctor, eq.end)
+      body <- secondaryBody(ctor, eq.end, baseIndent + 2, braced)
+      onLine = if Render.isFlat(body) then Doc.text(" = ") ++ body else Doc.text(" =")
+      lineRest = if braced then Doc.text(" = {") else onLine
+      laidOut <- signatures.render(signature, baseIndent, lineRest)
     yield
       // A block in braces opens on the `=` line
       if braced then laidOut.doc ++ Doc.text(" = ") ++ body else placeBody(laidOut, body)

@@ -45,13 +45,13 @@ lazy val publishSettings =
     organizationName     := "ColOfAbRiX",
     organizationHomepage := Some(uri("https://github.com/ColOfAbRiX")),
     licenses             := List(License.MIT),
-    scmInfo              := Some(
+    scmInfo := Some(
       ScmInfo(
         uri("https://github.com/ColOfAbRiX/dixtra"),
         "scm:git@github.com:ColOfAbRiX/dixtra.git",
       ),
     ),
-    developers           := List(
+    developers := List(
       Developer(
         "ColOfAbRiX",
         "Fabrizio Colonna",
@@ -63,10 +63,10 @@ lazy val publishSettings =
     publishMavenStyle    := true,
     // The Central Portal rejects the legacy POM style of sbt plugins, so disable it for all the published projects
     sbtPluginPublishLegacyMavenStyle := false,
-    versionScheme        := Some("early-semver"),
-    publishTo            := {
+    versionScheme                    := Some("early-semver"),
+    publishTo := {
       val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
-      if (version.value.endsWith("-SNAPSHOT")) Some("central-snapshots" at centralSnapshots)
+      if version.value.endsWith("-SNAPSHOT") then Some("central-snapshots" at centralSnapshots)
       else localStaging.value
     },
   )
@@ -225,7 +225,7 @@ lazy val dixtraVsCode =
 // Stages the API documentation produced by this build for the standalone microsite project (dixtra-microsite/, an
 // independent sbt 1.x build): CI copies it into the site before pushing
 lazy val copyApiDocsToSite = taskKey[Unit]("Stage API docs into dixtra-microsite/api-docs")
-copyApiDocsToSite := {
+copyApiDocsToSite := Def.uncached {
   val coreDoc    = (dixtraCore / Compile / doc).value
   val cliDoc     = (dixtraCli / Compile / doc).value
   val stagingDir = (ThisBuild / baseDirectory).value / "dixtra-microsite" / "api-docs"
