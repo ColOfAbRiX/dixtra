@@ -33,6 +33,9 @@ jobs:
       - name: Run tests
         run: sbt test
 
+      - name: Check the formatting with dixtra
+        run: sbt dixtraCheckAll
+
       # - name: Check the scalafix rules
       #   run: sbt "scalafixAll --check"
 

@@ -164,7 +164,7 @@ object ReferenceDocs {
             .flatMap(splitAssignment)
 
         val outputFrom = start + 1 + open + 1
-        
+
         val sameAs =
           body
             .take(open)
