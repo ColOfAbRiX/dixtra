@@ -16,7 +16,7 @@
   <p>Collapses runs of horizontal whitespace <em>between tokens on the same line</em> to a single space, so <code>val a = "3"</code> becomes <code>val a = "3"</code>. It runs on the source before it is parsed, and on the source slices the renderers copy, tokenising them with Scalameta:</p>
   <ul>
    <li>String, interpolation, and comment contents are single tokens, never whitespace tokens, so their interior spacing is inherently preserved.</li>
-   <li>Leading (indentation) whitespace is preserved.</li>
+   <li>Leading (indentation) whitespace is preserved, but for a tab, which becomes two spaces: indentation mixing tabs and spaces, as the renderers would write next to it, is not valid Scala 3.</li>
    <li>Newlines and blank lines are preserved.</li>
   </ul>
   <p>If the text cannot be tokenised, the input is returned unchanged (safety net).</p>

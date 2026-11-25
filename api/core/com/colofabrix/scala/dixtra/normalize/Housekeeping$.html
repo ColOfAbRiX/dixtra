@@ -157,11 +157,39 @@ node3 -> node2;
            <div class="originInfo"></div>
            <div class="memberDocumentation">
             <div class="documentableBrief doc">
-             <p><code>source</code> with <code>\n</code> line breaks. A file with only <code>\r</code> line breaks (classic macOS) has them turned into <code>\n</code>; in any other file a lone <code>\r</code> is text.</p>
+             <p><code>source</code> with <code>\n</code> line breaks. A file with only <code>\r</code> line breaks (classic macOS) has them turned into <code>\n</code>; in any other file a lone <code>\r</code> is text. In a file that mixes <code>\r\n</code> and <code>\n</code> the line breaks inside string literals are part of the strings and stay as written.</p>
             </div>
             <div class="cover">
              <div class="doc">
-              <p><code>source</code> with <code>\n</code> line breaks. A file with only <code>\r</code> line breaks (classic macOS) has them turned into <code>\n</code>; in any other file a lone <code>\r</code> is text.</p>
+              <p><code>source</code> with <code>\n</code> line breaks. A file with only <code>\r</code> line breaks (classic macOS) has them turned into <code>\n</code>; in any other file a lone <code>\r</code> is text. In a file that mixes <code>\r\n</code> and <code>\n</code> the line breaks inside string literals are part of the strings and stay as written.</p>
+             </div>
+             <h2 class="h200">Attributes</h2>
+             <dl class="attributes attributes-small"></dl>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="documentableElement" id="withSeparator-d94">
+         <div class="documentableElement-expander">
+          <button class="icon-button ar show-content"></button>
+          <div class="header monospace mono-medium">
+           <div class="signature">
+            <span class="modifiers"></span><span class="kind"><span t="k">def </span></span><a href="Housekeeping$.html#withSeparator-d94" t="n" class="documentableName ">withSeparator</a>(<span t="k"></span><span t="k"></span><span data-unresolved-link="" t="n">formatted</span>: <span data-unresolved-link="" t="t">String</span>, <span t="k"></span><span data-unresolved-link="" t="n">eol</span>: <span data-unresolved-link="" t="t">String</span>, <span t="k"></span><span data-unresolved-link="" t="n">original</span>: <span data-unresolved-link="" t="t">String</span>): <span data-unresolved-link="" t="t">String</span>
+           </div>
+          </div>
+         </div>
+         <div class="docs">
+          <span class="modifiers"></span>
+          <div>
+           <div class="originInfo"></div>
+           <div class="memberDocumentation">
+            <div class="documentableBrief doc">
+             <p><code>formatted</code>, with <code>\n</code> line breaks, with the line break <code>eol</code> of the output of <code>original</code>. In a file that mixes <code>\r\n</code> and <code>\n</code> the line breaks inside string literals are left as <a href="Housekeeping$.html#withLf-fffff2ca">withLf</a> kept them.</p>
+            </div>
+            <div class="cover">
+             <div class="doc">
+              <p><code>formatted</code>, with <code>\n</code> line breaks, with the line break <code>eol</code> of the output of <code>original</code>. In a file that mixes <code>\r\n</code> and <code>\n</code> the line breaks inside string literals are left as <a href="Housekeeping$.html#withLf-fffff2ca">withLf</a> kept them.</p>
              </div>
              <h2 class="h200">Attributes</h2>
              <dl class="attributes attributes-small"></dl>
